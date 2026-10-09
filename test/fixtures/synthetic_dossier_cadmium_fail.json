@@ -1,0 +1,54 @@
+{
+  "dossier_id": "DOS-SYN-2026-CADMIUM-FAIL",
+  "tenant_id": "ten-cailay-001",
+  "dossier_code": "DOS-202610-002",
+  "container_number": "TGHU8765432",
+  "seal_number": "SL-112233",
+  "target_market": "CN",
+  "border_gate": "Huu Nghi (Lang Son)",
+  "target_temperature_c": 14.0,
+  "declared_net_weight_kg": 18200.00,
+  "declared_box_count": 950,
+  "lifecycle_state": "VALIDATION_BLOCKED",
+  "documents": [
+    {
+      "document_type": "LAB_TEST_REPORT",
+      "file_name": "SGS_LabReport_VN26_4431.pdf",
+      "sha256_hash": "e5f678901234567890abcdef1234567890abcdef1234567890abcdefa1b2c3d4",
+      "status": "VERIFIED",
+      "extracted_fields": {
+        "cadmium_mg_kg": { "raw": "0.058", "confirmed": "0.058", "status": "HUMAN_VERIFIED" },
+        "sample_code": "SGS-VN-2026-4431",
+        "sampling_date": "2026-10-07"
+      }
+    },
+    {
+      "document_type": "PACKING_LIST",
+      "file_name": "Packing_List_Cont_TGHU8765432.pdf",
+      "sha256_hash": "f678901234567890abcdef1234567890abcdef1234567890abcdefa1b2c3d4e5",
+      "status": "VERIFIED",
+      "extracted_fields": {
+        "container_number": { "raw": "TGHU8765432", "confirmed": "TGHU8765432", "status": "HUMAN_VERIFIED" },
+        "seal_number": { "raw": "SL-112233", "confirmed": "SL-112233", "status": "HUMAN_VERIFIED" },
+        "box_count": { "raw": "950", "confirmed": "950", "status": "HUMAN_VERIFIED" },
+        "net_weight_kg": { "raw": "18200.00", "confirmed": "18200.00", "status": "HUMAN_VERIFIED" }
+      }
+    }
+  ],
+  "expected_validation_result": {
+    "status": "BLOCKED",
+    "critical_blockers": 1,
+    "advisory_warnings": 0,
+    "findings": [
+      {
+        "rule_id": "RUL-GB2762-CD",
+        "finding_severity": "CRITICAL_BLOCKER",
+        "citation": "GB 2762-2022 Table 1 (PRC National Food Safety Standard)",
+        "observed_value": "0.058 mg/kg",
+        "threshold_value": "0.050 mg/kg",
+        "message_vi": "Hàm lượng Cadmi (0.058 mg/kg) vượt ngưỡng pháp định tối đa của Trung Quốc (0.050 mg/kg). Nguy cơ bị tiêu hủy hoặc quay đầu tại cửa khẩu.",
+        "message_en": "Cadmium concentration (0.058 mg/kg) exceeds statutory Chinese MRL (0.050 mg/kg). Critical rejection risk at border."
+      }
+    ]
+  }
+}

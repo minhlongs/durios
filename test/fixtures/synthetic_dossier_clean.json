@@ -1,0 +1,55 @@
+{
+  "dossier_id": "DOS-SYN-2026-CLEAN",
+  "tenant_id": "ten-cailay-001",
+  "dossier_code": "DOS-202610-001",
+  "container_number": "MSKU1234567",
+  "seal_number": "SL-998822",
+  "target_market": "CN",
+  "border_gate": "Huu Nghi (Lang Son)",
+  "target_temperature_c": 14.0,
+  "declared_net_weight_kg": 18240.00,
+  "declared_box_count": 960,
+  "lifecycle_state": "READY_FOR_REVIEW",
+  "documents": [
+    {
+      "document_type": "LAB_TEST_REPORT",
+      "file_name": "Eurofins_LabReport_E2610_091.pdf",
+      "sha256_hash": "a1b2c3d4e5f678901234567890abcdef1234567890abcdef1234567890abcdef",
+      "status": "VERIFIED",
+      "extracted_fields": {
+        "cadmium_mg_kg": { "raw": "0.028", "confirmed": "0.028", "status": "HUMAN_VERIFIED" },
+        "sample_code": "EF-2026-VN-9081",
+        "sampling_date": "2026-10-06"
+      }
+    },
+    {
+      "document_type": "PACKING_LIST",
+      "file_name": "Packing_List_Cont_MSKU1234567.pdf",
+      "sha256_hash": "b2c3d4e5f678901234567890abcdef1234567890abcdef1234567890abcdefa1",
+      "status": "VERIFIED",
+      "extracted_fields": {
+        "container_number": { "raw": "MSKU1234567", "confirmed": "MSKU1234567", "status": "HUMAN_VERIFIED" },
+        "seal_number": { "raw": "SL-998822", "confirmed": "SL-998822", "status": "HUMAN_VERIFIED" },
+        "box_count": { "raw": "960", "confirmed": "960", "status": "HUMAN_VERIFIED" },
+        "net_weight_kg": { "raw": "18240.00", "confirmed": "18240.00", "status": "HUMAN_VERIFIED" }
+      }
+    },
+    {
+      "document_type": "PHYTOSANITARY_CERTIFICATE",
+      "file_name": "Phytosanitary_Cert_KDTV_88291.pdf",
+      "sha256_hash": "c3d4e5f678901234567890abcdef1234567890abcdef1234567890abcdefa1b2",
+      "status": "VERIFIED",
+      "extracted_fields": {
+        "container_number": { "raw": "MSKU1234567", "confirmed": "MSKU1234567", "status": "HUMAN_VERIFIED" },
+        "seal_number": { "raw": "SL-998822", "confirmed": "SL-998822", "status": "HUMAN_VERIFIED" },
+        "phyto_cert_number": "KDTV-2026-VN-09928"
+      }
+    }
+  ],
+  "expected_validation_result": {
+    "status": "PASSED",
+    "critical_blockers": 0,
+    "advisory_warnings": 0,
+    "findings": []
+  }
+}

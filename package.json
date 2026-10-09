@@ -1,0 +1,27 @@
+{
+  "name": "durios-core",
+  "version": "0.1.0",
+  "description": "DuriOS Container Dossier Workspace - Local Vertical Slice",
+  "type": "module",
+  "main": "src/index.ts",
+  "scripts": {
+    "test": "bun test",
+    "test:coverage": "bun test --coverage",
+    "typecheck": "tsc --noEmit",
+    "start": "bun run src/cli.ts",
+    "start:server": "bun run src/server/server.ts"
+  },
+  "keywords": [
+    "durios",
+    "durian-export",
+    "compliance",
+    "container-dossier"
+  ],
+  "author": "DuriOS Engineering",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@types/bun": "^1.4.2",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DuriOS — Hệ thống Chuẩn bị Hồ sơ Container Sầu riêng</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #10b981;
+      --primary-hover: #059669;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      padding: 1.5rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 1.5rem;
+    }
+    h1 { font-size: 1.4rem; font-weight: 700; color: #34d399; display: flex; align-items: center; gap: 0.5rem; }
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 9999px;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .badge-primary { background: #064e3b; color: #6ee7b7; border: 1px solid #059669; }
+    .badge-warning { background: #78350f; color: #fde68a; border: 1px solid #d97706; }
+    .badge-danger { background: #7f1d1d; color: #fca5a5; border: 1px solid #dc2626; }
+    .badge-info { background: #1e3a8a; color: #93c5fd; border: 1px solid #2563eb; }
+    .container-grid { display: grid; grid-template-columns: 320px 1fr; gap: 1.5rem; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    .card h2 { font-size: 1.1rem; margin-bottom: 0.75rem; color: #e2e8f0; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+    button, input, select {
+      font-family: inherit;
+      font-size: 0.875rem;
+      border-radius: 0.375rem;
+    }
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 0.5rem 0.85rem;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.15s;
+    }
+    button:hover { background: var(--primary-hover); }
+    button.btn-secondary { background: #475569; }
+    button.btn-secondary:hover { background: #334155; }
+    button.btn-danger { background: var(--danger); }
+    button.btn-warning { background: var(--warning); color: #000; }
+    input, select {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 0.45rem 0.6rem;
+      width: 100%;
+      margin-bottom: 0.5rem;
+    }
+    label { font-size: 0.75rem; color: var(--text-muted); display: block; margin-bottom: 0.2rem; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.825rem; margin-top: 0.5rem; }
+    th, td { padding: 0.5rem; text-align: left; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 600; }
+    .status-pill { font-weight: 700; font-size: 0.75rem; }
+    .disclaimer-box {
+      background: #1e1b4b;
+      border: 1px solid #4338ca;
+      padding: 0.75rem;
+      border-radius: 0.375rem;
+      font-size: 0.75rem;
+      color: #c7d2fe;
+      margin-top: 1rem;
+    }
+    .dossier-item {
+      padding: 0.65rem;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .dossier-item:hover, .dossier-item.active { background: #334155; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>📦 DuriOS Core — Workspace Hồ Sơ Container</h1>
+      <p style="font-size: 0.8rem; color: var(--text-muted);">
+        Hệ thống chuẩn bị hồ sơ xuất khẩu sầu riêng (Tiêu chuẩn GACC & Hải quan Việt Nam)
+      </p>
+    </div>
+    <div style="display: flex; gap: 0.75rem; align-items: center;">
+      <span class="badge badge-primary" id="system-status">Đang hoạt động (127.0.0.1)</span>
+      <select id="actor-role" style="width: auto; margin-bottom: 0;" onchange="reloadWorkspace()">
+        <option value="CLERK">Vai trò: Nhân viên nghiệp vụ (CLERK)</option>
+        <option value="MANAGER">Vai trò: Quản lý phê duyệt (MANAGER)</option>
+      </select>
+    </div>
+  </header>
+
+  <div class="container-grid">
+    <!-- CỘT TRÁI: DANH SÁCH & TẠO HỒ SƠ -->
+    <div>
+      <div class="card">
+        <h2>Tạo hồ sơ container mới</h2>
+        <form id="create-dossier-form" onsubmit="handleCreateDossier(event)">
+          <label>Mã hồ sơ (Dossier Code)</label>
+          <input type="text" id="inp-dossier-code" required placeholder="DOS-202610-001" value="DOS-202610-001">
+          <label>Số Container (ISO 6346: 4 chữ + 7 số)</label>
+          <input type="text" id="inp-container-num" required placeholder="MSKU1234565" value="MSKU1234565">
+          <label>Số Niêm phong (Seal Number)</label>
+          <input type="text" id="inp-seal-num" required placeholder="VN-SEAL-8899" value="VN-SEAL-8899">
+          <label>Cửa khẩu xuất (Border Gate)</label>
+          <input type="text" id="inp-gate" required value="Huu Nghi">
+          <label>Thị trường đích</label>
+          <input type="text" id="inp-market" value="CN" readonly>
+          <label>Nhiệt độ cài đặt (°C)</label>
+          <input type="number" step="0.1" id="inp-temp" required value="14.0">
+          <label>Khối lượng tịnh khai báo (Kg)</label>
+          <input type="number" id="inp-weight" required value="18240">
+          <label>Số lượng thùng khai báo</label>
+          <input type="number" id="inp-boxes" required value="960">
+          <button type="submit" style="width: 100%; margin-top: 0.5rem;">+ Tạo hồ sơ mới</button>
+        </form>
+      </div>
+
+      <div class="card">
+        <h2>Danh sách hồ sơ (<span id="dossier-count">0</span>)</h2>
+        <div id="dossier-list" style="max-height: 400px; overflow-y: auto;">
+          <p style="font-size: 0.8rem; color: var(--text-muted); padding: 0.5rem;">Đang tải dữ liệu...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CỘT PHẢI: KHÔNG GIAN LÀM VIỆC CHI TIẾT -->
+    <div id="workspace-main">
+      <div class="card">
+        <p style="text-align: center; color: var(--text-muted); padding: 2rem;">
+          Vui lòng chọn hoặc tạo một hồ sơ container để bắt đầu làm việc.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentDossierId = null;
+
+    async function fetchApi(path, options = {}) {
+      const role = document.getElementById("actor-role").value;
+      const headers = { ...options.headers, "x-actor-role": role };
+      const res = await fetch(path, { ...options, headers });
+      return res.json();
+    }
+
+    async function loadDossierList() {
+      const res = await fetchApi("/api/dossiers");
+      const listEl = document.getElementById("dossier-list");
+      if (!res.success || !res.data) {
+        listEl.innerHTML = `<p style="color:var(--danger);padding:0.5rem;">Lỗi tải dữ liệu</p>`;
+        return;
+      }
+      document.getElementById("dossier-count").innerText = res.data.length;
+      if (res.data.length === 0) {
+        listEl.innerHTML = `<p style="font-size:0.8rem;color:var(--text-muted);padding:0.5rem;">Chưa có hồ sơ nào.</p>`;
+        return;
+      }
+      listEl.innerHTML = res.data.map(d => `
+        <div class="dossier-item ${d.id === currentDossierId ? 'active' : ''}" onclick="selectDossier('${d.id}')">
+          <div style="font-weight:600;display:flex;justify-content:space-between;">
+            <span>${d.dossierCode}</span>
+            <span class="status-pill">${d.lifecycleState}</span>
+          </div>
+          <div style="font-size:0.75rem;color:var(--text-muted);">
+            Container: <span class="mono">${d.containerNumber}</span> | Seal: ${d.sealNumber}
+          </div>
+        </div>
+      `).join("");
+      if (!currentDossierId && res.data.length > 0) {
+        selectDossier(res.data[0].id);
+      }
+    }
+
+    async function handleCreateDossier(e) {
+      e.preventDefault();
+      const payload = {
+        dossierCode: document.getElementById("inp-dossier-code").value,
+        containerNumber: document.getElementById("inp-container-num").value,
+        sealNumber: document.getElementById("inp-seal-num").value,
+        borderGate: document.getElementById("inp-gate").value,
+        targetMarket: document.getElementById("inp-market").value,
+        targetTemperatureC: parseFloat(document.getElementById("inp-temp").value),
+        declaredNetWeightKg: parseFloat(document.getElementById("inp-weight").value),
+        declaredBoxCount: parseInt(document.getElementById("inp-boxes").value, 10),
+      };
+      const res = await fetchApi("/api/dossiers", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (res.success) {
+        currentDossierId = res.data.id;
+        await loadDossierList();
+        await selectDossier(currentDossierId);
+      } else {
+        alert("Lỗi tạo hồ sơ: " + res.error);
+      }
+    }
+
+    async function selectDossier(id) {
+      currentDossierId = id;
+      await renderWorkspace();
+    }
+
+    function reloadWorkspace() {
+      if (currentDossierId) renderWorkspace();
+    }
+
+    async function renderWorkspace() {
+      const res = await fetchApi(`/api/dossiers/${currentDossierId}`);
+      if (!res.success) return;
+      const d = res.data;
+      const auditRes = await fetchApi(`/api/dossiers/${currentDossierId}/audit`);
+      const auditData = auditRes.data || { count: 0, isChainValid: true, events: [] };
+
+      const mainEl = document.getElementById("workspace-main");
+      mainEl.innerHTML = `
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <div>
+              <h2 style="border:none;margin-bottom:0.25rem;">Hồ sơ: ${d.dossierCode}</h2>
+              <p style="font-size:0.8rem;color:var(--text-muted);">
+                Container: <strong>${d.containerNumber}</strong> | Niêm phong: <strong>${d.sealNumber}</strong> |
+                Cửa khẩu: ${d.borderGate} | Thị trường: ${d.targetMarket} | Cài đặt: ${d.targetTemperatureC}°C
+              </p>
+            </div>
+            <div>
+              <span class="badge ${d.lifecycleState === 'EXPORTED' ? 'badge-primary' : (d.lifecycleState.includes('BLOCKED') ? 'badge-danger' : 'badge-warning')}">
+                ${d.lifecycleState}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 1. TẢI LÊN CHỨNG TỪ -->
+        <div class="card">
+          <h2>1. Đính kèm chứng từ xuất khẩu (Synthetic Ingestion)</h2>
+          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:0.75rem;">
+            <button onclick="uploadSampleDoc('PACKING_LIST', 'PackingList.pdf')">
+              + Tải Packing List
+            </button>
+            <button onclick="uploadSampleDoc('LAB_TEST_REPORT', 'LabTestReport.pdf')">
+              + Tải Phiếu xét nghiệm Cadmium
+            </button>
+            <button onclick="uploadSampleDoc('PHYTOSANITARY_CERTIFICATE', 'Phytosanitary.pdf')">
+              + Tải Giấy kiểm dịch thực vật
+            </button>
+          </div>
+          <table style="margin-top:1rem;">
+            <thead>
+              <tr>
+                <th>Loại chứng từ</th>
+                <th>Tên tệp</th>
+                <th>Mã SHA-256 máy chủ xác thực</th>
+                <th>Trạng thái</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${d.documents.length === 0 ? '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);">Chưa có tài liệu đính kèm</td></tr>' :
+                d.documents.map(doc => `
+                  <tr>
+                    <td><strong>${doc.documentType}</strong></td>
+                    <td>${doc.fileName} (${doc.fileSize} bytes)</td>
+                    <td class="mono" title="${doc.sha256Hash}">${doc.sha256Hash.slice(0, 16)}...${doc.sha256Hash.slice(-8)}</td>
+                    <td><span class="badge badge-primary">Đã lưu trữ an toàn</span></td>
+                  </tr>
+                `).join("")}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 2. HITL VERIFICATION -->
+        <div class="card">
+          <h2>2. Xác thực trường trích xuất người dùng (Human-In-The-Loop)</h2>
+          <p style="font-size:0.75rem;color:var(--text-muted);margin-bottom:0.5rem;">
+            Quy định bắt buộc: Mọi trường trích xuất tự động phải được chuyên viên xác nhận thủ công trước khi xuất hồ sơ.
+          </p>
+          <table>
+            <thead>
+              <tr>
+                <th>Chứng từ</th>
+                <th>Tên trường</th>
+                <th>Giá trị trích xuất (Draft)</th>
+                <th>Giá trị xác nhận (Verified)</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${renderFieldsTable(d)}
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 3. THẨM ĐỊNH QUY TẮC -->
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2>3. Thẩm định quy tắc tuân thủ (Deterministic Rules)</h2>
+            <button onclick="runValidation()" class="btn-warning">⚡ Chạy thẩm định quy tắc</button>
+          </div>
+          ${renderValidationSummary(d.latestValidationResult)}
+        </div>
+
+        <!-- 4. KIỂM TOÁN VÀ TOÀN VẸN CHUỖI BĂM -->
+        <div class="card">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <h2>4. Nhật ký kiểm toán & Tính toàn vẹn chuỗi băm (Audit Ledger)</h2>
+            <button class="btn-secondary" onclick="checkIntegrity()">🔍 Xác minh toàn vẹn chuỗi băm</button>
+          </div>
+          <p style="font-size:0.8rem;margin:0.4rem 0;">
+            Tính toàn vẹn chuỗi băm (SHA-256 Hash Chain):
+            <strong>${auditData.isChainValid ? '✅ HỢP LỆ (Không có dấu hiệu sửa đổi trái phép)' : '❌ CẢNH BÁO: PHÁT HIỆN DẤU HIỆU SAI LỆCH HOẶC CAN THIỆP!'}</strong>
+          </p>
+          <div style="max-height:160px;overflow-y:auto;background:#0f172a;padding:0.5rem;border-radius:0.375rem;">
+            ${auditData.events.map(e => `
+              <div style="font-size:0.75rem;border-bottom:1px solid #1e293b;padding:0.25rem 0;">
+                <span class="mono" style="color:#60a5fa;">[${e.timestamp.slice(11, 19)}]</span>
+                <strong>${e.eventType}</strong> bởi <em>${e.actorRole}</em> (${e.actorId})
+                <br><span class="mono" style="color:var(--text-muted);font-size:0.7rem;">Băm: ${e.eventHash.slice(0, 20)}... (Prev: ${e.previousHash.slice(0, 10)}...)</span>
+              </div>
+            `).join("")}
+          </div>
+        </div>
+
+        <!-- 5. PHÊ DUYỆT VÀ XUẤT HỒ SƠ -->
+        <div class="card">
+          <h2>5. Đóng gói & Xuất hồ sơ niêm phong</h2>
+          <div style="display:flex;gap:1rem;margin-top:0.5rem;">
+            <button onclick="approveExport()" class="btn-primary" ${d.lifecycleState === 'EXPORTED' ? 'disabled' : ''}>
+              ✔️ Phê duyệt xuất khẩu (Cần quyền Quản lý)
+            </button>
+            <button onclick="exportDossier()" class="btn-warning" ${d.lifecycleState !== 'APPROVED_FOR_EXPORT' ? 'disabled' : ''}>
+              🔒 Đóng gói & Niêm phong Manifest
+            </button>
+          </div>
+          <div class="disclaimer-box">
+            <strong>TUYÊN BỐ MIỄN TRỪ TRÁCH NHIỆM PHÁP LÝ & AN TOÀN QUY ĐỊNH:</strong><br>
+            Hệ thống DuriOS chỉ phục vụ mục đích hỗ trợ kiểm soát tính toàn vẹn dữ liệu và chuẩn bị hồ sơ nội bộ.
+            Kết quả hợp lệ trên phần mềm KHÔNG thay thế kiểm định hải quan thực tế và KHÔNG đảm bảo thông quan tại cửa khẩu GACC Trung Quốc.
+          </div>
+        </div>
+      `;
+    }
+
+    function renderFieldsTable(d) {
+      const rows = [];
+      for (const doc of d.documents) {
+        for (const f of doc.extractedFields) {
+          const isVerified = f.verificationStatus === "HUMAN_VERIFIED";
+          rows.push(`
+            <tr>
+              <td><span style="font-size:0.75rem;">${doc.documentType}</span></td>
+              <td><strong>${f.label}</strong></td>
+              <td class="mono">${f.rawValue}</td>
+              <td>
+                <input type="text" id="val-${f.id}" value="${f.confirmedValue ?? f.rawValue}" style="margin-bottom:0;width:120px;" ${d.isImmutable ? 'disabled' : ''}>
+              </td>
+              <td>
+                <span class="status-pill" style="color:${isVerified ? '#34d399' : '#f87171'}">
+                  ${f.verificationStatus}
+                </span>
+              </td>
+              <td>
+                ${d.isImmutable ? '<em>Đã khóa</em>' : `
+                  <button style="padding:0.25rem 0.5rem;font-size:0.75rem;" onclick="verifyField('${doc.id}', '${f.id}')">
+                    ${isVerified ? 'Cập nhật' : 'Xác thực'}
+                  </button>
+                `}
+              </td>
+            </tr>
+          `);
+        }
+      }
+      return rows.length === 0 ? '<tr><td colspan="6" style="text-align:center;color:var(--text-muted);">Chưa có dữ liệu trích xuất</td></tr>' : rows.join("");
+    }
+
+    function renderValidationSummary(val) {
+      if (!val) {
+        return `<p style="font-size:0.8rem;color:var(--text-muted);margin-top:0.5rem;">Chưa chạy thẩm định quy tắc.</p>`;
+      }
+      return `
+        <div style="margin-top:0.5rem;">
+          <p style="font-weight:600;color:${val.status === 'PASSED' ? '#34d399' : '#f87171'};">
+            Trạng thái kết quả: ${val.status} (Chặn nghiêm trọng: ${val.criticalBlockers}, Cảnh báo khuyến nghị: ${val.advisoryWarnings})
+          </p>
+          <div style="margin-top:0.5rem;">
+            ${val.findings.map(f => `
+              <div style="padding:0.4rem;margin-bottom:0.3rem;border-radius:0.25rem;background:${f.severity === 'CRITICAL_BLOCKER' ? '#450a0a' : '#451a03'};border:1px solid ${f.severity === 'CRITICAL_BLOCKER' ? '#991b1b' : '#b45309'};font-size:0.75rem;">
+                <strong>[${f.severity}] ${f.ruleId} (${f.sourceAuthority}):</strong> ${f.message}
+              </div>
+            `).join("")}
+          </div>
+        </div>
+      `;
+    }
+
+    async function uploadSampleDoc(type, filename) {
+      const res = await fetchApi(`/api/dossiers/${currentDossierId}/documents`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          documentType: type,
+          fileName: filename,
+        }),
+      });
+      if (res.success) {
+        await renderWorkspace();
+      } else {
+        alert("Lỗi tải chứng từ: " + res.error);
+      }
+    }
+
+    async function verifyField(docId, fieldId) {
+      const val = document.getElementById(`val-${fieldId}`).value;
+      const res = await fetchApi(`/api/dossiers/${currentDossierId}/documents/${docId}/fields/${fieldId}/verify`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirmedValue: val }),
+      });
+      if (res.success) {
+        await renderWorkspace();
+      } else {
+        alert("Lỗi xác thực: " + res.error);
+      }
+    }
+
+    async function runValidation() {
+      const res = await fetchApi(`/api/dossiers/${currentDossierId}/validate`, { method: "POST" });
+      if (res.success) {
+        await renderWorkspace();
+      } else {
+        alert("Lỗi thẩm định: " + res.error);
+      }
+    }
+
+    async function approveExport() {
+      const res = await fetchApi(`/api/dossiers/${currentDossierId}/approve`, { method: "POST" });
+      if (res.success) {
+        await renderWorkspace();
+      } else {
+        alert("Phê duyệt bị từ chối: " + res.error);
+      }
+    }
+
+    async function exportDossier() {
+      const res = await fetchApi(`/api/dossiers/${currentDossierId}/export`, { method: "POST" });
+      if (res.success) {
+        alert("Đã niêm phong và xuất hồ sơ thành công! Mã băm tổng hợp: " + res.data.compositeManifestSha256);
+        await renderWorkspace();
+      } else {
+        alert("Lỗi xuất hồ sơ: " + res.error);
+      }
+    }
+
+    async function checkIntegrity() {
+      const res = await fetchApi(`/api/dossiers/${currentDossierId}/audit`);
+      if (res.success) {
+        alert(res.data.isChainValid ? "✅ Chuỗi băm kiểm toán hoàn toàn nguyên vẹn và hợp lệ!" : "❌ Cảnh báo: Chuỗi băm bị can thiệp!");
+      }
+    }
+
+    loadDossierList();
+  </script>
+</body>
+</html>
