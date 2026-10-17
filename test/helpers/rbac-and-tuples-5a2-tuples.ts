@@ -18,13 +18,10 @@ export interface ErrorCodePayload { errorCode?: string; data?: { challengeId: st
 
 export function createHttpCaller(handler: WorkspaceAppInstance["handler"]): HttpCaller {
   return (path: string, cookie: string, method = "POST", body?: unknown) =>
-    handler(
-      new Request(`http://127.0.0.1${path}`, {
-        method,
-        headers: { Cookie: cookie, "Content-Type": "application/json" },
-        ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
-      })
-    );
+    handler(new Request(`http://127.0.0.1${path}`, {
+      method, headers: { Cookie: cookie, "Content-Type": "application/json" },
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    }));
 }
 
 export function makeDocPayloads(seal: string, tag: string) {
@@ -91,13 +88,9 @@ export async function runIdentityTupleValidationScenario(
   for (const [persona, tenantType, role] of invalidTuples) {
     expect(() =>
       app.authService.provisionPilotAccount({
-        username: `bad_${String(persona)}_${String(role)}`,
-        password: "Pass#123",
-        actorName: "Invalid Tuple Actor",
-        tenantId: "TEN-BAD",
-        tenantType: tenantType as TenantType,
-        role: role as UserRole,
-        persona: persona as ProductPersona,
+        username: `bad_${String(persona)}_${String(role)}`, password: "Pass#123",
+        actorName: "Invalid Tuple Actor", tenantId: "TEN-BAD",
+        tenantType: tenantType as TenantType, role: role as UserRole, persona: persona as ProductPersona,
       })
     ).toThrow(AccessControlError);
   }
@@ -118,8 +111,7 @@ export async function runIdentityTupleValidationScenario(
 
   const pwBadRes = await app.handler(
     new Request("http://127.0.0.1/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: "legacy.bad", password: "LegacyPass#1" }),
     })
   );
@@ -129,8 +121,7 @@ export async function runIdentityTupleValidationScenario(
 
   const otpReq = await app.handler(
     new Request("http://127.0.0.1/api/auth/otp/request", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phoneNumber: "+84911000999", channel: "ZALO" }),
     })
   );
@@ -138,8 +129,7 @@ export async function runIdentityTupleValidationScenario(
   const otpCode = fakeOtp.getLatestForPhone("+84911000999")!.otpCode;
   const otpVerBad = await app.handler(
     new Request("http://127.0.0.1/api/auth/otp/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ challengeId: chId, otpCode }),
     })
   );

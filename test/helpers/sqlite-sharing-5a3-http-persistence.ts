@@ -28,15 +28,11 @@ export async function runShareGrantsAndEvidencePersistenceScenario(
   const cViewer = seedTestPilotActor(app.authService, { tenantId: "TEN-C", tenantType: "BUYER_IMPORTER", role: "VIEWER", persona: "BUYER_VIEWER" });
 
   const callHttp = (path: string, cookie: string, method = "GET", body?: unknown) =>
-    app.handler(
-      new Request(`http://127.0.0.1${path}`, {
-        method,
-        headers: { Cookie: cookie, "Content-Type": "application/json" },
-        ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
-      })
-    );
+    app.handler(new Request(`http://127.0.0.1${path}`, {
+      method, headers: { Cookie: cookie, "Content-Type": "application/json" },
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    }));
 
-  // 1. Create dossier & upload document in TEN-A
   const createRes = await callHttp("/api/dossiers", aClerk.sessionCookie, "POST", {
     dossierCode: "DOS-5A3-001", containerNumber: "MSKU1234565", sealNumber: "SEAL-5A3",
   });
@@ -50,19 +46,12 @@ export async function runShareGrantsAndEvidencePersistenceScenario(
   });
   expect(upRes.status).toBe(201);
 
-  // 2. Record organic evidence with all optional and required fields
   const orgInput = {
-    certifierName: "Demo Bio-Inspect Services (Synthetic)",
-    certifierAccreditationNumber: "ISO-IEC-17065-DEMO-99",
-    certificateNumber: "ORG-CERT-2026-888",
-    standardCode: "EU_ORGANIC_2018_848",
-    standardDescription: "EU Organic Regulation 2018/848",
-    certifiedScope: "Fresh Durian Monthong & Ri6 — Lot 042",
-    validFrom: "2026-01-15T00:00:00.000Z",
-    validTo: "2027-01-14T23:59:59.000Z",
-    issuingDate: "2026-01-15",
-    issuerClaimedStatus: "CERTIFIED",
-    evidenceDocumentId: "DOC-ORG-SCAN-01",
+    certifierName: "Demo Bio-Inspect Services (Synthetic)", certifierAccreditationNumber: "ISO-IEC-17065-DEMO-99",
+    certificateNumber: "ORG-CERT-2026-888", standardCode: "EU_ORGANIC_2018_848",
+    standardDescription: "EU Organic Regulation 2018/848", certifiedScope: "Fresh Durian Monthong & Ri6 — Lot 042",
+    validFrom: "2026-01-15T00:00:00.000Z", validTo: "2027-01-14T23:59:59.000Z", issuingDate: "2026-01-15",
+    issuerClaimedStatus: "CERTIFIED", evidenceDocumentId: "DOC-ORG-SCAN-01",
     sourceDocumentUrl: "https://demo-certifier.example/verify/ORG-CERT-2026-888",
   };
   const orgRes = await callHttp(`/api/dossiers/${dossierId}/organic-evidence`, aClerk.sessionCookie, "POST", orgInput);
@@ -72,11 +61,9 @@ export async function runShareGrantsAndEvidencePersistenceScenario(
   expect(createdEvidence.duriosRecordStatus).toBe("EVIDENCE_STORED_NOT_CERTIFIED");
   expect(createdEvidence.regulatoryDisclaimer).toBe(DURIOS_ORGANIC_DISCLAIMER);
 
-  // 3. Before sharing: TEN-B and TEN-C cannot see dossier in list or detail
   expect(((await (await callHttp("/api/dossiers", bViewer.sessionCookie, "GET")).json()) as DossierListPayload).data.length).toBe(0);
   expect((await callHttp(`/api/dossiers/${dossierId}`, bViewer.sessionCookie, "GET")).status).toBe(404);
 
-  // 4. Grant READ_ONLY to TEN-B (grant #1), then restart SQLite and verify persistence
   const expIso = new Date(Date.now() + 3600_000).toISOString();
   const roGrantRes = await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", {
     granteeTenantId: "TEN-B", purpose: "LOGISTICS", scope: "READ_ONLY", expiresAt: expIso,
@@ -108,23 +95,18 @@ export async function runShareGrantsAndEvidencePersistenceScenario(
   expect(((await (await callHttp("/api/dossiers", cViewer.sessionCookie, "GET")).json()) as DossierListPayload).data.length).toBe(0);
   expect((await callHttp(`/api/dossiers/${dossierId}`, cViewer.sessionCookie, "GET")).status).toBe(404);
 
-  // 5. With only READ_ONLY grant, bClerk is denied verifyField (403) with zero side effects
   const auditBeforeDeniedVerify = app.workspace.auditLedger.getEventsForDossier(dossierId, "TEN-A").length;
-  const deniedVerifyRes = await callHttp(`/api/dossiers/${dossierId}/documents/${docId}/fields/${fieldId}/verify`, bClerk.sessionCookie, "POST", { confirmedValue: "MSKU1234565" });
-  expect(deniedVerifyRes.status).toBe(403);
+  expect((await callHttp(`/api/dossiers/${dossierId}/documents/${docId}/fields/${fieldId}/verify`, bClerk.sessionCookie, "POST", { confirmedValue: "MSKU1234565" })).status).toBe(403);
   expect(app.workspace.auditLedger.getEventsForDossier(dossierId, "TEN-A").length).toBe(auditBeforeDeniedVerify);
 
-  // 6. Query-order independence with multiple grants
   const rvGrantRes = await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", {
     granteeTenantId: "TEN-B", purpose: "CUSTOMS_INSPECTION", scope: "READ_AND_VERIFY", expiresAt: expIso,
   });
-  expect(rvGrantRes.status).toBe(201);
   const rvGrantId = ((await rvGrantRes.json()) as ShareGrantResponse).grant.id;
 
   const roGrant2Res = await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", {
     granteeTenantId: "TEN-B", purpose: "BUYER_VERIFICATION", scope: "READ_ONLY", expiresAt: expIso,
   });
-  expect(roGrant2Res.status).toBe(201);
   const roGrant2Id = ((await roGrant2Res.json()) as ShareGrantResponse).grant.id;
 
   expect((await callHttp(`/api/dossiers/${dossierId}/documents/${docId}/fields/${fieldId}/verify`, bViewer.sessionCookie, "POST", { confirmedValue: "MSKU1234565" })).status).toBe(403);
@@ -133,9 +115,7 @@ export async function runShareGrantsAndEvidencePersistenceScenario(
   expect((await callHttp(`/api/dossiers/${dossierId}/validate`, bClerk.sessionCookie, "POST")).status).toBe(403);
   expect((await callHttp(`/api/dossiers/${dossierId}/organic-evidence`, bClerk.sessionCookie, "POST", orgInput)).status).toBe(403);
 
-  // 7. Revoke ONLY the READ_AND_VERIFY grant, restart SQLite, and verify
-  const revRvRes = await callHttp(`/api/dossiers/${dossierId}/shares/${rvGrantId}/revoke`, aMgr.sessionCookie, "POST", { reason: "Verification phase finished" });
-  expect(revRvRes.status).toBe(200);
+  expect((await callHttp(`/api/dossiers/${dossierId}/shares/${rvGrantId}/revoke`, aMgr.sessionCookie, "POST", { reason: "Verification phase finished" })).status).toBe(200);
 
   app.sqliteClient.close();
   app = createWorkspaceApp({ dbPath: testDb, dataDir: testUploads });
@@ -150,7 +130,6 @@ export async function runShareGrantsAndEvidencePersistenceScenario(
   expect((await callHttp(`/api/dossiers/${dossierId}`, bClerk.sessionCookie, "GET")).status).toBe(200);
   expect((await callHttp(`/api/dossiers/${dossierId}/documents/${docId}/fields/${fieldId}/verify`, bClerk.sessionCookie, "POST", { confirmedValue: "MSKU1234565" })).status).toBe(403);
 
-  // 8. Revoke grant #1 and expire grant #3 -> TEN-B immediately loses read access
   await callHttp(`/api/dossiers/${dossierId}/shares/${roGrantId}/revoke`, aMgr.sessionCookie, "POST", { reason: "Revoke #1" });
   app.sqliteClient.db.run("UPDATE share_grants SET expires_at = ? WHERE id = ?", [new Date(Date.now() - 10_000).toISOString(), roGrant2Id]);
 

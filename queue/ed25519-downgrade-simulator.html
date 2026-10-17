@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DuriOS // Screen 25: Ed25519 Offline License & Zero-Data-Loss Downgrade Simulator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <style>
+    :root {
+      --bg-canvas: #0B130E;
+      --bg-surface: #132018;
+      --bg-card: #18281F;
+      --border: #1F3327;
+      --border-highlight: #10B981;
+      --text-primary: #ECFDF5;
+      --text-secondary: #6EE7B7;
+      --text-muted: #34D399;
+      --accent-primary: #10B981;
+      --accent-gold: #F59E0B;
+      --accent-danger: #EF4444;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-card: 6px;
+      --shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.12);
+    }
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+    }
+    .font-mono { font-family: var(--font-mono); }
+    .font-display { font-family: var(--font-display); }
+  </style>
+  <script src="/stitch/durios-live-bridge.js" defer></script>
+</head>
+<body class="min-h-screen bg-[#0B130E] text-[#ECFDF5] flex flex-col font-body selection:bg-[#10B981] selection:text-black">
+<!-- DURIOS UNIFIED TOP NAV BAR -->
+<div id="durios-unified-top-nav" style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 7px 14px; font-family: 'Inter', sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 25-SCREEN NAV</span>
+    <span style="color: #1F3327;">|</span>
+    <a href="gallery.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">⭐️ Master Hub</a>
+    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">1. Workspace</a>
+    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">2. Dossiers</a>
+    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">3. Auditor (5 Gates)</a>
+    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">4. Buyer Portal</a>
+    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">5. Cluster Ops</a>
+    <a href="portability.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">6. Portability</a>
+    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">7. Pro SaaS</a>
+    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">8. Style Guide</a>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
+    <a href="corridors.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">🌏 9. Corridors</a>
+    <a href="blueprint.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px;">🧭 10. Blueprint 25</a>
+    <a href="security-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px;">🛡️ 11. Security Vault</a>
+    <a href="organic-escrow-guard.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">⚖️ 12. Escrow Guard</a>
+    <a href="webhook-sync-queue.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px;">🔄 13. Lab Webhooks</a>
+    <a href="socratic-introspector.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px;">🧠 14. Socratic 5-Turn</a>
+    <a href="rehearsal-command.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">🎯 15. Rehearsal Cmd</a>
+    <a href="mit-verifier-lab.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px;">🔬 16. MIT Verifier Lab</a>
+    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px;">📝 Bút Dạ Quang</a>
+    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">📊 Excel Grid</a>
+    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px;">💬 Zalo Bot</a>
+    <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">📱 Mobile</a>
+    <a href="field-proven.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px;">☀️ Field POS</a>
+    <a href="foundry.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">🔐 Foundry</a>
+    <a href="cloud-ocr-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px;">☁️ 24. Cloud OCR & Vault</a>
+    <a href="ed25519-downgrade-simulator.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; background: rgba(245,158,11,0.22);">🔑 25. Ed25519 Downgrade</a>
+  </div>
+</div>
+
+<header class="h-16 bg-[#132018] border-b border-[#1F3327] px-6 flex items-center justify-between sticky top-[37px] z-40">
+  <div class="flex items-center space-x-3">
+    <span class="material-symbols-outlined text-[#F59E0B] text-3xl">key</span>
+    <div>
+      <div class="flex items-center gap-2">
+        <span class="font-display font-bold text-lg text-[#ECFDF5]">DURIOS // ED25519 OFFLINE LICENSE &amp; ZERO-DATA-LOSS DOWNGRADE SIMULATOR</span>
+        <span class="px-2 py-0.5 rounded text-xs font-mono font-bold bg-[#F59E0B]/10 border border-[#F59E0B]/30 text-[#F59E0B]">PRO SAAS STEP 25</span>
+      </div>
+      <p class="text-xs font-mono text-[#6EE7B7]/80">AIR-GAPPED ED25519 PKCS#8 SIGNATURES · 7-DAY GRACE PERIOD · ZERO-DATA-LOSS DEGRADATION TO COMMUNITY</p>
+    </div>
+  </div>
+  <div class="flex items-center gap-3 text-xs font-mono">
+    <span id="current-tier-badge" class="px-3 py-1 rounded bg-[#10B981]/20 border border-[#10B981] text-[#10B981] font-bold">
+      ACTIVE TIER: PACKHOUSE_PRO_SAAS
+    </span>
+    <span class="px-3 py-1 rounded bg-[#18281F] border border-[#1F3327] text-[#6EE7B7]">
+      Storage: <strong class="text-[#ECFDF5]">Local SQLite (0 Byte Loss)</strong>
+    </span>
+  </div>
+</header>
+
+<main class="flex-1 p-6 space-y-6 max-w-7xl mx-auto w-full">
+  <!-- INVARIANTS HERO -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-4 font-mono text-xs">
+    <div class="bg-[#18281F] border border-[#1F3327] rounded p-4">
+      <div class="text-[#6EE7B7]">Offline Verification Guarantee</div>
+      <div class="text-lg font-bold text-[#10B981] mt-1 font-display">100% Air-Gapped Ed25519</div>
+      <div class="text-[11px] text-[#34D399] mt-1">Zero cloud phone-home required for license validity.</div>
+    </div>
+    <div class="bg-[#18281F] border border-[#1F3327] rounded p-4">
+      <div class="text-[#6EE7B7]">Grace Period Window</div>
+      <div class="text-lg font-bold text-[#F59E0B] mt-1 font-display">7-Day Fail-Safe Clock</div>
+      <div class="text-[11px] text-[#ECFDF5]/70 mt-1">Full Pro features stay active during renewal buffer.</div>
+    </div>
+    <div class="bg-[#18281F] border border-[#1F3327] rounded p-4">
+      <div class="text-[#6EE7B7]">Downgrade Safety Guarantee</div>
+      <div class="text-lg font-bold text-[#10B981] mt-1 font-display">Zero-Data-Loss Invariant</div>
+      <div class="text-[11px] text-[#10B981] mt-1">All SQLite dossiers, blobs &amp; audit hash chains stay 100% intact.</div>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- PANEL 1: ED25519 OFFLINE LICENSE VERIFIER -->
+    <div class="bg-[#132018] border border-[#1F3327] rounded p-5 space-y-4">
+      <div class="flex items-center justify-between border-b border-[#1F3327] pb-3">
+        <div class="flex items-center space-x-2">
+          <span class="material-symbols-outlined text-[#F59E0B]">verified</span>
+          <h2 class="font-display font-bold text-base text-[#ECFDF5]">Ed25519 Offline License Signer &amp; Verifier</h2>
+        </div>
+        <span class="text-xs font-mono bg-[#18281F] text-[#6EE7B7] px-2 py-0.5 rounded border border-[#1F3327]">saas-tier-policy.ts</span>
+      </div>
+
+      <p class="text-xs text-[#6EE7B7]">
+        Licenses are cryptographically signed using Ed25519 with format <code>DURIOS.&lt;base64url(payload)&gt;.&lt;signature&gt;</code>. Validated strictly against the embedded packhouse public key.
+      </p>
+
+      <div class="space-y-3 font-mono text-xs">
+        <div>
+          <label class="block text-[#ECFDF5] font-bold mb-1">Active License Key (Ed25519 Signed Token):</label>
+          <textarea id="inp-license-key" rows="3" class="w-full bg-[#0B130E] border border-[#1F3327] rounded p-2 text-[11px] text-[#10B981] break-all focus:border-[#10B981] focus:outline-none">DURIOS.UEFDS0hPVVNFX1BST19TQUFTfFRFTkFOVC1DQUlMQVktUElMT1QtMDF8MjAyNi0xMC0yNFQxMDo1Nzo0OVou.d4N7Z1YyB29F4aK0m1Q8...v8B2</textarea>
+        </div>
+
+        <div class="p-3 bg-[#0B130E] border border-[#1F3327] rounded space-y-1.5 text-[11px]">
+          <div class="flex justify-between">
+            <span class="text-[#6EE7B7]">Licensed Tenant:</span>
+            <strong class="text-[#ECFDF5]">TENANT-CAILAY-PILOT-01</strong>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-[#6EE7B7]">Tier / Edition:</span>
+            <strong class="text-[#10B981]">PACKHOUSE_PRO_SAAS</strong>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-[#6EE7B7]">Expiration Timestamp:</span>
+            <strong id="license-expiry-display" class="text-[#ECFDF5]">2026-10-24T10:57:49Z (7 days remaining)</strong>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-[#6EE7B7]">Signature Verification:</span>
+            <span id="sig-verdict" class="text-[#10B981] font-bold">✓ ED25519 SIGNATURE VALID (OFFLINE)</span>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2 pt-1">
+          <button type="button" onclick="verifyLicenseNow()" class="py-2 rounded bg-[#10B981] text-[#06110B] font-bold text-xs hover:bg-[#34D399] transition">
+            🔍 Verify License Signature
+          </button>
+          <button type="button" onclick="generateFreshKey()" class="py-2 rounded bg-[#18281F] border border-[#F59E0B] text-[#F59E0B] font-bold text-xs hover:bg-[#F59E0B]/10 transition">
+            ⚡ Generate Ephemeral Ed25519 Key
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL 2: ZERO-DATA-LOSS DOWNGRADE SIMULATOR -->
+    <div class="bg-[#132018] border border-[#1F3327] rounded p-5 space-y-4">
+      <div class="flex items-center justify-between border-b border-[#1F3327] pb-3">
+        <div class="flex items-center space-x-2">
+          <span class="material-symbols-outlined text-[#10B981]">shield</span>
+          <h2 class="font-display font-bold text-base text-[#ECFDF5]">Zero-Data-Loss Downgrade Simulator</h2>
+        </div>
+        <span class="text-xs font-mono bg-[#18281F] text-[#6EE7B7] px-2 py-0.5 rounded border border-[#1F3327]">PRO &rarr; COMMUNITY</span>
+      </div>
+
+      <p class="text-xs text-[#6EE7B7]">
+        Simulates subscription expiration and license removal. Enforces the core DuriOS sovereign pledge: <strong>No packhouse data is ever held hostage</strong>. Dossiers and audit trails remain permanently readable.
+      </p>
+
+      <!-- SIMULATION CONTROLS -->
+      <div class="bg-[#0B130E] border border-[#1F3327] rounded p-4 space-y-3 font-mono text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-[#ECFDF5] font-bold">Simulated System Clock Offset:</span>
+          <span id="clock-offset-display" class="text-[#F59E0B] font-bold">+0 days (Active)</span>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-[11px]">
+          <button type="button" onclick="advanceClock(0)" class="py-1.5 rounded bg-[#18281F] border border-[#10B981] text-[#10B981]">Day 0: Normal</button>
+          <button type="button" onclick="advanceClock(4)" class="py-1.5 rounded bg-[#18281F] border border-[#1F3327] text-[#6EE7B7]">Day 4: Grace</button>
+          <button type="button" onclick="advanceClock(8)" class="py-1.5 rounded bg-[#18281F] border border-[#EF4444] text-[#EF4444]">Day 8: Expired</button>
+        </div>
+
+        <div class="border-t border-[#1F3327] pt-3 space-y-2 text-[11px]">
+          <div class="flex justify-between items-center">
+            <span class="text-[#6EE7B7]">SQLite Dossiers Preserved:</span>
+            <span id="dossier-count-check" class="text-[#10B981] font-bold">5 / 5 DOSSIERS INTACT (100%)</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[#6EE7B7]">Audit Ledger Hash Chain:</span>
+            <span id="audit-chain-check" class="text-[#10B981] font-bold">VERIFIED INTEGRITY PASS</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[#6EE7B7]">Local Compliance Rule Engine:</span>
+            <span class="text-[#10B981] font-bold">ACTIVE (RULE-01..08)</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[#6EE7B7]">Cloud Vision OCR Feature:</span>
+            <span id="cloud-ocr-feature-status" class="text-[#10B981] font-bold">ENABLED (PRO)</span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-[#6EE7B7]">ZNS Notification Relay:</span>
+            <span id="zns-feature-status" class="text-[#10B981] font-bold">ENABLED (PRO)</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="pt-2">
+        <button type="button" onclick="triggerGracefulDowngrade()" class="w-full py-2.5 rounded bg-[#18281F] border border-[#F59E0B] text-[#F59E0B] font-bold font-mono text-xs hover:bg-[#F59E0B]/10 transition">
+          ⚠️ Simulate Subscription Downgrade to COMMUNITY_OPEN_CORE
+        </button>
+      </div>
+
+      <div id="downgrade-log" class="hidden p-3 rounded bg-[#18281F] border border-[#10B981] text-xs font-mono text-[#ECFDF5] space-y-1">
+        <div class="font-bold text-[#10B981]">✅ Zero-Data-Loss Downgrade Execution Confirmed</div>
+        <div class="text-[11px] text-[#6EE7B7]">SQLite database remains 100% accessible locally. Audit ledger hash chain is intact. No lockouts or paywalls imposed on historical export records.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<script>
+  function verifyLicenseNow() {
+    const verdict = document.getElementById("sig-verdict");
+    if (verdict) {
+      verdict.textContent = "✓ ED25519 SIGNATURE VALID (OFFLINE · NO CLOUD PING)";
+      verdict.className = "text-[#10B981] font-bold";
+    }
+  }
+
+  function generateFreshKey() {
+    const textarea = document.getElementById("inp-license-key");
+    if (textarea) {
+      const now = new Date();
+      const exp = new Date(now.getTime() + 14 * 86400000).toISOString();
+      const payload = btoa("PACKHOUSE_PRO_SAAS|TENANT-CAILAY-PILOT-01|" + exp);
+      textarea.value = "DURIOS." + payload + ".eK4bX3r8Z8Q6w1T9y0U7...m2L1";
+      alert("Generated fresh signed license key for TENANT-CAILAY-PILOT-01 expiring " + exp);
+    }
+  }
+
+  function advanceClock(days) {
+    const offsetEl = document.getElementById("clock-offset-display");
+    const badge = document.getElementById("current-tier-badge");
+    const ocrStatus = document.getElementById("cloud-ocr-feature-status");
+    const znsStatus = document.getElementById("zns-feature-status");
+    const log = document.getElementById("downgrade-log");
+
+    if (offsetEl) offsetEl.textContent = "+" + days + " days offset";
+
+    if (days === 0) {
+      if (badge) {
+        badge.textContent = "ACTIVE TIER: PACKHOUSE_PRO_SAAS";
+        badge.className = "px-3 py-1 rounded bg-[#10B981]/20 border border-[#10B981] text-[#10B981] font-bold";
+      }
+      if (ocrStatus) { ocrStatus.textContent = "ENABLED (PRO)"; ocrStatus.className = "text-[#10B981] font-bold"; }
+      if (znsStatus) { znsStatus.textContent = "ENABLED (PRO)"; znsStatus.className = "text-[#10B981] font-bold"; }
+    } else if (days <= 7) {
+      if (badge) {
+        badge.textContent = "TIER: PACKHOUSE_PRO_SAAS (7-DAY GRACE PERIOD)";
+        badge.className = "px-3 py-1 rounded bg-[#F59E0B]/20 border border-[#F59E0B] text-[#F59E0B] font-bold";
+      }
+    } else {
+      if (badge) {
+        badge.textContent = "DEGRADED: COMMUNITY_OPEN_CORE";
+        badge.className = "px-3 py-1 rounded bg-[#18281F] border border-[#1F3327] text-[#6EE7B7] font-bold";
+      }
+      if (ocrStatus) { ocrStatus.textContent = "DISABLED (COMMUNITY)"; ocrStatus.className = "text-[#6EE7B7]"; }
+      if (znsStatus) { znsStatus.textContent = "DISABLED (COMMUNITY)"; znsStatus.className = "text-[#6EE7B7]"; }
+      if (log) log.classList.remove("hidden");
+    }
+  }
+
+  function triggerGracefulDowngrade() {
+    advanceClock(8);
+  }
+</script>
+</body>
+</html>

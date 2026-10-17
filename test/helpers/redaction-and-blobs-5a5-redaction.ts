@@ -3,14 +3,10 @@ import { calculateSha256 } from "../../src/ingestion/document-hasher.js";
 import { routeHttpRequest } from "../../src/server/http-router.js";
 import { ContainerDossierWorkspace } from "../../src/workspace/container-dossier-workspace.js";
 import {
-  createPdfBytes,
-  seedAndMakeActor,
-  type DossierDetailResponse,
-  type Redaction5A5Context,
+  createPdfBytes, seedAndMakeActor, type DossierDetailResponse, type Redaction5A5Context,
 } from "./redaction-and-blobs-5a5-fixtures.js";
 import {
-  assertSharedGranteeRedaction,
-  verifyMultiGrantRevocationAndRawSafety,
+  assertSharedGranteeRedaction, verifyMultiGrantRevocationAndRawSafety,
 } from "./redaction-and-blobs-5a5-redaction-assertions.js";
 
 export async function runOwnerVsSharedRedactionScenario(ctx: Redaction5A5Context): Promise<void> {
@@ -34,18 +30,12 @@ export async function runOwnerVsSharedRedactionScenario(ctx: Redaction5A5Context
   const { document } = workspace.uploadDocument(
     dossier.id, pdfBytes, "commercial_invoice_packing.pdf", "PACKING_LIST", ownerAdmin.actor,
     {
-      container_number: { raw: "MSKU1234565" },
-      seal_number: { raw: "SEAL-5A5-01" },
-      net_weight_kg: { raw: "18500" },
-      box_count: { raw: "925" },
-      invoice_value: { raw: "48000 USD" },
-      unit_price: { raw: "2.60 USD/kg" },
-      buyer_name: { raw: "Synthetic Fruit Import Ltd" },
-      buyer_contact: { raw: "buyer@synthetic-example.invalid" },
-      commercial_contract_no: { raw: "SYNTH-CONTRACT-2026-88" },
-      payment_terms: { raw: "L/C 30 Days" },
-      exporter_margin: { raw: "14.5%" },
-      customs_broker_fee: { raw: "350 USD" },
+      container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-5A5-01" },
+      net_weight_kg: { raw: "18500" }, box_count: { raw: "925" },
+      invoice_value: { raw: "48000 USD" }, unit_price: { raw: "2.60 USD/kg" },
+      buyer_name: { raw: "Synthetic Fruit Import Ltd" }, buyer_contact: { raw: "buyer@synthetic-example.invalid" },
+      commercial_contract_no: { raw: "SYNTH-CONTRACT-2026-88" }, payment_terms: { raw: "L/C 30 Days" },
+      exporter_margin: { raw: "14.5%" }, customs_broker_fee: { raw: "350 USD" },
     }
   );
 
@@ -53,8 +43,7 @@ export async function runOwnerVsSharedRedactionScenario(ctx: Redaction5A5Context
   workspace.verifyField(
     dossier.id, document.id,
     {
-      fieldId: containerField.id,
-      confirmedValue: "MSKU1234565",
+      fieldId: containerField.id, confirmedValue: "MSKU1234565",
       clerkNote: "Internal packhouse margin note: keep confidential",
     },
     ownerAdmin.actor
@@ -84,9 +73,7 @@ export async function runOwnerVsSharedRedactionScenario(ctx: Redaction5A5Context
   const ownerDetailJson = (await ownerDetailRes.json()) as DossierDetailResponse;
   expect(ownerDetailJson.data.declaredNetWeightKg).toBe(18500);
   expect(ownerDetailJson.data.declaredBoxCount).toBe(925);
-  expect(ownerDetailJson.data.documents[0]?.storagePath).toBe(
-    `storage/blobs/${calculateSha256(pdfBytes)}.bin`
-  );
+  expect(ownerDetailJson.data.documents[0]?.storagePath).toBe(`storage/blobs/${calculateSha256(pdfBytes)}.bin`);
   const ownerFields = ownerDetailJson.data.documents[0]!.extractedFields;
   expect(ownerFields.some((f) => f.fieldKey === "invoice_value")).toBe(true);
   expect(ownerFields.some((f) => f.fieldKey === "unit_price")).toBe(true);

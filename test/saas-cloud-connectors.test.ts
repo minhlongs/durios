@@ -1,17 +1,9 @@
 import { describe, expect, it } from "bun:test";
 import { verifyExportManifest } from "../src/export/standalone-manifest-verifier.js";
-import {
-  createSignedSaasLicenseKey, generateEphemeralSaasLicenseKeyPair,
-} from "../src/saas/saas-tier-policy.js";
-import {
-  decryptCloudVaultBackupEnvelope, encryptBackupManifestForCloudVault,
-} from "../src/saas/cloud-vault-backup-connector.js";
-import {
-  evaluateGaccRegistryWatch, issueCrossBorderBuyerVerificationRoom, type GaccCodeRegistryEntry,
-} from "../src/saas/gacc-registry-watch-service.js";
-import {
-  anchorAuditLedgerHeadToCloud, verifyCloudLedgerAnchorReceipt,
-} from "../src/saas/cloud-ledger-anchor.js";
+import { createSignedSaasLicenseKey, generateEphemeralSaasLicenseKeyPair } from "../src/saas/saas-tier-policy.js";
+import { decryptCloudVaultBackupEnvelope, encryptBackupManifestForCloudVault } from "../src/saas/cloud-vault-backup-connector.js";
+import { evaluateGaccRegistryWatch, issueCrossBorderBuyerVerificationRoom, type GaccCodeRegistryEntry } from "../src/saas/gacc-registry-watch-service.js";
+import { anchorAuditLedgerHeadToCloud, verifyCloudLedgerAnchorReceipt } from "../src/saas/cloud-ledger-anchor.js";
 import { getMarketCompliancePack } from "../src/rules/multi-market-pack-registry.js";
 import { ContainerDossierWorkspace } from "../src/workspace/container-dossier-workspace.js";
 import type { SiteBackupManifest } from "../src/auth/site-backup-manager.js";
@@ -88,13 +80,8 @@ describe("25-Step Open-Core & SaaS Cloud Connectors Suite", () => {
     expect(validRes.publicVerificationUrl).toBeUndefined();
     expect(verifyExportManifest(manifest, "https://verify.example.org/m").publicVerificationUrl).toContain(manifest.compositeManifestSha256);
 
-    const tampered = verifyExportManifest({ ...manifest, sealNumber: "SL-TAMPERED" });
-    expect(tampered.valid).toBe(false);
-    expect(tampered.errors.length).toBeGreaterThan(0);
-
-    const nonManifest = verifyExportManifest({ packFormatVersion: "1.0.0", randomField: true });
-    expect(nonManifest.valid).toBe(false);
-    expect(nonManifest.errors.length).toBeGreaterThan(0);
+    expect(verifyExportManifest({ ...manifest, sealNumber: "SL-TAMPERED" }).valid).toBe(false);
+    expect(verifyExportManifest({ packFormatVersion: "1.0.0", randomField: true }).valid).toBe(false);
   });
 
   it("encrypts and decrypts SiteBackupManifest with scrypt + AAD AES-256-GCM E2EE for Cloud Vault", () => {

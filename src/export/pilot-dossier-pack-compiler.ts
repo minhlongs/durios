@@ -63,7 +63,11 @@ function finalizeReport(
   const core: Omit<GoLiveReadinessReport, "reportSha256"> = {
     reportVersion: "1.0.0", reportId: `GOLIVE-${siteCode}-${compiledAt.slice(0, 10)}`,
     siteCode, compiledAt, compiledByActorId: actorId, compiledByActorRole: actorRole,
-    overallVerdict: gateReport.goForLiveCustomerData ? "GO_FOR_LIVE_CUSTOMER_DATA" : "HOLD_BLOCKERS_REMAIN",
+    overallVerdict: !gateReport.goForLiveCustomerData
+      ? "HOLD_BLOCKERS_REMAIN"
+      : options.rehearsalMode
+        ? "READY_FOR_PILOT_GO_LIVE"
+        : "GO_FOR_LIVE_CUSTOMER_DATA",
     goForLiveCustomerData: gateReport.goForLiveCustomerData,
     passedGateCount: gateReport.passedCount, totalGateCount: gateReport.totalGates,
     gates: gateReport.gates, fieldAuditorChecklist: buildChecklistFromGates(gateReport),

@@ -44,8 +44,8 @@ DuriOS is the open-core operating system for verified durian export trade under 
 - [x] `rehearsal-command.html` — Cai Lậy Stage-Zero Pilot Rehearsal & Blind-Fault Injection Command Center (Screen 22: `seedGate05PilotRehearsal` & `compilePilotGoLiveDossierPack`)
 - [x] `mit-verifier-lab.html` — Standalone MIT Cryptographic Manifest Verifier & ISO 6346 Check-Digit Lab (Screen 23: `verifyStandaloneExportManifest` & `validateIso6346Container`)
 
-## Creative Freedom & Next Baton Backlog
-- [ ] `cloud-ocr-vault.html` — Cloud Vision OCR Draft Extractor & E2EE AES-256-GCM Backup Vault Console (`CloudOcrExtractorAdapter` & `CloudVaultBackupConnector`)
+- [x] `cloud-ocr-vault.html` — Cloud Vision OCR Draft Extractor & E2EE AES-256-GCM Backup Vault Console (Screen 24: `CloudOcrExtractorAdapter` & `CloudVaultBackupConnector`)
+- [x] `ed25519-downgrade-simulator.html` — Ed25519 Offline License Verifier, 7-Day Grace Period & Zero-Data-Loss Downgrade Simulator (Screen 25: `resolveSaasSubscriptionStatus` & `downgradeToCommunity`)
 
 ## Live Server Routing
-All 23 pages, `durios-live-bridge.js`, and PNG previews are served directly by the Bun HTTP Server at `GET /stitch/<page>.html`.
+All 25 pages, `durios-live-bridge.js`, and PNG previews are served directly by the Bun HTTP Server at `GET /stitch/<page>.html`.

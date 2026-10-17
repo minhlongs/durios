@@ -10,42 +10,23 @@ export function runValidationInvalidationOnFieldModifyScenario(
 ): void {
   const dossier = workspace.createDossier(
     {
-      dossierCode: "DOS-INVAL-01",
-      containerNumber: "MSKU1234565",
-      sealNumber: "SEAL-INV-001",
-      borderGate: "Huu Nghi",
-      targetMarket: "CN",
-      targetTemperatureC: 13.0,
-      declaredNetWeightKg: 18000,
-      declaredBoxCount: 900,
+      dossierCode: "DOS-INVAL-01", containerNumber: "MSKU1234565", sealNumber: "SEAL-INV-001",
+      borderGate: "Huu Nghi", targetMarket: "CN", targetTemperatureC: 13.0,
+      declaredNetWeightKg: 18000, declaredBoxCount: 900,
     },
     CLERK
   );
 
   const { document: doc1 } = workspace.uploadDocument(
-    dossier.id,
-    makePdf("packing-list-inval"),
-    "PackingList.pdf",
-    "PACKING_LIST",
-    CLERK,
+    dossier.id, makePdf("packing-list-inval"), "PackingList.pdf", "PACKING_LIST", CLERK,
     { container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-INV-001" } }
   );
-
   const { document: phytoDoc } = workspace.uploadDocument(
-    dossier.id,
-    makePdf("phyto-cert-inval"),
-    "Phyto.pdf",
-    "PHYTOSANITARY_CERTIFICATE",
-    CLERK,
+    dossier.id, makePdf("phyto-cert-inval"), "Phyto.pdf", "PHYTOSANITARY_CERTIFICATE", CLERK,
     { container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-INV-001" } }
   );
-
   const { document: doc3 } = workspace.uploadDocument(
-    dossier.id,
-    makePdf("lab-report-inval"),
-    "LabReport.pdf",
-    "LAB_TEST_REPORT",
-    CLERK,
+    dossier.id, makePdf("lab-report-inval"), "LabReport.pdf", "LAB_TEST_REPORT", CLERK,
     { cadmium_mg_kg: { raw: "0.020" } }
   );
 
@@ -55,33 +36,24 @@ export function runValidationInvalidationOnFieldModifyScenario(
     }
   }
 
-  const val1 = workspace.runValidation(dossier.id, CLERK);
-  expect(val1.status).toBe("PASSED");
-  const d1 = workspace.getDossier(dossier.id, CLERK);
-  expect(d1?.lifecycleState).toBe("READY_FOR_REVIEW");
+  expect(workspace.runValidation(dossier.id, CLERK).status).toBe("PASSED");
+  expect(workspace.getDossier(dossier.id, CLERK)?.lifecycleState).toBe("READY_FOR_REVIEW");
 
   const phytoContainerField = phytoDoc.extractedFields.find((f) => f.fieldKey === "container_number");
   expect(phytoContainerField).toBeDefined();
 
   const d2 = workspace.verifyField(
-    dossier.id,
-    phytoDoc.id,
-    { fieldId: phytoContainerField!.id, confirmedValue: "WHLU9999999" },
-    CLERK
+    dossier.id, phytoDoc.id, { fieldId: phytoContainerField!.id, confirmedValue: "WHLU9999999" }, CLERK
   );
 
   expect(d2.latestValidationResult).toBeUndefined();
   expect(d2.lifecycleState).toBe("HUMAN_VERIFICATION_REQUIRED");
-
-  expect(() => {
-    workspace.approveForExport(dossier.id, MANAGER);
-  }).toThrow();
+  expect(() => workspace.approveForExport(dossier.id, MANAGER)).toThrow();
 
   const val2 = workspace.runValidation(dossier.id, CLERK);
   expect(val2.status).toBe("BLOCKED");
   expect(val2.criticalBlockers).toBeGreaterThan(0);
-  const crossDocFinding = val2.findings.find((f) => f.ruleId === "RUL-CROSS-CONT");
-  expect(crossDocFinding).toBeDefined();
+  expect(val2.findings.find((f) => f.ruleId === "RUL-CROSS-CONT")).toBeDefined();
 }
 
 export function runSealedDossierProhibitsMutationsScenario(
@@ -89,40 +61,23 @@ export function runSealedDossierProhibitsMutationsScenario(
 ): void {
   const dossier = workspace.createDossier(
     {
-      dossierCode: "DOS-SEAL-01",
-      containerNumber: "MSKU1234565",
-      sealNumber: "SEAL-SEAL-001",
-      borderGate: "Huu Nghi",
-      targetMarket: "CN",
-      targetTemperatureC: 13.0,
-      declaredNetWeightKg: 18000,
-      declaredBoxCount: 900,
+      dossierCode: "DOS-SEAL-01", containerNumber: "MSKU1234565", sealNumber: "SEAL-SEAL-001",
+      borderGate: "Huu Nghi", targetMarket: "CN", targetTemperatureC: 13.0,
+      declaredNetWeightKg: 18000, declaredBoxCount: 900,
     },
     CLERK
   );
 
   const { document: doc1 } = workspace.uploadDocument(
-    dossier.id,
-    makePdf("pl-seal"),
-    "doc1.pdf",
-    "PACKING_LIST",
-    CLERK,
+    dossier.id, makePdf("pl-seal"), "doc1.pdf", "PACKING_LIST", CLERK,
     { container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-SEAL-001" } }
   );
   const { document: doc2 } = workspace.uploadDocument(
-    dossier.id,
-    makePdf("phyto-seal"),
-    "doc2.pdf",
-    "PHYTOSANITARY_CERTIFICATE",
-    CLERK,
+    dossier.id, makePdf("phyto-seal"), "doc2.pdf", "PHYTOSANITARY_CERTIFICATE", CLERK,
     { container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-SEAL-001" } }
   );
   const { document: doc3 } = workspace.uploadDocument(
-    dossier.id,
-    makePdf("lab-seal"),
-    "doc3.pdf",
-    "LAB_TEST_REPORT",
-    CLERK,
+    dossier.id, makePdf("lab-seal"), "doc3.pdf", "LAB_TEST_REPORT", CLERK,
     { cadmium_mg_kg: { raw: "0.015" } }
   );
 
@@ -142,11 +97,6 @@ export function runSealedDossierProhibitsMutationsScenario(
   expect(sealed?.isImmutable).toBe(true);
   expect(sealed?.lifecycleState).toBe("EXPORTED");
 
-  expect(() => {
-    workspace.uploadDocument(dossier.id, makePdf("forbidden"), "forbidden.pdf", "PACKING_LIST", CLERK);
-  }).toThrow(/Cannot upload to sealed dossier/);
-
-  expect(() => {
-    workspace.verifyField(dossier.id, "any-id", { fieldId: "any-fld", confirmedValue: "x" }, CLERK);
-  }).toThrow(/Dossier is sealed and immutable/);
+  expect(() => workspace.uploadDocument(dossier.id, makePdf("forbidden"), "forbidden.pdf", "PACKING_LIST", CLERK)).toThrow(/Cannot upload to sealed dossier/);
+  expect(() => workspace.verifyField(dossier.id, "any-id", { fieldId: "any-fld", confirmedValue: "x" }, CLERK)).toThrow(/Dossier is sealed and immutable/);
 }

@@ -18,6 +18,7 @@ import {
   seedRehearsalDossiersForActor,
   type RehearsalDossierSpec,
 } from "./ecosystem-rehearsal-seeder.js";
+import { setupFullGatesRehearsalOptions } from "./ecosystem-rehearsal-drill.js";
 import { assertLoopbackHostname } from "./server.js";
 import { jsonResponse, mapDomainErrorToResponse } from "./server-types.js";
 
@@ -28,6 +29,7 @@ export function handleBootstrapPilotRehearsal(workspace: ContainerDossierWorkspa
     const reqUrl = new URL(req.url);
     assertLoopbackHostname(reqUrl.hostname);
     const requestedRole = reqUrl.searchParams.get("role")?.toUpperCase() === "MANAGER" ? "MANAGER" : "CLERK";
+    const isFullGates = reqUrl.searchParams.get("fullGates") === "true";
     const tenantId = "TENANT-CAILAY-PILOT-01";
     const expiresAt = new Date(Date.now() + 14 * 86400000).toISOString();
 
@@ -48,13 +50,20 @@ export function handleBootstrapPilotRehearsal(workspace: ContainerDossierWorkspa
     const activePilotToken = requestedRole === "MANAGER" ? managerToken.rawToken : clerkToken.rawToken;
     const allDossiers = workspace.listDossiers(activeSession.actor);
     const pilotKpi = computeGate05KpiFromDossiers(allDossiers);
-    const pilotGates = evaluateWorkspaceLaunchGates(workspace, activeSession.actor);
-    const goLivePack = compilePilotGoLiveDossierPack(workspace, managerSession.actor);
+    const gateOpts = isFullGates ? setupFullGatesRehearsalOptions(workspace) : {};
+    const pilotGates = evaluateWorkspaceLaunchGates(workspace, activeSession.actor, gateOpts);
+    const goLivePack = compilePilotGoLiveDossierPack(workspace, managerSession.actor, gateOpts);
     const goLivePackVerified = verifyPilotGoLiveDossierPackIntegrity(goLivePack);
 
     const payload = {
       success: true,
-      data: { tenantId, clerkUsername: "clerk.cailay", managerUsername: "manager.cailay", clerkPilotToken: clerkToken.rawToken, managerPilotToken: managerToken.rawToken, activePilotToken, actor: activeSession.actor, newlyCreatedCount, dossiers, pilotKpi, pilotGates, goLivePack, goLivePackVerified },
+      data: {
+        tenantId, clerkUsername: "clerk.cailay", managerUsername: "manager.cailay",
+        clerkPilotToken: clerkToken.rawToken, managerPilotToken: managerToken.rawToken,
+        activePilotToken, actor: activeSession.actor, newlyCreatedCount, dossiers,
+        pilotKpi, pilotGates, passedGateCount: pilotGates.passedCount, totalGateCount: pilotGates.totalGates,
+        goLivePack, goLivePackVerified,
+      },
     };
     return new Response(JSON.stringify(payload), {
       status: 200,
@@ -91,6 +100,25 @@ export function handleGetEcosystemTelemetry(workspace: ContainerDossierWorkspace
     const deepSocratic = evaluateOpenCoreDeepBrainstorm();
     const goLivePack = compilePilotGoLiveDossierPack(workspace, actor);
 
+    const cloudOcrEconomics = {
+      feeVnd: 150_000,
+      cogsVnd: 8_000,
+      grossMarginPct: 94.67,
+      confidenceThreshold: 0.85,
+      hitlQuarantineThreshold: 0.85,
+      coldArchiveRetentionYears: 10,
+      coldArchiveStorage: "S3/R2",
+      restoreVerification: "SHA-256",
+    };
+    const ed25519DowngradeSimulator = {
+      algorithm: "Ed25519",
+      offlineVerification: true,
+      gracePeriodDays: 7,
+      downgradePath: "PRO/ENTERPRISE -> COMMUNITY",
+      zeroDataLoss: true,
+      sqliteAuditChainsIntact: true,
+    };
+
     return jsonResponse({
       success: true,
       data: {
@@ -99,6 +127,7 @@ export function handleGetEcosystemTelemetry(workspace: ContainerDossierWorkspace
         edgeSyncQueue: { pendingCount: pendingSyncItems.length, pendingItems: pendingSyncItems },
         pilotGates, pilotKpi, goLivePack, goLivePackVerified: verifyPilotGoLiveDossierPackIntegrity(goLivePack),
         editionManifest, blueprintAudit: deepSocratic.blueprintAudit, deepSocratic,
+        cloudOcrEconomics, ed25519DowngradeSimulator,
       },
     });
   } catch (err: unknown) {

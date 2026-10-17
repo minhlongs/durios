@@ -11,18 +11,14 @@ const TEST_DB_PATH = "./data/test_restart.db";
 const TEST_STORAGE_DIR = "./data/test_uploads";
 
 const CLERK: AuthenticatedActor = {
-  id: "ACT-CLERK-1",
-  name: "Nguyen Van A",
-  role: "CLERK",
-  tenantId: "TENANT-VN-001",
-  tenantType: "PACKHOUSE_EXPORTER",
-  persona: "PACKHOUSE_CLERK",
+  id: "ACT-CLERK-1", name: "Nguyen Van A", role: "CLERK",
+  tenantId: "TENANT-VN-001", tenantType: "PACKHOUSE_EXPORTER", persona: "PACKHOUSE_CLERK",
 };
 
 function cleanup(): void {
-  if (existsSync(TEST_DB_PATH)) rmSync(TEST_DB_PATH);
-  if (existsSync(`${TEST_DB_PATH}-wal`)) rmSync(`${TEST_DB_PATH}-wal`);
-  if (existsSync(`${TEST_DB_PATH}-shm`)) rmSync(`${TEST_DB_PATH}-shm`);
+  for (const suffix of ["", "-wal", "-shm"]) {
+    if (existsSync(`${TEST_DB_PATH}${suffix}`)) rmSync(`${TEST_DB_PATH}${suffix}`);
+  }
   if (existsSync(TEST_STORAGE_DIR)) rmSync(TEST_STORAGE_DIR, { recursive: true, force: true });
 }
 
@@ -31,7 +27,6 @@ describe("Phase A: Persistence and Restart", () => {
     cleanup();
     const fileStorage = new FileStorageService(TEST_STORAGE_DIR);
 
-    // Session 1: Create, upload, verify, validate
     let client = new SqliteClient({ dbPath: TEST_DB_PATH });
     let repo = new SqliteDossierRepository(client);
     let ledger = new SqliteAuditLedger(client);
@@ -39,14 +34,9 @@ describe("Phase A: Persistence and Restart", () => {
 
     const dossier = workspace.createDossier(
       {
-        dossierCode: "DOS-RESTART-001",
-        containerNumber: "MSKU1234565",
-        sealNumber: "VN-SEAL-8899",
-        targetMarket: "CN",
-        borderGate: "Huu Nghi",
-        targetTemperatureC: 14.5,
-        declaredNetWeightKg: 18000,
-        declaredBoxCount: 900,
+        dossierCode: "DOS-RESTART-001", containerNumber: "MSKU1234565", sealNumber: "VN-SEAL-8899",
+        targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 14.5,
+        declaredNetWeightKg: 18000, declaredBoxCount: 900,
       },
       CLERK
     );
@@ -58,11 +48,7 @@ describe("Phase A: Persistence and Restart", () => {
     expect(existsSync(fileStorage.resolveSafePath(storagePath))).toBe(true);
 
     const { document } = workspace.uploadDocument(
-      dossier.id,
-      samplePdfBytes,
-      "test_phytosanitary.pdf",
-      "PHYTOSANITARY_CERTIFICATE",
-      CLERK,
+      dossier.id, samplePdfBytes, "test_phytosanitary.pdf", "PHYTOSANITARY_CERTIFICATE", CLERK,
       {
         phytosanitary_cert_number: { raw: "VN-PHYTO-2026-99" },
         target_market: { raw: "CN" },
@@ -70,26 +56,13 @@ describe("Phase A: Persistence and Restart", () => {
       }
     );
 
-    // Verify fields with confirmedValue
     for (const f of document.extractedFields) {
-      workspace.verifyField(
-        dossier.id,
-        document.id,
-        {
-          fieldId: f.id,
-          confirmedValue: f.rawValue,
-        },
-        CLERK
-      );
+      workspace.verifyField(dossier.id, document.id, { fieldId: f.id, confirmedValue: f.rawValue }, CLERK);
     }
 
-    const valResult = workspace.runValidation(dossier.id, CLERK);
-    expect(valResult.status).toBe("BLOCKED"); // Missing remaining required docs
-
-    // Simulate application restart: close client and reopen
+    expect(workspace.runValidation(dossier.id, CLERK).status).toBe("BLOCKED");
     client.close();
 
-    // Session 2: Fresh client and repository connected to same SQLite DB
     client = new SqliteClient({ dbPath: TEST_DB_PATH });
     repo = new SqliteDossierRepository(client);
     ledger = new SqliteAuditLedger(client);
@@ -107,7 +80,6 @@ describe("Phase A: Persistence and Restart", () => {
     expect(reloadedDoc?.extractedFields.every((f) => f.verificationStatus === "HUMAN_VERIFIED")).toBe(true);
     expect(reloadedDossier?.latestValidationResult?.status).toBe("BLOCKED");
 
-    // Audit events survived and chain is valid
     const events = ledger.getEventsForDossier(dossier.id, CLERK.tenantId);
     expect(events.length).toBeGreaterThanOrEqual(4);
     expect(ledger.verifyIntegrity()).toBe(true);
@@ -119,15 +91,8 @@ describe("Phase A: Persistence and Restart", () => {
   it("enforces path traversal prevention in FileStorageService", () => {
     cleanup();
     const fileStorage = new FileStorageService(TEST_STORAGE_DIR);
-
-    expect(() => {
-      fileStorage.resolveSafePath("../../etc/passwd");
-    }).toThrow("Security violation: path traversal detected");
-
-    expect(() => {
-      fileStorage.resolveSafePath("/etc/hosts");
-    }).toThrow("Security violation: path traversal detected");
-
+    expect(() => fileStorage.resolveSafePath("../../etc/passwd")).toThrow("Security violation: path traversal detected");
+    expect(() => fileStorage.resolveSafePath("/etc/hosts")).toThrow("Security violation: path traversal detected");
     cleanup();
   });
 
@@ -140,8 +105,7 @@ describe("Phase A: Persistence and Restart", () => {
         client.db.run(
           `INSERT INTO container_dossiers (
             id, tenant_id, dossier_code, container_number, seal_number,
-            target_market, border_gate, target_temperature_c, lifecycle_state,
-            created_at, updated_at
+            target_market, border_gate, target_temperature_c, lifecycle_state, created_at, updated_at
           ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           ["DOS-ROLLBACK-1", "TENANT-1", "DOS-TX", "MSKU1234565", "SEAL-1", "CN", "Gate", 14, "DRAFT", "now", "now"]
         );
@@ -149,9 +113,7 @@ describe("Phase A: Persistence and Restart", () => {
       });
     }).toThrow("Simulated unexpected disk or validation error");
 
-    const row = client.db.query("SELECT * FROM container_dossiers WHERE id = 'DOS-ROLLBACK-1'").get();
-    expect(row).toBeNull();
-
+    expect(client.db.query("SELECT * FROM container_dossiers WHERE id = 'DOS-ROLLBACK-1'").get()).toBeNull();
     client.close();
     cleanup();
   });

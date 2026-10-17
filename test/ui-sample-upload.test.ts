@@ -4,12 +4,6 @@ import { join } from "node:path";
 import { createWorkspaceApp } from "../src/server/server.js";
 import { seedTestPilotActor } from "./helpers/auth-test-helper.js";
 
-/**
- * Regression test for the browser "upload sample document" buttons.
- * Previously all three buttons sent no file content, so the server hashed the same
- * fallback bytes and duplicate detection collapsed them into a single Packing List.
- * This replays the exact payloads defined in index.html (SAMPLE_DOCUMENTS).
- */
 const TEST_DB = "./data/test-ui-sample-upload.db";
 const TEST_UPLOADS = "./data/test-ui-sample-uploads";
 
@@ -49,9 +43,7 @@ describe("UI sample document upload flow", () => {
   }
 
   async function call<T = Record<string, unknown>>(
-    path: string,
-    role: "CLERK" | "MANAGER",
-    init: { method?: string; body?: unknown } = {}
+    path: string, role: "CLERK" | "MANAGER", init: { method?: string; body?: unknown } = {}
   ): Promise<{ success: boolean; data: T; error?: string }> {
     const res = await app!.handler(new Request(`http://127.0.0.1${path}`, {
       method: init.method ?? "GET",
@@ -91,8 +83,7 @@ describe("UI sample document upload flow", () => {
     let dossier = (await call<DossierView>(`/api/dossiers/${id}`, "CLERK")).data;
     const active = dossier.documents.filter((d) => !d.isSuperseded);
     expect(active).toHaveLength(3);
-    const fieldCount = active.reduce((n, d) => n + d.extractedFields.length, 0);
-    expect(fieldCount).toBe(10);
+    expect(active.reduce((n, d) => n + d.extractedFields.length, 0)).toBe(10);
 
     for (const doc of active) {
       for (const f of doc.extractedFields) {
@@ -119,13 +110,9 @@ describe("UI sample document upload flow", () => {
         });
       }
     }
-    const passed = await call<ValidationResultView>(`/api/dossiers/${id}/validate`, "CLERK", { method: "POST" });
-    expect(passed.data.status).toBe("PASSED");
-
-    const clerkApprove = await call(`/api/dossiers/${id}/approve`, "CLERK", { method: "POST" });
-    expect(clerkApprove.success).toBe(false);
-    const managerApprove = await call(`/api/dossiers/${id}/approve`, "MANAGER", { method: "POST" });
-    expect(managerApprove.success).toBe(true);
+    expect((await call<ValidationResultView>(`/api/dossiers/${id}/validate`, "CLERK", { method: "POST" })).data.status).toBe("PASSED");
+    expect((await call(`/api/dossiers/${id}/approve`, "CLERK", { method: "POST" })).success).toBe(false);
+    expect((await call(`/api/dossiers/${id}/approve`, "MANAGER", { method: "POST" })).success).toBe(true);
 
     const exported = await call<ExportManifestView>(`/api/dossiers/${id}/export`, "MANAGER", { method: "POST" });
     expect(exported.success).toBe(true);

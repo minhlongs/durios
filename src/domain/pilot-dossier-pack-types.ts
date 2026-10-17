@@ -27,7 +27,7 @@ export interface GoLiveReadinessReport {
   readonly compiledAt: string;
   readonly compiledByActorId: string;
   readonly compiledByActorRole: string;
-  readonly overallVerdict: "GO_FOR_LIVE_CUSTOMER_DATA" | "HOLD_BLOCKERS_REMAIN";
+  readonly overallVerdict: "READY_FOR_PILOT_GO_LIVE" | "GO_FOR_LIVE_CUSTOMER_DATA" | "HOLD_BLOCKERS_REMAIN";
   readonly goForLiveCustomerData: boolean;
   readonly passedGateCount: number;
   readonly totalGateCount: 5;
@@ -53,4 +53,5 @@ export interface CompilePilotGoLivePackOptions {
   readonly consentSignedFilePath?: string | undefined;
   readonly env?: Record<string, string | undefined> | undefined;
   readonly forcedTimestamp?: string | undefined;
+  readonly rehearsalMode?: boolean | undefined;
 }

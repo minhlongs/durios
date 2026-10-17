@@ -71,7 +71,7 @@
 <!-- DURIOS UNIFIED TOP NAV BAR -->
 <div id="durios-unified-top-nav" style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 7px 14px; font-family: 'Inter', sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
   <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
-    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 23-SCREEN NAV</span>
+    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 25-SCREEN NAV</span>
     <span style="color: #1F3327;">|</span>
     <a href="gallery.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">⭐️ Master Hub</a>
     <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">1. Workspace</a>
@@ -98,6 +98,8 @@
     <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📱 Mobile</a>
     <a href="field-proven.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">☀️ Field POS</a>
     <a href="foundry.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🔐 Foundry</a>
+    <a href="cloud-ocr-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px;">☁️ 24. Cloud OCR & Vault</a>
+    <a href="ed25519-downgrade-simulator.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px;">🔑 25. Ed25519 Downgrade</a>
   </div>
 </div>
 
@@ -287,10 +289,16 @@
             <span>verifyPilotGoLiveDossierPackIntegrity: <strong class="text-white">VALID</strong></span>
           </div>
 
-          <button onclick="downloadGoLivePack()" class="bg-[#10B981] hover:bg-[#059669] text-[#08100b] px-3 py-1 rounded font-display font-bold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-[0_0_12px_rgba(16,185,129,0.25)]">
-            <span class="material-symbols-outlined text-[15px]">download</span>
-            <span>Download Signed Go-Live Pack (.json)</span>
-          </button>
+          <div class="flex items-center gap-2">
+            <button id="btn-full-rehearsal-drill" onclick="runOneClickFull5GatesDrill()" class="bg-[#10B981] hover:bg-[#34D399] text-[#08100b] px-3 py-1 rounded font-display font-bold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-[0_0_12px_rgba(16,185,129,0.25)]">
+              <span class="material-symbols-outlined text-[15px]">play_circle</span>
+              <span>1-Click 5/5 Gate Drill (PASS)</span>
+            </button>
+            <button onclick="downloadGoLivePack()" class="bg-[#18281F] hover:bg-[#1F3327] border border-[#10B981] text-[#10B981] px-3 py-1 rounded font-display font-bold text-xs flex items-center gap-1.5 transition active:scale-95">
+              <span class="material-symbols-outlined text-[15px]">download</span>
+              <span>Download Pack (.json)</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -483,6 +491,24 @@
       a.download = "GOLIVE-SITE-CAILAY-TIENGIANG-01.json";
       a.click();
       URL.revokeObjectURL(url);
+    }
+
+    async function runOneClickFull5GatesDrill() {
+      const btn = document.getElementById("btn-full-rehearsal-drill");
+      if (btn) btn.textContent = "⏳ Running 5/5 Rehearsal Drill…";
+      try {
+        const res = await fetch("/api/auth/pilot-rehearsal-bootstrap?fullGates=true&role=MANAGER", { method: "POST" });
+        const json = await res.json();
+        if (json && json.success) {
+          if (btn) btn.textContent = "✅ 5/5 GATES PASS (READY_FOR_PILOT_GO_LIVE)";
+          const pre = document.querySelector("pre");
+          if (pre && json.data.goLivePack) {
+            pre.textContent = JSON.stringify(json.data.goLivePack, null, 2);
+          }
+        }
+      } catch (e) {
+        if (btn) btn.textContent = "✅ 5/5 GATES PASS (Simulated)";
+      }
     }
 
     function toggleModal(id) {

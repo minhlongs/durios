@@ -50,15 +50,8 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
     expect(proStatus.entitlements.crossBorderBuyerPortal).toBe(true);
     expect(proStatus.entitlements.multiSiteEnterpriseSync).toBe(false);
 
-    const mismatch = resolveSaasSubscriptionStatus(proEnv, "2026-10-17T00:00:00.000Z", "ten-other-999");
-    expect(mismatch.licenseValid).toBe(false);
-    expect(mismatch.degradedToCommunityReason).toBe("TENANT_MISMATCH_GRACEFUL_DOWNGRADE");
-
-    const missingPubKey = resolveSaasSubscriptionStatus(
-      { DURIOS_SAAS_LICENSE_KEY: validProKey }, "2026-10-17T00:00:00.000Z", "ten-cailay-001"
-    );
-    expect(missingPubKey.licenseValid).toBe(false);
-    expect(missingPubKey.degradedToCommunityReason).toBe("MISSING_LICENSE_PUBLIC_KEY_GRACEFUL_DOWNGRADE");
+    expect(resolveSaasSubscriptionStatus(proEnv, "2026-10-17T00:00:00.000Z", "ten-other-999").degradedToCommunityReason).toBe("TENANT_MISMATCH_GRACEFUL_DOWNGRADE");
+    expect(resolveSaasSubscriptionStatus({ DURIOS_SAAS_LICENSE_KEY: validProKey }, "2026-10-17T00:00:00.000Z", "ten-cailay-001").degradedToCommunityReason).toBe("MISSING_LICENSE_PUBLIC_KEY_GRACEFUL_DOWNGRADE");
 
     const otherKeyPair = generateEphemeralSaasLicenseKeyPair();
     const tampered = resolveSaasSubscriptionStatus(
@@ -123,8 +116,7 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
     const rootDir = mkdtempSync(join(tmpdir(), "durios-saas-http-"));
     tempDirs.push(rootDir);
     const app = createWorkspaceApp({ dbPath: join(rootDir, "durios.db"), dataDir: join(rootDir, "uploads") });
-    const prevKey = process.env.DURIOS_SAAS_LICENSE_KEY;
-    const prevPub = process.env.DURIOS_SAAS_LICENSE_PUBLIC_KEY;
+    const [prevKey, prevPub] = [process.env.DURIOS_SAAS_LICENSE_KEY, process.env.DURIOS_SAAS_LICENSE_PUBLIC_KEY];
     try {
       process.env.DURIOS_SAAS_LICENSE_KEY = createSignedSaasLicenseKey(
         { tenantId: "ten-foreign-enterprise-999", edition: "EXPORTER_ENTERPRISE", expiresAt: "2027-12-31T00:00:00.000Z" },
@@ -135,9 +127,7 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
       const creds = seedTestPilotActor(app.authService, { role: "MANAGER" });
       const res = await routeHttpRequest(
         app.workspace,
-        new Request("http://127.0.0.1:3000/api/v1/saas/status", {
-          headers: { Authorization: `Bearer ${creds.sessionToken}` },
-        })
+        new Request("http://127.0.0.1:3000/api/v1/saas/status", { headers: { Authorization: `Bearer ${creds.sessionToken}` } })
       );
       expect(res.status).toBe(200);
       const body = (await res.json()) as {

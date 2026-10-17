@@ -33,9 +33,7 @@ const CHAIN_HASH_KEYS = new Set([
   "previousHash", "eventHash", "compositeManifestSha256", "compositeSha256", "auditLedgerTailHash",
 ]);
 
-function isRecord(value: unknown): value is Record<string, unknown> {
-  return value !== null && typeof value === "object" && !Array.isArray(value);
-}
+const isRecord = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === "object" && !Array.isArray(v);
 
 export function createEquivalenceHarness(
   wsApi: ContainerDossierWorkspace,
@@ -85,30 +83,19 @@ export function createEquivalenceHarness(
   function normalizePairedValues(valApi: unknown, valV1: unknown, keyName = ""): [unknown, unknown] {
     if (Array.isArray(valApi) && Array.isArray(valV1)) {
       expect(valV1.length).toBe(valApi.length);
-      const normA: unknown[] = [];
-      const normB: unknown[] = [];
-      for (let i = 0; i < valApi.length; i++) {
-        const [a, b] = normalizePairedValues(valApi[i], valV1[i], keyName);
-        normA.push(a);
-        normB.push(b);
-      }
-      return [normA, normB];
+      const pairs = valApi.map((item, i) => normalizePairedValues(item, valV1[i], keyName));
+      return [pairs.map((p) => p[0]), pairs.map((p) => p[1])];
     }
     if (isRecord(valApi) && isRecord(valV1)) {
       expect(Object.keys(valV1).sort()).toEqual(Object.keys(valApi).sort());
       const outA: Record<string, unknown> = {};
       const outB: Record<string, unknown> = {};
-      for (const k of Object.keys(valApi)) {
-        const [a, b] = normalizePairedValues(valApi[k], valV1[k], k);
-        outA[k] = a;
-        outB[k] = b;
-      }
+      for (const k of Object.keys(valApi)) [outA[k], outB[k]] = normalizePairedValues(valApi[k], valV1[k], k);
       return [outA, outB];
     }
     if (typeof valApi === "string" && typeof valV1 === "string") {
       if (TIMESTAMP_KEYS.has(keyName)) {
-        const tApi = Date.parse(valApi);
-        const tV1 = Date.parse(valV1);
+        const [tApi, tV1] = [Date.parse(valApi), Date.parse(valV1)];
         expect(Number.isNaN(tApi) || Number.isNaN(tV1)).toBe(false);
         expect(Math.abs(tApi - tV1)).toBeLessThan(5000);
         return [`<TIMESTAMP:${keyName}>`, `<TIMESTAMP:${keyName}>`];
@@ -126,8 +113,7 @@ export function createEquivalenceHarness(
         registerIdPair(valApi, valV1);
         return [idMapApi.get(valApi), idMapV1.get(valV1)];
       }
-      let strApi = valApi;
-      let strV1 = valV1;
+      let [strApi, strV1] = [valApi, valV1];
       for (const [rawId, tok] of idMapApi.entries()) strApi = strApi.split(rawId).join(tok);
       for (const [rawId, tok] of idMapV1.entries()) strV1 = strV1.split(rawId).join(tok);
       return [strApi, strV1];
@@ -147,9 +133,7 @@ export function createEquivalenceHarness(
     expect(resV1.headers.get("content-type")).toBe(resApi.headers.get("content-type"));
     const bodyApi = (await resApi.json()) as T;
     const bodyV1 = (await resV1.json()) as T;
-    if (isRecord(bodyApi) && isRecord(bodyV1) && "errorCode" in bodyApi) {
-      expect(bodyV1.errorCode).toBe(bodyApi.errorCode);
-    }
+    if (isRecord(bodyApi) && isRecord(bodyV1) && "errorCode" in bodyApi) expect(bodyV1.errorCode).toBe(bodyApi.errorCode);
     const [normApi, normV1] = normalizePairedValues(bodyApi, bodyV1);
     expect(normV1).toEqual(normApi);
     return { bodyApi, bodyV1 };

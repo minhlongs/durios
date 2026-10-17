@@ -61,21 +61,18 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
 
     try {
       const creds = seedTestPilotActor(app.authService, { role: "MANAGER" });
-      const actor = app.authService.authenticateToken(creds.sessionToken);
       app.workspace.createDossier(
         {
           dossierCode: "DUR-CAILAY-TEST-01", containerNumber: "MSKU1234565", sealNumber: "SEAL-CL-001",
           targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
           declaredNetWeightKg: 18000, declaredBoxCount: 950,
         },
-        actor
+        app.authService.authenticateToken(creds.sessionToken)
       );
 
       const exportRes = await routeHttpRequest(
         app.workspace,
-        new Request("http://127.0.0.1:3000/api/v1/open-core/portability", {
-          headers: { Authorization: `Bearer ${creds.sessionToken}` },
-        })
+        new Request("http://127.0.0.1:3000/api/v1/open-core/portability", { headers: { Authorization: `Bearer ${creds.sessionToken}` } })
       );
       expect(exportRes.status).toBe(200);
       const exportJson = (await exportRes.json()) as PortabilityApiResponse;
@@ -83,12 +80,11 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
       expect(exportJson.data.bundle.payload.totalDossiersCount).toBe(1);
       expect(exportJson.data.bundle.hmacSignatureSha256).toBeDefined();
 
+      const authJsonHeaders = { Authorization: `Bearer ${creds.sessionToken}`, "Content-Type": "application/json" };
       const verifyRes = await routeHttpRequest(
         app.workspace,
         new Request("http://127.0.0.1:3000/api/v1/open-core/portability/verify", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${creds.sessionToken}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ bundle: exportJson.data.bundle }),
+          method: "POST", headers: authJsonHeaders, body: JSON.stringify({ bundle: exportJson.data.bundle }),
         })
       );
       expect(verifyRes.status).toBe(200);
@@ -101,9 +97,7 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
       const tamperRes = await routeHttpRequest(
         app.workspace,
         new Request("http://127.0.0.1:3000/api/v1/open-core/portability/verify", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${creds.sessionToken}`, "Content-Type": "application/json" },
-          body: JSON.stringify({ bundle: tamperedBundle }),
+          method: "POST", headers: authJsonHeaders, body: JSON.stringify({ bundle: tamperedBundle }),
         })
       );
       expect(((await tamperRes.json()) as { data: { valid: boolean } }).data.valid).toBe(false);
@@ -120,21 +114,18 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
     try {
       const credsA = seedTestPilotActor(app.authService, { role: "MANAGER", tenantId: "TEN-A" });
       const credsB = seedTestPilotActor(app.authService, { role: "MANAGER", tenantId: "TEN-B", phoneNumber: "+84900000002" });
-      const actorA = app.authService.authenticateToken(credsA.sessionToken);
       app.workspace.createDossier(
         {
           dossierCode: "DUR-TEN-A-01", containerNumber: "MSKU1234565", sealNumber: "SEAL-A",
           targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
           declaredNetWeightKg: 18000, declaredBoxCount: 950,
         },
-        actorA
+        app.authService.authenticateToken(credsA.sessionToken)
       );
 
       const resB = await routeHttpRequest(
         app.workspace,
-        new Request("http://127.0.0.1:3000/api/v1/open-core/portability", {
-          headers: { Authorization: `Bearer ${credsB.sessionToken}` },
-        })
+        new Request("http://127.0.0.1:3000/api/v1/open-core/portability", { headers: { Authorization: `Bearer ${credsB.sessionToken}` } })
       );
       const jsonB = (await resB.json()) as PortabilityApiResponse;
       expect(jsonB.data.bundle.payload.tenantId).toBe("TEN-B");
@@ -147,8 +138,7 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
 
   it("Step 1-25: validates complete 25-step blueprint synchronization across artifacts", () => {
     const companyJson = JSON.parse(readFileSync(".mekong/company.json", "utf-8")) as {
-      name: string;
-      open_core_manifest_api: { endpoints: readonly string[] };
+      name: string; open_core_manifest_api: { endpoints: readonly string[] };
     };
     expect(companyJson.name).toBe("DuriOS");
     expect(companyJson.open_core_manifest_api.endpoints).toContain("GET /api/v1/open-core/edition-manifest");

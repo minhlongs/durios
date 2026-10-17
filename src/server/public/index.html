@@ -565,7 +565,7 @@
         <span>🚀 Diễn tập Cai Lậy (5 Cont + Blind-Fault)</span>
       </button>
       <button type="button" class="btn btn--secondary btn--sm" id="btn-stitch-ecosystem" onclick="openStitchEcosystemDialog()">
-        <span>🎨 21 Màn hình Stitch &amp; Kiểm toán 25 bước</span>
+        <span>🎨 25 Màn hình Stitch &amp; Kiểm toán 25 bước</span>
       </button>
       <a class="btn btn--secondary btn--sm" href="/stitch/gallery.html" target="_blank" rel="noopener">
         <span>Mở Stitch Master Hub ↗</span>
@@ -723,8 +723,8 @@
   <dialog class="modal" id="stitch-ecosystem-dialog" aria-labelledby="stitch-ecosystem-title" style="max-width: 960px; width: 95vw;">
     <div class="modal__header">
       <div>
-        <h2 class="modal__title" id="stitch-ecosystem-title">DuriOS Stitch-Loop 21-Screen Suite &amp; Kiểm toán Kiến trúc 25 Bước</h2>
-        <p class="panel__desc">Kết nối trực tiếp API `/api/v1/open-core/ecosystem-telemetry`, `/api/v1/open-core/blueprint-status?deep=true` và danh mục 21 màn hình Google Stitch (`/stitch/*`).</p>
+        <h2 class="modal__title" id="stitch-ecosystem-title">DuriOS Stitch-Loop 25-Screen Suite &amp; Kiểm toán Kiến trúc 25 Bước</h2>
+        <p class="panel__desc">Kết nối trực tiếp API `/api/v1/open-core/ecosystem-telemetry`, `/api/v1/open-core/blueprint-status?deep=true` và danh mục 25 màn hình Google Stitch (`/stitch/*`).</p>
       </div>
       <button type="button" class="icon-btn" onclick="closeStitchEcosystemDialog()" aria-label="Đóng cửa sổ Stitch Ecosystem">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg>
@@ -739,7 +739,7 @@
     <div class="modal__footer">
       <button type="button" class="btn btn--secondary" onclick="runPilotRehearsalBootstrap()">🚀 Nạp 5 Container Diễn tập Cai Lậy</button>
       <button type="button" class="btn btn--secondary" onclick="loadStitchEcosystemTelemetry()">Làm mới dữ liệu API</button>
-      <a class="btn btn--primary" href="/stitch/gallery.html" target="_blank" rel="noopener">Mở Master Hub (21 màn hình) ↗</a>
+      <a class="btn btn--primary" href="/stitch/gallery.html" target="_blank" rel="noopener">Mở Master Hub (25 màn hình) ↗</a>
       <button type="button" class="btn btn--secondary" onclick="closeStitchEcosystemDialog()">Đóng</button>
     </div>
   </dialog>
@@ -2376,6 +2376,8 @@
       { id: "21", file: "socratic-introspector.html", title: "5-Turn Socratic Open-Core Introspector", group: "Governance & Corridors" },
       { id: "22", file: "rehearsal-command.html", title: "Cai Lậy Rehearsal & Blind-Fault Center", group: "Governance & Corridors" },
       { id: "23", file: "mit-verifier-lab.html", title: "MIT Standalone Verifier & ISO 6346 Lab", group: "Governance & Corridors" },
+      { id: "24", file: "cloud-ocr-vault.html", title: "Cloud Vision OCR & 10-Yr Cold Vault", group: "Cloud SaaS & Archival" },
+      { id: "25", file: "ed25519-downgrade-simulator.html", title: "Ed25519 License & Downgrade Sim", group: "Cloud SaaS & Archival" },
     ];
 
     function renderStitchScreenDirectory() {
@@ -2411,7 +2413,7 @@
       const bp = deep && deep.blueprintAudit ? deep.blueprintAudit : (bpRes && bpRes.blueprint ? bpRes.blueprint : null);
       const ed = edRes && edRes.data && edRes.data.manifest ? edRes.data.manifest : (edRes && edRes.manifest ? edRes.manifest : null);
       if (!bp) {
-        box.innerHTML = `<div class="callout callout--info"><div class="callout__body"><p class="callout__title">Danh mục 23 màn hình Google Stitch đã sẵn sàng dưới đường dẫn <code>/stitch/*</code>. Bấm "🚀 Nạp 5 Container Diễn tập Cai Lậy" để kích hoạt phiên làm việc và tải dữ liệu kiểm toán trực tiếp.</p></div></div>`;
+        box.innerHTML = `<div class="callout callout--info"><div class="callout__body"><p class="callout__title">Danh mục 25 màn hình Google Stitch đã sẵn sàng dưới đường dẫn <code>/stitch/*</code>. Bấm "🚀 Nạp 5 Container Diễn tập Cai Lậy" để kích hoạt phiên làm việc và tải dữ liệu kiểm toán trực tiếp.</p></div></div>`;
         return;
       }
       const marginPct = deep && deep.unitEconomicsVerification ? `${deep.unitEconomicsVerification.containerGrossMarginPct}%` : "94.67%";

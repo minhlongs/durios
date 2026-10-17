@@ -1,9 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import {
-  MarketplaceGuardError,
-  assertMarketplaceFeatureUnlocked,
-  assertZeroCustodyCompliance,
-  isMarketplaceFeatureUnlocked,
+  MarketplaceGuardError, assertMarketplaceFeatureUnlocked,
+  assertZeroCustodyCompliance, isMarketplaceFeatureUnlocked,
 } from "../src/marketplace/marketplace-guard.js";
 import { NonCustodialEscrowCoordinator } from "../src/marketplace/escrow-state-machine.js";
 import { ContainerDossierWorkspace } from "../src/workspace/container-dossier-workspace.js";
@@ -48,19 +46,15 @@ function createExportedDossierWithManifest(): {
     SELLER_CLERK
   );
 
-  const pdf1 = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37, 0x11]);
-  const pdf2 = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37, 0x12]);
-  const pdf3 = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37, 0x13]);
-
-  const d1 = ws.uploadDocument(created.id, pdf1, "Packing.pdf", "PACKING_LIST", SELLER_CLERK, {
+  const d1 = ws.uploadDocument(created.id, new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37, 0x11]), "Packing.pdf", "PACKING_LIST", SELLER_CLERK, {
     container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SL-998822" },
     net_weight_kg: { raw: "18240" }, total_boxes: { raw: "960" },
     PUC: { raw: "VN-TG-ORCHARD-0042" }, PHC: { raw: "VN-TG-PACK-0018" },
   });
-  const d2 = ws.uploadDocument(created.id, pdf2, "Lab.pdf", "LAB_TEST_REPORT", SELLER_CLERK, {
+  const d2 = ws.uploadDocument(created.id, new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37, 0x12]), "Lab.pdf", "LAB_TEST_REPORT", SELLER_CLERK, {
     cadmium_mg_kg: { raw: "0.015" }, sample_code: { raw: "LAB-01" }, sampling_date: { raw: "2026-10-12" },
   });
-  const d3 = ws.uploadDocument(created.id, pdf3, "Phyto.pdf", "PHYTOSANITARY_CERTIFICATE", SELLER_CLERK, {
+  const d3 = ws.uploadDocument(created.id, new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37, 0x13]), "Phyto.pdf", "PHYTOSANITARY_CERTIFICATE", SELLER_CLERK, {
     phyto_cert_no: { raw: "VN-PHYTO-2026-01" }, inspection_date: { raw: "2026-10-12" },
     PUC: { raw: "VN-TG-ORCHARD-0042" }, PHC: { raw: "VN-TG-PACK-0018" }, target_temperature_c: { raw: "14" },
   });
@@ -95,8 +89,7 @@ describe("Direction 2: Guarded B2B Marketplace & Non-Custodial Escrow Scaffold (
   it("coordinates B2B listing, tenant privacy, idempotent bank webhooks, and 100% SHA-256 gated release when unlocked", () => {
     const { dossier, manifest } = createExportedDossierWithManifest();
     const coordinator = new NonCustodialEscrowCoordinator({
-      env: { DURIOS_FEATURE_B2B_MARKETPLACE: "enabled" },
-      goForLiveCustomerData: true,
+      env: { DURIOS_FEATURE_B2B_MARKETPLACE: "enabled" }, goForLiveCustomerData: true,
     });
 
     const listing = coordinator.createListing(
@@ -110,16 +103,12 @@ describe("Direction 2: Guarded B2B Marketplace & Non-Custodial Escrow Scaffold (
 
     expect(listing.listingStatus).toBe("PUBLISHED_TO_APPROVED_BUYERS");
     expect(() => coordinator.getListingForActor(listing.listingId, UNAPPROVED_BUYER)).toThrow("not authorized");
-
-    const auditorView = coordinator.getListingForActor(listing.listingId, AUDITOR);
-    expect(auditorView.indicativePriceVndPerKg).toBeUndefined();
+    expect(coordinator.getListingForActor(listing.listingId, AUDITOR).indicativePriceVndPerKg).toBeUndefined();
 
     const escrow = coordinator.initiateEscrowContract(
       {
-        listingId: listing.listingId,
-        licensedBankPartnerCode: "VIETCOMBANK_TRADE_ESCROW",
-        bankEscrowReferenceNo: "VCB-ESC-2026-9001",
-        expectedManifestSha256: manifest.compositeManifestSha256,
+        listingId: listing.listingId, licensedBankPartnerCode: "VIETCOMBANK_TRADE_ESCROW",
+        bankEscrowReferenceNo: "VCB-ESC-2026-9001", expectedManifestSha256: manifest.compositeManifestSha256,
         idempotencyKey: "idem-init-001",
       },
       { listingId: listing.listingId },
@@ -128,14 +117,12 @@ describe("Direction 2: Guarded B2B Marketplace & Non-Custodial Escrow Scaffold (
     expect(escrow.custodyMode).toBe("ZERO_CUSTODY_LICENSED_BANK_PARTNER");
     expect(escrow.status).toBe("AWAITING_BANK_LOCK");
 
-    const locked1 = coordinator.handleBankWebhookCallback({
+    const webhookPayload = {
       contractId: escrow.contractId, bankEscrowReferenceNo: "VCB-ESC-2026-9001",
-      eventType: "BANK_FUNDS_LOCKED", idempotencyKey: "idem-webhook-lock-001",
-    });
-    const locked2 = coordinator.handleBankWebhookCallback({
-      contractId: escrow.contractId, bankEscrowReferenceNo: "VCB-ESC-2026-9001",
-      eventType: "BANK_FUNDS_LOCKED", idempotencyKey: "idem-webhook-lock-001",
-    });
+      eventType: "BANK_FUNDS_LOCKED" as const, idempotencyKey: "idem-webhook-lock-001",
+    };
+    const locked1 = coordinator.handleBankWebhookCallback(webhookPayload);
+    const locked2 = coordinator.handleBankWebhookCallback(webhookPayload);
     expect(locked1.status).toBe("BANK_ESCROW_LOCKED");
     expect(locked2.updatedAt).toBe(locked1.updatedAt);
 

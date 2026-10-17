@@ -22,7 +22,6 @@ export async function runEquivalenceGroups1And2And6(
     sharedCustomsViewer, sharedLogisticsViewer, intruderAdmin, unauthenticated,
   } = actors;
 
-  // GROUP 1: Dossier (POST .../dossiers, GET .../dossiers, GET .../dossiers/:id)
   await compareCall("/dossiers", "/dossiers", "GET", unauthenticated, undefined, 401);
   await compareCall(
     "/dossiers", "/dossiers", "POST", ownerViewer,
@@ -48,7 +47,6 @@ export async function runEquivalenceGroups1And2And6(
   await compareCall(`/dossiers/${dosApiId}`, `/dossiers/${dosV1Id}`, "GET", intruderAdmin, undefined, 404);
   await compareCall(`/dossiers/${dosApiId}`, `/dossiers/${dosV1Id}`, "GET", unauthenticated, undefined, 401);
 
-  // GROUP 2: Documents & Verify
   const docPayloads = [
     {
       fileName: "eq_packing.pdf", documentType: "PACKING_LIST",
@@ -95,8 +93,7 @@ export async function runEquivalenceGroups1And2And6(
   await compareCall(firstVerifyApi, firstVerifyV1, "POST", ownerClerk, {}, 400);
 
   for (const docIdx of [0, 1]) {
-    const fieldsA = docsApi[docIdx]!.extractedFields;
-    const fieldsB = docsV1[docIdx]!.extractedFields;
+    const [fieldsA, fieldsB] = [docsApi[docIdx]!.extractedFields, docsV1[docIdx]!.extractedFields];
     for (let fIdx = 0; fIdx < fieldsA.length; fIdx++) {
       await compareCall(
         `/dossiers/${dosApiId}/documents/${docsApi[docIdx]!.id}/fields/${fieldsA[fIdx]!.id}/verify`,
@@ -106,7 +103,6 @@ export async function runEquivalenceGroups1And2And6(
     }
   }
 
-  // GROUP 6: Shares (POST/GET .../shares)
   const fixedExpiresAt = "2027-06-01T00:00:00.000Z";
   await compareCall(`/dossiers/${dosApiId}/shares`, `/dossiers/${dosV1Id}/shares`, "POST", ownerClerk, { granteeTenantId: "TENANT-EQ-CUSTOMS", purpose: "CUSTOMS_INSPECTION", scope: "READ_AND_VERIFY", expiresAt: fixedExpiresAt }, 403);
   await compareCall(`/dossiers/${dosApiId}/shares`, `/dossiers/${dosV1Id}/shares`, "POST", intruderAdmin, { granteeTenantId: "TENANT-EQ-INTRUDER", purpose: "CUSTOMS_INSPECTION", scope: "READ_ONLY", expiresAt: fixedExpiresAt }, 403);
@@ -136,8 +132,7 @@ export async function runEquivalenceGroups1And2And6(
   await compareCall(doc2VerifyApi0, doc2VerifyV10, "POST", sharedCustomsViewer, { confirmedValue: docsApi[2]!.extractedFields[0]!.rawValue }, 403);
   await compareCall(doc2VerifyApi0, doc2VerifyV10, "POST", sharedLogisticsViewer, { confirmedValue: docsApi[2]!.extractedFields[0]!.rawValue }, 403);
 
-  const fieldsDoc2Api = docsApi[2]!.extractedFields;
-  const fieldsDoc2V1 = docsV1[2]!.extractedFields;
+  const [fieldsDoc2Api, fieldsDoc2V1] = [docsApi[2]!.extractedFields, docsV1[2]!.extractedFields];
   for (let fIdx = 0; fIdx < fieldsDoc2Api.length; fIdx++) {
     await compareCall(
       `/dossiers/${dosApiId}/documents/${docsApi[2]!.id}/fields/${fieldsDoc2Api[fIdx]!.id}/verify`,

@@ -3,8 +3,7 @@ import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  compilePilotGoLiveDossierPack,
-  verifyPilotGoLiveDossierPackIntegrity,
+  compilePilotGoLiveDossierPack, verifyPilotGoLiveDossierPackIntegrity,
 } from "../src/export/pilot-dossier-pack-compiler.js";
 import { runFieldAuditorCli } from "../src/export/field-auditor-cli.js";
 import { seedGate05PilotRehearsal } from "../src/auth/pilot-rehearsal-seeder.js";
@@ -15,21 +14,15 @@ import { seedTestPilotActor } from "./helpers/auth-test-helper.js";
 import type { AuthenticatedActor } from "../src/domain/types.js";
 
 const AUDITOR: AuthenticatedActor = {
-  id: "usr-auditor-pack-01",
-  tenantId: "TENANT-CAILAY-PILOT-01",
-  tenantType: "INSPECTION_AUDITOR",
-  role: "AUDITOR",
-  persona: "SYSTEM_AUDITOR",
-  name: "Field Auditor Cai Lay",
+  id: "usr-auditor-pack-01", tenantId: "TENANT-CAILAY-PILOT-01", tenantType: "INSPECTION_AUDITOR",
+  role: "AUDITOR", persona: "SYSTEM_AUDITOR", name: "Field Auditor Cai Lay",
 };
 
 describe("Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor Tool", () => {
   const tempDirs: string[] = [];
 
   afterEach(() => {
-    for (const dir of tempDirs.splice(0)) {
-      rmSync(dir, { recursive: true, force: true });
-    }
+    for (const dir of tempDirs.splice(0)) rmSync(dir, { recursive: true, force: true });
   });
 
   it("compiles a sealed Go-Live Readiness Report with 5 checklist items and verifies SHA-256 integrity", () => {
@@ -48,16 +41,10 @@ describe("Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor To
     const app = createWorkspaceApp({ dbPath, dataDir });
     try {
       const report = compilePilotGoLiveDossierPack(app.workspace, AUDITOR, {
-        siteCode: "SITE-CAILAY-TIENGIANG-01",
-        dbPath,
-        dataDir,
-        backupDir,
-        consentSignedFilePath: consentFile,
+        siteCode: "SITE-CAILAY-TIENGIANG-01", dbPath, dataDir, backupDir, consentSignedFilePath: consentFile,
         env: {
-          DURIOS_OTP_PROVIDER: "ESMS_VN",
-          DURIOS_OTP_API_URL: "https://otp.example.vn/send",
-          DURIOS_OTP_API_KEY: "live-staging-key-001",
-          DURIOS_HOST: "127.0.0.1",
+          DURIOS_OTP_PROVIDER: "ESMS_VN", DURIOS_OTP_API_URL: "https://otp.example.vn/send",
+          DURIOS_OTP_API_KEY: "live-staging-key-001", DURIOS_HOST: "127.0.0.1",
         },
         forcedTimestamp: "2026-10-17T08:00:00.000Z",
       });
@@ -68,9 +55,7 @@ describe("Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor To
       expect(report.fieldAuditorChecklist).toHaveLength(5);
       expect(report.fieldAuditorChecklist.every((c) => c.status === "VERIFIED_READY")).toBe(true);
       expect(verifyPilotGoLiveDossierPackIntegrity(report)).toBe(true);
-
-      const tampered = { ...report, overallVerdict: "HOLD_BLOCKERS_REMAIN" as const };
-      expect(verifyPilotGoLiveDossierPackIntegrity(tampered)).toBe(false);
+      expect(verifyPilotGoLiveDossierPackIntegrity({ ...report, overallVerdict: "HOLD_BLOCKERS_REMAIN" as const })).toBe(false);
     } finally {
       app.sqliteClient.close();
     }
@@ -79,27 +64,17 @@ describe("Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor To
   it("supports CLI --output-dir export and --verify cryptographic verification round-trip", () => {
     const rootDir = mkdtempSync(join(tmpdir(), "durios-auditor-cli-"));
     tempDirs.push(rootDir);
-
     const dbPath = join(rootDir, "durios.db");
     const dataDir = join(rootDir, "uploads");
     const outDir = join(rootDir, "audit-out");
 
     seedGate05PilotRehearsal({ dbPath, dataDir });
-
-    const genResult = runFieldAuditorCli({
-      siteCode: "SITE-CAILAY-CLI",
-      dbPath,
-      dataDir,
-      outputDir: outDir,
-    });
-
+    const genResult = runFieldAuditorCli({ siteCode: "SITE-CAILAY-CLI", dbPath, dataDir, outputDir: outDir });
     expect(genResult.exitCode).toBe(0);
     expect(genResult.integrityVerified).toBe(true);
     expect(genResult.outputFilePath).toBeDefined();
 
-    const verifyResult = runFieldAuditorCli({
-      verifyFilePath: genResult.outputFilePath,
-    });
+    const verifyResult = runFieldAuditorCli({ verifyFilePath: genResult.outputFilePath });
     expect(verifyResult.exitCode).toBe(0);
     expect(verifyResult.integrityVerified).toBe(true);
     expect(verifyResult.report.reportSha256).toBe(genResult.report.reportSha256);
@@ -108,46 +83,36 @@ describe("Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor To
   it("serves GET /api/v1/pilot/go-live-pack to AUDITOR/MANAGER and blocks CLERK with 403", async () => {
     const rootDir = mkdtempSync(join(tmpdir(), "durios-golive-http-"));
     tempDirs.push(rootDir);
-    const app = createWorkspaceApp({
-      dbPath: join(rootDir, "durios.db"),
-      dataDir: join(rootDir, "uploads"),
-    });
+    const app = createWorkspaceApp({ dbPath: join(rootDir, "durios.db"), dataDir: join(rootDir, "uploads") });
 
     try {
       const auditorCreds = seedTestPilotActor(app.authService, {
-        role: "AUDITOR",
-        persona: "SYSTEM_AUDITOR",
-        tenantType: "INSPECTION_AUDITOR",
+        role: "AUDITOR", persona: "SYSTEM_AUDITOR", tenantType: "INSPECTION_AUDITOR",
       });
       const clerkCreds = seedTestPilotActor(app.authService, {
-        role: "CLERK",
-        persona: "PACKHOUSE_CLERK",
-        tenantType: "PACKHOUSE_EXPORTER",
+        role: "CLERK", persona: "PACKHOUSE_CLERK", tenantType: "PACKHOUSE_EXPORTER",
       });
 
-      const auditorReq = new Request("http://127.0.0.1:3000/api/v1/pilot/go-live-pack", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${auditorCreds.sessionToken}`,
-        },
-      });
-      const auditorRes = await routeHttpRequest(app.workspace, auditorReq);
+      const auditorRes = await routeHttpRequest(
+        app.workspace,
+        new Request("http://127.0.0.1:3000/api/v1/pilot/go-live-pack", {
+          headers: { Authorization: `Bearer ${auditorCreds.sessionToken}` },
+        })
+      );
       expect(auditorRes.status).toBe(200);
       const body = (await auditorRes.json()) as {
-        success: boolean;
-        data: { reportSha256: string; fieldAuditorChecklist: unknown[] };
+        success: boolean; data: { reportSha256: string; fieldAuditorChecklist: unknown[] };
       };
       expect(body.success).toBe(true);
       expect(body.data.reportSha256).toHaveLength(64);
       expect(body.data.fieldAuditorChecklist).toHaveLength(5);
 
-      const clerkReq = new Request("http://127.0.0.1:3000/api/v1/pilot/go-live-pack", {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${clerkCreds.sessionToken}`,
-        },
-      });
-      const clerkRes = await routeHttpRequest(app.workspace, clerkReq);
+      const clerkRes = await routeHttpRequest(
+        app.workspace,
+        new Request("http://127.0.0.1:3000/api/v1/pilot/go-live-pack", {
+          headers: { Authorization: `Bearer ${clerkCreds.sessionToken}` },
+        })
+      );
       expect(clerkRes.status).toBe(403);
     } finally {
       app.sqliteClient.close();

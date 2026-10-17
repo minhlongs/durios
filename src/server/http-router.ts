@@ -29,6 +29,7 @@ import {
   handleGetEcosystemTelemetry,
   handleSeedAuthenticatedRehearsal,
 } from "./ecosystem-rehearsal-handler.js";
+import { handleVerifyIsoAndManifest } from "./open-core-verifier-handler.js";
 
 export async function routeHttpRequest(
   workspace: ContainerDossierWorkspace,
@@ -48,6 +49,12 @@ export async function routeHttpRequest(
   }
   if (method === "POST" && path === "/api/auth/login") return handlePasswordLogin(workspace.authService, req);
   if (method === "POST" && path === "/api/auth/pilot-rehearsal-bootstrap") return handleBootstrapPilotRehearsal(workspace, req);
+  if (
+    (method === "POST" || method === "GET") &&
+    (path === "/api/v1/open-core/verify-iso-and-manifest" || path === "/api/open-core/verify-iso-and-manifest")
+  ) {
+    return handleVerifyIsoAndManifest(req);
+  }
   if (method === "POST" && path === "/api/auth/otp/request") return handleOtpChallengeRequest(workspace.authService, req);
   if (method === "POST" && path === "/api/auth/otp/verify") return handleOtpChallengeVerify(workspace.authService, req);
   if (method === "GET" && path === "/api/auth/me") return handleGetAuthenticatedMe(workspace.authService, req);

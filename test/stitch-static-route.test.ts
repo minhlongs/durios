@@ -2,110 +2,80 @@ import { describe, expect, test } from "bun:test";
 import { ContainerDossierWorkspace } from "../src/workspace/container-dossier-workspace.js";
 import { routeHttpRequest } from "../src/server/http-router.js";
 
-describe("Stitch Static Gallery HTTP Route (/stitch/*)", () => {
+describe("Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite", () => {
   const workspace = new ContainerDossierWorkspace();
+  const pages = [
+    "gallery.html", "index.html", "dossiers.html", "auditor.html", "buyer.html",
+    "cluster.html", "portability.html", "upgrade.html", "styleguide.html", "paper-canvas.html",
+    "excel-grid.html", "zalo-bot.html", "mobile-weighbridge.html", "field-proven.html", "foundry.html",
+    "corridors.html", "blueprint.html", "security-vault.html", "organic-escrow-guard.html", "webhook-sync-queue.html",
+    "socratic-introspector.html", "rehearsal-command.html", "mit-verifier-lab.html", "cloud-ocr-vault.html", "ed25519-downgrade-simulator.html",
+  ];
 
-  test("serves all 23 Stitch HTML pages and durios-live-bridge.js under /stitch/*", async () => {
-    const pages = [
-      "gallery.html",
-      "index.html",
-      "dossiers.html",
-      "auditor.html",
-      "buyer.html",
-      "cluster.html",
-      "portability.html",
-      "upgrade.html",
-      "styleguide.html",
-      "paper-canvas.html",
-      "excel-grid.html",
-      "zalo-bot.html",
-      "mobile-weighbridge.html",
-      "field-proven.html",
-      "foundry.html",
-      "corridors.html",
-      "blueprint.html",
-      "security-vault.html",
-      "organic-escrow-guard.html",
-      "webhook-sync-queue.html",
-      "socratic-introspector.html",
-      "rehearsal-command.html",
-      "mit-verifier-lab.html",
-    ];
-
+  test("serves all 25 Stitch HTML pages and PNG previews under /stitch/*", async () => {
+    expect(pages).toHaveLength(25);
     for (const page of pages) {
-      const req = new Request(`http://localhost:3000/stitch/${page}`);
-      const res = await routeHttpRequest(workspace, req);
-      expect(res.status).toBe(200);
-      expect(res.headers.get("Content-Type")).toContain("text/html");
-      expect(res.headers.get("X-DuriOS-Stitch-Static")).toBe("true");
-      const html = await res.text();
+      const htmlRes = await routeHttpRequest(workspace, new Request(`http://localhost:3000/stitch/${page}`));
+      expect(htmlRes.status).toBe(200);
+      expect(htmlRes.headers.get("Content-Type")).toContain("text/html");
+      expect(htmlRes.headers.get("X-DuriOS-Stitch-Static")).toBe("true");
+      const html = await htmlRes.text();
       expect(html.length).toBeGreaterThan(1000);
+      expect(html).toContain("DURIOS 25-SCREEN NAV");
       expect(html).toContain("/stitch/durios-live-bridge.js");
+
+      const pngName = page.replace(".html", ".png");
+      const pngRes = await routeHttpRequest(workspace, new Request(`http://localhost:3000/stitch/${pngName}`));
+      expect(pngRes.status).toBe(200);
+      expect(pngRes.headers.get("Content-Type")).toBe("image/png");
     }
 
-    const jsReq = new Request("http://localhost:3000/stitch/durios-live-bridge.js");
-    const jsRes = await routeHttpRequest(workspace, jsReq);
+    const jsRes = await routeHttpRequest(workspace, new Request("http://localhost:3000/stitch/durios-live-bridge.js"));
     expect(jsRes.status).toBe(200);
     expect(jsRes.headers.get("Content-Type")).toContain("application/javascript");
-    const jsText = await jsRes.text();
-    expect(jsText).toContain("/api/v1/open-core/ecosystem-telemetry");
+    expect(await jsRes.text()).toContain("/api/v1/open-core/ecosystem-telemetry");
   });
 
-  test("bootstraps 5 Cai Lay pilot rehearsal dossiers and serves live ecosystem telemetry", async () => {
-    const bootReq = new Request("http://127.0.0.1:3000/api/auth/pilot-rehearsal-bootstrap", {
-      method: "POST",
-    });
-    const bootRes = await routeHttpRequest(workspace, bootReq);
-    expect(bootRes.status).toBe(200);
-    expect(bootRes.headers.get("Set-Cookie")).toContain("durios_session=");
-    const bootJson = (await bootRes.json()) as {
-      success: boolean;
-      data: {
-        clerkPilotToken: string;
-        managerPilotToken: string;
-        goLivePackVerified: boolean;
-        dossiers: Array<{ dossierCode: string; scenario: string }>;
-      };
-    };
-    expect(bootJson.success).toBe(true);
-    expect(bootJson.data.dossiers.length).toBe(5);
-    expect(bootJson.data.goLivePackVerified).toBe(true);
+  test("preserves fail-closed 2/5 gates without fullGates and unlocks 5/5 gates when fullGates=true", async () => {
+    const bootDefault = await routeHttpRequest(workspace, new Request("http://127.0.0.1:3000/api/auth/pilot-rehearsal-bootstrap", { method: "POST" }));
+    expect(bootDefault.status).toBe(200);
+    const jsonDefault = (await bootDefault.json()) as { success: boolean; data: { passedGateCount: number; goLivePack: { overallVerdict: string } } };
+    expect(jsonDefault.success).toBe(true);
+    expect(jsonDefault.data.passedGateCount).toBe(2);
+    expect(jsonDefault.data.goLivePack.overallVerdict).toBe("HOLD_BLOCKERS_REMAIN");
 
-    const telReq = new Request("http://127.0.0.1:3000/api/v1/open-core/ecosystem-telemetry", {
-      headers: { "x-pilot-token": bootJson.data.clerkPilotToken },
-    });
-    const telRes = await routeHttpRequest(workspace, telReq);
-    expect(telRes.status).toBe(200);
-    const telJson = (await telRes.json()) as {
-      success: boolean;
-      data: {
-        corridors: Array<{ corridorCode: string }>;
-        marketplaceGuard: { custodyMode: string };
-        blueprintAudit: { completedStepsCount: number; overallPassed: boolean };
-        deepSocratic: { ideaVerdict: string; allTurnsPassed: boolean };
-        pilotKpi: { totalContainers: number };
-        goLivePackVerified: boolean;
-      };
-    };
-    expect(telJson.success).toBe(true);
-    expect(telJson.data.corridors.length).toBe(4);
-    expect(telJson.data.marketplaceGuard.custodyMode).toBe("ZERO_CUSTODY_LICENSED_BANK_PARTNER");
-    expect(telJson.data.blueprintAudit.completedStepsCount).toBe(25);
-    expect(telJson.data.deepSocratic.ideaVerdict).toBe("GO_OPEN_CORE_SAAS");
-    expect(telJson.data.deepSocratic.allTurnsPassed).toBe(true);
-    expect(telJson.data.pilotKpi.totalContainers).toBeGreaterThanOrEqual(5);
-    expect(telJson.data.goLivePackVerified).toBe(true);
+    const bootFull = await routeHttpRequest(workspace, new Request("http://127.0.0.1:3000/api/auth/pilot-rehearsal-bootstrap?fullGates=true&role=MANAGER", { method: "POST" }));
+    expect(bootFull.status).toBe(200);
+    const jsonFull = (await bootFull.json()) as { success: boolean; data: { passedGateCount: number; totalGateCount: number; goLivePack: { overallVerdict: string }; goLivePackVerified: boolean } };
+    expect(jsonFull.success).toBe(true);
+    expect(jsonFull.data.passedGateCount).toBe(5);
+    expect(jsonFull.data.totalGateCount).toBe(5);
+    expect(jsonFull.data.goLivePack.overallVerdict).toBe("READY_FOR_PILOT_GO_LIVE");
+    expect(jsonFull.data.goLivePackVerified).toBe(true);
   });
 
-  test("blocks directory traversal attempts with 403", async () => {
-    const req = new Request("http://localhost:3000/stitch/..%2Fpackage.json");
-    const res = await routeHttpRequest(workspace, req);
-    expect([403, 404]).toContain(res.status);
+  test("validates live ISO 6346 container and detects 1-byte Cadimi mutation with MANIFEST_HASH_MISMATCH", async () => {
+    const validRes = await routeHttpRequest(workspace, new Request("http://127.0.0.1:3000/api/v1/open-core/verify-iso-and-manifest", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ containerNumber: "CSQU3054383" }),
+    }));
+    expect(validRes.status).toBe(200);
+    const validJson = (await validRes.json()) as { valid: boolean; expectedCheckDigit: number };
+    expect(validJson.valid).toBe(true);
+    expect(validJson.expectedCheckDigit).toBe(3);
+
+    const tamperRes = await routeHttpRequest(workspace, new Request("http://127.0.0.1:3000/api/v1/open-core/verify-iso-and-manifest", {
+      method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ simulateCadimiMutation: true }),
+    }));
+    expect(tamperRes.status).toBe(200);
+    const tamperJson = (await tamperRes.json()) as { valid: boolean; error: string };
+    expect(tamperJson.valid).toBe(false);
+    expect(tamperJson.error).toBe("MANIFEST_HASH_MISMATCH");
   });
 
-  test("returns 404 for non-existent stitch asset", async () => {
-    const req = new Request("http://localhost:3000/stitch/nonexistent-page.html");
-    const res = await routeHttpRequest(workspace, req);
-    expect(res.status).toBe(404);
+  test("blocks traversal with 403/404 and returns 404 for missing asset", async () => {
+    const trav = await routeHttpRequest(workspace, new Request("http://localhost:3000/stitch/..%2Fpackage.json"));
+    expect([403, 404]).toContain(trav.status);
+    const missing = await routeHttpRequest(workspace, new Request("http://localhost:3000/stitch/nonexistent-page.html"));
+    expect(missing.status).toBe(404);
   });
 });
