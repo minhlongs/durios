@@ -38,6 +38,7 @@ import {
   handleGetOpenCoreEditionManifest,
   handleVerifyWorkspacePortability,
 } from "./open-core-portability-handler.js";
+import { handleGetBlueprintStatus } from "./open-core-blueprint-handler.js";
 
 export async function routeHttpRequest(
   workspace: ContainerDossierWorkspace,
@@ -98,6 +99,9 @@ export async function routeHttpRequest(
   }
   if (method === "GET" && routePath === "/api/open-core/edition-manifest") {
     return handleGetOpenCoreEditionManifest(workspace, actor);
+  }
+  if (method === "GET" && routePath === "/api/open-core/blueprint-status") {
+    return handleGetBlueprintStatus(workspace, actor);
   }
   if (method === "GET" && routePath === "/api/open-core/portability") {
     return handleExportWorkspacePortability(workspace, actor);

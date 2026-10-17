@@ -31,7 +31,8 @@ Kết quả chuẩn: **131 / 131 bài kiểm thử PASS** trên 31 bộ test, 0 
 | **3. Kiểm tra 5 cổng khai trương (`GATE-01..05`)** | `bun run pilot:verify-gates` | Kiểm tra trạng thái sẵn sàng trước khi nạp dữ liệu khách hàng thật |
 | **4. Xuất Gói Hồ Sơ Kiểm Toán Thực Địa có băm SHA-256** | `bun run pilot:audit-pack -- --verify` | Xuất báo cáo kiểm định 5 cổng có chữ ký SHA-256 |
 | **5. Kiểm chứng độc lập gói Manifest xuất khẩu (MIT SDK)** | `bun run verify:manifest <path-to-manifest.json>` | Kiểm tra chữ ký băm SHA-256 và số container chuẩn ISO 6346 |
-| **6. Khởi động máy chủ Web UI tại bàn cân (`127.0.0.1:3000`)** | `bun run start:server` | Giao diện đối soát chứng từ song ngữ Việt - Anh |
+| **6. Kiểm định tự động 25 bước Company Blueprint** | `bun run blueprint:verify-25-steps` | Kiểm tra sự hiện diện của 25 tạo tác, 25/25 bước completed và băm composite SHA-256 |
+| **7. Khởi động máy chủ Web UI tại bàn cân (`127.0.0.1:3000`)** | `bun run start:server` | Giao diện đối soát chứng từ song ngữ Việt - Anh |
 
 ---
 
