@@ -1,42 +1,35 @@
 {
   "name": "DuriOS",
+  "tagline": "Verified Durian Trade Network — Operating System for Verified Durian Trade",
   "stage": "zero",
-  "model": "Phần mềm B2B chuyên ngành cho vựa sầu riêng: bắt đầu bằng quy trình hồ sơ riêng, cài tại chỗ; chỉ mở mạng lưới giao dịch đa bên sau khi kiểm chứng",
-  "target_arr": "Mục tiêu tham vọng 1 triệu USD ARR quy đổi; không phải dự báo và chưa có dữ liệu giá hay quy mô thị trường được kiểm chứng để làm căn cứ",
-  "icp": "Vựa đóng gói hoặc doanh nghiệp xuất khẩu sầu riêng tươi của Việt Nam sang Trung Quốc; ban đầu là một cơ sở có thể tiếp cận tại Cai Lậy, có lượng container thường xuyên, người phụ trách chứng từ cụ thể và người có quyền duyệt pilot trả phí",
-  "moat": "Giả thuyết khác biệt tiềm năng: đối soát hồ sơ container theo nghiệp vụ của vựa, bằng chứng gắn với nguồn, con người xác minh, chia sẻ giới hạn theo tổ chức và nhật ký kiểm toán giúp phát hiện can thiệp trong quy trình cài tại chỗ, ưu tiên quyền riêng tư. Lợi thế này chưa được kiểm chứng; đã có các đối thủ cung cấp giải pháp truy xuất rộng hơn.",
+  "edition_architecture": {
+    "community_core": "COMMUNITY_OPEN_CORE (AGPL-3.0-only Core + MIT Standalone Manifest Verifier SDK)",
+    "managed_pro": "PACKHOUSE_PRO_SAAS (60,000,000 VND / site / year — Ed25519 Signed License Key)",
+    "enterprise_network": "EXPORTER_ENTERPRISE (Multi-site group contract + Verified Trade Rooms + ASEAN Corridors)"
+  },
+  "model": "Open-Core Operating System for Verified Durian Trade: bắt đầu bằng Container Truth Engine cài tại chỗ (Cai Lậy beachhead), tiến hóa qua Verified Organization Profile (Federated Trust) sang Closed Transaction Network và ASEAN Regional Infrastructure",
+  "target_arr": "Mục tiêu 1 triệu USD ARR thông qua Multi-Revenue Stack (vì 281 vựa đang hoạt động tại VN x 60M VND = tối đa ~$657,643 ARR nếu chỉ bán SaaS đơn thuần; bắt buộc kết hợp Verification Modules, Enterprise Multi-Site, Closed Trade Network và mở rộng Malaysia/Thái Lan)",
+  "north_star_metric": "Verified GMV & Revenue per Verified Container",
+  "icp": "Cơ sở đóng gói (281 cơ sở đang hoạt động) và doanh nghiệp xuất khẩu sầu riêng tươi Việt Nam sang Trung Quốc; điểm xuất phát là 01 vựa tại Cai Lậy, Tiền Giang (SITE-CAILAY-TIENGIANG-01)",
+  "moat": "6-Tier Moat Ladder: (1) Workflow Moat tại bàn cân -> (2) Tamper-evident SHA-256 Evidence Moat -> (3) Shipment Outcome Moat -> (4) Observed Reputation Moat (Verified Profile) -> (5) Multi-sided Network Moat -> (6) ASEAN Regulatory Adapter Moat (VN_CN, MY_CN, TH_CN, PH_CN)",
   "agents": {
-    "Founder / CEO": "Chịu trách nhiệm về các cổng sản phẩm, khảo sát thực địa, cam kết với khách hàng, phê duyệt vốn và mọi tuyên bố đối ngoại",
-    "Product and Operations": "Ghi nhận quy trình của vựa, cấu hình pilot, lưu bằng chứng chấp thuận, đo kết quả theo từng container và hỗ trợ khách hàng",
-    "Engineering and Security": "Duy trì quy trình hồ sơ, phân quyền, sao lưu/khôi phục, kiểm soát triển khai và ứng phó sự cố",
-    "Revenue and Customer Discovery": "Phỏng vấn dựa trên bằng chứng, kiểm tra thẩm quyền mua và mức giá, phụ trách chuyển đổi pilot",
-    "Governance and Legal": "Con người rà soát quyền riêng tư, tuyên bố về quy định xuất khẩu, hợp đồng, nghĩa vụ thương mại điện tử và mọi đối tác thanh toán chịu quản lý"
+    "Founder / CEO": "Chịu trách nhiệm về 5 cổng khai trương (GATE-01..05), khảo sát thực địa Cai Lậy, ký DPA, phê duyệt vốn và mọi tuyên bố đối ngoại",
+    "Product and Operations": "Ghi nhận quy trình của vựa, cấu hình pilot, lưu bằng chứng chấp thuận, đo 4 chỉ số giá trị thực địa theo từng container và hỗ trợ khách hàng",
+    "Engineering and Security": "Duy trì Local Core (Bun + SQLite WAL), Merklized Audit Ledger, Ed25519 License Verifier, Workspace Portability Bundle và trần <= 179 LOC / 0 any",
+    "Revenue and Customer Discovery": "Triển khai pilot 5 container tại Cai Lậy, kiểm tra thẩm quyền mua và mức giá 60M VND/năm, phụ trách chuyển đổi pilot",
+    "Governance and Legal": "Rà soát tuân thủ Luật BVDLCN 91/2025/QH15, Luật TMĐT 122/2025/QH15, Nghị định 52/2024/NĐ-CP (Zero-Custody) và 9 Hard Kill Criteria"
   },
   "okrs": [
-    "Q4 2026: Hoàn tất nghiệm thu bản trình diễn bằng dữ liệu tổng hợp và vượt qua mọi cổng khai trương áp dụng cho một địa điểm trước khi nạp dữ liệu khách hàng thật; được một cơ sở chấp thuận và ký văn bản đồng ý sử dụng dữ liệu.",
-    "Q1 2027: Nếu các cổng về địa điểm và bảo mật đạt yêu cầu, hoàn tất pilot trả phí cho 5 container, với thời gian đối soát hồ sơ trung bình dưới 5 phút, không bỏ sót lỗi container/kẹp chì/chứng từ được cài vào để kiểm tra, và ghi nhận quyết định của bên mua về việc chuyển sang hợp đồng năm."
+    "Q4 2026: Vượt qua toàn bộ 5 cổng khai trương (GATE-01..05) cho địa điểm SITE-CAILAY-TIENGIANG-01; ký văn bản DPA; hoàn tất diễn tập 5 container với thời gian đối soát trung bình (Arithmetic Mean) < 5.0 phút và bắt 100% lỗi gài mù",
+    "Q1 2027: Đo lường đầy đủ 4 chỉ số giá trị từ container đầu tiên (minutesSaved, humanTouches, exceptionsDiscovered, expectedLossAvoidedVnd) và ký hợp đồng thương mại đầu tiên (5M VND pilot -> 60M VND/năm)",
+    "Q2-Q4 2027: Xây dựng cụm liên kết dày đặc (Dense Cluster) tại Tiền Giang/ĐBSCL (8 vựa + 3 exporter + 2 lab + 3 logistics) cùng sử dụng chuẩn DuriOS Verified Profile và Workspace Portability Bundle",
+    "2028: Mở phòng giao dịch xác minh kín (DuriOS Verified Trade Rooms) và kiểm chứng tính khả chuyển kiến trúc sang hành lang Malaysia -> Trung Quốc (MY_CN)"
   ],
   "next_steps": [
-    "Xác nhận quyền tiếp cận một vựa tại Cai Lậy, xin Founder duyệt địa điểm và có văn bản đồng ý sử dụng dữ liệu đã ký.",
-    "Chọn nhà cung cấp OTP và hoàn tất diễn tập trên môi trường staging bằng thông tin xác thực thật, không sử dụng dữ liệu khách hàng thật.",
-    "Hoàn tất cấu hình HTTPS, giới hạn mạng, mã hóa ổ đĩa và bản sao lưu, quản lý bí mật truy cập và diễn tập khôi phục phù hợp với địa điểm.",
-    "Chạy bản trình diễn đầu cuối bằng dữ liệu tổng hợp và quy trình KPI pilot, bao gồm cả hai tình huống cài lỗi để kiểm tra mù.",
-    "Kiểm tra giả thuyết giá pilot trả phí và giá thuê bao năm với người có quyền quyết định chi; chỉ tiếp tục khi có bằng chứng qua cổng được ghi nhận."
-  ],
-  "commercial_hypotheses_vnd": {
-    "paid_pilot": "5,000,000 VND cho 5 container; giả thuyết chưa được kiểm chứng",
-    "annual_subscription": "60,000,000 VND mỗi năm cho mỗi vựa; giả thuyết chưa được kiểm chứng",
-    "setup_fee": "10,000,000 VND cho mỗi vựa; giả thuyết chưa được kiểm chứng"
-  },
-  "launch_guardrails": [
-    "Không sử dụng dữ liệu khách hàng thật cho đến khi cả năm cổng khai trương tại một địa điểm đều đạt và sự đồng ý được ghi nhận.",
-    "DuriOS hỗ trợ chuẩn bị hồ sơ nội bộ; không bảo đảm thông quan và không cấp chứng nhận hữu cơ.",
-    "DuriOS không giữ tiền của bên mua hay bên bán; mọi luồng ký quỹ trong tương lai cần có đối tác được cấp phép và được rà soát pháp lý.",
-    "Chỉ xem xét mở sàn công khai sau cổng pilot kín và hoàn tất rà soát pháp lý, bảo mật trước khi khai trương."
-  ],
-  "source_of_truth": [
-    "docs/product-direction/PRODUCT-PRD-V1.md (được phê duyệt 2026-10-14)",
-    "docs/product-direction/PRODUCT-ARCHITECTURE-AND-ROADMAP-V1.md (được phê duyệt 2026-10-14)",
-    "docs/pilot-readiness/01_SINGLE_SITE_READINESS_AND_LAUNCH_GATE.md"
+    "1. Ký biên bản chấp thuận xử lý dữ liệu (DPA) theo Luật 91/2025/QH15 với chủ vựa tại Cai Lậy (GATE-01).",
+    "2. Diễn tập gửi và xác thực OTP thực tế qua Zalo ZNS / SMS Brandname trên môi trường staging (GATE-02).",
+    "3. Thiết lập máy chủ Mini PC on-premise chạy Bun + SQLite WAL trên mạng LAN của vựa kèm ổ cứng sao lưu mã hóa (GATE-03 & GATE-04).",
+    "4. Chạy đối soát 5 container thực địa với 2 lỗi gài mù, đo Arithmetic Mean < 5 phút và xuất báo cáo niêm phong bằng `bun run pilot:audit-pack` (GATE-05).",
+    "5. Chuyển đổi pilot đạt KPI sang hợp đồng thuê bao năm PACKHOUSE_PRO_SAAS (60 triệu VND/năm) và xuất DuriOS Verified Profile đầu tiên."
   ]
 }
