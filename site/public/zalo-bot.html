@@ -1,505 +1,764 @@
 <!DOCTYPE html>
-<html lang="vi" data-theme="emerald">
-<head>
-    <meta charset="UTF-8">
-    <title>DuriOS - Zalo-First Conversational Bot</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Space+Grotesk:wght@600;700&display=swap">
-    <style>
-      
-        /* CSS Variables - 3 Themes */
-        :root[data-theme="emerald"] {
-            --bg-canvas: #0B130E;
-            --bg-surface: #132018;
-            --bg-card: #18281F;
-            --border: #1F3327;
-            --border-highlight: #10B981;
-            --text-primary: #ECFDF5;
-            --text-secondary: #6EE7B7;
-            --text-muted: #34D399;
-            --accent-primary: #10B981;
-            --accent-primary-hover: #059669;
-            --accent-gold: #F59E0B;
-            --accent-danger: #EF4444;
-            --font-display: 'Space Grotesk', sans-serif;
-            --font-body: 'Inter', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            --radius-card: 6px;
-            --shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.12);
-        }
 
-        :root[data-theme="field-proven"] {
-            --bg-canvas: #F8FAFC;
-            --bg-surface: #FFFFFF;
-            --bg-card: #FFFFFF;
-            --border: #CBD5E1;
-            --border-highlight: #0284C7;
-            --text-primary: #0F172A;
-            --text-secondary: #334155;
-            --text-muted: #64748B;
-            --accent-primary: #0284C7;
-            --accent-primary-hover: #0369A1;
-            --accent-gold: #EA580C;
-            --accent-danger: #DC2626;
-            --font-display: 'Plus Jakarta Sans', sans-serif;
-            --font-body: 'Plus Jakarta Sans', sans-serif;
-            --font-mono: 'IBM Plex Mono', monospace;
-            --radius-card: 10px;
-            --shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MEKONG CLEAR // Zalo Bot Gateway v2.4</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-error-container": "#ffdad6",
+            "primary": "#4edea3",
+            "surface-dim": "#0d1510",
+            "secondary-container": "#00bd85",
+            "surface-bright": "#333b35",
+            "on-primary-container": "#00422b",
+            "on-tertiary-container": "#523200",
+            "on-surface": "#dce5dc",
+            "primary-container": "#10b981",
+            "tertiary-fixed-dim": "#ffb95f",
+            "surface-container-high": "#242c26",
+            "on-tertiary-fixed-variant": "#653e00",
+            "inverse-primary": "#006c49",
+            "outline": "#86948a",
+            "primary-fixed": "#6ffbbe",
+            "surface": "#0d1510",
+            "primary-fixed-dim": "#4edea3",
+            "tertiary": "#ffb95f",
+            "on-primary-fixed-variant": "#005236",
+            "secondary-fixed-dim": "#45dfa4",
+            "on-secondary": "#003825",
+            "on-primary": "#003824",
+            "surface-container": "#19211c",
+            "surface-container-low": "#151d18",
+            "on-background": "#dce5dc",
+            "inverse-on-surface": "#2a322c",
+            "on-secondary-fixed-variant": "#005137",
+            "on-secondary-container": "#00452e",
+            "on-tertiary-fixed": "#2a1700",
+            "on-error": "#690005",
+            "tertiary-fixed": "#ffddb8",
+            "surface-container-highest": "#2e3731",
+            "on-secondary-fixed": "#002114",
+            "on-primary-fixed": "#002113",
+            "surface-tint": "#4edea3",
+            "inverse-surface": "#dce5dc",
+            "error-container": "#93000a",
+            "secondary-fixed": "#68fcbf",
+            "tertiary-container": "#e29100",
+            "surface-variant": "#2e3731",
+            "on-tertiary": "#472a00",
+            "secondary": "#45dfa4",
+            "error": "#ffb4ab",
+            "outline-variant": "#3c4a42",
+            "on-surface-variant": "#bbcabf",
+            "surface-container-lowest": "#08100b",
+            "background": "#0d1510"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "space-lg": "1.25rem",
+            "gutter": "1rem",
+            "margin": "1.5rem",
+            "space-sm": "0.5rem",
+            "margin-mobile": "0.75rem",
+            "space-md": "0.75rem",
+            "space-xs": "0.25rem",
+            "gutter-compact": "0.5rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Inter"],
+            "label-sm": ["JetBrains Mono"],
+            "code-sm": ["JetBrains Mono"],
+            "code-md": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "headline-lg": ["Space Grotesk", "Inter"],
+            "headline-xl-mobile": ["Space Grotesk", "Inter"],
+            "label-md": ["JetBrains Mono"],
+            "headline-sm": ["Space Grotesk", "Inter"],
+            "headline-md": ["Space Grotesk", "Inter"],
+            "headline-xl": ["Space Grotesk", "Inter"],
+            "code-lg": ["JetBrains Mono"],
+            "body-md": ["Inter"]
+          },
+          "fontSize": {
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-xl-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "code-lg": ["15px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }]
+          }
         }
-
-        :root[data-theme="foundry"] {
-            --bg-canvas: #050505;
-            --bg-surface: rgba(18, 18, 20, 0.85);
-            --bg-card: rgba(26, 26, 30, 0.7);
-            --border: rgba(255, 255, 255, 0.1);
-            --border-highlight: #00F0FF;
-            --text-primary: #FFFFFF;
-            --text-secondary: #A1A1AA;
-            --text-muted: #71717A;
-            --accent-primary: #00F0FF;
-            --accent-primary-hover: #00C4D4;
-            --accent-gold: #8B5CF6;
-            --accent-danger: #FF0055;
-            --font-display: 'Geist Sans', -apple-system, sans-serif;
-            --font-body: 'Geist Sans', -apple-system, sans-serif;
-            --font-mono: 'Geist Mono', monospace;
-            --radius-card: 4px;
-            --shadow: 0 0 24px rgba(0, 240, 255, 0.08);
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            transition: background-color 0.2s, border-color 0.2s, color 0.2s;
-        }
-
-        body {
-            background-color: var(--bg-canvas);
-            color: var(--text-primary);
-            font-family: var(--font-body);
-            line-height: 1.5;
-            min-height: 100vh;
-        }
-
-        /* Top Navigation Bar */
-        .top-navbar {
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border);
-            padding: 12px 24px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            backdrop-filter: blur(12px);
-        }
-
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-family: var(--font-display);
-            font-weight: 700;
-            font-size: 18px;
-            letter-spacing: -0.02em;
-        }
-
-        .brand-badge {
-            background: var(--accent-primary);
-            color: var(--bg-canvas);
-            font-family: var(--font-mono);
-            font-size: 11px;
-            font-weight: 700;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        .theme-switcher-box {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: var(--bg-canvas);
-            border: 1px solid var(--border);
-            padding: 4px;
-            border-radius: 8px;
-        }
-
-        .theme-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-muted);
-            font-size: 12px;
-            font-weight: 600;
-            padding: 6px 12px;
-            cursor: pointer;
-            border-radius: 6px;
-        }
-
-        .theme-btn.active {
-            background: var(--accent-primary);
-            color: var(--bg-canvas);
-        }
-
-        /* Tab Navigation for 8 Screens */
-        .screen-tabs-bar {
-            background: var(--bg-surface);
-            border-bottom: 1px solid var(--border);
-            padding: 0 24px;
-            display: flex;
-            gap: 8px;
-            overflow-x: auto;
-            white-space: nowrap;
-        }
-
-        .tab-btn {
-            background: transparent;
-            border: none;
-            color: var(--text-secondary);
-            font-size: 13px;
-            font-weight: 600;
-            padding: 14px 16px;
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-        }
-
-        .tab-btn:hover {
-            color: var(--text-primary);
-        }
-
-        .tab-btn.active {
-            color: var(--accent-primary);
-            border-bottom-color: var(--accent-primary);
-        }
-
-        /* Main View Container */
-        .main-viewport {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 24px;
-        }
-
-        .screen-view {
-            display: none;
-        }
-
-        .screen-view.active {
-            display: block;
-        }
-
-        /* Screen 1: 3-Column Command Station */
-        .workspace-3col {
-            display: grid;
-            grid-template-columns: 280px 1fr 420px;
-            gap: 20px;
-            height: calc(100vh - 180px);
-        }
-
-        @media (max-width: 1200px) {
-            .workspace-3col {
-                grid-template-columns: 1fr;
-                height: auto;
-            }
-        }
-
-        .panel-box {
-            background: var(--bg-surface);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-card);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-        }
-
-        .panel-header {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-            font-family: var(--font-display);
-            font-weight: 600;
-            font-size: 13px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .panel-content {
-            padding: 16px;
-            overflow-y: auto;
-            flex: 1;
-        }
-
-        /* Document Item Card */
-        .doc-item-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-card);
-            padding: 12px;
-            margin-bottom: 10px;
-            cursor: pointer;
-        }
-
-        .doc-item-card.active {
-            border-color: var(--border-highlight);
-        }
-
-        /* PDF Viewer Mockup */
-        .pdf-mockup-frame {
-            background: #202428;
-            height: 100%;
-            border-radius: var(--radius-card);
-            position: relative;
-            padding: 24px;
-            color: #FFFFFF;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .pdf-bounding-box {
-            position: absolute;
-            top: 28%;
-            left: 20%;
-            width: 320px;
-            height: 48px;
-            border: 2px dashed var(--accent-primary);
-            background: rgba(16, 185, 129, 0.15);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-            font-family: var(--font-mono);
-            font-size: 13px;
-            color: var(--text-primary);
-        }
-
-        .pdf-bounding-box-seal {
-            position: absolute;
-            top: 42%;
-            left: 20%;
-            width: 240px;
-            height: 48px;
-            border: 2px dashed var(--accent-gold);
-            background: rgba(245, 158, 11, 0.15);
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            padding: 0 10px;
-            font-family: var(--font-mono);
-            font-size: 13px;
-            color: var(--text-primary);
-        }
-
-        /* Field Verification Cards */
-        .field-verify-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-card);
-            padding: 12px;
-            margin-bottom: 12px;
-        }
-
-        .field-label {
-            font-size: 11px;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .field-val-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 4px;
-        }
-
-        .field-val-text {
-            font-family: var(--font-mono);
-            font-size: 16px;
-            font-weight: 700;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 6px;
-        }
-
-        .btn {
-            font-family: var(--font-body);
-            font-size: 12px;
-            font-weight: 600;
-            padding: 6px 12px;
-            border-radius: var(--radius-card);
-            border: 1px solid var(--border);
-            cursor: pointer;
-            background: var(--bg-surface);
-            color: var(--text-primary);
-        }
-
-        .btn-confirm {
-            background: var(--accent-primary);
-            border-color: var(--accent-primary);
-            color: var(--bg-canvas);
-        }
-
-        .btn-danger {
-            background: var(--accent-danger);
-            border-color: var(--accent-danger);
-            color: #FFFFFF;
-        }
-
-        .btn-large {
-            width: 100%;
-            padding: 14px;
-            font-size: 14px;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-top: 12px;
-        }
-
-        /* Timer Badge */
-        .stopwatch-badge {
-            font-family: var(--font-mono);
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--accent-primary);
-            background: var(--bg-card);
-            padding: 4px 12px;
-            border-radius: var(--radius-card);
-            border: 1px solid var(--border);
-        }
-
-        /* Status Pills */
-        .pill {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 999px;
-            font-size: 11px;
-            font-weight: 700;
-            text-transform: uppercase;
-            font-family: var(--font-mono);
-        }
-
-        .pill-verified {
-            background: rgba(16, 185, 129, 0.2);
-            color: var(--accent-primary);
-            border: 1px solid var(--accent-primary);
-        }
-
-        .pill-warning {
-            background: rgba(245, 158, 11, 0.2);
-            color: var(--accent-gold);
-            border: 1px solid var(--accent-gold);
-        }
-
-        .pill-danger {
-            background: rgba(239, 68, 68, 0.2);
-            color: var(--accent-danger);
-            border: 1px solid var(--accent-danger);
-        }
-
-        /* Data Tables */
-        .data-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 13px;
-        }
-
-        .data-table th, .data-table td {
-            padding: 12px 16px;
-            border-bottom: 1px solid var(--border);
-            text-align: left;
-        }
-
-        .data-table th {
-            color: var(--text-muted);
-            font-size: 11px;
-            text-transform: uppercase;
-        }
-
-        /* PRD Downloader Banner */
-        .prd-banner {
-            background: var(--bg-card);
-            border: 1px solid var(--border-highlight);
-            padding: 16px 20px;
-            border-radius: var(--radius-card);
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-    
-    </style>
+      }
+    };
+  </script>
+<style>
+    /* Custom Scrollbar for dense agritech ops */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #08100b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1f3b2c;
+      border-radius: 2px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4edea3;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 3px;
+    }
+    @keyframes pulse-emerald {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.9); }
+    }
+    .status-pulse-live {
+      animation: pulse-emerald 2s infinite ease-in-out;
+    }
+  </style>
 </head>
-<body style="padding: 24px; background: var(--bg-canvas);">
-  <div style="margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center;">
-    <a href="index.html" class="btn" style="color: #0284C7;">&larr; Về Command Station</a>
-    <span class="pill" style="background: rgba(2, 132, 199, 0.2); color: #0284C7;">MÔ THỨC 3: ZALO-FIRST CHAT BOT</span>
+<body class="bg-surface text-on-surface antialiased overflow-hidden h-screen flex flex-col font-body-md text-body-md select-none">
+
+<!-- DURIOS UNIFIED TOP NAV BAR -->
+<div style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 8px 16px; font-family: sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
+  <div style="display: flex; align-items: center; gap: 8px;">
+    <span style="font-weight: 800; color: #10B981; font-size: 13px; letter-spacing: 0.05em;">DURIOS NAV</span>
+    <span style="color: #6EE7B7;">|</span>
+    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px; border-radius: 4px; background: rgba(16,185,129,0.15);">1. Workspace</a>
+    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">2. Dossiers</a>
+    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">3. Auditor (5 Gates)</a>
+    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">4. Buyer Portal</a>
+    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">5. Cluster Ops</a>
+    <a href="portability.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">6. Portability</a>
+    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">7. Pro SaaS</a>
+    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">8. Style Guide</a>
   </div>
-  <!-- SCREEN: Zalo-First Conversational Bot (Khung Chat Điều Hành Thân Thuộc) -->
-        <section id="screen-zalo-chat" class="screen-view">
-            <div class="panel-box" style="height: calc(100vh - 180px);">
-                <div class="panel-header" style="background: rgba(2, 132, 199, 0.1); border-bottom-color: #0284C7;">
-                    <div>
-                        <strong style="color: #0284C7;">MÔ THỨC 3: ZALO-FIRST CONVERSATIONAL BOT (KHUNG CHAT THÂN THUỘC)</strong>
-                        <span style="font-size: 11px; color: var(--text-muted); margin-left: 8px;">Kéo thả ảnh chụp phiếu cân từ Zalo, trợ lý tự động bóc tách & hiển thị 2 nút bấm</span>
-                    </div>
-                    <span class="pill" style="background: rgba(2, 132, 199, 0.2); color: #0284C7;">● DuriOS Bot Online</span>
+  <div style="display: flex; align-items: center; gap: 6px;">
+    <span style="color: #F59E0B; font-weight: 700;">Thực địa:</span>
+    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px;">📝 Bút Dạ Quang</a>
+    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">📊 Excel Grid</a>
+    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px;">💬 Zalo Bot</a>
+  </div>
+</div>
+
+<!-- ==================== TOP UTILITY & STATUS BAR ==================== -->
+<header class="flex justify-between items-center w-full px-margin h-14 bg-surface-container border-b border-outline-variant shrink-0 z-30">
+<!-- Brand Anchor & Identity -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-headline-md leading-none" data-icon="terminal">terminal</span>
+<span class="text-headline-sm font-headline-sm uppercase tracking-wider text-primary font-bold">MEKONG CLEAR // GACC DUR-EXP-OPS</span>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant mx-1"></div>
+<span class="font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary status-pulse-live inline-block"></span>
+        GATEWAY v2.4: <span class="text-primary font-semibold">CAI LẬY #VN-84B</span>
+</span>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded bg-surface-container-high text-on-surface border border-outline-variant">
+        ZNS: 24ms
+      </span>
+</div>
+<!-- Quick Suite Breadcrumb / Navigation Links from JSON Anchor -->
+<nav class="hidden xl:flex items-center gap-space-md">
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors" href="#">Manifest Queue</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors" href="#">Phytosanitary Log</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors" href="#">Cold-Chain Telemetry</a>
+<a class="text-primary border-b-2 border-primary font-code-md text-code-md py-1" href="#">Customs Gateway</a>
+</nav>
+<!-- Trailing Action Cluster -->
+<div class="flex items-center gap-space-sm">
+<div class="hidden md:flex items-center gap-1.5 bg-surface-container-lowest border border-outline-variant px-2.5 py-1 rounded">
+<span class="material-symbols-outlined text-primary text-body-md" data-icon="sensors">sensors</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">SQLite WAL SYNC</span>
+</div>
+<button class="bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface font-code-sm text-code-sm px-space-md py-1.5 rounded transition-all flex items-center gap-1.5 active:scale-95">
+<span class="material-symbols-outlined text-tertiary text-body-md" data-icon="notifications">notifications</span>
+<span>Hold Quarantine</span>
+</button>
+<button class="bg-primary-container text-on-primary-container hover:bg-primary font-label-md text-label-md px-space-md py-1.5 rounded font-semibold transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+<span class="material-symbols-outlined text-body-md" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span>Clear Consignment</span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant mx-1"></div>
+<!-- Chief Verification Officer Avatar -->
+<div class="flex items-center gap-2 pl-1" title="Chief Customs Verification Officer Badge">
+<div class="w-8 h-8 rounded bg-surface-container-highest border border-primary/40 flex items-center justify-center relative">
+<span class="material-symbols-outlined text-primary text-headline-sm" data-icon="verified_user">verified_user</span>
+<span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary border border-surface-container-lowest"></span>
+</div>
+</div>
+</div>
+</header>
+<!-- ==================== THREE-PANE DESKTOP WORKSPACE ==================== -->
+<div class="flex-1 flex overflow-hidden w-full">
+<!-- PANE A: LEFTMOST APPLICATION MICRO-RAIL (Zalo PC / Terminal Ops) -->
+<aside class="w-16 bg-surface-container-lowest border-r border-outline-variant flex flex-col justify-between items-center py-space-md shrink-0 z-20">
+<!-- Upper Section: Core Module Nav -->
+<div class="flex flex-col items-center gap-space-md w-full">
+<!-- Zalo Bot Chat (Active) -->
+<button class="relative w-11 h-11 rounded flex items-center justify-center bg-surface-container-high text-primary border-l-2 border-primary group transition-colors" title="Conversational Stream (3 Pending)">
+<span class="material-symbols-outlined text-headline-sm" data-icon="chat" data-weight="fill" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="absolute top-1.5 right-1.5 bg-primary text-on-primary-container font-label-sm text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow">3</span>
+</button>
+<!-- Driver Directory -->
+<button class="w-11 h-11 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Registered Drivers &amp; Haulers">
+<span class="material-symbols-outlined text-headline-sm" data-icon="contacts">contacts</span>
+</button>
+<!-- Media / Weighbridge Tickets Gallery -->
+<button class="w-11 h-11 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Inspection Scans &amp; Weighbridge Tickets">
+<span class="material-symbols-outlined text-headline-sm" data-icon="receipt_long">receipt_long</span>
+</button>
+<!-- Scheduled Alerts & Queue -->
+<button class="w-11 h-11 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Automated Gate Queue Alarms">
+<span class="material-symbols-outlined text-headline-sm" data-icon="schedule">schedule</span>
+</button>
+<!-- ZNS Webhook Gateway Logs -->
+<button class="w-11 h-11 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Zalo ZNS Telemetry Link">
+<span class="material-symbols-outlined text-headline-sm" data-icon="sync_alt">sync_alt</span>
+</button>
+</div>
+<!-- Lower Section: Station Specs & Clerk Status -->
+<div class="flex flex-col items-center gap-space-sm w-full">
+<button class="w-11 h-11 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="System Hardware Specs">
+<span class="material-symbols-outlined text-headline-sm" data-icon="settings">settings</span>
+</button>
+<div class="pt-2 border-t border-outline-variant w-10 flex flex-col items-center">
+<div class="w-8 h-8 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center relative cursor-pointer" title="CLERK #04 (VN-84B)">
+<span class="font-code-sm text-code-sm text-primary font-bold">#04</span>
+<span class="absolute top-0 right-0 w-2 h-2 rounded-full bg-primary"></span>
+</div>
+</div>
+</div>
+</aside>
+<!-- PANE B: THREADS & CONTAINER ROSTER SIDEBAR (320px) -->
+<aside class="w-80 bg-surface-container-low border-r border-outline-variant flex flex-col shrink-0 z-10">
+<!-- Search & Quick Filters -->
+<div class="p-space-md border-b border-outline-variant bg-surface-container-low">
+<div class="relative w-full mb-space-sm">
+<span class="material-symbols-outlined absolute left-2.5 top-2 text-on-surface-variant text-body-md" data-icon="search">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded pl-8 pr-2.5 py-1.5 font-code-sm text-code-sm text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary transition-colors" placeholder="Search driver phone, plate, or container ID..." type="text"/>
+</div>
+<!-- Filter Tabs -->
+<div class="grid grid-cols-4 gap-1 text-center font-label-sm text-label-sm">
+<button class="py-1 rounded bg-surface-container-high text-primary font-bold border border-primary/30">All (12)</button>
+<button class="py-1 rounded bg-surface-container-lowest text-tertiary hover:bg-surface-container-high border border-outline-variant">Verify (3)</button>
+<button class="py-1 rounded bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high border border-outline-variant">Clear (8)</button>
+<button class="py-1 rounded bg-surface-container-lowest text-error hover:bg-surface-container-high border border-outline-variant">Hold (1)</button>
+</div>
+</div>
+<!-- Thread List Scroll Container -->
+<div class="flex-1 overflow-y-auto custom-scrollbar divide-y divide-outline-variant/50">
+<!-- ITEM 1: ACTIVE SELECTED THREAD -->
+<div class="p-space-md bg-surface-container-high border-l-2 border-primary cursor-pointer transition-colors relative">
+<div class="flex items-center justify-between mb-1">
+<span class="font-headline-sm text-body-md text-on-surface font-semibold truncate flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
+              Tài xế Nguyễn Văn Hùng
+            </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">14:22</span>
+</div>
+<div class="font-code-sm text-code-sm text-primary mb-1">
+            Xe 63C-123.45 • MSKU 123456 5
+          </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate mb-2">
+            📸 Phiếu cân xe &amp; Giấy test Cadmium đính kèm...
+          </p>
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-tertiary-container/20 border border-tertiary/40 text-tertiary font-label-sm text-[10px]">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+              Awaiting Seal Approval
+            </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Tiền Giang ➔ Hữu Nghị</span>
+</div>
+</div>
+<!-- ITEM 2: OCR Processing -->
+<div class="p-space-md hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-md text-on-surface font-medium truncate">Tài xế Trần Minh Tâm</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">14:15</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mb-1">
+            Xe 63C-889.12 • CMAU 789210 2
+          </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70 truncate mb-2">
+            Đang cân xe đợt 2 qua trạm điện tử Cai Lậy...
+          </p>
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-label-sm text-[10px]">
+<span class="material-symbols-outlined text-[12px] animate-spin" data-icon="progress_activity">progress_activity</span>
+              OCR Processing (82%)
+            </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Lane #02</span>
+</div>
+</div>
+<!-- ITEM 3: Discrepancy Flagged -->
+<div class="p-space-md hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-md text-on-surface font-medium truncate">Đội Vận Tải Vạn Xuân</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">13:58</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mb-1">
+            Xe 64A-092.31 • OOLU 452910 8
+          </div>
+<p class="font-body-sm text-body-sm text-error/80 truncate mb-2">
+            Cảnh báo: Lệch mã RFID seal hải quan so với tờ khai...
+          </p>
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-error-container/20 border border-error/50 text-error font-label-sm text-[10px]">
+<span class="material-symbols-outlined text-[12px]" data-icon="warning">warning</span>
+              Discrepancy Flagged
+            </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Quarantine Bay</span>
+</div>
+</div>
+<!-- ITEM 4: Cleared & Exported -->
+<div class="p-space-md hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-md text-on-surface font-medium truncate">Tài xế Lê Hoàng Khang</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">13:10</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mb-1">
+            Xe 63C-554.80 • TGHU 904321 4
+          </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70 truncate mb-2">
+            Biên bản bàn giao điện tử đã đối soát Pingxiang...
+          </p>
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-primary-container/20 border border-primary/40 text-primary font-label-sm text-[10px]">
+<span class="material-symbols-outlined text-[12px]" data-icon="check_circle">check_circle</span>
+              Cleared &amp; Exported
+            </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Youyi Guan Passed</span>
+</div>
+</div>
+<!-- ITEM 5: Inactive / Historical -->
+<div class="p-space-md hover:bg-surface-container transition-colors cursor-pointer opacity-75">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-md text-on-surface font-medium truncate">Tài xế Võ Thành Danh</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">11:45</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mb-1">
+            Xe 63C-432.19 • TEMU 110293 0
+          </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant/60 truncate">
+            Đã hoàn thành cấp mã kiểm định NAFIQAD...
+          </p>
+</div>
+</div>
+<!-- Station Info Footer Block -->
+<div class="p-space-sm bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>PUC: VN-TG-OR-088</span>
+<span class="text-primary font-semibold">GACC 2024-C7 ACTIVE</span>
+</div>
+</aside>
+<!-- PANE C: MAIN CONVERSATION & TELEMETRY STREAM (FLEX-1) -->
+<main class="flex-1 bg-surface flex flex-col justify-between overflow-hidden relative">
+<!-- Thread Header -->
+<div class="h-14 bg-surface-container-low border-b border-outline-variant px-margin flex items-center justify-between shrink-0 z-10">
+<div class="flex items-center gap-space-md">
+<div class="w-9 h-9 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-bold font-code-md">
+            HÙNG
+          </div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">
+                Tài xế Nguyễn Văn Hùng
+              </h2>
+<span class="font-code-sm text-code-sm text-on-surface-variant">(0918.***.234)</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant font-code-sm text-[10px] text-primary">
+                Đầu kéo: 63C-123.45 / Rơ-moóc: 63R-008.92
+              </span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-code-sm text-code-sm">
+<span>Cai Lậy Packhouse #01 ➔ Youyi Guan Hub</span>
+<span>•</span>
+<span class="text-secondary font-mono text-[10px]">ED25519-ZNS-AUTH-VERIFIED</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface px-2.5 py-1.5 rounded font-label-sm text-label-sm flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-body-md text-primary" data-icon="call">call</span>
+<span>Call Zalo Hotline</span>
+</button>
+<button class="bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface px-2.5 py-1.5 rounded font-label-sm text-label-sm flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-body-md" data-icon="folder_open">folder_open</span>
+<span>Dossier</span>
+</button>
+<button class="bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface p-1.5 rounded transition-colors" title="Pin Thread">
+<span class="material-symbols-outlined text-body-md text-on-surface-variant" data-icon="push_pin">push_pin</span>
+</button>
+</div>
+</div>
+<!-- Chat Feed (Scrollable) -->
+<div class="flex-1 overflow-y-auto p-margin custom-scrollbar space-y-space-md">
+<!-- System Session Connection Banner -->
+<div class="flex justify-center">
+<div class="bg-surface-container-lowest border border-outline-variant/60 rounded px-3 py-1 font-code-sm text-code-sm text-on-surface-variant flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span>Session connected via Zalo Official Account Bot API (Tien Giang Export Gateway) • 14:18 UTC+7</span>
+</div>
+</div>
+<!-- 1. DRIVER MESSAGE BUBBLE (Left side) -->
+<div class="flex items-start gap-space-sm max-w-2xl">
+<div class="w-8 h-8 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center font-code-sm text-on-surface shrink-0">
+            TX
+          </div>
+<div class="space-y-space-xs">
+<div class="flex items-baseline gap-2">
+<span class="font-code-sm text-code-sm font-semibold text-on-surface">Nguyễn Văn Hùng</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">14:19</span>
+</div>
+<div class="bg-surface-container-high border border-outline-variant p-space-md rounded text-on-surface text-body-md space-y-space-sm">
+<p>
+                Chào trạm cân Cái Bè #VN-84B, xe 63C-123.45 vừa cân xong 1,280 sọt sầu riêng Ri6 và Dona, gửi trạm ảnh phiếu cân điện tử và phiếu test Cadmium của Trung tâm NAFIQAD.
+              </p>
+<!-- Weighbridge & NAFIQAD Media Attachment Simulation -->
+<div class="grid grid-cols-2 gap-space-sm pt-1">
+<!-- Attachment 1: Weighbridge Ticket Preview -->
+<div class="bg-surface-container-lowest border border-outline-variant p-2 rounded flex items-center gap-2.5 hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 bg-surface-container flex items-center justify-center border border-outline-variant rounded shrink-0">
+<span class="material-symbols-outlined text-primary" data-icon="receipt">receipt</span>
+</div>
+<div class="overflow-hidden">
+<div class="font-code-sm text-code-sm text-on-surface font-semibold truncate">PHIEU_CAN_63C12345.PDF</div>
+<div class="font-code-sm text-[10px] text-on-surface-variant">24.18t Gross • 14:12</div>
+</div>
+</div>
+<!-- Attachment 2: Cadmium Lab Report Preview -->
+<div class="bg-surface-container-lowest border border-outline-variant p-2 rounded flex items-center gap-2.5 hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 bg-surface-container flex items-center justify-center border border-outline-variant rounded shrink-0">
+<span class="material-symbols-outlined text-tertiary" data-icon="biotech">biotech</span>
+</div>
+<div class="overflow-hidden">
+<div class="font-code-sm text-code-sm text-on-surface font-semibold truncate">NAFIQAD_ICPMS_TEST.PDF</div>
+<div class="font-code-sm text-[10px] text-on-surface-variant">Cd: 0.028mg/kg • PASSED</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 2. BOT PROCESSING PILL -->
+<div class="flex items-center gap-2 pl-10 text-on-surface-variant font-code-sm text-code-sm">
+<span class="material-symbols-outlined text-primary text-body-sm" data-icon="smart_toy">smart_toy</span>
+<span>DuriOS Vision OCR &amp; Lab Engine parsed 2 attachments in 1.4s</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="text-primary font-mono">STATUS: 100% MATCH</span>
+</div>
+<!-- 3. BOT INTERACTIVE STRUCTURED VERIFICATION HERO CARD -->
+<div class="pl-10 max-w-3xl">
+<div class="bg-surface-container border border-outline-variant rounded overflow-hidden shadow-2xl relative">
+<!-- Top Status Track Indicator Line -->
+<div class="h-1 w-full bg-primary"></div>
+<!-- Card Header -->
+<div class="p-space-md border-b border-outline-variant bg-surface-container-high/60 flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-primary status-pulse-live"></span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold tracking-wide">
+                  MEKONG CLEAR AI // CONSIGNMENT VERIFICATION TELEGRAM
+                </span>
+</div>
+<div class="flex items-center gap-2">
+<span class="bg-primary/10 border border-primary text-primary font-label-sm text-label-sm px-2 py-0.5 rounded font-mono">
+                  CONFIDENCE 99.8%
+                </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">ID: #VRF-2024-8841</span>
+</div>
+</div>
+<!-- Core Extracted Data Bento Grid -->
+<div class="p-space-md grid grid-cols-3 gap-space-sm bg-surface-container-low">
+<!-- 1. Container ID -->
+<div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
+<div class="font-label-sm text-[10px] text-on-surface-variant uppercase mb-1">1. Container ISO ID</div>
+<div class="font-code-md text-code-md text-primary font-bold tracking-wider">MSKU 123456 5</div>
+<div class="font-code-sm text-[10px] text-secondary mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="check">check</span>
+                  Check digit [5] VALID
                 </div>
-                <div class="panel-content" style="padding: 24px; background: var(--bg-canvas); display: flex; flex-direction: column; justify-content: space-between;">
-
-                    <!-- Chat Messages Stream -->
-                    <div style="display: flex; flex-direction: column; gap: 16px; max-width: 800px; margin: 0 auto; width: 100%;">
-
-                        <!-- Driver/Clerk Message -->
-                        <div style="align-self: flex-end; max-width: 70%; background: #0284C7; color: white; padding: 12px 16px; border-radius: 12px 12px 0 12px; font-size: 13px;">
-                            Bác tài xe 63C-123.45 vừa kéo container vào bàn cân vựa. Em gửi ảnh phiếu Lab Cadimi và Packing List nhé anh! 🍈
-                            <div style="margin-top: 8px; background: rgba(0,0,0,0.2); padding: 8px; border-radius: 6px; font-size: 11px; display: flex; align-items: center; gap: 6px;">
-                                <span>📎 anh_phieu_lab_cadimi_xe63c.jpg (2.4 MB)</span>
-                            </div>
-                        </div>
-
-                        <!-- DuriOS Bot Reply -->
-                        <div style="align-self: flex-start; max-width: 75%; background: var(--bg-surface); border: 1px solid var(--border); padding: 16px; border-radius: 12px 12px 12px 0;">
-                            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
-                                <span style="font-size: 18px;">🍈</span>
-                                <strong style="font-size: 13px; color: var(--accent-primary);">Trợ Lý Bóc Tách DuriOS Bot</strong>
-                                <span style="font-size: 11px; color: var(--text-muted);">vừa xong</span>
-                            </div>
-                            <p style="font-size: 13px; color: var(--text-primary); line-height: 1.6;">
-                                Em đã quét xong ảnh phiếu Lab và Packing List của xe <strong>63C-123.45</strong>:
-                            </p>
-                            <div style="background: var(--bg-card); padding: 12px; border-radius: 6px; margin: 10px 0; font-family: var(--font-mono); font-size: 13px; line-height: 1.7; border: 1px solid var(--border);">
-                                &bull; Số Container: <strong>MSKU1234565</strong> (ISO Hợp lệ)<br>
-                                &bull; Số Chì Hải Quan: <strong>SEAL-VN-9872</strong> (Khớp Packing)<br>
-                                &bull; Hàm lượng Cadimi: <strong style="color: var(--accent-primary);">0.028 mg/kg</strong> (&le; 0.05 mg/kg - <strong>ĐẠT GACC</strong>)<br>
-                                &bull; Trọng lượng tịnh: <strong>18,240 kg</strong> (912 thùng)
-                            </div>
-                            <div style="display: flex; gap: 10px; margin-top: 12px;">
-                                <button class="btn btn-confirm" style="padding: 10px 18px;" onclick="alert('Đã chốt xe 63C-123.45! Báo cáo Zalo đã gửi cho chủ hàng.')">
-                                    &check; ĐỒNG Ý NIÊM PHONG (Enter)
-                                </button>
-                                <button class="btn btn-danger" style="padding: 10px 18px;" onclick="alert('Đã báo lỗi cho tài xế và kế toán vựa!')">
-                                    ⚠ BÁO LỖI SAI CHỨNG TỪ (Esc)
-                                </button>
-                            </div>
-                        </div>
-
-                    </div>
-
-                    <!-- Input Bar -->
-                    <div style="max-width: 800px; margin: 20px auto 0; width: 100%; display: flex; gap: 12px;">
-                        <input type="text" placeholder="Nhập tin nhắn hoặc kéo thả ảnh chứng từ vào đây..." style="flex: 1; padding: 12px 16px; background: var(--bg-surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text-primary); font-size: 13px; outline: none;">
-                        <button class="btn btn-confirm" style="padding: 0 20px;" onclick="alert('Đang tải ảnh lên bot...')">Gửi</button>
-                    </div>
-
+</div>
+<!-- 2. High-Security RFID Seal -->
+<div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
+<div class="font-label-sm text-[10px] text-on-surface-variant uppercase mb-1">2. High-Security RFID Seal</div>
+<div class="font-code-md text-code-md text-on-surface font-bold tracking-wider">SEAL-VN-9872</div>
+<div class="font-code-sm text-[10px] text-primary mt-0.5 flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="lock_clock">lock_clock</span>
+                  Tamper-proof RFID linked
                 </div>
+</div>
+<!-- 3. Heavy Metal Assay (Cadmium) -->
+<div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
+<div class="font-label-sm text-[10px] text-on-surface-variant uppercase mb-1">3. Cadmium ICP-MS Assay</div>
+<div class="font-code-md text-code-md text-primary font-bold">0.028 mg/kg</div>
+<div class="font-code-sm text-[10px] text-on-surface-variant mt-0.5">
+                  Limit ≤ 0.050 mg/kg (<span class="text-primary font-semibold">56% Safe Ceiling</span>)
+                </div>
+</div>
+<!-- 4. Weighbridge Net Weight -->
+<div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
+<div class="font-label-sm text-[10px] text-on-surface-variant uppercase mb-1">4. Net Cargo Weight</div>
+<div class="font-code-md text-code-md text-on-surface font-bold">18,240 kg</div>
+<div class="font-code-sm text-[10px] text-on-surface-variant mt-0.5">
+                  1,280 crates • Ri6 &amp; Monthong A
+                </div>
+</div>
+<!-- 5. Core Pulp Temp -->
+<div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
+<div class="font-label-sm text-[10px] text-on-surface-variant uppercase mb-1">5. Core Pulp Temp</div>
+<div class="font-code-md text-code-md text-secondary font-bold">+13.5°C</div>
+<div class="font-code-sm text-[10px] text-on-surface-variant mt-0.5">
+                  Target Reefer: +13.0°C to +14.0°C
+                </div>
+</div>
+<!-- 6. Orchard PUC Trace -->
+<div class="bg-surface-container-lowest p-2.5 rounded border border-outline-variant">
+<div class="font-label-sm text-[10px] text-on-surface-variant uppercase mb-1">6. Orchard PUC Trace</div>
+<div class="font-code-md text-code-md text-on-surface font-bold">VN-TG-OR-088</div>
+<div class="font-code-sm text-[10px] text-primary mt-0.5">
+                  GACC Decree 248 Whitelisted
+                </div>
+</div>
+</div>
+<!-- Giant Action CTAs Container -->
+<div class="p-space-md bg-surface-container-high border-t border-outline-variant space-y-space-sm">
+<div class="grid grid-cols-2 gap-space-md">
+<!-- APPROVE BUTTON -->
+<button class="bg-primary hover:bg-secondary text-surface-dim font-headline-sm text-body-lg font-bold py-3 px-space-md rounded flex items-center justify-center gap-2 transition-all active:scale-[0.99] shadow-lg">
+<span class="material-symbols-outlined text-headline-sm" data-icon="verified" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span>APPROVE &amp; SEAL CONTAINER</span>
+<span class="ml-1 bg-surface-dim/20 text-surface-dim font-code-sm text-code-sm px-1.5 py-0.5 rounded border border-surface-dim/30">ENTER ↵</span>
+</button>
+<!-- REJECT / QUARANTINE BUTTON -->
+<button class="bg-surface-container-lowest border border-error/50 hover:bg-error-container/20 text-error font-headline-sm text-body-lg font-bold py-3 px-space-md rounded flex items-center justify-center gap-2 transition-all active:scale-[0.99]">
+<span class="material-symbols-outlined text-headline-sm" data-icon="report_problem">report_problem</span>
+<span>HOLD / QUARANTINE</span>
+<span class="ml-1 bg-error-container/30 text-error font-code-sm text-code-sm px-1.5 py-0.5 rounded border border-error/40">ESC</span>
+</button>
+</div>
+<!-- Cryptographic Audit Footnote -->
+<div class="pt-1 flex items-center justify-between text-on-surface-variant font-code-sm text-[10px]">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[13px] text-primary" data-icon="shield">shield</span>
+<span>ECDSA P-256 Block #18,492,015 • Merkle: 3a7b9e1c4d8f...</span>
+</div>
+<span class="text-on-surface-variant/80">Auto-dispatches bilingual GACC e-Phyto telegram upon approval.</span>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. DRIVER FEEDBACK MESSAGE -->
+<div class="flex items-start gap-space-sm max-w-xl">
+<div class="w-8 h-8 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center font-code-sm text-on-surface shrink-0">
+            TX
+          </div>
+<div>
+<div class="flex items-baseline gap-2 mb-1">
+<span class="font-code-sm text-code-sm font-semibold text-on-surface">Nguyễn Văn Hùng</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">14:21</span>
+</div>
+<div class="bg-surface-container-high border border-outline-variant p-space-sm rounded text-on-surface text-body-md">
+              Dạ em đã chuẩn bị kẹp chì seal hải quan SEAL-VN-9872 ngay cổng xuất hàng rồi sếp. Chờ lệnh cấp mã thông quan.
             </div>
-        </section>
-</body>
-</html>
+</div>
+</div>
+</div>
+<!-- Center Chat Bottom Input Bar -->
+<div class="bg-surface-container-low border-t border-outline-variant p-space-md shrink-0 space-y-space-xs">
+<!-- Toolbar & Quick Suggestions -->
+<div class="flex items-center justify-between pb-1">
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" title="Attach Document / Photo">
+<span class="material-symbols-outlined text-body-md" data-icon="attach_file">attach_file</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" title="Scan Weighbridge Ticket">
+<span class="material-symbols-outlined text-body-md" data-icon="document_scanner">document_scanner</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-container-high text-on-surface-variant hover:text-primary transition-colors" title="Voice Message (Tiếng Việt)">
+<span class="material-symbols-outlined text-body-md" data-icon="mic">mic</span>
+</button>
+<div class="h-4 w-[1px] bg-outline-variant mx-1"></div>
+<!-- Quick Chips for Common Inspection Directives -->
+<div class="flex items-center gap-1.5">
+<button class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-surface-container border border-outline-variant font-code-sm text-code-sm text-on-surface transition-colors">
+                + Xe vào bốt số 2
+              </button>
+<button class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-surface-container border border-outline-variant font-code-sm text-code-sm text-on-surface transition-colors">
+                + Chờ kiểm tra mẫu
+              </button>
+<button class="px-2 py-0.5 rounded bg-surface-container-high hover:bg-surface-container border border-outline-variant font-code-sm text-code-sm text-primary transition-colors">
+                + Kẹp seal thành công
+              </button>
+</div>
+</div>
+<div class="font-code-sm text-[10px] text-on-surface-variant">
+            Zalo ZNS Official Account • Tien Giang Ops
+          </div>
+</div>
+<!-- Input Box -->
+<div class="flex items-center gap-space-sm">
+<div class="flex-1 relative">
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded px-space-md py-2 font-body-md text-on-surface placeholder-on-surface-variant/40 focus:outline-none focus:border-primary transition-colors" placeholder="Gửi tin nhắn hoặc lệnh điều phối qua Zalo ZNS tới tài xế (Enter để gửi)..." type="text"/>
+</div>
+<button class="bg-primary text-surface-dim hover:bg-secondary font-label-md text-label-md px-space-md py-2 rounded font-bold flex items-center gap-1.5 transition-colors active:scale-95 shadow">
+<span>Send</span>
+<span class="material-symbols-outlined text-body-md" data-icon="send">send</span>
+</button>
+</div>
+</div>
+</main>
+<!-- PANE D: RIGHT INSPECTION & DOSSIER QUICK-DRAWER (320px) -->
+<aside class="w-80 bg-surface-container-low border-l border-outline-variant flex flex-col shrink-0 overflow-y-auto custom-scrollbar">
+<!-- Drawer Header -->
+<div class="h-14 p-space-md border-b border-outline-variant bg-surface-container flex items-center justify-between shrink-0">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-headline-sm" data-icon="monitor_heart">monitor_heart</span>
+<span class="font-headline-sm text-headline-sm text-on-surface font-bold">Gate Telemetry</span>
+</div>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded bg-primary/10 border border-primary text-primary">LIVE BAY #4</span>
+</div>
+<div class="p-space-md space-y-space-md">
+<!-- MODULE 1: WEIGHBRIDGE LIVE SENSORS -->
+<div class="bg-surface-container border border-outline-variant rounded p-space-sm space-y-space-xs">
+<div class="flex items-center justify-between border-b border-outline-variant/60 pb-1">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Weighbridge Scale #04</span>
+<span class="font-code-sm text-[10px] text-primary">Calibrated (±0.1%)</span>
+</div>
+<div class="grid grid-cols-3 gap-1 pt-1 text-center font-mono">
+<div class="bg-surface-container-lowest p-1.5 rounded border border-outline-variant/40">
+<div class="text-[9px] text-on-surface-variant uppercase">Gross</div>
+<div class="text-code-md text-on-surface font-bold">24,180</div>
+<div class="text-[9px] text-on-surface-variant">kg</div>
+</div>
+<div class="bg-surface-container-lowest p-1.5 rounded border border-outline-variant/40">
+<div class="text-[9px] text-on-surface-variant uppercase">Tare</div>
+<div class="text-code-md text-on-surface font-bold">5,940</div>
+<div class="text-[9px] text-on-surface-variant">kg</div>
+</div>
+<div class="bg-surface-container-lowest p-1.5 rounded border border-primary/30">
+<div class="text-[9px] text-primary uppercase font-bold">Net Cargo</div>
+<div class="text-code-md text-primary font-bold">18,240</div>
+<div class="text-[9px] text-primary">kg</div>
+</div>
+</div>
+</div>
+<!-- MODULE 2: CCTV BAY #4 LPR SNAPSHOT -->
+<div class="bg-surface-container border border-outline-variant rounded p-space-sm space-y-space-xs">
+<div class="flex items-center justify-between border-b border-outline-variant/60 pb-1">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">CCTV Automated LPR Feed</span>
+<span class="font-code-sm text-[10px] text-secondary">Match: 100%</span>
+</div>
+<div class="relative w-full h-32 bg-surface-container-lowest rounded overflow-hidden border border-outline-variant flex items-center justify-center">
+<!-- Simulated CCTV Plate Feed Background Image -->
+<img class="w-full h-full object-cover opacity-60" data-alt="An industrial security CCTV night camera snapshot showing a commercial heavy trailer truck cab bearing Vietnamese license plate 63C-123.45 on a digital weighbridge bay. Monochromatic emerald night-vision surveillance aesthetic with crisp digital green bounding box and green telemetric overlays." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA17LIW1y54vdhmaohGQL2Ax5H0JXWfyw9BncLofthMkdoNrqvnxoLVWjq1MbkGYMaadxtVGv2zl8wtE5_XI_3VjrVY0uQXcg34H2fYoHUQj65xClEdsibekZmpcdwr2q5mxc_3YAOhr6sT4o1ySKNL0O3gf4-xcHeu5cp799Sw2kxgOR98dDn3ZCARNvVUSwLSu6zuy8TD2CY-tV_Pt_ac3XgDZV2J0MLML3i0hYFjs3Pq6Wr1HzPWwtkdZ92FO9DygUh8gkP_bFw"/>
+<!-- Visual Target Bounding Box -->
+<div class="absolute inset-x-8 inset-y-6 border-2 border-primary/80 bg-primary/10 rounded flex flex-col justify-between p-1">
+<div class="font-code-sm text-[9px] text-primary font-bold bg-surface-container-lowest px-1 w-max">
+                LPR: 63C-123.45
+              </div>
+<div class="text-right font-code-sm text-[8px] text-primary">
+                BAY 04 CAM-NORTHEAST
+              </div>
+</div>
+</div>
+</div>
+<!-- MODULE 3: REEFER TELEMETRY ENVELOPE -->
+<div class="bg-surface-container border border-outline-variant rounded p-space-sm space-y-space-xs">
+<div class="flex items-center justify-between border-b border-outline-variant/60 pb-1">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">Reefer Telematics Link</span>
+<span class="font-code-sm text-[10px] text-primary">BLE Connected</span>
+</div>
+<div class="space-y-1.5 pt-1 font-mono text-code-sm">
+<div class="flex justify-between items-center bg-surface-container-lowest px-2 py-1 rounded">
+<span class="text-on-surface-variant">Setpoint:</span>
+<span class="text-primary font-bold">+13.5°C</span>
+</div>
+<div class="flex justify-between items-center bg-surface-container-lowest px-2 py-1 rounded">
+<span class="text-on-surface-variant">Ambient Air:</span>
+<span class="text-tertiary">31.2°C (Mekong Delta)</span>
+</div>
+<div class="flex justify-between items-center bg-surface-container-lowest px-2 py-1 rounded">
+<span class="text-on-surface-variant">Cargo Humidity:</span>
+<span class="text-on-surface">88% RH</span>
+</div>
+<div class="flex justify-between items-center bg-surface-container-lowest px-2 py-1 rounded">
+<span class="text-on-surface-variant">Ethylene Level:</span>
+<span class="text-secondary">&lt; 0.05 ppm (Nominal)</span>
+</div>
+</div>
+</div>
+<!-- MODULE 4: AUTOMATED ZNS AUDIT DISPATCH LOG -->
+<div class="bg-surface-container border border-outline-variant rounded p-space-sm space-y-space-xs">
+<div class="flex items-center justify-between border-b border-outline-variant/60 pb-1">
+<span class="font-label-sm text-label-sm uppercase text-on-surface-variant">ZNS Transaction Events</span>
+<span class="material-symbols-outlined text-[13px] text-on-surface-variant" data-icon="receipt">receipt</span>
+</div>
+<div class="space-y-1 font-code-sm text-[10px] text-on-surface-variant pt-1">
+<div class="flex gap-2">
+<span class="text-primary font-semibold">14:20:12</span>
+<span>ZNS Sent: "Đã tiếp nhận hồ sơ xe 63C-123.45"</span>
+</div>
+<div class="flex gap-2">
+<span class="text-primary font-semibold">14:21:40</span>
+<span>OCR Completed: "Dữ liệu hợp lệ chuẩn GACC 2024-C7"</span>
+</div>
+<div class="flex gap-2 opacity-60">
+<span class="text-on-surface-variant">14:22:05</span>
+<span>Webhook acknowledge: 200 OK (Zalo OA)</span>
+</div>
+</div>
+</div>
+<!-- QUICK ACTION DRAWER BUTTONS -->
+<div class="pt-2 space-y-2">
+<button class="w-full bg-surface-container-high hover:bg-surface-container border border-outline-variant text-on-surface font-code-sm text-code-sm py-2 rounded flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-body-md text-primary" data-icon="download">download</span>
+<span>Download Signed Air-gap Tarball</span>
+</button>
+<button class="w-full bg-primary-container text-on-primary-container hover:bg-primary font-label-md text-label-md py-2 rounded font-semibold flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-body-md" data-icon="qr_code">qr_code</span>
+<span>Generate Zalo QR Pass for Driver</span>
+</button>
+</div>
+</div>
+</aside>
+</div>
+<!-- Micro-interaction key handlers for rapid customs clearance simulation -->
+<script>
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
+        alert('Consignment MSKU 123456 5 approved! Cryptographic clearance telegram dispatched.');
+      }
+      if (e.key === 'Escape') {
+        console.log('Inspection modal or current selection dismissed.');
+      }
+    });
+  </script>
+</body></html>
