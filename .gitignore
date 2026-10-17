@@ -4,6 +4,12 @@ data/*.db-wal
 data/*.db-shm
 data/uploads/*
 !data/uploads/.gitkeep
+data/backups/
+.env
+.env.*
+!.env.example
+*.pem
+*.key
 .DS_Store
 dist/
 coverage/

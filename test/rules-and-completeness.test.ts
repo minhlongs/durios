@@ -6,7 +6,9 @@ import type { AuthenticatedActor, ComplianceRule } from "../src/domain/types.js"
 const CLERK: AuthenticatedActor = {
   id: "usr-clerk-01",
   tenantId: "ten-cailay-001",
+  tenantType: "PACKHOUSE_EXPORTER",
   role: "CLERK",
+  persona: "PACKHOUSE_CLERK",
   name: "Clerk Le",
 };
 

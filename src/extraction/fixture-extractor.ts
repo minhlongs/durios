@@ -1,4 +1,5 @@
 import type { ExtractedField, DocumentType } from "../domain/types.js";
+import type { DocumentExtractorAdapter, ExtractionContext } from "./extractor-types.js";
 
 export interface SyntheticDocumentFixture {
   readonly documentType: DocumentType;
@@ -43,13 +44,33 @@ export function extractSyntheticFields(
         width: 250,
         height: 25,
       },
-      verificationStatus: "DRAFT", // strictly untrusted draft on creation
+      verificationStatus: "DRAFT",
     });
     idx++;
   }
 
   return fields;
 }
+
+export class FixtureDocumentExtractorAdapter implements DocumentExtractorAdapter {
+  public readonly extractorId = "fixture-synthetic-extractor";
+  public readonly extractorName = "Deterministic Synthetic Fixture Extractor";
+  public readonly isAvailable = true;
+
+  public supports(_docType: DocumentType, _mimeType: string): boolean {
+    return true;
+  }
+
+  public extractFields(
+    _fileBuffer: Uint8Array,
+    context: ExtractionContext,
+    fixtureOverrides?: Record<string, { raw: string; confirmed?: string }>
+  ): readonly ExtractedField[] {
+    return extractSyntheticFields(context.documentId, context.documentType, fixtureOverrides);
+  }
+}
+
+export const defaultFixtureExtractor = new FixtureDocumentExtractorAdapter();
 
 function formatFieldLabel(key: string): string {
   return key
@@ -58,7 +79,7 @@ function formatFieldLabel(key: string): string {
     .join(" ");
 }
 
-function getDefaultTemplateFields(
+export function getDefaultTemplateFields(
   docType: DocumentType
 ): Record<string, { raw: string }> {
   switch (docType) {

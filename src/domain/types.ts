@@ -1,31 +1,27 @@
-export type UserRole = "CLERK" | "MANAGER" | "ADMIN";
+export type UserRole = "CLERK" | "MANAGER" | "ADMIN" | "AUDITOR" | "VIEWER";
+
+export type TenantType = "ORCHARD_COOP" | "PACKHOUSE_EXPORTER" | "BUYER_IMPORTER" | "INSPECTION_AUDITOR";
+
+export type ProductPersona =
+  | "ORCHARD_OFFICER" | "PACKHOUSE_CLERK" | "PACKHOUSE_MANAGER" | "BUYER_VIEWER" | "SYSTEM_AUDITOR";
 
 export interface AuthenticatedActor {
   readonly id: string;
   readonly tenantId: string;
   readonly role: UserRole;
   readonly name: string;
+  readonly tenantType: TenantType;
+  readonly persona: ProductPersona;
 }
 
 export type DossierLifecycleState =
-  | "DRAFT"
-  | "DOCUMENTS_PENDING"
-  | "PROCESSING"
-  | "HUMAN_VERIFICATION_REQUIRED"
-  | "VALIDATION_BLOCKED"
-  | "REVIEW_REQUIRED"
-  | "READY_FOR_REVIEW"
-  | "APPROVED_FOR_EXPORT"
-  | "EXPORTED"
-  | "CLOSED"
-  | "CANCELLED";
+  | "DRAFT" | "DOCUMENTS_PENDING" | "PROCESSING" | "HUMAN_VERIFICATION_REQUIRED"
+  | "VALIDATION_BLOCKED" | "REVIEW_REQUIRED" | "READY_FOR_REVIEW"
+  | "APPROVED_FOR_EXPORT" | "EXPORTED" | "CLOSED" | "CANCELLED";
 
 export type DocumentType =
-  | "LAB_TEST_REPORT"
-  | "PACKING_LIST"
-  | "PHYTOSANITARY_CERTIFICATE"
-  | "CUSTOMS_DECLARATION"
-  | "BILL_OF_LADING";
+  | "LAB_TEST_REPORT" | "PACKING_LIST" | "PHYTOSANITARY_CERTIFICATE"
+  | "CUSTOMS_DECLARATION" | "BILL_OF_LADING";
 
 export type FieldVerificationStatus = "DRAFT" | "HUMAN_VERIFIED" | "REJECTED";
 
@@ -62,6 +58,7 @@ export interface IngestedDocument {
   readonly fileSize: number;
   readonly mimeType: string;
   readonly sha256Hash: string;
+  readonly storagePath?: string | undefined;
   readonly uploadedAt: string;
   readonly isSuperseded: boolean;
   readonly extractedFields: readonly ExtractedField[];
@@ -82,11 +79,8 @@ export interface ComplianceRule {
   readonly threshold?: number | undefined;
   readonly unit?: string | undefined;
   readonly evaluationType:
-    | "DOCUMENT_PRESENCE"
-    | "NUMERIC_THRESHOLD"
-    | "ALGORITHMIC_CHECKSUM"
-    | "CROSS_DOCUMENT_EQUALITY"
-    | "CHRONOLOGICAL_SANITY";
+    | "DOCUMENT_PRESENCE" | "NUMERIC_THRESHOLD" | "ALGORITHMIC_CHECKSUM"
+    | "CROSS_DOCUMENT_EQUALITY" | "CHRONOLOGICAL_SANITY";
 }
 
 export interface ValidationFinding {
@@ -102,12 +96,8 @@ export interface ValidationFinding {
 
 export interface ValidationRunResult {
   readonly status:
-    | "PASSED"
-    | "BLOCKED"
-    | "REVIEW_REQUIRED"
-    | "DOCUMENTS_MISSING"
-    | "HUMAN_VERIFICATION_REQUIRED"
-    | "RULE_UNVERIFIED";
+    | "PASSED" | "BLOCKED" | "REVIEW_REQUIRED"
+    | "DOCUMENTS_MISSING" | "HUMAN_VERIFICATION_REQUIRED" | "RULE_UNVERIFIED";
   readonly criticalBlockers: number;
   readonly advisoryWarnings: number;
   readonly evaluatedRulesCount: number;

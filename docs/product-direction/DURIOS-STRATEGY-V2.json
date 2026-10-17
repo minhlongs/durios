@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "name": "DuriOS — Verified Durian Trade Network",
+  "document_code": "docs/product-direction/DURIOS-STRATEGY-V2.json",
+  "version": "2.1.0-draft",
+  "updated_at": "2026-10-17T13:45:00Z",
+  "approval_status": "DRAFT_FOR_FOUNDER_REVIEW",
+  "approved_by": null,
+  "approved_at": null,
+  "source_of_truth": {
+    "approved_baseline": "docs/product-direction/PRODUCT-PRD-V1.md",
+    "approved_architecture": "docs/product-direction/PRODUCT-ARCHITECTURE-AND-ROADMAP-V1.md",
+    "approved_pilot_gates": "docs/pilot-readiness/01_SINGLE_SITE_READINESS_AND_LAUNCH_GATE.md",
+    "vision_v2": "docs/product-direction/PRODUCT-VISION-V2.md",
+    "prd_v2": "docs/product-direction/PRODUCT-PRD-V2.md",
+    "architecture_v2": "docs/product-direction/PRODUCT-ARCHITECTURE-AND-ROADMAP-V2.md",
+    "economics_v2": "docs/product-direction/VALIDATION-AND-ECONOMICS-V2.md"
+  },
+  "stage": "STAGE_0_SINGLE_SITE_PROTOTYPE",
+  "model": "Operating System for Verified Durian Trade (Local Core + Opt-in Network)",
+  "vision": {
+    "founder_metaphor": "DuriOS là Grab trong chuỗi giá trị sầu riêng xuất khẩu khu vực Đông Nam Á",
+    "strategic_positioning": "Hệ điều hành biến một container sầu riêng thành giao dịch xuất khẩu có thể kiểm chứng, điều phối và giao dịch được",
+    "atomic_business_unit": "Verified Export Shipment / Verified Container",
+    "disclaimer": "Grab là ẩn dụ về điều phối mạng lưới đa bên; không sao chép super-app B2C, trợ giá hay mở sàn tự do"
+  },
+  "market_facts_official_sep_2026": {
+    "vietnam_active_packhouses": 281,
+    "vietnam_registered_puc_orchards": 1599,
+    "vietnam_durian_export_2025_usd": 3850000000,
+    "vietnam_durian_export_8m_2026_usd": 1970000000,
+    "china_import_market_2024_usd": 6990000000,
+    "thailand_share_of_china_imports_2024_pct": 57,
+    "malaysia_approved_fresh_durian_packhouses_2025": 52
+  },
+  "economic_truth_and_target_arr": {
+    "target_amount_usd": 1000000,
+    "saas_price_per_packhouse_vnd_year": 60000000,
+    "exchange_rate_vnd_usd": 25637,
+    "max_vietnam_saas_arr_usd": 657643,
+    "sites_required_for_one_million_arr_saas_only": 427,
+    "conclusion": "427 vựa > 281 vựa thực tế. Bắt buộc phải là Multi-Revenue Stack (Core + Verification Modules + Network Fee + Transaction Orchestration) hoặc Regional Expansion."
+  },
+  "north_star_metrics": [
+    "Verified GMV",
+    "Revenue per Verified Container",
+    "Gross Profit per Container",
+    "CAC Payback (< 12 months)",
+    "Cross-organization Network Density"
+  ],
+  "first_container_measurements": [
+    "minutesSavedPerContainer",
+    "humanTouchesPerContainer",
+    "exceptionsDiscoveredPerContainer",
+    "expectedLossAvoidedVnd"
+  ],
+  "core_shipment_ontology_entities": [
+    "Organization",
+    "ProductionSource",
+    "Lot",
+    "TestEvidence",
+    "Document",
+    "Container",
+    "Seal",
+    "CustodyEvent",
+    "Exception",
+    "Trade",
+    "Permission"
+  ],
+  "four_layer_product_stack": [
+    "1. Container Truth Engine",
+    "2. Verified Organization Network",
+    "3. Closed Transaction Network",
+    "4. Transaction Rails"
+  ],
+  "moat_ladder": [
+    "1. Workflow Moat",
+    "2. Evidence Moat",
+    "3. Outcome Moat",
+    "4. Reputation Moat",
+    "5. Network Moat",
+    "6. Regulatory Adapter Moat"
+  ],
+  "anti_goals": [
+    "Không cạnh tranh với Nhà nước bằng generic traceability",
+    "Không gọi blockchain là moat",
+    "Không giữ tiền khách hàng (Zero-Custody)",
+    "Không tuyên bố đảm bảo thông quan",
+    "Không mở public marketplace trước khi closed network có thanh khoản"
+  ],
+  "launch_guardrails": {
+    "gate_01_legal_consent": "PENDING_SIGN_OFF",
+    "gate_02_site_selection": "PENDING_FOUNDER_SELECTION",
+    "gate_03_otp_readiness": "PENDING_PROVIDER_STAGING_DRILL",
+    "gate_04_security_hardening": "PENDING_ONPREM_HARDENING",
+    "gate_05_rehearsal_kpi": "READY_FOR_REHEARSAL",
+    "customer_real_data_policy": "STRICTLY_PROHIBITED_UNTIL_ALL_5_GATES_PASS"
+  }
+}

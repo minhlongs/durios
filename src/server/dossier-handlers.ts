@@ -1,13 +1,26 @@
 import type { ContainerDossierWorkspace } from "../workspace/container-dossier-workspace.js";
 import type { AuthenticatedActor } from "../domain/types.js";
-import { errorResponse, jsonResponse, type CreateDossierRequestBody } from "./server-types.js";
+import { assertCanCreateContainerDossier, assertValidActor } from "../auth/rbac-policy.js";
+import { redactDossierForActor, redactDossierListForActor } from "../sharing/dossier-redactor.js";
+import {
+  errorResponse,
+  jsonResponse,
+  mapDomainErrorToResponse,
+  type CreateDossierRequestBody,
+} from "./server-types.js";
 
 export async function handleListDossiers(
   workspace: ContainerDossierWorkspace,
   actor: AuthenticatedActor
 ): Promise<Response> {
-  const dossiers = workspace.listDossiers(actor);
-  return jsonResponse({ success: true, count: dossiers.length, data: dossiers });
+  try {
+    assertValidActor(actor);
+    const dossiers = workspace.listDossiers(actor);
+    const safeDossiers = redactDossierListForActor(dossiers, actor, workspace.shareManager);
+    return jsonResponse({ success: true, count: safeDossiers.length, data: safeDossiers });
+  } catch (err) {
+    return mapDomainErrorToResponse(err, "Failed to list dossiers");
+  }
 }
 
 export async function handleCreateDossier(
@@ -15,6 +28,12 @@ export async function handleCreateDossier(
   actor: AuthenticatedActor,
   req: Request
 ): Promise<Response> {
+  try {
+    assertCanCreateContainerDossier(actor);
+  } catch (err) {
+    return mapDomainErrorToResponse(err, "Unauthorized to create dossier");
+  }
+
   let body: CreateDossierRequestBody;
   try {
     body = (await req.json()) as CreateDossierRequestBody;
@@ -42,8 +61,7 @@ export async function handleCreateDossier(
     );
     return jsonResponse({ success: true, data: dossier }, 201);
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Failed to create dossier";
-    return errorResponse(message, 400);
+    return mapDomainErrorToResponse(err, "Failed to create dossier");
   }
 }
 
@@ -52,11 +70,17 @@ export function handleGetDossier(
   actor: AuthenticatedActor,
   dossierId: string
 ): Response {
-  const dossier = workspace.getDossier(dossierId, actor);
-  if (!dossier) {
-    return errorResponse(`Dossier '${dossierId}' not found`, 404);
+  try {
+    assertValidActor(actor);
+    const dossier = workspace.getDossier(dossierId, actor);
+    if (!dossier) {
+      return errorResponse(`Dossier '${dossierId}' not found`, 404);
+    }
+    const safeDossier = redactDossierForActor(dossier, actor, workspace.shareManager);
+    return jsonResponse({ success: true, data: safeDossier });
+  } catch (err) {
+    return mapDomainErrorToResponse(err, "Failed to retrieve dossier");
   }
-  return jsonResponse({ success: true, data: dossier });
 }
 
 export function handleRunValidation(
@@ -65,11 +89,13 @@ export function handleRunValidation(
   dossierId: string
 ): Response {
   try {
+    if (!workspace.getRawDossier(dossierId)) {
+      return errorResponse(`Dossier '${dossierId}' not found`, 404);
+    }
     const result = workspace.runValidation(dossierId, actor);
     return jsonResponse({ success: true, data: result });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Validation run failed";
-    return errorResponse(message, 400);
+    return mapDomainErrorToResponse(err, "Validation run failed");
   }
 }
 
@@ -79,11 +105,13 @@ export function handleApproveForExport(
   dossierId: string
 ): Response {
   try {
+    if (!workspace.getRawDossier(dossierId)) {
+      return errorResponse(`Dossier '${dossierId}' not found`, 404);
+    }
     const dossier = workspace.approveForExport(dossierId, actor);
     return jsonResponse({ success: true, data: dossier });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Export approval rejected";
-    return errorResponse(message, 403);
+    return mapDomainErrorToResponse(err, "Export approval rejected");
   }
 }
 
@@ -93,11 +121,13 @@ export function handleExportDossier(
   dossierId: string
 ): Response {
   try {
+    if (!workspace.getRawDossier(dossierId)) {
+      return errorResponse(`Dossier '${dossierId}' not found`, 404);
+    }
     const manifest = workspace.exportDossier(dossierId, actor);
     return jsonResponse({ success: true, data: manifest });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Export compilation failed";
-    return errorResponse(message, 400);
+    return mapDomainErrorToResponse(err, "Export compilation failed");
   }
 }
 
@@ -106,9 +136,14 @@ export function handleGetExportManifest(
   actor: AuthenticatedActor,
   dossierId: string
 ): Response {
-  const manifest = workspace.getExportManifest(dossierId, actor);
-  if (!manifest) {
-    return errorResponse(`No sealed export manifest found for dossier '${dossierId}'`, 404);
+  try {
+    assertValidActor(actor);
+    const manifest = workspace.getExportManifest(dossierId, actor);
+    if (!manifest) {
+      return errorResponse(`No sealed export manifest found for dossier '${dossierId}'`, 404);
+    }
+    return jsonResponse({ success: true, data: manifest });
+  } catch (err) {
+    return mapDomainErrorToResponse(err, "Failed to retrieve export manifest");
   }
-  return jsonResponse({ success: true, data: manifest });
 }

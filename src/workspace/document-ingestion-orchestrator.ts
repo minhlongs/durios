@@ -1,8 +1,13 @@
 import { validateIncomingFile } from "../ingestion/file-validator.js";
 import { calculateSha256 } from "../ingestion/document-hasher.js";
-import { extractSyntheticFields } from "../extraction/fixture-extractor.js";
+import type {
+  DocumentExtractorAdapter,
+  ExtractionContext,
+  FixtureFieldOverrides,
+} from "../extraction/extractor-types.js";
+import { defaultExtractorRegistry } from "../extraction/composite-extractor-registry.js";
 import { DossierFsmError } from "../domain/dossier-fsm.js";
-import type { AuditLedger } from "../audit/audit-ledger.js";
+import type { AuditLedgerLike } from "./workspace-types.js";
 import type {
   AuthenticatedActor,
   ContainerDossier,
@@ -16,11 +21,16 @@ export function handleDocumentUpload(
   originalFileName: string,
   documentType: DocumentType,
   actor: AuthenticatedActor,
-  auditLedger: AuditLedger,
-  fixtureFields?: Record<string, { raw: string; confirmed?: string }>
+  auditLedger: AuditLedgerLike,
+  fixtureFields?: FixtureFieldOverrides,
+  extractor?: DocumentExtractorAdapter
 ): { readonly updatedDossier: ContainerDossier; readonly document: IngestedDocument } {
   if (dossier.isImmutable) {
-    throw new DossierFsmError("Cannot upload to sealed dossier", dossier.lifecycleState, dossier.lifecycleState);
+    throw new DossierFsmError(
+      "Cannot upload to sealed dossier",
+      dossier.lifecycleState,
+      dossier.lifecycleState
+    );
   }
 
   const fileVal = validateIncomingFile(fileBuffer, originalFileName);
@@ -53,7 +63,27 @@ export function handleDocumentUpload(
     return d;
   });
 
-  const candidateFields = extractSyntheticFields(docId, documentType, fixtureFields);
+  const extractionContext: ExtractionContext = {
+    documentId: docId,
+    documentType,
+    fileName: originalFileName,
+    mimeType: fileVal.detectedMime,
+    sha256Hash: sha256,
+  };
+
+  let candidateFields =
+    extractor && extractor.isAvailable && extractor.supports(documentType, fileVal.detectedMime)
+      ? extractor.extractFields(fileBuffer, extractionContext, fixtureFields)
+      : [];
+
+  if (candidateFields.length === 0) {
+    candidateFields = defaultExtractorRegistry.extractFieldsSync(
+      fileBuffer,
+      extractionContext,
+      fixtureFields
+    );
+  }
+
   const newDoc: IngestedDocument = {
     id: docId,
     dossierId: dossier.id,

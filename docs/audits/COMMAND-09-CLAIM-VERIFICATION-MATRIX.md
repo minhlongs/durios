@@ -1,0 +1,21 @@
+# DuriOS Claim Verification Matrix: Commands #07 & #08
+## Supreme Command #09: Deliverable 2 — Forensic Claims Audit
+
+**Audit Objective:** Evaluate every material technical, regulatory, operational, and commercial claim made in prior reports against empirical source-code evidence, reproducible tests, and physical reality.
+
+---
+
+## 1. Matrix of Claim Verifications
+
+| ID | Prior Claim | Origin | Repository Evidence | Classification | Audit Finding & Correction |
+|---|---|---|---|---|---|
+| **CLM-01** | *Local Container Dossier persistence survives complete OS process restart without data loss.* | Command #07 / #08 | `test/process-restart-persistence.test.ts` (Lines 1-135) executes real `Bun.spawn`, `SIGTERM`, separate ports/databases, verifies recovery. | **VERIFIED** | Source code and integration test prove true process persistence. Dossier, files, documents, and audit logs persist across independent PIDs. |
+| **CLM-02** | *Dual-write failures between OS filesystem and SQLite are mitigated by compensating cleanup.* | Command #07 / #08 | `src/workspace/container-dossier-workspace.ts:168-177` & `test/adversarial-verification.test.ts:31-72` | **VERIFIED** | Compensating deletion works for uncommitted single writes. However, system crash *between* disk write and DB commit remains an un-journaled partial-write window. |
+| **CLM-03** | *Mutating or verifying a field invalidates stale validation passes and prevents bypass.* | Command #07 / #08 | `src/workspace/container-dossier-workspace.ts:251-260` & `test/adversarial-verification.test.ts:74-118` | **VERIFIED** | Field verification clears `latestValidationResult` to `undefined` and rolls lifecycle state to `HUMAN_VERIFICATION_REQUIRED`. Stale bypass is impossible. |
+| **CLM-04** | *Audit ledger forms a tamper-evident SHA-256 hash chain detecting unauthorized DB edits.* | Command #07 / #08 | `src/storage/sqlite-audit-ledger.ts:60-120` & `test/adversarial-verification.test.ts:145-188` | **VERIFIED** | Tamper **detection** is verified (modifying payload breaks `verifyIntegrity()`). Tamper **resistance** is NOT achieved: a rogue actor with direct SQLite write access can recompute all hashes. |
+| **CLM-05** | *Path traversal attacks via filenames (e.g. `../../etc/passwd`) are blocked.* | Command #07 / #08 | `src/storage/file-storage-service.ts:46-55` & `test/adversarial-verification.test.ts:228-245` | **VERIFIED** | `resolveSafePath` enforces that resolved path starts with `this.storageDir`. Traversal attempts throw `Security violation`. |
+| **CLM-06** | *GB 2762-2022 Cadmium statutory limit (0.050 mg/kg) is enforced as a legal rule in DuriOS.* | Early Audit-03 Drafts | `src/rules/rule-catalog.ts:77-106` | **CONTRADICTED** | `RUL-GB2762-CD` is quarantined and disabled (`isActive: false`). Only the internal packhouse safety buffer of 0.040 mg/kg (`RUL-INT-CD-WARN`) is active as an advisory warning. |
+| **CLM-07** | *Actor roles (MANAGER, CLERK) enforce robust authentication preventing spoofing.* | Command #06 / #07 | `src/server/actor-resolver.ts:11-20` | **CONTRADICTED** | In the current prototype, actors are resolved via unauthenticated `x-actor-role` headers or `?role=` query parameters. Any HTTP client can spoof `MANAGER`. Acceptable ONLY for local single-user testing; strictly blocks multi-tenant pilot. |
+| **CLM-08** | *180 packhouses in Cai Lậy and Krông Pắc constitute the immediately addressable SAM.* | Audit-03 Market Model | `docs/field-discovery/06_FIELD_EVIDENCE_REGISTER.md` | **ASSUMPTION** | Number derived from secondary aggregate statistics. Unverified whether facilities have operational container volume (>3 cont/week), internet connectivity, or software willingness-to-pay. |
+| **CLM-09** | *Customers are willing to pay 5,000,000 VND for a 5-container pilot.* | Audit-03 Economics | `docs/field-discovery/05_WILLINGNESS_TO_PAY_INTERVIEW_GUIDE.md` | **ASSUMPTION** | Zero commercial contracts, LOIs, or customer deposits have been executed to date. WTP remains an unvalidated hypothesis. |
+| **CLM-10** | *Tranche 1 expenditure is 0 VND out of authorized 7,500,000 VND.* | Command #08 Checkpoint | Financial ledger check | **REPORTED ONLY** | No debits reported by founder, but zero physical bank statements or formal expense registers have been audited. |

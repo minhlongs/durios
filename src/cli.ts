@@ -6,13 +6,17 @@ async function runDemo(): Promise<void> {
   const clerk: AuthenticatedActor = {
     id: "usr-clerk-01",
     tenantId: "ten-cailay-001",
+    tenantType: "PACKHOUSE_EXPORTER",
     role: "CLERK",
+    persona: "PACKHOUSE_CLERK",
     name: "Nguyen Van A (Documentation Clerk)",
   };
   const manager: AuthenticatedActor = {
     id: "usr-mgr-01",
     tenantId: "ten-cailay-001",
+    tenantType: "PACKHOUSE_EXPORTER",
     role: "MANAGER",
+    persona: "PACKHOUSE_MANAGER",
     name: "Tran Thi B (Packhouse Operations Manager)",
   };
 

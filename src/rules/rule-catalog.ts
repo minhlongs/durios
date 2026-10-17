@@ -27,11 +27,11 @@ export const STATUTORY_COMPLIANCE_RULES: readonly ComplianceRule[] = [
     ruleId: "RUL-GB2762-CD",
     name: "Statutory Maximum Cadmium Residue Limit (MRL)",
     severity: "CRITICAL_BLOCKER",
-    description: "Enforces strict statutory limit of 0.050 mg/kg on fresh durian pulp under PRC Food Safety Standard.",
+    description: "Statutory limit of 0.050 mg/kg under PRC GB 2762-2022 (UNVERIFIED - Disabled pending authoritative legal gazette text).",
     governingAuthority: "National Health Commission (NHC) & SAMR PRC",
-    statutoryReference: "GB 2762-2022 Table 1 (Contaminants in Food - Cadmium in Fresh Fruit)",
-    isActive: true,
-    isStatutoryVerified: true,
+    statutoryReference: "GB 2762-2022 Table 1 (Pending authoritative text verification)",
+    isActive: false, // DISABLED: Primary legal evidence not present in repository
+    isStatutoryVerified: false, // UNVERIFIED
     fieldKeyRef: "cadmium_mg_kg",
     threshold: 0.050,
     unit: "mg/kg",

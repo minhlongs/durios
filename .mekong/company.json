@@ -1,0 +1,42 @@
+{
+  "name": "DuriOS",
+  "stage": "zero",
+  "model": "Phần mềm B2B chuyên ngành cho vựa sầu riêng: bắt đầu bằng quy trình hồ sơ riêng, cài tại chỗ; chỉ mở mạng lưới giao dịch đa bên sau khi kiểm chứng",
+  "target_arr": "Mục tiêu tham vọng 1 triệu USD ARR quy đổi; không phải dự báo và chưa có dữ liệu giá hay quy mô thị trường được kiểm chứng để làm căn cứ",
+  "icp": "Vựa đóng gói hoặc doanh nghiệp xuất khẩu sầu riêng tươi của Việt Nam sang Trung Quốc; ban đầu là một cơ sở có thể tiếp cận tại Cai Lậy, có lượng container thường xuyên, người phụ trách chứng từ cụ thể và người có quyền duyệt pilot trả phí",
+  "moat": "Giả thuyết khác biệt tiềm năng: đối soát hồ sơ container theo nghiệp vụ của vựa, bằng chứng gắn với nguồn, con người xác minh, chia sẻ giới hạn theo tổ chức và nhật ký kiểm toán giúp phát hiện can thiệp trong quy trình cài tại chỗ, ưu tiên quyền riêng tư. Lợi thế này chưa được kiểm chứng; đã có các đối thủ cung cấp giải pháp truy xuất rộng hơn.",
+  "agents": {
+    "Founder / CEO": "Chịu trách nhiệm về các cổng sản phẩm, khảo sát thực địa, cam kết với khách hàng, phê duyệt vốn và mọi tuyên bố đối ngoại",
+    "Product and Operations": "Ghi nhận quy trình của vựa, cấu hình pilot, lưu bằng chứng chấp thuận, đo kết quả theo từng container và hỗ trợ khách hàng",
+    "Engineering and Security": "Duy trì quy trình hồ sơ, phân quyền, sao lưu/khôi phục, kiểm soát triển khai và ứng phó sự cố",
+    "Revenue and Customer Discovery": "Phỏng vấn dựa trên bằng chứng, kiểm tra thẩm quyền mua và mức giá, phụ trách chuyển đổi pilot",
+    "Governance and Legal": "Con người rà soát quyền riêng tư, tuyên bố về quy định xuất khẩu, hợp đồng, nghĩa vụ thương mại điện tử và mọi đối tác thanh toán chịu quản lý"
+  },
+  "okrs": [
+    "Q4 2026: Hoàn tất nghiệm thu bản trình diễn bằng dữ liệu tổng hợp và vượt qua mọi cổng khai trương áp dụng cho một địa điểm trước khi nạp dữ liệu khách hàng thật; được một cơ sở chấp thuận và ký văn bản đồng ý sử dụng dữ liệu.",
+    "Q1 2027: Nếu các cổng về địa điểm và bảo mật đạt yêu cầu, hoàn tất pilot trả phí cho 5 container, với thời gian đối soát hồ sơ trung bình dưới 5 phút, không bỏ sót lỗi container/kẹp chì/chứng từ được cài vào để kiểm tra, và ghi nhận quyết định của bên mua về việc chuyển sang hợp đồng năm."
+  ],
+  "next_steps": [
+    "Xác nhận quyền tiếp cận một vựa tại Cai Lậy, xin Founder duyệt địa điểm và có văn bản đồng ý sử dụng dữ liệu đã ký.",
+    "Chọn nhà cung cấp OTP và hoàn tất diễn tập trên môi trường staging bằng thông tin xác thực thật, không sử dụng dữ liệu khách hàng thật.",
+    "Hoàn tất cấu hình HTTPS, giới hạn mạng, mã hóa ổ đĩa và bản sao lưu, quản lý bí mật truy cập và diễn tập khôi phục phù hợp với địa điểm.",
+    "Chạy bản trình diễn đầu cuối bằng dữ liệu tổng hợp và quy trình KPI pilot, bao gồm cả hai tình huống cài lỗi để kiểm tra mù.",
+    "Kiểm tra giả thuyết giá pilot trả phí và giá thuê bao năm với người có quyền quyết định chi; chỉ tiếp tục khi có bằng chứng qua cổng được ghi nhận."
+  ],
+  "commercial_hypotheses_vnd": {
+    "paid_pilot": "5,000,000 VND cho 5 container; giả thuyết chưa được kiểm chứng",
+    "annual_subscription": "60,000,000 VND mỗi năm cho mỗi vựa; giả thuyết chưa được kiểm chứng",
+    "setup_fee": "10,000,000 VND cho mỗi vựa; giả thuyết chưa được kiểm chứng"
+  },
+  "launch_guardrails": [
+    "Không sử dụng dữ liệu khách hàng thật cho đến khi cả năm cổng khai trương tại một địa điểm đều đạt và sự đồng ý được ghi nhận.",
+    "DuriOS hỗ trợ chuẩn bị hồ sơ nội bộ; không bảo đảm thông quan và không cấp chứng nhận hữu cơ.",
+    "DuriOS không giữ tiền của bên mua hay bên bán; mọi luồng ký quỹ trong tương lai cần có đối tác được cấp phép và được rà soát pháp lý.",
+    "Chỉ xem xét mở sàn công khai sau cổng pilot kín và hoàn tất rà soát pháp lý, bảo mật trước khi khai trương."
+  ],
+  "source_of_truth": [
+    "docs/product-direction/PRODUCT-PRD-V1.md (được phê duyệt 2026-10-14)",
+    "docs/product-direction/PRODUCT-ARCHITECTURE-AND-ROADMAP-V1.md (được phê duyệt 2026-10-14)",
+    "docs/pilot-readiness/01_SINGLE_SITE_READINESS_AND_LAUNCH_GATE.md"
+  ]
+}

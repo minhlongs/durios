@@ -1,5 +1,5 @@
 import { calculateSha256 } from "../ingestion/document-hasher.js";
-import type { AuditEvent, AuthenticatedActor } from "../domain/types.js";
+import type { AuditEvent, AuthenticatedActor, UserRole } from "../domain/types.js";
 import type { SqliteClient } from "./sqlite-client.js";
 
 const GENESIS_HASH = "GENESIS-0000000000000000000000000000000000000000000000000000000000000000";
@@ -163,7 +163,7 @@ function mapAuditRowToEvent(r: AuditRow): AuditEvent {
     tenantId: r.tenant_id,
     dossierId: r.dossier_id ?? "",
     actorId: r.actor_id,
-    actorRole: r.actor_role as any,
+    actorRole: r.actor_role as UserRole,
     eventType: r.event_type,
     entityType: r.entity_type,
     entityId: r.entity_id,

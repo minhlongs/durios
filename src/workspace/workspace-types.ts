@@ -19,6 +19,9 @@ export interface CreateDossierInput {
 export interface DossierRepositoryLike {
   save(dossier: ContainerDossier): void;
   findById(dossierId: string, actor: AuthenticatedActor): ContainerDossier | undefined;
+  findRaw?(dossierId: string): ContainerDossier | undefined;
+  hasDocumentReferencingBlob?(storagePath: string, sha256Hash: string): boolean;
+  setAccessChecker?(checker: (dossierId: string, ownerTenantId: string, actorTenantId: string) => boolean): void;
   getOrThrow(dossierId: string, actor: AuthenticatedActor): ContainerDossier;
   listForTenant(actor: AuthenticatedActor): readonly ContainerDossier[];
   saveExportManifest?(manifest: DossierExportManifest, actor: AuthenticatedActor): void;

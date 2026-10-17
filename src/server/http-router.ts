@@ -1,6 +1,12 @@
 import type { ContainerDossierWorkspace } from "../workspace/container-dossier-workspace.js";
-import { resolveLocalActor } from "./actor-resolver.js";
-import { errorResponse, jsonResponse } from "./server-types.js";
+import { resolveAuthenticatedActor } from "./actor-resolver.js";
+import {
+  handleGetAuthenticatedMe,
+  handleOtpChallengeRequest,
+  handleOtpChallengeVerify,
+  handlePasswordLogin,
+} from "./auth-handlers.js";
+import { errorResponse, jsonResponse, mapDomainErrorToResponse } from "./server-types.js";
 import { serveIndexHtml } from "./static-ui.js";
 import {
   handleListDossiers,
@@ -16,6 +22,17 @@ import {
   handleVerifyField,
   handleGetAuditTrail,
 } from "./document-handlers.js";
+import {
+  handleGrantShare,
+  handleListShares,
+  handleRevokeShare,
+  handleRecordOrganicEvidence,
+  handleListOrganicEvidence,
+  handleGetPilotKpi,
+  handleGetPilotGates,
+} from "./pilot-handlers.js";
+import { handleGetPilotGoLivePack } from "./pilot-dossier-pack-handler.js";
+import { handleGetSaasStatus } from "./saas-status-handler.js";
 
 export async function routeHttpRequest(
   workspace: ContainerDossierWorkspace,
@@ -28,7 +45,6 @@ export async function routeHttpRequest(
   if (method === "GET" && (path === "/" || path === "/index.html")) {
     return serveIndexHtml();
   }
-
   if (method === "GET" && path === "/api/health") {
     return jsonResponse({
       status: "healthy",
@@ -36,64 +52,89 @@ export async function routeHttpRequest(
       timestamp: new Date().toISOString(),
     });
   }
-
-  const actor = resolveLocalActor(req);
-
-  if (method === "GET" && path === "/api/dossiers") {
-    return handleListDossiers(workspace, actor);
+  if (method === "POST" && path === "/api/auth/login") {
+    return handlePasswordLogin(workspace.authService, req);
+  }
+  if (method === "POST" && path === "/api/auth/otp/request") {
+    return handleOtpChallengeRequest(workspace.authService, req);
+  }
+  if (method === "POST" && path === "/api/auth/otp/verify") {
+    return handleOtpChallengeVerify(workspace.authService, req);
+  }
+  if (method === "GET" && path === "/api/auth/me") {
+    return handleGetAuthenticatedMe(workspace.authService, req);
   }
 
-  if (method === "POST" && path === "/api/dossiers") {
-    return handleCreateDossier(workspace, actor, req);
+  let actor;
+  try {
+    actor = resolveAuthenticatedActor(req, workspace.authService);
+  } catch (err) {
+    return mapDomainErrorToResponse(err, "Authentication required");
   }
 
-  const dossierMatch = path.match(/^\/api\/dossiers\/([^/]+)$/);
-  if (dossierMatch && method === "GET") {
-    return handleGetDossier(workspace, actor, dossierMatch[1]);
+  const isV1Scope =
+    path.startsWith("/api/v1/dossiers") ||
+    path.startsWith("/api/v1/pilot/") ||
+    path.startsWith("/api/v1/saas/");
+  const routePath = isV1Scope ? `/api/${path.slice("/api/v1/".length)}` : path;
+
+  if (method === "GET" && routePath === "/api/pilot/kpi") {
+    return handleGetPilotKpi(workspace, actor);
+  }
+  if (method === "GET" && routePath === "/api/pilot/gates") {
+    return handleGetPilotGates(workspace, actor);
+  }
+  if (method === "GET" && routePath === "/api/pilot/go-live-pack") {
+    return handleGetPilotGoLivePack(workspace, actor);
+  }
+  if (method === "GET" && routePath === "/api/saas/status") {
+    return handleGetSaasStatus(workspace, actor);
   }
 
-  const validateMatch = path.match(/^\/api\/dossiers\/([^/]+)\/validate$/);
-  if (validateMatch && method === "POST") {
-    return handleRunValidation(workspace, actor, validateMatch[1]);
-  }
+  if (method === "GET" && routePath === "/api/dossiers") return handleListDossiers(workspace, actor);
+  if (method === "POST" && routePath === "/api/dossiers") return handleCreateDossier(workspace, actor, req);
 
-  const approveMatch = path.match(/^\/api\/dossiers\/([^/]+)\/approve$/);
-  if (approveMatch && method === "POST") {
-    return handleApproveForExport(workspace, actor, approveMatch[1]);
-  }
+  const dossierMatch = routePath.match(/^\/api\/dossiers\/([^/]+)$/);
+  if (dossierMatch && method === "GET") return handleGetDossier(workspace, actor, dossierMatch[1]);
 
-  const exportMatch = path.match(/^\/api\/dossiers\/([^/]+)\/export$/);
-  if (exportMatch && method === "POST") {
-    return handleExportDossier(workspace, actor, exportMatch[1]);
-  }
+  const validateMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/validate$/);
+  if (validateMatch && method === "POST") return handleRunValidation(workspace, actor, validateMatch[1]);
 
-  const manifestMatch = path.match(/^\/api\/dossiers\/([^/]+)\/manifest$/);
-  if (manifestMatch && method === "GET") {
-    return handleGetExportManifest(workspace, actor, manifestMatch[1]);
-  }
+  const approveMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/approve$/);
+  if (approveMatch && method === "POST") return handleApproveForExport(workspace, actor, approveMatch[1]);
 
-  const auditMatch = path.match(/^\/api\/dossiers\/([^/]+)\/audit$/);
-  if (auditMatch && method === "GET") {
-    return handleGetAuditTrail(workspace, actor, auditMatch[1]);
-  }
+  const exportMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/export$/);
+  if (exportMatch && method === "POST") return handleExportDossier(workspace, actor, exportMatch[1]);
 
-  const uploadDocMatch = path.match(/^\/api\/dossiers\/([^/]+)\/documents$/);
-  if (uploadDocMatch && method === "POST") {
-    return handleUploadDocument(workspace, actor, uploadDocMatch[1], req);
-  }
+  const manifestMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/manifest$/);
+  if (manifestMatch && method === "GET") return handleGetExportManifest(workspace, actor, manifestMatch[1]);
 
-  const verifyFieldMatch = path.match(
-    /^\/api\/dossiers\/([^/]+)\/documents\/([^/]+)\/fields\/([^/]+)\/verify$/
-  );
+  const auditMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/audit$/);
+  if (auditMatch && method === "GET") return handleGetAuditTrail(workspace, actor, auditMatch[1]);
+
+  const uploadDocMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/documents$/);
+  if (uploadDocMatch && method === "POST") return handleUploadDocument(workspace, actor, uploadDocMatch[1], req);
+
+  const verifyFieldMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/documents\/([^/]+)\/fields\/([^/]+)\/verify$/);
   if (verifyFieldMatch && method === "POST") {
-    return handleVerifyField(
-      workspace,
-      actor,
-      verifyFieldMatch[1],
-      verifyFieldMatch[2],
-      verifyFieldMatch[3],
-      req
-    );
+    return handleVerifyField(workspace, actor, verifyFieldMatch[1], verifyFieldMatch[2], verifyFieldMatch[3], req);
+  }
+
+  const revokeShareMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/shares\/([^/]+)\/revoke$/);
+  if (revokeShareMatch && method === "POST") {
+    return handleRevokeShare(workspace, actor, revokeShareMatch[1], revokeShareMatch[2], req);
+  }
+
+  const sharesMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/shares$/);
+  if (sharesMatch) {
+    if (method === "POST") return handleGrantShare(workspace, actor, sharesMatch[1], req);
+    if (method === "GET") return handleListShares(workspace, actor, sharesMatch[1]);
+  }
+
+  const organicMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/organic-evidence$/);
+  if (organicMatch) {
+    if (method === "POST") return handleRecordOrganicEvidence(workspace, actor, organicMatch[1], req);
+    if (method === "GET") return handleListOrganicEvidence(workspace, actor, organicMatch[1]);
   }
 
   return errorResponse(`Route '${method} ${path}' not found`, 404);

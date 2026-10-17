@@ -1,13 +1,25 @@
 import type { ContainerDossierWorkspace } from "../workspace/container-dossier-workspace.js";
 import type { AuthenticatedActor, DocumentType } from "../domain/types.js";
-import { errorResponse, jsonResponse, type VerifyFieldRequestBody } from "./server-types.js";
+import { assertOwnerOperationalRole, assertValidActor, AccessControlError, isReadOnlyRole } from "../auth/rbac-policy.js";
+import { redactDossierForActor } from "../sharing/dossier-redactor.js";
+import { assertTenantRateLimit } from "./tenant-rate-limiter.js";
+import {
+  errorResponse, jsonResponse, mapDomainErrorToResponse, type VerifyFieldRequestBody,
+} from "./server-types.js";
 
 export async function handleUploadDocument(
-  workspace: ContainerDossierWorkspace,
-  actor: AuthenticatedActor,
-  dossierId: string,
-  req: Request
+  workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, dossierId: string, req: Request
 ): Promise<Response> {
+  try {
+    assertValidActor(actor);
+    const rawDossier = workspace.getRawDossier(dossierId);
+    if (!rawDossier) return errorResponse(`Dossier '${dossierId}' not found`, 404);
+    assertOwnerOperationalRole(actor, rawDossier.tenantId, "uploadDocument");
+    assertTenantRateLimit(workspace.sqliteClient, actor.tenantId, "uploadDocument");
+  } catch (err) {
+    return mapDomainErrorToResponse(err, "Unauthorized to upload document");
+  }
+
   const contentType = req.headers.get("content-type") ?? "";
   let fileBuffer: Uint8Array;
   let fileName = "uploaded_document.pdf";
@@ -39,7 +51,6 @@ export async function handleUploadDocument(
       if (body["base64Content"] && typeof body["base64Content"] === "string") {
         fileBuffer = Uint8Array.from(Buffer.from(body["base64Content"], "base64"));
       } else {
-        // Fallback synthetic header %PDF-1.5
         fileBuffer = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x35, 0x0a]);
       }
       if (body["fixtureFields"]) {
@@ -56,21 +67,23 @@ export async function handleUploadDocument(
       fixtureFields
     );
 
-    return jsonResponse({
-      success: true,
-      data: {
-        documentId: document.id,
-        fileName: document.fileName,
-        documentType: document.documentType,
-        sha256Hash: document.sha256Hash,
-        fileSize: document.fileSize,
-        extractedFieldsCount: document.extractedFields.length,
-        dossierLifecycleState: dossier.lifecycleState,
+    return jsonResponse(
+      {
+        success: true,
+        data: {
+          documentId: document.id,
+          fileName: document.fileName,
+          documentType: document.documentType,
+          sha256Hash: document.sha256Hash,
+          fileSize: document.fileSize,
+          extractedFieldsCount: document.extractedFields.length,
+          dossierLifecycleState: dossier.lifecycleState,
+        },
       },
-    }, 201);
+      201
+    );
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Document upload failed";
-    return errorResponse(message, 400);
+    return mapDomainErrorToResponse(err, "Document upload failed");
   }
 }
 
@@ -82,6 +95,21 @@ export async function handleVerifyField(
   fieldId: string,
   req: Request
 ): Promise<Response> {
+  try {
+    assertValidActor(actor);
+    if (isReadOnlyRole(actor.role)) {
+      throw new AccessControlError(
+        `Role '${actor.role}' is read-only and prohibited from verifying fields.`,
+        "INSUFFICIENT_ROLE"
+      );
+    }
+    if (!workspace.getRawDossier(dossierId)) {
+      return errorResponse(`Dossier '${dossierId}' not found`, 404);
+    }
+  } catch (err) {
+    return mapDomainErrorToResponse(err, "Unauthorized to verify field");
+  }
+
   let body: VerifyFieldRequestBody;
   try {
     body = (await req.json()) as VerifyFieldRequestBody;
@@ -106,10 +134,10 @@ export async function handleVerifyField(
       actor
     );
 
-    return jsonResponse({ success: true, data: updatedDossier });
+    const safeDossier = redactDossierForActor(updatedDossier, actor, workspace.shareManager);
+    return jsonResponse({ success: true, data: safeDossier });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Field verification failed";
-    return errorResponse(message, 400);
+    return mapDomainErrorToResponse(err, "Field verification failed");
   }
 }
 
@@ -118,15 +146,31 @@ export function handleGetAuditTrail(
   actor: AuthenticatedActor,
   dossierId: string
 ): Response {
-  const events = workspace.auditLedger.getEventsForDossier(dossierId, actor.tenantId);
-  const isChainValid = workspace.auditLedger.verifyIntegrity();
+  try {
+    assertValidActor(actor);
+    const dossier = workspace.getDossier(dossierId, actor);
+    if (!dossier) {
+      return errorResponse(`Dossier '${dossierId}' not found`, 404);
+    }
+    workspace.shareManager.assertPurposeAllowed(
+      dossier,
+      actor,
+      ["AUDIT", "CUSTOMS_INSPECTION"],
+      "audit"
+    );
 
-  return jsonResponse({
-    success: true,
-    data: {
-      count: events.length,
-      isChainValid,
-      events,
-    },
-  });
+    const events = workspace.auditLedger.getEventsForDossier(dossier.id, dossier.tenantId);
+    const isChainValid = workspace.auditLedger.verifyIntegrity();
+
+    return jsonResponse({
+      success: true,
+      data: {
+        count: events.length,
+        isChainValid,
+        events,
+      },
+    });
+  } catch (err) {
+    return mapDomainErrorToResponse(err, "Failed to retrieve audit trail");
+  }
 }

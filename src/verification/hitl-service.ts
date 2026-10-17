@@ -3,7 +3,7 @@ import type {
   ExtractedField,
   IngestedDocument,
 } from "../domain/types.js";
-import type { AuditLedger } from "../audit/audit-ledger.js";
+import type { AuditLedgerLike } from "../workspace/workspace-types.js";
 
 export interface HumanVerificationInput {
   readonly fieldId: string;
@@ -13,7 +13,7 @@ export interface HumanVerificationInput {
 }
 
 export class HitlVerificationService {
-  constructor(private readonly auditLedger: AuditLedger) {}
+  constructor(private readonly auditLedger: AuditLedgerLike) {}
 
   public verifyOrCorrectField(
     document: IngestedDocument,

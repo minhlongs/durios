@@ -37,7 +37,7 @@ export function evaluateCadmiumWarningThreshold(
   if (!cdField) return;
 
   const val = Number.parseFloat(String(cdField.confirmedValue ?? cdField.rawValue));
-  if (!Number.isNaN(val) && val > 0.040 && val <= 0.050) {
+  if (!Number.isNaN(val) && val > 0.040) {
     findings.push({
       ruleId: rule.ruleId,
       severity: "ADVISORY_WARNING",
@@ -45,8 +45,8 @@ export function evaluateCadmiumWarningThreshold(
       citation: rule.statutoryReference,
       observedValue: `${val.toFixed(3)} mg/kg`,
       thresholdValue: "0.040 mg/kg buffer",
-      messageVi: `Cảnh báo an toàn nội bộ: Hàm lượng Cadmi tiệm cận mức rủi ro (>0.040 mg/kg).`,
-      messageEn: `Internal Safety Margin Warning: Cadmium approaches risk threshold (>0.040 mg/kg).`,
+      messageVi: `CẢNH BÁO NỘI BỘ: Hàm lượng Cadmi (${val.toFixed(3)} mg/kg) vượt ngưỡng kiểm soát nội bộ nhà đóng gói (>0.040 mg/kg). Đây là cảnh báo phòng ngừa nội bộ, không cấu thành vi phạm pháp lý nếu hàm lượng <= 0.050 mg/kg.`,
+      messageEn: `INTERNAL ADVISORY: Cadmium level (${val.toFixed(3)} mg/kg) exceeds packhouse internal safety buffer (>0.040 mg/kg). This is an internal precaution and does not constitute a legal breach if <= 0.050 mg/kg.`,
     });
   }
 }

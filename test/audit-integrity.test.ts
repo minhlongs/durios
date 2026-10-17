@@ -8,6 +8,8 @@ const ACTOR: AuthenticatedActor = {
   name: "Inspector Le",
   role: "MANAGER",
   tenantId: "TEN-001",
+  tenantType: "PACKHOUSE_EXPORTER",
+  persona: "PACKHOUSE_MANAGER",
 };
 
 describe("Phase E: Audit Hash Chain Tamper Detection", () => {

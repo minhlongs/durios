@@ -1,4 +1,6 @@
 import type { Database } from "bun:sqlite";
+import { applyMigrationV2, applyMigrationV3 } from "./schema-migrations-auth.js";
+import { applyMigrationV4, applyMigrationV5 } from "./schema-migrations-pilot.js";
 
 export function runMigrations(db: Database): void {
   db.run(`
@@ -8,14 +10,16 @@ export function runMigrations(db: Database): void {
     );
   `);
 
-  const row = db.query<{ version: number }, []>(
-    "SELECT MAX(version) as version FROM schema_migrations"
-  ).get();
+  const row = db
+    .query<{ version: number }, []>("SELECT MAX(version) as version FROM schema_migrations")
+    .get();
   const currentVersion = row?.version ?? 0;
 
-  if (currentVersion < 1) {
-    applyMigrationV1(db);
-  }
+  if (currentVersion < 1) applyMigrationV1(db);
+  if (currentVersion < 2) applyMigrationV2(db);
+  if (currentVersion < 3) applyMigrationV3(db);
+  if (currentVersion < 4) applyMigrationV4(db);
+  if (currentVersion < 5) applyMigrationV5(db);
 }
 
 function applyMigrationV1(db: Database): void {
@@ -39,7 +43,6 @@ function applyMigrationV1(db: Database): void {
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
       );
-
       CREATE INDEX IF NOT EXISTS idx_dossiers_tenant ON container_dossiers(tenant_id);
       CREATE INDEX IF NOT EXISTS idx_dossiers_code ON container_dossiers(dossier_code);
 
@@ -56,7 +59,6 @@ function applyMigrationV1(db: Database): void {
         uploaded_at TEXT NOT NULL,
         is_superseded INTEGER NOT NULL DEFAULT 0
       );
-
       CREATE INDEX IF NOT EXISTS idx_documents_dossier ON documents(dossier_id);
       CREATE INDEX IF NOT EXISTS idx_documents_tenant ON documents(tenant_id);
 
@@ -74,7 +76,6 @@ function applyMigrationV1(db: Database): void {
         verified_by_actor_id TEXT,
         verified_at TEXT
       );
-
       CREATE INDEX IF NOT EXISTS idx_fields_doc ON extracted_fields(document_id);
       CREATE INDEX IF NOT EXISTS idx_fields_dossier ON extracted_fields(dossier_id);
 
@@ -95,7 +96,6 @@ function applyMigrationV1(db: Database): void {
         event_hash TEXT NOT NULL,
         created_at TEXT NOT NULL
       );
-
       CREATE INDEX IF NOT EXISTS idx_audit_dossier ON audit_events(dossier_id);
       CREATE INDEX IF NOT EXISTS idx_audit_tenant ON audit_events(tenant_id);
 
@@ -108,8 +108,7 @@ function applyMigrationV1(db: Database): void {
         created_at TEXT NOT NULL
       );
 
-      INSERT INTO schema_migrations (version, applied_at)
-      VALUES (1, datetime('now'));
+      INSERT INTO schema_migrations (version, applied_at) VALUES (1, datetime('now'));
     `);
   })();
 }
