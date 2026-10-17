@@ -597,3 +597,29 @@ header.sticky,
 .sticky:not(#durios-unified-top-nav) {
   top: 44px !important;
 }
+
+/* Streamline redundant native headers & fake nav links inside Stitch screens */
+.durios-redundant-subnav {
+  display: none !important;
+}
+
+.durios-compacted-native-header {
+  padding-top: 6px !important;
+  padding-bottom: 6px !important;
+  min-height: 38px !important;
+  border-bottom: 1px solid var(--durios-border-subtle) !important;
+}
+
+/* Focus Canvas Mode (hotkey `f` or button in 44px Top Command Bar) */
+html.durios-focus-canvas .durios-compacted-native-header,
+html.durios-focus-canvas .durios-secondary-banner {
+  display: none !important;
+}
+
+.durios-focus-btn.active {
+  background: var(--durios-accent) !important;
+  color: #06110B !important;
+  border-color: var(--durios-accent) !important;
+  font-weight: 700 !important;
+}
+

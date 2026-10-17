@@ -116,8 +116,32 @@
     applyTheme(saved);
   }
 
-  // Deduplicate Competing Sticky Headers (dock at top: 44px)
+  // Focus Canvas Mode (hides redundant sub-headers for 100% full-bleed canvas)
+  function applyFocusMode(enabled) {
+    var html = document.documentElement;
+    if (enabled) {
+      html.classList.add("durios-focus-canvas");
+    } else {
+      html.classList.remove("durios-focus-canvas");
+    }
+    window.localStorage.setItem("durios_focus_canvas", enabled ? "1" : "0");
+    var focusBtn = document.getElementById("durios-btn-focus-mode");
+    if (focusBtn) {
+      focusBtn.classList.toggle("active", enabled);
+      focusBtn.title = enabled
+        ? "Exit Focus Canvas Mode (Hotkey: f)"
+        : "Focus Canvas Mode — Hide secondary sub-headers (Hotkey: f)";
+    }
+  }
+
+  function toggleFocusMode() {
+    var current = window.localStorage.getItem("durios_focus_canvas") === "1";
+    applyFocusMode(!current);
+  }
+
+  // Deduplicate Competing Sticky Headers & Eliminate Redundant Fake Sub-Navs
   function deduplicateStickyHeaders() {
+    var currentFile = getCurrentPageName();
     var headers = document.querySelectorAll("header, nav, .sticky, [style*='position: sticky']");
     for (var i = 0; i < headers.length; i++) {
       var el = headers[i];
@@ -128,7 +152,23 @@
           el.style.top = "44px";
         }
       }
+      if (currentFile !== "gallery.html") {
+        if (el.tagName === "HEADER") {
+          el.classList.add("durios-compacted-native-header");
+          var innerNavs = el.querySelectorAll("nav");
+          for (var j = 0; j < innerNavs.length; j++) {
+            innerNavs[j].classList.add("durios-redundant-subnav");
+          }
+        } else if (el.tagName === "NAV" && !el.closest("aside")) {
+          var links = el.querySelectorAll("a[href='#']");
+          if (links.length >= 2) {
+            el.classList.add("durios-redundant-subnav");
+          }
+        }
+      }
     }
+    var savedFocus = window.localStorage.getItem("durios_focus_canvas") === "1";
+    if (savedFocus) applyFocusMode(true);
   }
 
   // Render or enhance the 44px Top Command Bar (#durios-unified-top-nav)
@@ -163,7 +203,7 @@
         '</button>' +
         '<a href="gallery.html" class="durios-brand-badge" title="DuriOS Master Hub">' +
           '<span>🌿</span>' +
-          '<span class="durios-brand-text">DURIOS // v0.4</span>' +
+          '<span class="durios-brand-text">DURIOS // v0.5</span>' +
         '</a>' +
         '<span class="durios-breadcrumb-sep">/</span>' +
         '<span class="durios-breadcrumb-active" title="' + escapeHtml(activeScreen.domain + " // " + activeScreen.name) + '">' +
@@ -195,6 +235,9 @@
           '<span>Search screens &amp; actions…</span>' +
           '<kbd>⌘K</kbd>' +
         '</button>' +
+        '<button type="button" id="durios-btn-focus-mode" class="durios-theme-btn durios-focus-btn" title="Focus Canvas Mode — Hide secondary sub-headers (Hotkey: f)">' +
+          '<span>🎯</span> <span style="font-size:10px;font-weight:600;margin-left:3px;">Focus</span>' +
+        '</button>' +
         '<button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops">' +
           '<span class="theme-icon">☀️</span> <span style="font-size:10px;font-weight:600;">Field</span>' +
         '</button>' +
@@ -218,6 +261,12 @@
     document.addEventListener("click", function () {
       dropdowns.forEach(function (d) { d.classList.remove("active"); });
     });
+
+    // Focus mode button
+    var focusBtn = document.getElementById("durios-btn-focus-mode");
+    if (focusBtn) {
+      focusBtn.addEventListener("click", toggleFocusMode);
+    }
 
     // Theme toggle button
     var themeBtn = document.getElementById("durios-btn-theme-toggle");
@@ -760,12 +809,17 @@
         openCommandPalette();
         return;
       }
-      // `[` -> Toggle Left Sidebar Drawer (only when not in input)
+      // `[` -> Toggle Left Sidebar Drawer, `f` -> Toggle Focus Canvas Mode (only when not in input)
       var activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
       if (activeTag !== "input" && activeTag !== "textarea" && activeTag !== "select") {
         if (e.key === "[") {
           e.preventDefault();
           toggleSidebarDrawer();
+          return;
+        }
+        if (e.key === "f" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+          e.preventDefault();
+          toggleFocusMode();
           return;
         }
       }

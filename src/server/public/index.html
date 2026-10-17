@@ -604,6 +604,80 @@
       .badge, .btn, .callout, .finding, .step-link { border: 1px solid CanvasText; }
       :focus-visible { outline: 2px solid Highlight; }
     }
+
+    /* 2027 Dark Emerald Ops Theme Support (synchronized with durios_theme localStorage) */
+    html[data-durios-theme="dark"] {
+      color-scheme: dark;
+      --color-bg: #060b08;
+      --color-surface: #09140e;
+      --color-surface-muted: #101e16;
+      --color-surface-sunken: #040705;
+      --color-border: #1f3327;
+      --color-border-strong: #2d4c39;
+      --color-text: #ecfdf5;
+      --color-text-muted: #a7f3d0;
+      --color-text-subtle: #6ee7b7;
+      --color-primary: #10b981;
+      --color-primary-hover: #059669;
+      --color-primary-active: #047857;
+      --color-on-primary: #04120b;
+      --color-primary-soft: rgba(16, 185, 129, 0.15);
+      --color-danger: #f87171;
+      --color-danger-bg: rgba(239, 68, 68, 0.14);
+      --color-danger-border: rgba(239, 68, 68, 0.4);
+      --color-warning: #fbbf24;
+      --color-warning-bg: rgba(245, 158, 11, 0.14);
+      --color-warning-border: rgba(245, 158, 11, 0.4);
+      --color-success: #34d399;
+      --color-success-bg: rgba(16, 185, 129, 0.14);
+      --color-success-border: rgba(16, 185, 129, 0.4);
+      --color-info: #38bdf8;
+      --color-info-bg: rgba(2, 132, 199, 0.15);
+      --color-info-border: rgba(56, 189, 248, 0.4);
+      --color-neutral-bg: #101e16;
+      --color-neutral-border: #1f3327;
+    }
+
+    /* Interactive Workflow Step Filter Bar */
+    .workflow-step-filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-2);
+      padding: var(--space-2) var(--space-3);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    .workflow-step-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .workflow-step-pill {
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--color-border);
+      background: var(--color-surface-muted);
+      color: var(--color-text-muted);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 120ms ease;
+    }
+    .workflow-step-pill:hover {
+      border-color: var(--color-primary);
+      color: var(--color-text);
+    }
+    .workflow-step-pill.active {
+      background: var(--color-primary);
+      color: var(--color-on-primary);
+      border-color: var(--color-primary);
+    }
+    .workflow-step-hidden {
+      display: none !important;
+    }
   </style>
 </head>
 <body>
@@ -613,7 +687,7 @@
     <div class="brand">
       <div class="brand__mark" aria-hidden="true">Du</div>
       <div>
-        <h1 class="brand__title">DuriOS <span class="badge badge--neutral">Cai Lậy Pilot // v0.4</span></h1>
+        <h1 class="brand__title">DuriOS <span class="badge badge--neutral">Cai Lậy Pilot // v0.5</span></h1>
       </div>
     </div>
     <div class="header-tools">
@@ -630,7 +704,7 @@
         <span id="actor-role-hint" class="visually-hidden">Vai trò chỉ mô phỏng cục bộ, không phải đăng nhập thật.</span>
       </div>
       <button type="button" class="btn btn--primary btn--sm" id="btn-pilot-rehearsal-seed" onclick="runPilotRehearsalBootstrap()">
-        <span>🚀 Diễn tập Cai Lậy (5 Cont)</span>
+        <span>🚀 Diễn tập 5 Cont &amp; 5/5 Gates</span>
       </button>
       <button type="button" class="btn btn--secondary btn--sm" id="btn-stitch-gallery" onclick="openStitchGalleryModal()">
         <span>🎨 25 Màn hình Stitch</span>
@@ -641,6 +715,9 @@
       <a class="btn btn--secondary btn--sm" href="/stitch/gallery.html" target="_blank" rel="noopener">
         <span>Master Hub ↗</span>
       </a>
+      <button type="button" class="btn btn--secondary btn--sm" id="btn-workspace-theme" onclick="toggleWorkspaceTheme()" title="Chuyển đổi giao diện Sáng (Field) / Tối (Emerald Ops)">
+        <span id="workspace-theme-label">🌙 Emerald</span>
+      </button>
       <button type="button" class="btn btn--secondary btn--sm" id="btn-auth-session" onclick="openAuthDialog()">
         <span id="auth-session-label">Đăng nhập Pilot</span>
       </button>
@@ -1470,9 +1547,14 @@
           </div>
         </details>` : "";
 
+      const missingSampleCount = SAMPLE_DOCUMENTS.filter((s) => !ctx.activeDocs.some((x) => x.documentType === s.type)).length;
+      const docHeaderAction = !d.isImmutable && missingSampleCount > 0
+        ? actionButton({ action: "upload-all-samples", label: `⚡ Nạp nhanh đủ ${missingSampleCount} chứng từ mẫu`, busyLabel: "Đang nạp bộ mẫu…", variant: "primary", iconName: "upload", focusKey: "upload-all-samples" })
+        : "";
+
       return renderSection("sec-documents", 1, "Chứng từ xuất khẩu",
         "Máy chủ tính mã SHA-256 cho từng tệp và trích xuất các trường dữ liệu ứng viên để nhân viên xác minh ở bước 2.",
-        "",
+        docHeaderAction,
         `<ul class="checklist" aria-label="Chứng từ mẫu cần có">${checklist}</ul>
          <div class="table-wrap">
            <table class="data-table rtable">
@@ -1552,6 +1634,10 @@
 
     function renderFieldsSection(d, ctx) {
       const total = ctx.fields.length;
+      const unverifiedCount = total - ctx.verified;
+      const batchVerifyBtn = !d.isImmutable && unverifiedCount > 0
+        ? actionButton({ action: "verify-all-fields", label: `⚡ Xác nhận nhanh ${unverifiedCount} trường chờ duyệt`, busyLabel: "Đang xác nhận hàng loạt…", variant: "primary", iconName: "check", focusKey: "verify-all-fields" })
+        : "";
       const progress = total ? `
         <div class="progress-row">
           <label class="progress-row__label" for="fields-progress">${ctx.verified}/${total} trường đã xác minh</label>
@@ -1563,8 +1649,8 @@
           <div class="callout__body"><p>Mọi trường trích xuất tự động phải được nhân viên đối chiếu với chứng từ gốc và xác nhận. Xác nhận hoặc sửa một trường sẽ <strong>huỷ kết quả thẩm định trước đó</strong>; giá trị gốc vẫn được lưu và thay đổi được ghi vào nhật ký kiểm toán.</p></div>
         </div>`;
       return renderSection("sec-fields", 2, "Xác minh dữ liệu trích xuất",
-        "Nhấn Enter trong ô giá trị hoặc bấm Xác nhận để lưu từng trường.",
-        "", `${progress}${note}${renderFieldsTable(d)}`);
+        "Nhấn Enter trong ô giá trị, bấm Xác nhận từng dòng, hoặc dùng nút xác nhận nhanh hàng loạt.",
+        batchVerifyBtn, `${progress}${note}${renderFieldsTable(d)}`);
     }
 
     function renderFinding(f, kind) {
@@ -1873,9 +1959,50 @@
       });
     }
 
+    function switchWorkflowStepFilter(stepFilter) {
+      ui.activeStepFilter = stepFilter;
+      applyWorkflowStepFilter();
+    }
+
+    function applyWorkflowStepFilter() {
+      const filter = ui.activeStepFilter || "all";
+      const ids = ["sec-documents", "sec-fields", "sec-validation", "sec-export"];
+      ids.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.classList.toggle("workflow-step-hidden", filter !== "all" && filter !== id);
+        }
+      });
+      document.querySelectorAll(".workflow-step-pill").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.stepFilter === filter);
+      });
+    }
+
+    function renderWorkflowStepFilterBar(ctx) {
+      const f = ui.activeStepFilter || "all";
+      const pills = [
+        { key: "all", label: "📋 Tất cả (4 bước)" },
+        { key: "sec-documents", label: `1. Chứng từ (${ctx.activeDocs.length}/3)` },
+        { key: "sec-fields", label: `2. Xác minh HITL (${ctx.verified}/${ctx.fields.length})` },
+        { key: "sec-validation", label: "3. Thẩm định GACC" },
+        { key: "sec-export", label: "4. Phê duyệt & Xuất" },
+      ];
+      return `
+        <div class="workflow-step-filter-bar" role="toolbar" aria-label="Bộ lọc chế độ hiển thị từng bước">
+          <div class="workflow-step-pills">
+            ${pills.map((p) => `<button type="button" class="workflow-step-pill ${f === p.key ? "active" : ""}" data-step-filter="${p.key}" onclick="switchWorkflowStepFilter('${p.key}')">${escapeHtml(p.label)}</button>`).join("")}
+          </div>
+          <button type="button" class="btn btn--ghost btn--sm" onclick="switchWorkflowStepFilter('${escapeHtml(ctx.currentStepId || "all")}')">
+            🎯 Tập trung bước hiện tại
+          </button>
+        </div>`;
+    }
+
     function openStitchGalleryModal() {
       const dlg = document.getElementById("stitch-gallery-modal");
       if (!dlg) return;
+      ui.stitchModalCategory = ui.stitchModalCategory || "ALL";
+      ui.stitchModalQuery = ui.stitchModalQuery || "";
       renderStitchGalleryModalGrid();
       dlg.showModal();
     }
@@ -1885,10 +2012,26 @@
       if (dlg && dlg.open) dlg.close();
     }
 
+    function filterStitchModal(category, query) {
+      if (category !== undefined && category !== null) ui.stitchModalCategory = category;
+      if (query !== undefined && query !== null) ui.stitchModalQuery = query;
+      renderStitchGalleryModalGrid();
+    }
+
     function renderStitchGalleryModalGrid() {
       const grid = document.getElementById("stitch-gallery-modal-grid");
       if (!grid) return;
-      grid.innerHTML = STITCH_20_SCREENS.map((s) => `
+      const cat = ui.stitchModalCategory || "ALL";
+      const q = String(ui.stitchModalQuery || "").trim().toLowerCase();
+      const filtered = STITCH_20_SCREENS.filter((s) => {
+        const matchCat = cat === "ALL" || s.group === cat;
+        const matchQ = !q || s.title.toLowerCase().includes(q) || s.file.toLowerCase().includes(q) || s.group.toLowerCase().includes(q) || s.id.toLowerCase().includes(q);
+        return matchCat && matchQ;
+      });
+      document.querySelectorAll(".stitch-cat-pill").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.cat === cat);
+      });
+      grid.innerHTML = filtered.map((s) => `
         <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px; background: var(--color-surface); display: flex; flex-direction: column; justify-content: space-between; gap: 6px;">
           <div>
             <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--color-text-muted);">
@@ -1919,6 +2062,7 @@
             ${renderChainBanner(ctx)}
             ${renderDossierHeader(d, ctx)}
             ${renderStepper(ctx)}
+            ${renderWorkflowStepFilterBar(ctx)}
             <div class="workflow-card-group" id="workflow-steps-group">
               <!-- Step 1: Document Ingestion & Sample Pack -->
               ${renderDocumentsSection(d, ctx)}
@@ -1961,6 +2105,7 @@
         </div>
       `;
       ui.dossierPaintedId = d.id;
+      applyWorkflowStepFilter();
       restoreUnsavedInputs(saved);
       applyPendingFocus();
     }
@@ -2138,6 +2283,53 @@
         await refreshAfterMutation();
       } else {
         notifyError("Không xác minh được trường", res.error);
+      }
+    }
+
+    async function uploadAllSampleDocs() {
+      if (!ui.dossier) return;
+      const activeTypes = new Set(ui.dossier.documents.filter((x) => !x.isSuperseded).map((x) => x.documentType));
+      const missing = SAMPLE_DOCUMENTS.filter((s) => !activeTypes.has(s.type));
+      let uploadedCount = 0;
+      for (const sample of missing) {
+        const res = await fetchApi(`/api/dossiers/${encodeURIComponent(currentDossierId)}/documents`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            documentType: sample.type,
+            fileName: sample.fileName,
+            base64Content: toBase64(sample.content),
+          }),
+        });
+        if (res.success) uploadedCount++;
+      }
+      if (uploadedCount > 0) {
+        notify("success", `Đã nạp nhanh ${uploadedCount} chứng từ mẫu`, "Chuyển sang Bước 2 để xác minh dữ liệu trích xuất.");
+        await refreshAfterMutation();
+      }
+    }
+
+    async function verifyAllFields() {
+      if (!ui.dossier) return;
+      const docs = ui.dossier.documents.filter((x) => !x.isSuperseded && x.extractedFields.length > 0);
+      let verifiedCount = 0;
+      for (const doc of docs) {
+        for (const f of doc.extractedFields) {
+          if (f.verificationStatus === "HUMAN_VERIFIED") continue;
+          const input = document.getElementById(`val-${f.id}`);
+          const val = input ? input.value : String(f.confirmedValue ?? f.rawValue ?? "");
+          if (!val.trim()) continue;
+          const res = await fetchApi(`/api/dossiers/${encodeURIComponent(currentDossierId)}/documents/${encodeURIComponent(doc.id)}/fields/${encodeURIComponent(f.id)}/verify`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ confirmedValue: val }),
+          });
+          if (res.success) verifiedCount++;
+        }
+      }
+      if (verifiedCount > 0) {
+        notify("success", `Đã xác nhận nhanh ${verifiedCount} trường dữ liệu (HITL)`, "Sẵn sàng chạy thẩm định quy tắc ở Bước 3.");
+        await refreshAfterMutation();
       }
     }
 
@@ -2419,8 +2611,14 @@
           runAction(el, () => uploadSampleDoc(el.dataset.docType, sample ? sample.fileName : undefined), "#sec-documents-title");
           break;
         }
+        case "upload-all-samples":
+          runAction(el, uploadAllSampleDocs, "#sec-documents-title");
+          break;
         case "verify-field":
           runAction(el, () => verifyField(el.dataset.docId, el.dataset.fieldId), "#sec-fields-title");
+          break;
+        case "verify-all-fields":
+          runAction(el, verifyAllFields, "#sec-fields-title");
           break;
         case "run-validation":
           runAction(el, runValidation, "#sec-validation-title");
@@ -2507,34 +2705,34 @@
     });
 
     /* ==========================================================
-       11.5 STITCH 21-SCREEN SUITE, 25-STEP BLUEPRINT & CAILAY REHEARSAL
+       11.5 STITCH 25-SCREEN SUITE, 25-STEP BLUEPRINT & CAILAY REHEARSAL
        ========================================================== */
     const STITCH_20_SCREENS = [
-      { id: "00", file: "gallery.html", title: "Master Command Hub & Directory", group: "Executive Hub" },
-      { id: "01", file: "index.html", title: "Packhouse Ops 3-Column Station", group: "Core 8-Screen Suite" },
-      { id: "02", file: "dossiers.html", title: "Container Dossier Registry", group: "Core 8-Screen Suite" },
-      { id: "03", file: "auditor.html", title: "Field Auditor 5-Gate Tool", group: "Core 8-Screen Suite" },
-      { id: "04", file: "buyer.html", title: "Buyer Cryptographic Verification", group: "Core 8-Screen Suite" },
-      { id: "05", file: "cluster.html", title: "Mekong Delta Cluster Ops Room", group: "Core 8-Screen Suite" },
-      { id: "06", file: "portability.html", title: "Open-Core Data Portability Hub", group: "Core 8-Screen Suite" },
-      { id: "07", file: "upgrade.html", title: "Pro SaaS Upgrade & Ed25519 Keys", group: "Core 8-Screen Suite" },
-      { id: "08", file: "styleguide.html", title: "Living Style Guide & Tokens", group: "Core 8-Screen Suite" },
-      { id: "09", file: "paper-canvas.html", title: "Paper-as-the-Canvas Highlighter", group: "Field Paradigms" },
-      { id: "10", file: "excel-grid.html", title: "Excel Speed Grid + 300% Loupe", group: "Field Paradigms" },
-      { id: "11", file: "zalo-bot.html", title: "Zalo-First Conversational Bot", group: "Field Paradigms" },
-      { id: "12", file: "mobile-weighbridge.html", title: "Mobile Weighbridge One-Handed Touch", group: "Field Paradigms" },
-      { id: "13", file: "field-proven.html", title: "Field-Proven High Contrast POS", group: "Themes" },
-      { id: "14", file: "foundry.html", title: "Foundry Cryptographic Command", group: "Themes" },
-      { id: "16", file: "corridors.html", title: "ASEAN Multi-Market Corridor Console", group: "Governance & Corridors" },
-      { id: "17", file: "blueprint.html", title: "25-Step Open-Core Blueprint Audit", group: "Governance & Corridors" },
-      { id: "18", file: "security-vault.html", title: "On-Prem Security, PDPL & DR Vault", group: "Governance & Corridors" },
-      { id: "19", file: "organic-escrow-guard.html", title: "Organic Evidence & Non-Custodial Guard", group: "Governance & Corridors" },
-      { id: "20", file: "webhook-sync-queue.html", title: "Lab Webhook HMAC & Edge Sync Queue", group: "Governance & Corridors" },
-      { id: "21", file: "socratic-introspector.html", title: "5-Turn Socratic Open-Core Introspector", group: "Governance & Corridors" },
-      { id: "22", file: "rehearsal-command.html", title: "Cai Lậy Rehearsal & Blind-Fault Center", group: "Governance & Corridors" },
-      { id: "23", file: "mit-verifier-lab.html", title: "MIT Standalone Verifier & ISO 6346 Lab", group: "Governance & Corridors" },
-      { id: "24", file: "cloud-ocr-vault.html", title: "Cloud Vision OCR & 10-Yr Cold Vault", group: "Cloud SaaS & Archival" },
-      { id: "25", file: "ed25519-downgrade-simulator.html", title: "Ed25519 License & Downgrade Sim", group: "Cloud SaaS & Archival" },
+      { id: "00", file: "gallery.html", title: "Master Command Hub & 25-Screen Directory", group: "4. SaaS & Corridors" },
+      { id: "01", file: "index.html", title: "Packhouse Ops 3-Column Station", group: "1. Packhouse Ops" },
+      { id: "02", file: "dossiers.html", title: "Container Dossier Registry", group: "1. Packhouse Ops" },
+      { id: "03", file: "auditor.html", title: "Field Auditor 5-Gate Tool", group: "2. Compliance & Gates" },
+      { id: "04", file: "buyer.html", title: "Buyer Cryptographic Verification", group: "2. Compliance & Gates" },
+      { id: "05", file: "cluster.html", title: "Mekong Delta Cluster Ops Room", group: "2. Compliance & Gates" },
+      { id: "06", file: "portability.html", title: "Open-Core Data Portability Hub", group: "4. SaaS & Corridors" },
+      { id: "07", file: "upgrade.html", title: "Pro SaaS Upgrade & Ed25519 Keys", group: "4. SaaS & Corridors" },
+      { id: "08", file: "styleguide.html", title: "Living Style Guide & Tokens", group: "2. Compliance & Gates" },
+      { id: "09", file: "paper-canvas.html", title: "Paper-as-the-Canvas Highlighter", group: "1. Packhouse Ops" },
+      { id: "10", file: "excel-grid.html", title: "Excel Speed Grid + 300% Loupe", group: "1. Packhouse Ops" },
+      { id: "11", file: "zalo-bot.html", title: "Zalo-First Conversational Bot", group: "1. Packhouse Ops" },
+      { id: "12", file: "mobile-weighbridge.html", title: "Mobile Weighbridge One-Handed Touch", group: "1. Packhouse Ops" },
+      { id: "13", file: "field-proven.html", title: "Field-Proven High Contrast POS", group: "1. Packhouse Ops" },
+      { id: "14", file: "foundry.html", title: "Foundry Cryptographic Command", group: "3. Security & MIT SDK" },
+      { id: "15", file: "rehearsal-command.html", title: "Cai Lậy Rehearsal & Blind-Fault Center", group: "2. Compliance & Gates" },
+      { id: "16", file: "corridors.html", title: "ASEAN Multi-Market Corridor Console", group: "4. SaaS & Corridors" },
+      { id: "17", file: "blueprint.html", title: "25-Step Open-Core Blueprint Audit", group: "4. SaaS & Corridors" },
+      { id: "18", file: "security-vault.html", title: "On-Prem Security, PDPL & DR Vault", group: "3. Security & MIT SDK" },
+      { id: "19", file: "organic-escrow-guard.html", title: "Organic Evidence & Non-Custodial Guard", group: "3. Security & MIT SDK" },
+      { id: "20", file: "webhook-sync-queue.html", title: "Lab Webhook HMAC & Edge Sync Queue", group: "4. SaaS & Corridors" },
+      { id: "21", file: "socratic-introspector.html", title: "5-Turn Socratic Open-Core Introspector", group: "2. Compliance & Gates" },
+      { id: "23", file: "mit-verifier-lab.html", title: "MIT Standalone Verifier & ISO 6346 Lab", group: "3. Security & MIT SDK" },
+      { id: "24", file: "cloud-ocr-vault.html", title: "Cloud Vision OCR & 10-Yr Cold Vault", group: "3. Security & MIT SDK" },
+      { id: "25", file: "ed25519-downgrade-simulator.html", title: "Ed25519 License & Downgrade Sim", group: "3. Security & MIT SDK" },
     ];
 
     function renderStitchScreenDirectory() {
@@ -2570,7 +2768,7 @@
       const bp = deep && deep.blueprintAudit ? deep.blueprintAudit : (bpRes && bpRes.blueprint ? bpRes.blueprint : null);
       const ed = edRes && edRes.data && edRes.data.manifest ? edRes.data.manifest : (edRes && edRes.manifest ? edRes.manifest : null);
       if (!bp) {
-        box.innerHTML = `<div class="callout callout--info"><div class="callout__body"><p class="callout__title">Danh mục 25 màn hình Google Stitch đã sẵn sàng dưới đường dẫn <code>/stitch/*</code>. Bấm "🚀 Nạp 5 Container Diễn tập Cai Lậy" để kích hoạt phiên làm việc và tải dữ liệu kiểm toán trực tiếp.</p></div></div>`;
+        box.innerHTML = `<div class="callout callout--info"><div class="callout__body"><p class="callout__title">Danh mục 25 màn hình Google Stitch đã sẵn sàng dưới đường dẫn <code>/stitch/*</code>. Bấm "🚀 Diễn tập 5 Cont &amp; 5/5 Gates" để kích hoạt phiên làm việc và tải dữ liệu kiểm toán trực tiếp.</p></div></div>`;
         return;
       }
       const marginPct = deep && deep.unitEconomicsVerification ? `${deep.unitEconomicsVerification.containerGrossMarginPct}%` : "94.67%";
@@ -2584,7 +2782,7 @@
               Composite SHA-256: <code class="mono">${escapeHtml(String(bp.blueprintCompositeSha256 || "").slice(0, 24))}…</code> ·
               Biên lợi nhuận gộp Pro SaaS: <strong>${escapeHtml(marginPct)}</strong> ·
               Số module Open-Core: <strong>${escapeHtml(String(modulesCount))}</strong> ·
-              Số màn hình Stitch trực tuyến: <strong>23/23</strong>
+              Số màn hình Stitch trực tuyến: <strong>25/25</strong>
             </p>
           </div>
         </div>
@@ -2594,7 +2792,7 @@
     async function runPilotRehearsalBootstrap() {
       const btn = document.getElementById("btn-pilot-rehearsal-seed");
       if (btn) btn.disabled = true;
-      const body = await fetchApi("/api/auth/pilot-rehearsal-bootstrap", { method: "POST" });
+      const body = await fetchApi("/api/auth/pilot-rehearsal-bootstrap?fullGates=true", { method: "POST" });
       if (btn) btn.disabled = false;
       if (!body || !body.success || !body.data) {
         notifyError("Không thể khởi tạo diễn tập Cai Lậy", body && body.error ? body.error : "Lỗi máy chủ");
@@ -2616,8 +2814,8 @@
       }
       notify(
         "success",
-        `Đã kích hoạt phiên diễn tập Vựa Cai Lậy (${seeded.length} container)`,
-        "Bao gồm 3 container sạch (DOS-CAILAY-R01..R03) và 2 container gài lỗi mù (R04: Sai Seal, R05: Chưa xác minh HITL)."
+        `Đã kích hoạt phiên diễn tập Vựa Cai Lậy (${seeded.length} container · 5/5 Gates PASS)`,
+        "Bao gồm 3 container sạch (DOS-CAILAY-R01..R03), 2 container gài lỗi mù (R04: Sai Seal, R05: Chưa xác minh HITL), và 5/5 cổng GATE-01..05."
       );
     }
 
@@ -2633,9 +2831,29 @@
       if (dialog && dialog.open) dialog.close();
     }
 
+    function applyWorkspaceTheme(theme) {
+      const isDark = theme === "dark";
+      document.documentElement.setAttribute("data-durios-theme", isDark ? "dark" : "daylight");
+      try { window.localStorage.setItem("durios_theme", isDark ? "dark" : "daylight"); } catch (_e) { /* ignore */ }
+      const lbl = document.getElementById("workspace-theme-label");
+      if (lbl) lbl.textContent = isDark ? "☀️ Field" : "🌙 Emerald";
+    }
+
+    function toggleWorkspaceTheme() {
+      const current = document.documentElement.getAttribute("data-durios-theme") || "daylight";
+      applyWorkspaceTheme(current === "dark" ? "daylight" : "dark");
+    }
+
+    function initWorkspaceTheme() {
+      let saved = "daylight";
+      try { saved = window.localStorage.getItem("durios_theme") || "daylight"; } catch (_e) { /* ignore */ }
+      applyWorkspaceTheme(saved);
+    }
+
     /* ==========================================================
        12. INIT
        ========================================================== */
+    initWorkspaceTheme();
     checkHealth();
     window.setInterval(checkHealth, 30000);
     checkAuthSession().finally(() => loadDossierList());
@@ -2646,11 +2864,21 @@
     <div class="modal__header">
       <div>
         <h2 class="modal__title" id="stitch-gallery-title">DuriOS 25-Screen Architecture Directory</h2>
-        <p class="panel__desc">Khám phá 25 màn hình chuẩn hóa doanh nghiệp 2027 (Linear/Palantir UI) cho chuỗi xuất khẩu sầu riêng</p>
+        <p class="panel__desc">Khám phá 25 màn hình chuẩn hóa doanh nghiệp 2027 (Linear/Palantir UI) phân theo 4 miền nghiệp vụ</p>
       </div>
       <button type="button" class="icon-btn" onclick="closeStitchGalleryModal()" aria-label="Đóng hộp thoại">✕</button>
     </div>
-    <div class="modal__body" style="max-height: 65vh; overflow-y: auto;">
+    <div class="modal__body" style="grid-template-columns: 1fr; max-height: 70vh; overflow-y: auto; gap: 12px;">
+      <div style="display:flex; flex-wrap:wrap; gap: 8px; align-items:center; justify-content:space-between;">
+        <div style="display:flex; flex-wrap:wrap; gap: 6px;">
+          <button type="button" class="workflow-step-pill stitch-cat-pill active" data-cat="ALL" onclick="filterStitchModal('ALL', null)">Tất cả (25)</button>
+          <button type="button" class="workflow-step-pill stitch-cat-pill" data-cat="1. Packhouse Ops" onclick="filterStitchModal('1. Packhouse Ops', null)">1. Packhouse Ops (7)</button>
+          <button type="button" class="workflow-step-pill stitch-cat-pill" data-cat="2. Compliance &amp; Gates" onclick="filterStitchModal('2. Compliance & Gates', null)">2. Compliance &amp; Gates (6)</button>
+          <button type="button" class="workflow-step-pill stitch-cat-pill" data-cat="3. Security &amp; MIT SDK" onclick="filterStitchModal('3. Security & MIT SDK', null)">3. Security &amp; MIT SDK (6)</button>
+          <button type="button" class="workflow-step-pill stitch-cat-pill" data-cat="4. SaaS &amp; Corridors" onclick="filterStitchModal('4. SaaS & Corridors', null)">4. SaaS &amp; Corridors (6)</button>
+        </div>
+        <input type="search" id="stitch-modal-search" class="input" style="max-width: 260px; min-height: 32px;" placeholder="Tìm kiếm màn hình…" oninput="filterStitchModal(null, this.value)">
+      </div>
       <div id="stitch-gallery-modal-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
       </div>
     </div>

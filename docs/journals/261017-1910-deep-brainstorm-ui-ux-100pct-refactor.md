@@ -43,3 +43,18 @@
 
 ### Turn 5: Permanent Automated Regression Guard (`test/stitch-static-route.test.ts`)
 - Added an automated assertion in `test/stitch-static-route.test.ts` that counts `<div\b` and `</div>` tags across all 25 `/stitch/*.html` pages and enforces `openDivs === closeDivs` (`diff === 0`) and `<!-- DURIOS-TOP-NAV-START -->` presence on every test run.
+
+### Turn 6: Eliminating Duplicate Native Headers & Sub-Navs (`durios-live-bridge.js` + `durios-design-system.css`)
+- **Problem:** 24 of the 25 Stitch screens rendered their own internal `<header>` and/or secondary `<nav>` with static placeholder links (`Command Station | Dossiers | Field Auditor | Buyer Portal`) directly underneath `#durios-unified-top-nav` (`44px`).
+- **Solution (`v0.5.0`):**
+  1. `deduplicateStickyHeaders()` in `site/public/durios-live-bridge.js` automatically detects and hides redundant inner `<nav>` bars (`.durios-redundant-subnav`) while compacting the native `<header>` into a clean `38px` status strip (`.durios-compacted-native-header`).
+  2. Added **`🎯 Focus Canvas Mode` (`#durios-btn-focus-mode` / Hotkey `f`)** in the `44px` Top Command Bar to toggle 100% full-bleed canvas view (hiding all secondary sub-headers).
+
+### Turn 7: Primary Packhouse Workspace (`src/server/public/index.html`) 100% UX Refactor
+- Added **Interactive Workflow Step Filter Bar** (`📋 Tất cả (4 bước)` | `1. Chứng từ` | `2. Xác minh HITL` | `3. Thẩm định GACC` | `4. Phê duyệt & Xuất` + `🎯 Tập trung bước hiện tại`) so operators can focus on one step at a time without scrolling through 4 tables, while preserving all 4 `<section id="sec-...">` DOM nodes for contract compatibility.
+- Added **1-Click Batch Accelerators**:
+  - Step 1: `⚡ Nạp nhanh đủ 3 chứng từ mẫu` (`uploadAllSampleDocs()`)
+  - Step 2: `⚡ Xác nhận nhanh toàn bộ trường chờ duyệt` (`verifyAllFields()`)
+- Upgraded `🚀 Diễn tập 5 Cont & 5/5 Gates` on `/` to invoke `POST /api/auth/pilot-rehearsal-bootstrap?fullGates=true` so 5/5 `GATE-01..05 PASS` unlocks in 1 click.
+- Added **Dark Emerald Ops / Daylight Field Theme Toggle (`🌙 Emerald / ☀️ Field`)** and upgraded `#stitch-gallery-modal` with live search (`#stitch-modal-search`) and 4 domain filter pills across all 25 screens.
+
