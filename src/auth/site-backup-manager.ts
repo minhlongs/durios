@@ -44,20 +44,15 @@ export function createSiteBackup(
   const absDataDir = resolve(dataDir);
   const absBackupDir = resolve(backupDir);
 
-  if (!existsSync(absDbPath)) {
-    throw new Error(`Source SQLite database does not exist at '${absDbPath}'.`);
-  }
+  if (!existsSync(absDbPath)) throw new Error(`Source SQLite database does not exist at '${absDbPath}'.`);
 
   mkdirSync(absBackupDir, { recursive: true });
   const backupDbPath = join(absBackupDir, "durios.db");
-  if (existsSync(backupDbPath)) {
-    unlinkSync(backupDbPath);
-  }
+  if (existsSync(backupDbPath)) unlinkSync(backupDbPath);
 
   const sourceClient = new SqliteClient({ dbPath: absDbPath });
   try {
-    const escapedPath = backupDbPath.replace(/'/g, "''");
-    sourceClient.db.run(`VACUUM INTO '${escapedPath}'`);
+    sourceClient.db.run(`VACUUM INTO '${backupDbPath.replace(/'/g, "''")}'`);
   } finally {
     sourceClient.close();
   }
@@ -65,11 +60,8 @@ export function createSiteBackup(
   const backupClient = new SqliteClient({ dbPath: backupDbPath });
   try {
     const ledger = new SqliteAuditLedger(backupClient);
-    const auditChainValid = ledger.verifyIntegrity();
-    if (!auditChainValid) {
-      throw new Error(
-        "Refusing to complete backup: SQLite audit ledger hash chain failed integrity check."
-      );
+    if (!ledger.verifyIntegrity()) {
+      throw new Error("Refusing to complete backup: SQLite audit ledger hash chain failed integrity check.");
     }
 
     const dossierCountRow = backupClient.db
@@ -82,8 +74,7 @@ export function createSiteBackup(
       .all();
 
     const backupUploadsDir = join(absBackupDir, "uploads");
-    const backupBlobsDir = join(backupUploadsDir, "storage", "blobs");
-    mkdirSync(backupBlobsDir, { recursive: true });
+    mkdirSync(join(backupUploadsDir, "storage", "blobs"), { recursive: true });
 
     const copiedPaths = new Set<string>();
     const blobEntries: BackupBlobEntry[] = [];
@@ -92,9 +83,7 @@ export function createSiteBackup(
       const relPath = doc.storage_path;
       const srcBlobPath = join(absDataDir, relPath);
       if (!existsSync(srcBlobPath)) {
-        throw new Error(
-          `Backup failed: missing physical blob '${relPath}' referenced by document '${doc.id}'.`
-        );
+        throw new Error(`Backup failed: missing physical blob '${relPath}' referenced by document '${doc.id}'.`);
       }
       const bytes = new Uint8Array(readFileSync(srcBlobPath));
       const actualSha = calculateSha256(bytes);
@@ -108,16 +97,11 @@ export function createSiteBackup(
         const dstBlobPath = join(backupUploadsDir, relPath);
         mkdirSync(dirname(dstBlobPath), { recursive: true });
         writeFileSync(dstBlobPath, bytes);
-        const writtenSha = calculateSha256(new Uint8Array(readFileSync(dstBlobPath)));
-        if (writtenSha !== actualSha) {
+        if (calculateSha256(new Uint8Array(readFileSync(dstBlobPath))) !== actualSha) {
           throw new Error(`Backup write verification failed for blob '${relPath}'.`);
         }
         copiedPaths.add(relPath);
-        blobEntries.push({
-          relativePath: relPath,
-          sha256: actualSha,
-          sizeBytes: bytes.byteLength,
-        });
+        blobEntries.push({ relativePath: relPath, sha256: actualSha, sizeBytes: bytes.byteLength });
       }
     }
 
@@ -129,46 +113,27 @@ export function createSiteBackup(
         if (copiedPaths.has(relPath)) continue;
 
         const expectedSha = fileName.slice(0, -4);
-        const srcBlobPath = join(srcBlobsFolder, fileName);
-        const bytes = new Uint8Array(readFileSync(srcBlobPath));
+        const bytes = new Uint8Array(readFileSync(join(srcBlobsFolder, fileName)));
         const actualSha = calculateSha256(bytes);
-        if (actualSha !== expectedSha) {
-          throw new Error(`Corrupted blob in source directory '${relPath}'.`);
-        }
+        if (actualSha !== expectedSha) throw new Error(`Corrupted blob in source directory '${relPath}'.`);
 
-        const dstBlobPath = join(backupUploadsDir, relPath);
-        writeFileSync(dstBlobPath, bytes);
-        blobEntries.push({
-          relativePath: relPath,
-          sha256: actualSha,
-          sizeBytes: bytes.byteLength,
-        });
+        writeFileSync(join(backupUploadsDir, relPath), bytes);
+        blobEntries.push({ relativePath: relPath, sha256: actualSha, sizeBytes: bytes.byteLength });
       }
     }
 
     backupClient.close();
-
-    const dbBytes = new Uint8Array(readFileSync(backupDbPath));
-    const databaseSha256 = calculateSha256(dbBytes);
-
+    const databaseSha256 = calculateSha256(new Uint8Array(readFileSync(backupDbPath)));
     const manifest: SiteBackupManifest = {
-      manifestVersion: "1.0.0",
-      createdAt: new Date().toISOString(),
-      databaseSha256,
-      auditChainValid: true,
-      dossierCount: dossierCountRow?.cnt ?? 0,
-      documentCount: docRows.length,
-      blobs: blobEntries,
+      manifestVersion: "1.0.0", createdAt: new Date().toISOString(), databaseSha256,
+      auditChainValid: true, dossierCount: dossierCountRow?.cnt ?? 0,
+      documentCount: docRows.length, blobs: blobEntries,
     };
 
     writeFileSync(join(absBackupDir, "backup-manifest.json"), JSON.stringify(manifest, null, 2));
     return manifest;
   } catch (err) {
-    try {
-      backupClient.close();
-    } catch {
-      // Ignore secondary close error
-    }
+    try { backupClient.close(); } catch { /* ignore */ }
     throw err;
   }
 }

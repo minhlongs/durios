@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DuriOS // Mekong Escrow-Guard - Organic Evidence &amp; Non-Custodial Trade Room</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-background": "#dce5dc",
+            "surface-dim": "#0d1510",
+            "on-primary-fixed-variant": "#005236",
+            "surface-container": "#19211c",
+            "tertiary": "#ffb95f",
+            "on-secondary-fixed": "#002114",
+            "on-tertiary": "#472a00",
+            "tertiary-fixed-dim": "#ffb95f",
+            "outline": "#86948a",
+            "on-primary-fixed": "#002113",
+            "surface-variant": "#2e3731",
+            "surface-container-highest": "#2e3731",
+            "tertiary-container": "#e29100",
+            "surface-container-low": "#151d18",
+            "primary-fixed": "#6ffbbe",
+            "background": "#0d1510",
+            "on-error": "#690005",
+            "on-tertiary-container": "#523200",
+            "on-secondary": "#003825",
+            "secondary-fixed-dim": "#45dfa4",
+            "on-surface-variant": "#bbcabf",
+            "primary-fixed-dim": "#4edea3",
+            "surface-tint": "#4edea3",
+            "primary-container": "#10b981",
+            "surface-container-high": "#242c26",
+            "on-surface": "#dce5dc",
+            "on-tertiary-fixed-variant": "#653e00",
+            "on-secondary-container": "#00452e",
+            "tertiary-fixed": "#ffddb8",
+            "surface-container-lowest": "#08100b",
+            "secondary-fixed": "#68fcbf",
+            "primary": "#4edea3",
+            "surface-bright": "#333b35",
+            "inverse-primary": "#006c49",
+            "secondary": "#45dfa4",
+            "surface": "#0d1510",
+            "on-secondary-fixed-variant": "#005137",
+            "error-container": "#93000a",
+            "inverse-on-surface": "#2a322c",
+            "on-tertiary-fixed": "#2a1700",
+            "error": "#ffb4ab",
+            "secondary-container": "#00bd85",
+            "on-primary": "#003824",
+            "outline-variant": "#3c4a42",
+            "on-error-container": "#ffdad6",
+            "inverse-surface": "#dce5dc",
+            "on-primary-container": "#00422b"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "gutter-compact": "0.5rem",
+            "gutter": "1rem",
+            "margin-mobile": "0.75rem",
+            "margin": "1.5rem",
+            "space-xs": "0.25rem",
+            "space-sm": "0.5rem",
+            "space-md": "0.75rem",
+            "space-lg": "1.25rem",
+            "space-xl": "2rem"
+          },
+          "fontFamily": {
+            "code-sm": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "headline-md": ["Inter"],
+            "headline-xl": ["Inter"],
+            "headline-lg": ["Inter"],
+            "headline-xl-mobile": ["Inter"],
+            "label-md": ["JetBrains Mono"],
+            "code-md": ["JetBrains Mono"],
+            "body-md": ["Inter"],
+            "label-sm": ["JetBrains Mono"],
+            "body-sm": ["Inter"],
+            "headline-sm": ["Inter"],
+            "code-lg": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-xl-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "code-lg": ["15px", { "lineHeight": "20px", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #08100b;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #3c4a42;
+    }
+    .pulse-glow {
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.35);
+    }
+    .code-bracket-grid {
+      background-size: 24px 24px;
+      background-image: 
+        linear-gradient(to right, rgba(60, 74, 66, 0.15) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(60, 74, 66, 0.15) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-sm select-none min-h-screen overflow-x-hidden flex flex-col">
+<!-- TOP 56px OPERATIONAL COMMAND BAR (TopNavBar Anchor Execution) -->
+<header class="w-full h-14 px-4 flex items-center justify-between border-b border-outline-variant bg-surface-container-lowest z-50 sticky top-0">
+<!-- Left: Brand + Search Node Cluster -->
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 bg-primary rounded-none animate-pulse"></span>
+<span class="text-code-md font-code-md font-bold tracking-widest text-primary uppercase">DuriOS // MEKONG ESCROW-GUARD</span>
+</div>
+<!-- System Node Metas -->
+<div class="hidden xl:flex items-center gap-2 pl-4 border-l border-outline-variant font-code-sm text-code-sm">
+<span class="px-2 py-0.5 bg-surface-container-high border border-outline-variant text-on-surface-variant font-medium">TIEN GIANG VN-84B</span>
+<span class="px-2 py-0.5 bg-surface-container border border-outline-variant text-primary font-code-sm">DAEMON: escrow-guard:v2.4.1</span>
+<span class="flex items-center gap-1.5 px-2 py-0.5 bg-primary/10 border border-primary/40 text-primary font-semibold tracking-tight">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+          DECREE 52/2024/NĐ-CP ZERO-CUSTODY ENFORCED · DUAL-LOCK ARMED
+        </span>
+</div>
+</div>
+<!-- Center Navigation Links from Shared Component -->
+<nav class="hidden lg:flex items-center gap-8 h-14 pt-3">
+<a class="text-on-surface-variant pb-3 font-code-sm uppercase tracking-wider hover:text-on-surface transition-colors duration-150" href="#">Consignments</a>
+<a class="text-primary border-b-2 border-primary pb-3 font-code-sm uppercase tracking-wider" href="#">Escrow State</a>
+<a class="text-on-surface-variant pb-3 font-code-sm uppercase tracking-wider hover:text-on-surface transition-colors duration-150" href="#">Evidence Ledger</a>
+<a class="text-on-surface-variant pb-3 font-code-sm uppercase tracking-wider hover:text-on-surface transition-colors duration-150" href="#">GACC Clearances</a>
+</nav>
+<!-- Right Trailing Controls -->
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1 border-r border-outline-variant pr-3 text-on-surface-variant">
+<button class="p-1.5 hover:bg-surface-container-high hover:text-primary transition-colors duration-150" title="Security Verification Log">
+<span class="material-symbols-outlined" data-icon="verified_user">verified_user</span>
+</button>
+<button class="p-1.5 hover:bg-surface-container-high hover:text-primary transition-colors duration-150 relative" title="Notifications">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-1.5 h-1.5 bg-tertiary rounded-none"></span>
+</button>
+<button class="p-1.5 hover:bg-surface-container-high hover:text-primary transition-colors duration-150" title="Terminal Output">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+</div>
+<!-- Action CTA Buttons -->
+<button class="px-2.5 py-1.5 bg-surface-container-high border border-outline-variant text-on-surface hover:border-outline hover:text-primary font-code-sm text-code-sm tracking-wide transition-all duration-150 active:scale-[0.99] flex items-center gap-1.5" onclick="simulateCustodialInjection()">
+<span class="material-symbols-outlined text-tertiary" data-icon="shield_locked">shield_locked</span>
+        [Simulate Custodial Injection]
+      </button>
+<button class="px-3 py-1.5 bg-primary-container text-on-primary-container font-headline-sm text-code-sm font-semibold hover:bg-primary transition-all duration-150 active:scale-[0.99] flex items-center gap-1.5 shadow-sm" onclick="triggerProofVerification()">
+<span class="material-symbols-outlined" data-icon="verified_user" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified_user</span>
+        Verify Trade Room Proof
+      </button>
+<!-- Key Badge Profile -->
+<div class="pl-2 border-l border-outline-variant flex items-center">
+<div class="w-7 h-7 bg-surface-container-high border border-primary/40 flex items-center justify-center font-code-sm text-primary font-bold" title="Chief Quarantine Liaison Customs Cryptographic Key Token">
+          84B
+        </div>
+</div>
+</div>
+</header>
+<div class="flex-1 flex overflow-hidden">
+<!-- SIDE NAV (SideNavBar Anchor Execution) -->
+<aside class="w-64 h-[calc(100vh-3.5rem)] flex flex-col justify-between p-3 border-r border-outline-variant bg-surface-container-low z-40 shrink-0">
+<div class="flex flex-col gap-4">
+<!-- Node Header Box -->
+<div class="p-2.5 bg-surface-container border border-outline-variant">
+<div class="flex items-center gap-2 mb-1">
+<span class="material-symbols-outlined text-primary" data-icon="shield_locked" data-weight="fill" style="font-variation-settings: 'FILL' 1;">shield_locked</span>
+<span class="text-code-sm font-code-sm font-semibold text-primary">SEAL NODE: MKG-8842</span>
+</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant flex items-center justify-between">
+<span>DECREE 52/2024 ENFORCED</span>
+<span class="text-primary text-[10px]">ACTIVE</span>
+</div>
+</div>
+<!-- Main Navigation Items -->
+<nav class="flex flex-col gap-1">
+<!-- Active Tab: Trade Room -->
+<a class="flex items-center gap-3 px-3 py-2 bg-surface-container-high text-primary font-code-sm border-l-2 border-primary" href="#">
+<span class="material-symbols-outlined" data-icon="gavel">gavel</span>
+<span>Trade Room</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-code-sm hover:text-on-surface hover:bg-surface-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="conversion_path">conversion_path</span>
+<span>State Machine</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-code-sm hover:text-on-surface hover:bg-surface-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="webhook">webhook</span>
+<span>Webhook Verifier</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-code-sm hover:text-on-surface hover:bg-surface-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span>Evidence Vault</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-code-sm hover:text-on-surface hover:bg-surface-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="key">key</span>
+<span>Share Delegations</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 text-on-surface-variant font-code-sm hover:text-on-surface hover:bg-surface-container transition-colors duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="shield_locked">shield_locked</span>
+<span>Customs Audit</span>
+</a>
+</nav>
+<!-- CTA Action inside Side Rail -->
+<button class="w-full mt-2 py-2 px-3 bg-surface-container-high border border-outline-variant hover:border-primary text-primary font-code-sm flex items-center justify-center gap-2 transition-all">
+<span class="material-symbols-outlined" data-icon="sensors">sensors</span>
+<span>Inspect Live Reefer</span>
+</button>
+</div>
+<!-- Side Nav Footer Tabs -->
+<div class="border-t border-outline-variant pt-3 flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-1.5 text-on-surface-variant font-code-sm hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+<span>Terminal Shell</span>
+</a>
+<a class="flex items-center gap-3 px-3 py-1.5 text-on-surface-variant font-code-sm hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="sensors">sensors</span>
+<span>GACC Telemetry</span>
+</a>
+<div class="mt-2 px-3 py-1.5 bg-surface-container-lowest text-[10px] font-code-sm text-outline flex items-center justify-between">
+<span>LATENCY: 14ms</span>
+<span class="text-primary">ED25519 OK</span>
+</div>
+</div>
+</aside>
+<!-- MAIN SCROLLABLE CONTENT CANVAS -->
+<main class="flex-1 overflow-y-auto custom-scroll bg-surface-dim code-bracket-grid p-4 xl:p-6 space-y-5">
+<!-- TOP 4-CARD STATUTORY & VALUE RIBBON -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+<!-- CARD 1: Dual-Lock Marketplace Guard -->
+<div class="bg-surface-container border border-outline-variant p-3 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary"></div>
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">MarketplaceGuard</span>
+<span class="px-1.5 py-0.2 bg-primary/10 border border-primary text-primary font-code-sm text-[10px]">FAIL-CLOSED</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-1">Dual-Lock Invariant</div>
+<p class="font-code-sm text-code-sm text-on-surface-variant leading-relaxed">
+              Requires GATE-01..GATE-05 PASSED (5/5 Green Checkmarks) + <code class="text-primary font-code-sm">ENABLE_GUARDED_B2B=true</code>
+</p>
+</div>
+<div class="mt-3 pt-2.5 border-t border-outline-variant flex items-center justify-between text-code-sm font-code-sm">
+<span class="text-on-surface-variant flex items-center gap-1">
+<span class="w-1.5 h-1.5 bg-primary inline-block"></span> Hardware Latch: LOCKED
+            </span>
+<span class="text-primary">0% BAL_RISK</span>
+</div>
+</div>
+<!-- CARD 2: Decree 52/2024/NĐ-CP Zero-Custody Lock -->
+<div class="bg-surface-container border border-outline-variant p-3 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary"></div>
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">DECREE 52/2024/NĐ-CP</span>
+<span class="px-1.5 py-0.2 bg-primary/20 border border-primary text-primary font-code-sm text-[10px] animate-pulse">AIR-GAPPED L4</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-1 flex items-baseline gap-2">
+<span>0 VND Held</span>
+<span class="text-code-sm font-code-sm text-outline font-normal">Platform Total</span>
+</div>
+<p class="font-code-sm text-code-sm text-on-surface-variant leading-relaxed">
+              Zero escrow/holding of fiat/crypto. Schema rejects <code class="text-tertiary">cardNumber</code>, <code class="text-tertiary">custodialBal</code>, <code class="text-tertiary">privKey</code> at ingress.
+            </p>
+</div>
+<div class="mt-3 pt-2.5 border-t border-outline-variant flex items-center justify-between text-code-sm font-code-sm">
+<span class="text-on-surface-variant">Statutory State</span>
+<span class="text-primary font-semibold">100% NON-CUSTODIAL</span>
+</div>
+</div>
+<!-- CARD 3: Organic Evidence Ledger -->
+<div class="bg-surface-container border border-outline-variant p-3 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary"></div>
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">OrganicEvidenceManager</span>
+<span class="px-1.5 py-0.2 bg-surface-container-high border border-outline-variant text-primary font-code-sm text-[10px]">MERKLE LIVE</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-1">
+              14 Verified Reefers
+            </div>
+<div class="font-code-sm text-code-sm text-on-surface-variant space-y-0.5">
+<div class="flex justify-between">
+<span>Verification SLA:</span>
+<span class="text-primary font-semibold">3.18m avg (≤ 3.4m SLA)</span>
+</div>
+<div class="flex justify-between">
+<span>Border Rejection:</span>
+<span class="text-primary font-semibold">0 / 14 Rejections</span>
+</div>
+</div>
+</div>
+<div class="mt-3 pt-2.5 border-t border-outline-variant flex items-center justify-between font-code-sm text-code-sm">
+<span class="text-outline">Root:</span>
+<span class="text-primary font-mono text-[11px]">0x8f2c...49a1</span>
+</div>
+</div>
+<!-- CARD 4: Delegated Share Redactor -->
+<div class="bg-surface-container border border-outline-variant p-3 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary"></div>
+<div>
+<div class="flex items-center justify-between mb-1.5">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">DossierRedactor</span>
+<span class="px-1.5 py-0.2 bg-primary/10 border border-primary text-primary font-code-sm text-[10px]">PEDERSEN ZK</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-1 flex items-baseline gap-2">
+<span>Privacy 100%</span>
+<span class="text-code-sm font-code-sm text-primary">Active</span>
+</div>
+<p class="font-code-sm text-code-sm text-on-surface-variant leading-relaxed">
+              Farm gate prices (VNĐ/kg) &amp; farmer phone numbers auto-blinded before buyer consignee grants.
+            </p>
+</div>
+<div class="mt-3 pt-2.5 border-t border-outline-variant flex items-center justify-between font-code-sm text-code-sm">
+<span class="text-on-surface-variant">Active Consignees:</span>
+<span class="text-primary font-semibold">3 Active Buyer Grants</span>
+</div>
+</div>
+</div>
+<!-- CENTER 2-COLUMN SPLIT WORKBENCH -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+<!-- LEFT PANEL (6 COLS): Escrow State Machine & Webhook Verifier -->
+<div class="lg:col-span-6 flex flex-col gap-4">
+<!-- State Machine Container -->
+<div class="bg-surface-container border border-outline-variant flex flex-col">
+<!-- Header bar -->
+<div class="px-4 py-3 bg-surface-container-high border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="conversion_path">conversion_path</span>
+<span class="font-code-md text-code-md font-semibold text-primary uppercase tracking-wide">
+                  ESCROW STATE MACHINE // BANK WEBHOOK ATTESTATION
+                </span>
+</div>
+<span class="px-2 py-0.5 bg-surface-container-lowest text-primary text-[10px] font-code-sm border border-outline-variant">
+                REVISION 2.4.1
+              </span>
+</div>
+<!-- Active Target Reefer Manifest -->
+<div class="p-3 bg-surface-container-lowest border-b border-outline-variant flex flex-wrap items-center justify-between gap-2 text-code-sm font-code-sm">
+<div class="flex items-center gap-2">
+<span class="text-outline">REEFER FOCUS:</span>
+<span class="text-on-surface font-bold text-code-md">MSKU 907032-3</span>
+<span class="px-1.5 py-0.2 bg-surface-container border border-outline-variant text-on-surface-variant text-[10px]">40ft HC #04</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="text-outline">COMPOSITE SHA-256:</span>
+<code class="text-primary bg-surface-container px-2 py-0.5 border border-outline-variant font-mono">8f4a2c91b8e0...3c19</code>
+</div>
+</div>
+<!-- 4-Stage Interactive Non-Custodial Milestone Pipeline -->
+<div class="p-4 space-y-3">
+<!-- STAGE 1: LISTING_CREATED -->
+<div class="p-3 bg-surface-container-low border border-outline-variant relative">
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-5 h-5 rounded-none bg-primary text-on-primary flex items-center justify-center font-code-sm font-bold mt-0.5">
+                      ✓
+                    </div>
+<div>
+<div class="font-code-md text-code-md font-semibold text-primary">1. LISTING_CREATED</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                        Container Dossier MSKU9070323 registered on Tien Giang Border Node. GACC Order 248/249 schema matched.
+                      </div>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-primary/10 border border-primary/40 text-primary font-code-sm text-[10px] uppercase">
+                    COMPLETED
+                  </span>
+</div>
+<div class="mt-2.5 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-[11px] font-code-sm text-outline">
+<span>TIMESTAMP: 2026-10-17 08:14:02 UTC</span>
+<span class="text-primary font-mono">SIG: 0x48a1...10bb</span>
+</div>
+</div>
+<!-- STAGE 2: BANK_WEBHOOK_ATTESTED -->
+<div class="p-3 bg-surface-container-low border border-outline-variant relative">
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-5 h-5 rounded-none bg-primary text-on-primary flex items-center justify-center font-code-sm font-bold mt-0.5">
+                      ✓
+                    </div>
+<div>
+<div class="font-code-md text-code-md font-semibold text-primary">2. BANK_WEBHOOK_ATTESTED</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                        Partner Bank (Vietcombank) HMAC-SHA256 Reference Verified. DuriOS holds 0 VND fiat balances.
+                      </div>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-primary/10 border border-primary/40 text-primary font-code-sm text-[10px] uppercase">
+                    ATTESTED
+                  </span>
+</div>
+<div class="mt-2.5 p-2 bg-surface-container-lowest border border-outline-variant font-code-sm text-code-sm space-y-1">
+<div class="flex justify-between">
+<span class="text-outline">Bank Reference:</span>
+<span class="text-on-surface font-mono">VCB-ESC-20261017-994</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Idempotency Key:</span>
+<span class="text-on-surface font-mono">idemp_mkg_9921</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">ED25519 Signature:</span>
+<span class="text-primary font-mono">0x99fa...e720 [VALID]</span>
+</div>
+</div>
+</div>
+<!-- STAGE 3: DOSSIER_SEALED_100_PCT -->
+<div class="p-3 bg-surface-container-low border border-primary relative">
+<div class="absolute -top-2 right-4 px-2 py-0.2 bg-primary text-on-primary font-code-sm text-[10px] font-bold uppercase">
+                  CURRENT GATE ACTIVE
+                </div>
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-5 h-5 rounded-none bg-primary text-on-primary flex items-center justify-center font-code-sm font-bold mt-0.5">
+                      3
+                    </div>
+<div>
+<div class="font-code-md text-code-md font-semibold text-primary">3. DOSSIER_SEALED_100_PCT</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                        All 3 Mandatory GACC Docs (Packing List, Phyto Cert, Lab Assay) + HITL Cold-Chain Gate verified.
+                      </div>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-primary/20 border border-primary text-primary font-code-sm text-[10px] uppercase">
+                    100% GATED
+                  </span>
+</div>
+<!-- Sensor and Lab Metrics Subgrid -->
+<div class="mt-3 grid grid-cols-2 gap-2 text-code-sm font-code-sm">
+<div class="p-2 bg-surface-container border border-outline-variant">
+<div class="text-outline text-[10px]">CADMIUM ICP-MS ASSAY</div>
+<div class="text-primary font-bold text-code-md">0.024 mg/kg</div>
+<div class="text-outline text-[10px]">Safe margin: 52% (Limit 0.05)</div>
+</div>
+<div class="p-2 bg-surface-container border border-outline-variant">
+<div class="text-outline text-[10px]">CORE REEFER PULSE</div>
+<div class="text-primary font-bold text-code-md">+13.5°C stable</div>
+<div class="text-outline text-[10px]">Ethylene: 1.2 ppm · RH 88%</div>
+</div>
+</div>
+</div>
+<!-- STAGE 4: BANK_RELEASE_SIGNAL_DISPATCHED -->
+<div class="p-3 bg-surface-container-low border border-outline-variant opacity-90 relative">
+<div class="flex items-start justify-between">
+<div class="flex items-start gap-2.5">
+<div class="w-5 h-5 rounded-none border border-outline text-outline flex items-center justify-center font-code-sm font-bold mt-0.5">
+                      4
+                    </div>
+<div>
+<div class="font-code-md text-code-md font-semibold text-on-surface">4. BANK_RELEASE_SIGNAL_DISPATCHED</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant mt-0.5">
+                        Cryptographic release instruction payload generated for bank API endpoint. DuriOS operates as oracle only.
+                      </div>
+</div>
+</div>
+<span class="px-2 py-0.5 bg-surface-container-high border border-outline-variant text-on-surface-variant font-code-sm text-[10px] uppercase">
+                    ARMED &amp; READY
+                  </span>
+</div>
+<div class="mt-3 flex items-center justify-between">
+<span class="text-code-sm font-code-sm text-tertiary flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary animate-ping"></span>
+                    Awaiting Customs Counter-Signature
+                  </span>
+<button class="px-3 py-1 bg-surface-container-high border border-outline-variant hover:border-primary text-primary font-code-sm text-code-sm">
+                    Inspect Bank Payload
+                  </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Custodial Field Rejection Sandbox (Interactive Terminal Card) -->
+<div class="bg-surface-container border border-outline-variant flex flex-col">
+<div class="px-4 py-2.5 bg-surface-container-high border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-tertiary" data-icon="terminal">terminal</span>
+<span class="font-code-md text-code-md font-semibold text-on-surface">
+                  CUSTODIAL FIELD REJECTION SANDBOX // DECREE 52/2024 ENGINE
+                </span>
+</div>
+<span class="px-1.5 py-0.5 bg-error-container/30 border border-error/40 text-error font-code-sm text-[10px]">
+                STRICT REJECTION ACTIVE
+              </span>
+</div>
+<div class="p-4 bg-surface-container-lowest font-code-sm text-code-sm space-y-3">
+<div class="text-on-surface-variant text-[11px] leading-relaxed">
+                Test the non-custodial schema ingress validator. Any payload containing banned custodial keys (e.g., card data, custodial balances, private keys) will be rejected with an immediate HTTP 422 exception.
+              </div>
+<!-- Code Preview Display -->
+<div class="relative bg-surface-dim border border-outline-variant p-3 font-mono text-[11px] text-on-surface-variant overflow-x-auto">
+<div class="text-outline mb-1">// INCOMING ATTEMPT: simulate_buyer_deposit.json</div>
+<span class="text-on-surface">{</span><br/>
+                  <span class="text-primary">"consigneeRef"</span>: <span class="text-tertiary">"GZ-FRUIT-99"</span>,<br/>
+                  <span class="text-primary">"containerId"</span>: <span class="text-tertiary">"MSKU 907032-3"</span>,<br/>
+                  <span class="text-error font-bold">"cardNumber"</span>: <span class="text-error">"9704 1500 8821 0019"</span>, <span class="text-outline">// FORBIDDEN UNDER DECREE 52</span><br/>
+                  <span class="text-error font-bold">"custodialWalletBalance"</span>: <span class="text-error">500000000</span> <span class="text-outline">// FORBIDDEN UNDER DECREE 52</span><br/>
+<span class="text-on-surface">}</span>
+</div>
+<!-- Live Rejection Response Output -->
+<div class="p-3 bg-error-container/10 border border-error/50 font-mono text-[11px] text-error space-y-1" id="sandbox-output">
+<div class="flex items-center gap-1.5 font-bold">
+<span class="material-symbols-outlined text-error text-[14px]" data-icon="error">error</span>
+<span>HTTP 422 UNPROCESSABLE ENTITY: ERR_CUSTODIAL_FIELD_FORBIDDEN</span>
+</div>
+<div class="text-on-surface-variant pl-4">
+                  Decree 52/2024/NĐ-CP Non-Custodial Rule Violation: Field forbidden on zero-custody platform. Platform does not hold user fiat/funds. Escrow must be mediated by licensed domestic bank.
+                </div>
+</div>
+<div class="flex items-center justify-between pt-1">
+<button class="px-2.5 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface text-code-sm" onclick="injectValidPayload()">
+                  Simulate Bank Webhook Attestation
+                </button>
+<span class="text-outline text-[11px]">Audit Engine: Verified Zero Storage</span>
+</div>
+</div>
+</div>
+</div>
+<!-- RIGHT PANEL (6 COLS): Organic Evidence Registry & Delegated Buyer Share Grants -->
+<div class="lg:col-span-6 flex flex-col gap-4">
+<!-- Evidence Ledger Table Container -->
+<div class="bg-surface-container border border-outline-variant flex flex-col">
+<div class="px-4 py-3 bg-surface-container-high border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="inventory_2">inventory_2</span>
+<span class="font-code-md text-code-md font-semibold text-primary uppercase tracking-wide">
+                  ORGANIC EVIDENCE REGISTRY // MERKLE LOGS
+                </span>
+</div>
+<div class="flex items-center gap-2 text-code-sm font-code-sm">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-on-surface">14/14 VALID</span>
+</div>
+</div>
+<!-- Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse font-code-sm text-code-sm">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-container-lowest text-outline text-[10px] uppercase tracking-wider">
+<th class="py-2.5 px-3">Evidence ID</th>
+<th class="py-2.5 px-3">Container Focus</th>
+<th class="py-2.5 px-3">SLA Speed</th>
+<th class="py-2.5 px-3">Fault Isolation</th>
+<th class="py-2.5 px-3">Digest (SHA-256)</th>
+<th class="py-2.5 px-3 text-right">Integrity</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1 -->
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors">
+<td class="py-2.5 px-3 font-semibold text-primary">EV-CAILAY-01</td>
+<td class="py-2.5 px-3 text-on-surface font-mono">MSKU 907032-3</td>
+<td class="py-2.5 px-3 text-on-surface-variant">3.2m</td>
+<td class="py-2.5 px-3 text-tertiary">1 blind fault caught</td>
+<td class="py-2.5 px-3 text-outline font-mono text-[10px]">7d2e3f...91a4</td>
+<td class="py-2.5 px-3 text-right">
+<span class="px-1.5 py-0.5 bg-primary/10 border border-primary text-primary text-[10px]">IMMUTABLE</span>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="bg-surface-container-low hover:bg-surface-container-high transition-colors">
+<td class="py-2.5 px-3 font-semibold text-primary">EV-CAILAY-02</td>
+<td class="py-2.5 px-3 text-on-surface font-mono">CMAU 789210-2</td>
+<td class="py-2.5 px-3 text-on-surface-variant">2.8m</td>
+<td class="py-2.5 px-3 text-primary">0 faults</td>
+<td class="py-2.5 px-3 text-outline font-mono text-[10px]">4b1c8e...a802</td>
+<td class="py-2.5 px-3 text-right">
+<span class="px-1.5 py-0.5 bg-primary/10 border border-primary text-primary text-[10px]">IMMUTABLE</span>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors">
+<td class="py-2.5 px-3 font-semibold text-primary">EV-CAILAY-03</td>
+<td class="py-2.5 px-3 text-on-surface font-mono">OOLU 452910-8</td>
+<td class="py-2.5 px-3 text-on-surface-variant">3.4m</td>
+<td class="py-2.5 px-3 text-tertiary">1 blind fault caught</td>
+<td class="py-2.5 px-3 text-outline font-mono text-[10px]">9e02fa...d441</td>
+<td class="py-2.5 px-3 text-right">
+<span class="px-1.5 py-0.5 bg-primary/10 border border-primary text-primary text-[10px]">IMMUTABLE</span>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-2.5 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between text-[11px] font-code-sm text-outline">
+<span>ZERO BORDER REJECTIONS (14/14 SHIPMENTS CLEARED)</span>
+<a class="text-primary hover:underline flex items-center gap-1" href="#">
+<span>View Complete Merkle Proof</span>
+<span class="material-symbols-outlined text-[14px]" data-icon="terminal">terminal</span>
+</a>
+</div>
+</div>
+<!-- Active Buyer Share Grants Management Deck -->
+<div class="bg-surface-container border border-outline-variant flex flex-col">
+<div class="px-4 py-3 bg-surface-container-high border-b border-outline-variant flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="key">key</span>
+<span class="font-code-md text-code-md font-semibold text-primary uppercase tracking-wide">
+                  DELEGATED BUYER SHARE GRANTS (DOSSIER REDACTOR)
+                </span>
+</div>
+<span class="text-code-sm font-code-sm text-outline">PEDERSEN BLINDED</span>
+</div>
+<!-- Grant Items -->
+<div class="p-3 space-y-3">
+<!-- Grant 01 -->
+<div class="p-3 bg-surface-container-low border border-outline-variant space-y-2.5">
+<div class="flex items-start justify-between">
+<div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center gap-2">
+<span>Guangzhou Fruit Import LLC (Consignee)</span>
+<span class="px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/30 text-[10px] font-code-sm">ACTIVE</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mt-0.5">
+                      Scope: <span class="text-tertiary font-semibold">REDACTED_SUMMARY</span> (Farm gate price BLINDED, Farmer Phone BLINDED, Phyto &amp; Cold-chain PUBLIC)
+                    </div>
+</div>
+<span class="font-code-sm text-code-sm text-primary font-bold">TTL: 04h 12m 45s</span>
+</div>
+<div class="p-2 bg-surface-container-lowest border border-outline-variant flex items-center justify-between font-code-sm text-[11px]">
+<div class="flex items-center gap-2">
+<span class="text-outline">TOKEN:</span>
+<span class="text-on-surface font-mono">sh_grant_gz_99421</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface text-[11px] transition-colors">
+                      Inspect Redacted View
+                    </button>
+<button class="px-2 py-1 bg-error-container/20 border border-error/40 text-error hover:bg-error-container/40 text-[11px] transition-colors">
+                      Revoke Share Grant
+                    </button>
+</div>
+</div>
+</div>
+<!-- Grant 02 -->
+<div class="p-3 bg-surface-container-low border border-outline-variant space-y-2.5">
+<div class="flex items-start justify-between">
+<div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold flex items-center gap-2">
+<span>Pingxiang Customs Inspection Node #03</span>
+<span class="px-1.5 py-0.2 bg-primary/10 text-primary border border-primary/30 text-[10px] font-code-sm">STATUTORY GACC</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mt-0.5">
+                      Scope: <span class="text-primary font-semibold">FULL_COMPLIANCE_PROOF</span> (Statutory Bilateral GACC Decree 248/249 Crosswalk)
+                    </div>
+</div>
+<span class="font-code-sm text-code-sm text-primary font-bold">TTL: 18h 40m 10s</span>
+</div>
+<div class="p-2 bg-surface-container-lowest border border-outline-variant flex items-center justify-between font-code-sm text-[11px]">
+<div class="flex items-center gap-2">
+<span class="text-outline">TOKEN:</span>
+<span class="text-on-surface font-mono">sh_grant_px_88102</span>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-2 py-1 bg-surface-container border border-outline-variant hover:border-primary text-on-surface text-[11px] transition-colors">
+                      Inspect Raw Payload
+                    </button>
+<button class="px-2 py-1 bg-error-container/20 border border-error/40 text-error hover:bg-error-container/40 text-[11px] transition-colors">
+                      Revoke Share Grant
+                    </button>
+</div>
+</div>
+</div>
+</div>
+<!-- Create Delegated Share Grant Inline Panel -->
+<div class="p-4 bg-surface-container-lowest border-t border-outline-variant space-y-3">
+<div class="font-code-md text-code-md font-semibold text-on-surface flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[16px]" data-icon="key">key</span>
+<span>DELEGATE NEW VERIFICATION SHARE GRANT</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+<div>
+<label class="block font-label-sm text-label-sm uppercase text-outline mb-1">Buyer / Consignee</label>
+<input class="w-full bg-surface-container border border-outline-variant p-2 text-on-surface font-code-sm text-code-sm focus:border-primary focus:ring-0 rounded-none" type="text" value="Shenzhen Fresh Fruit Port Corp"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm uppercase text-outline mb-1">Scope Precedence</label>
+<select class="w-full bg-surface-container border border-outline-variant p-2 text-on-surface font-code-sm text-code-sm focus:border-primary focus:ring-0 rounded-none">
+<option>REDACTED_SUMMARY (Blind prices &amp; phones)</option>
+<option>FULL_COMPLIANCE_PROOF (Customs Only)</option>
+</select>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm uppercase text-outline mb-1">TTL Expiration</label>
+<select class="w-full bg-surface-container border border-outline-variant p-2 text-on-surface font-code-sm text-code-sm focus:border-primary focus:ring-0 rounded-none">
+<option>06 Hours (Standard B2B)</option>
+<option>01 Hour (Quick Verification)</option>
+<option>24 Hours (Port Clearance)</option>
+<option>07 Days (Intermodal Voyage)</option>
+</select>
+</div>
+</div>
+<!-- Fixed Redaction Enforcer Indicator -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2 text-code-sm font-code-sm text-primary">
+<span class="material-symbols-outlined text-[16px]" data-icon="shield_locked">shield_locked</span>
+<span>Auto-Redaction Engine Locked On (Zero-Knowledge Privacy Mask Enforced)</span>
+</div>
+<button class="px-4 py-1.5 bg-primary-container text-on-primary-container font-code-sm font-semibold hover:bg-primary transition-colors">
+                  Issue Delegated Grant Token
+                </button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- PERSISTENT FOOTER STATUS BAR -->
+<footer class="w-full h-8 px-4 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between font-code-sm text-code-sm text-outline z-50">
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1.5 text-primary">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+        MEKONG CLEAR ESCROW-GUARD // DECREE 52/2024/NĐ-CP COMPLIANT
+      </span>
+<span class="text-outline">·</span>
+<span>AIR-GAPPED VIETNAMESE AGRO-TRADE ARBITRATION</span>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5">
+<span>MERKLE ROOT:</span>
+<span class="text-on-surface font-mono text-[11px]">0x8f2c949a1e0b5712</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span>GATE LATENCY:</span>
+<span class="text-primary font-mono text-[11px]">14ms</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface">
+<span class="material-symbols-outlined text-[14px] text-primary" data-icon="shield_locked">shield_locked</span>
+<span>ZERO CUSTODIAL EXPOSURE</span>
+</div>
+</div>
+</footer>
+<!-- SCRIPT FOR INTERACTIVE TERMINAL SIMULATION -->
+<script>
+    function simulateCustodialInjection() {
+      const output = document.getElementById('sandbox-output');
+      output.className = 'p-3 bg-error-container/20 border border-error font-mono text-[11px] text-error space-y-1 animate-pulse';
+      output.innerHTML = `
+        <div class="flex items-center gap-1.5 font-bold text-error">
+          <span class="material-symbols-outlined text-[16px]">dangerous</span>
+          <span>HTTP 422 UNPROCESSABLE ENTITY: ERR_CUSTODIAL_FIELD_FORBIDDEN</span>
+        </div>
+        <div class="text-on-surface font-bold pl-4">
+          INJECTION CAUGHT: Key "cardNumber" (9704...) and "custodialWalletBalance" rejected by schema boundary.
+        </div>
+        <div class="text-outline pl-4">
+          Zero-custody invariant preserved. Decree 52/2024/NĐ-CP audit score: 100% PASS. No state mutated.
+        </div>
+      `;
+      setTimeout(() => {
+        output.classList.remove('animate-pulse');
+      }, 1500);
+    }
+
+    function injectValidPayload() {
+      const output = document.getElementById('sandbox-output');
+      output.className = 'p-3 bg-surface-container-high border border-primary font-mono text-[11px] text-primary space-y-1';
+      output.innerHTML = `
+        <div class="flex items-center gap-1.5 font-bold">
+          <span class="material-symbols-outlined text-[16px]">task_alt</span>
+          <span>HTTP 200 OK: ATTESTATION_ORACLE_ACCEPTED</span>
+        </div>
+        <div class="text-on-surface-variant pl-4">
+          Pure webhook attestation payload passed zero-custody schema. Bank reference VCB-ESC-20261017-994 verified without custody of buyer capital.
+        </div>
+      `;
+    }
+
+    function triggerProofVerification() {
+      alert("DuriOS Trade Room Proof: SHA-256 Merkle consistency verified across 14 container checkpoints. Zero custody confirmed under Decree 52/2024.");
+    }
+  </script>
+</body></html>

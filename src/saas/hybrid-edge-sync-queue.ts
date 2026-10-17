@@ -50,9 +50,7 @@ function mapRow(row: EdgeSyncRow): QueuedEdgeSyncItem {
     queuedAt: row.queued_at,
     status: row.status,
     ...(row.cloud_synced_at ? { cloudSyncedAt: row.cloud_synced_at } : {}),
-    ...(row.cloud_ack_receipt_hash
-      ? { cloudAckReceiptHash: row.cloud_ack_receipt_hash }
-      : {}),
+    ...(row.cloud_ack_receipt_hash ? { cloudAckReceiptHash: row.cloud_ack_receipt_hash } : {}),
   };
 }
 
@@ -61,8 +59,7 @@ export class HybridEdgeSyncQueue {
   private readonly transport?: EdgeSyncTransport | undefined;
 
   constructor(options: HybridEdgeSyncQueueOptions = {}) {
-    this.sqliteClient =
-      options.sqliteClient ?? new SqliteClient({ dbPath: ":memory:", inMemory: true });
+    this.sqliteClient = options.sqliteClient ?? new SqliteClient({ dbPath: ":memory:", inMemory: true });
     this.sqliteClient.db.run(
       "CREATE TABLE IF NOT EXISTS edge_sync_queue (queue_item_id TEXT PRIMARY KEY, tenant_id TEXT NOT NULL, dossier_id TEXT NOT NULL UNIQUE, dossier_code TEXT NOT NULL, composite_manifest_sha256 TEXT NOT NULL, status TEXT NOT NULL, queued_at TEXT NOT NULL, cloud_synced_at TEXT, cloud_ack_receipt_hash TEXT)"
     );
@@ -78,13 +75,9 @@ export class HybridEdgeSyncQueue {
     }
 
     const existing = this.sqliteClient.db
-      .query<EdgeSyncRow, [string]>(
-        "SELECT * FROM edge_sync_queue WHERE dossier_id = ? LIMIT 1"
-      )
+      .query<EdgeSyncRow, [string]>("SELECT * FROM edge_sync_queue WHERE dossier_id = ? LIMIT 1")
       .get(manifest.dossierId);
-    if (existing) {
-      return mapRow(existing);
-    }
+    if (existing) return mapRow(existing);
 
     const item: QueuedEdgeSyncItem = {
       queueItemId: `SYNC-${manifest.dossierCode}`,
@@ -98,21 +91,9 @@ export class HybridEdgeSyncQueue {
 
     this.sqliteClient.db
       .query(
-        `INSERT INTO edge_sync_queue (
-          queue_item_id, tenant_id, dossier_id, dossier_code,
-          composite_manifest_sha256, status, queued_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)`
+        "INSERT INTO edge_sync_queue (queue_item_id, tenant_id, dossier_id, dossier_code, composite_manifest_sha256, status, queued_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
       )
-      .run(
-        item.queueItemId,
-        item.tenantId,
-        item.dossierId,
-        item.dossierCode,
-        item.compositeManifestSha256,
-        item.status,
-        item.queuedAt
-      );
-
+      .run(item.queueItemId, item.tenantId, item.dossierId, item.dossierCode, item.compositeManifestSha256, item.status, item.queuedAt);
     return item;
   }
 
@@ -137,12 +118,9 @@ export class HybridEdgeSyncQueue {
         "Cloud synchronization requires an active PACKHOUSE_PRO_SAAS or EXPORTER_ENTERPRISE subscription; items remain safely stored offline."
       );
     }
-
     const transport = transportOverride ?? this.transport;
     if (!transport) {
-      throw new Error(
-        "Edge sync transport is not configured; items remain in PENDING_OFFLINE."
-      );
+      throw new Error("Edge sync transport is not configured; items remain in PENDING_OFFLINE.");
     }
 
     const pending = this.listPendingItems(tenantId);
@@ -151,29 +129,17 @@ export class HybridEdgeSyncQueue {
     for (const item of pending) {
       const ack = transport(item);
       if (!ack || !/^[a-f0-9]{64}$/i.test(ack.ackReceiptHash)) {
-        throw new Error(
-          `Invalid cloud ack receipt hash for queue item '${item.queueItemId}'; item remains in PENDING_OFFLINE.`
-        );
+        throw new Error(`Invalid cloud ack receipt hash for queue item '${item.queueItemId}'; item remains in PENDING_OFFLINE.`);
       }
       const effectiveSyncedAt = ack.syncedAt ?? syncedAt;
       const receiptHash = ack.ackReceiptHash.toLowerCase();
 
       this.sqliteClient.db
-        .query(
-          `UPDATE edge_sync_queue
-           SET status = 'SYNCED_TO_CLOUD', cloud_synced_at = ?, cloud_ack_receipt_hash = ?
-           WHERE queue_item_id = ? AND tenant_id = ?`
-        )
+        .query("UPDATE edge_sync_queue SET status = 'SYNCED_TO_CLOUD', cloud_synced_at = ?, cloud_ack_receipt_hash = ? WHERE queue_item_id = ? AND tenant_id = ?")
         .run(effectiveSyncedAt, receiptHash, item.queueItemId, tenantId);
 
-      synced.push({
-        ...item,
-        status: "SYNCED_TO_CLOUD",
-        cloudSyncedAt: effectiveSyncedAt,
-        cloudAckReceiptHash: receiptHash,
-      });
+      synced.push({ ...item, status: "SYNCED_TO_CLOUD", cloudSyncedAt: effectiveSyncedAt, cloudAckReceiptHash: receiptHash });
     }
-
     return synced;
   }
 }

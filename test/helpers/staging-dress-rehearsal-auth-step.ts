@@ -4,14 +4,8 @@ import type { createWorkspaceApp } from "../../src/server/server.js";
 import { extractSessionCookiePair } from "./auth-test-helper.js";
 
 export type WorkspaceAppInstance = ReturnType<typeof createWorkspaceApp>;
-
-export interface StagingCliAccountResult {
-  id: string;
-}
-
-export interface StagingCliTokenResult {
-  rawToken: string;
-}
+export interface StagingCliAccountResult { id: string }
+export interface StagingCliTokenResult { rawToken: string }
 
 export interface StagingExtractedField {
   id: string;
@@ -93,8 +87,7 @@ export async function provisionAndVerifyStagingAccounts(
 
   const pwLoginRes = await siteA.handler(
     new Request("https://durios-pilot.local/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: "clerk_cailay01", password: "CaiLayClerk!2026" }),
     })
   );
@@ -104,19 +97,16 @@ export async function provisionAndVerifyStagingAccounts(
 
   const otpReqRes = await siteA.handler(
     new Request("https://durios-pilot.local/api/auth/otp/request", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phoneNumber: "+84901112233", channel: "ZALO" }),
     })
   );
   expect(otpReqRes.status).toBe(201);
-  const otpReqJson = (await otpReqRes.json()) as { data: { challengeId: string } };
-  const challengeId = otpReqJson.data.challengeId;
+  const challengeId = ((await otpReqRes.json()) as { data: { challengeId: string } }).data.challengeId;
 
   const otpVerifyRes = await siteA.handler(
     new Request("https://durios-pilot.local/api/auth/otp/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ challengeId, otpCode: getLastDispatchedOtp() }),
     })
   );
@@ -132,30 +122,19 @@ export async function provisionAndVerifyStagingAccounts(
       new Request("https://durios-pilot.local/api/auth/me", { headers: hdr })
     );
     expect(meRes.status).toBe(200);
-    const meJson = (await meRes.json()) as { data: { actor: Record<string, unknown> } };
-    expect(meJson.data.actor).toEqual({
-      id: "ACT-CAILAY-CLERK-01",
-      name: "Nguyen Van Clerk (Cai Lay)",
-      tenantId: "TENANT-CAILAY-01",
-      tenantType: "PACKHOUSE_EXPORTER",
-      role: "CLERK",
-      persona: "PACKHOUSE_CLERK",
+    expect(((await meRes.json()) as { data: { actor: Record<string, unknown> } }).data.actor).toEqual({
+      id: "ACT-CAILAY-CLERK-01", name: "Nguyen Van Clerk (Cai Lay)", tenantId: "TENANT-CAILAY-01",
+      tenantType: "PACKHOUSE_EXPORTER", role: "CLERK", persona: "PACKHOUSE_CLERK",
     });
   }
 
   const mgrLoginRes = await siteA.handler(
     new Request("https://durios-pilot.local/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: "mgr_cailay01", password: "CaiLayMgr!2026" }),
     })
   );
   const mgrCookie = extractSessionCookiePair(mgrLoginRes.headers.get("set-cookie"));
 
-  return {
-    clerkOtpCookie,
-    mgrCookie,
-    buyerRawToken: buyerManagedToken.rawToken,
-    futureIso,
-  };
+  return { clerkOtpCookie, mgrCookie, buyerRawToken: buyerManagedToken.rawToken, futureIso };
 }

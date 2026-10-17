@@ -4,18 +4,15 @@ import { existsSync, mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  DURIOS_ORGANIC_DISCLAIMER,
-  DURIOS_ORGANIC_RECORD_STATUS,
+  DURIOS_ORGANIC_DISCLAIMER, DURIOS_ORGANIC_RECORD_STATUS,
 } from "../../src/domain/pilot-types.js";
 import { createWorkspaceApp } from "../../src/server/server.js";
 
 const V4_SCHEMA_SQL = `
   CREATE TABLE schema_migrations (version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL);
   INSERT INTO schema_migrations (version, applied_at) VALUES
-    (1, '2026-10-14T00:00:00.000Z'),
-    (2, '2026-10-14T00:00:01.000Z'),
-    (3, '2026-10-14T00:00:02.000Z'),
-    (4, '2026-10-14T00:00:03.000Z');
+    (1, '2026-10-14T00:00:00.000Z'), (2, '2026-10-14T00:00:01.000Z'),
+    (3, '2026-10-14T00:00:02.000Z'), (4, '2026-10-14T00:00:03.000Z');
 
   CREATE TABLE container_dossiers (
     id TEXT PRIMARY KEY, tenant_id TEXT NOT NULL, dossier_code TEXT NOT NULL UNIQUE,
@@ -61,7 +58,7 @@ const V4_SCHEMA_SQL = `
   );
   CREATE TABLE otp_challenges (
     id TEXT PRIMARY KEY, account_id TEXT REFERENCES pilot_accounts(id) ON DELETE CASCADE,
-    phone_number TEXT NOT NULL, channel TEXT NOT NULL, code_hash TEXT NOT NULL, code_salt TEXT NOT NULL,
+    phone_number TEXT NOT NULL, channel TEXT NOT NULL, code_hash TEXT NOT NULL,
     expires_at TEXT NOT NULL, consumed_at TEXT, attempts INTEGER NOT NULL DEFAULT 0,
     max_attempts INTEGER NOT NULL DEFAULT 5, created_at TEXT NOT NULL
   );
@@ -82,8 +79,7 @@ const V4_SCHEMA_SQL = `
     is_revoked INTEGER NOT NULL DEFAULT 0, revoked_at TEXT, revoked_by TEXT, revocation_reason TEXT
   );
   CREATE TABLE organic_evidence (
-    id TEXT PRIMARY KEY,
-    dossier_id TEXT NOT NULL REFERENCES container_dossiers(id) ON DELETE CASCADE,
+    id TEXT PRIMARY KEY, dossier_id TEXT NOT NULL REFERENCES container_dossiers(id) ON DELETE CASCADE,
     tenant_id TEXT NOT NULL, certifier_name TEXT NOT NULL, certifier_accreditation_number TEXT,
     certificate_number TEXT NOT NULL, standard_code TEXT NOT NULL, standard_description TEXT NOT NULL,
     certified_scope TEXT NOT NULL, valid_from TEXT NOT NULL, valid_to TEXT NOT NULL,
@@ -122,13 +118,9 @@ export function runV4ToV5MigrationScenario(): void {
 
     app = createWorkspaceApp({ dbPath: v4DbPath, dataDir: v4Uploads });
 
-    const maxVer = app.sqliteClient.db.query<{ v: number }, []>("SELECT MAX(version) as v FROM schema_migrations").get();
-    expect(maxVer?.v).toBe(5);
+    expect(app.sqliteClient.db.query<{ v: number }, []>("SELECT MAX(version) as v FROM schema_migrations").get()?.v).toBe(5);
 
-    const cols = app.sqliteClient.db
-      .query<{ name: string }, []>("PRAGMA table_info(organic_evidence)")
-      .all()
-      .map((c) => c.name);
+    const cols = app.sqliteClient.db.query<{ name: string }, []>("PRAGMA table_info(organic_evidence)").all().map((c) => c.name);
     expect(cols).toContain("issuer_claimed_status");
     expect(cols).toContain("durios_record_status");
     expect(cols).not.toContain("status");
@@ -136,25 +128,15 @@ export function runV4ToV5MigrationScenario(): void {
     const migratedList = app.workspace.organicEvidenceManager.listEvidenceForDossier("DOS-V4-01", true, "TEN-A");
     expect(migratedList.length).toBe(1);
     expect(migratedList[0]).toEqual({
-      id: "ORG-V4-LEGACY",
-      dossierId: "DOS-V4-01",
-      tenantId: "TEN-A",
-      certifierName: "Demo Bio-Certifier (Synthetic)",
-      certifierAccreditationNumber: "DEMO-ACC-01",
-      certificateNumber: "SYNTH-CERT-2026-01",
-      standardCode: "TCVN_11041",
-      standardDescription: "Vietnamese Organic Standard",
-      certifiedScope: "Durian Orchard Block A",
-      validFrom: "2026-01-01T00:00:00.000Z",
-      validTo: "2027-06-30T23:59:59.000Z",
-      issuingDate: "2026-01-01",
-      issuerClaimedStatus: "IN_CONVERSION",
-      duriosRecordStatus: DURIOS_ORGANIC_RECORD_STATUS,
-      evidenceDocumentId: "DOC-SCAN-99",
+      id: "ORG-V4-LEGACY", dossierId: "DOS-V4-01", tenantId: "TEN-A",
+      certifierName: "Demo Bio-Certifier (Synthetic)", certifierAccreditationNumber: "DEMO-ACC-01",
+      certificateNumber: "SYNTH-CERT-2026-01", standardCode: "TCVN_11041",
+      standardDescription: "Vietnamese Organic Standard", certifiedScope: "Durian Orchard Block A",
+      validFrom: "2026-01-01T00:00:00.000Z", validTo: "2027-06-30T23:59:59.000Z",
+      issuingDate: "2026-01-01", issuerClaimedStatus: "IN_CONVERSION",
+      duriosRecordStatus: DURIOS_ORGANIC_RECORD_STATUS, evidenceDocumentId: "DOC-SCAN-99",
       sourceDocumentUrl: "https://synthetic-cert.example/01",
-      regulatoryDisclaimer: DURIOS_ORGANIC_DISCLAIMER,
-      recordedAt: now,
-      recordedBy: "ACT-CLERK-V4",
+      regulatoryDisclaimer: DURIOS_ORGANIC_DISCLAIMER, recordedAt: now, recordedBy: "ACT-CLERK-V4",
     });
   } finally {
     app?.sqliteClient.close();

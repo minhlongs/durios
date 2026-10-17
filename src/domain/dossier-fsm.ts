@@ -1,7 +1,5 @@
 import type {
-  AuthenticatedActor,
-  ContainerDossier,
-  DossierLifecycleState,
+  AuthenticatedActor, ContainerDossier, DossierLifecycleState,
 } from "./types.js";
 import { assertValidActor } from "../auth/rbac-policy.js";
 
@@ -23,13 +21,9 @@ export class DossierFsmError extends Error {
   ) {
     super(message);
     this.name = "DossierFsmError";
-    if (code === "DOSSIER_IMMUTABLE") {
-      this.status = 409;
-    } else if (code === "CROSS_TENANT_FORBIDDEN" || code === "INSUFFICIENT_ROLE") {
-      this.status = 403;
-    } else {
-      this.status = 400;
-    }
+    if (code === "DOSSIER_IMMUTABLE") this.status = 409;
+    else if (code === "CROSS_TENANT_FORBIDDEN" || code === "INSUFFICIENT_ROLE") this.status = 403;
+    else this.status = 400;
   }
 }
 
@@ -60,9 +54,7 @@ export function assertDossierMutable(dossier: ContainerDossier, actionLabel = "m
   if (isDossierSealed(dossier)) {
     throw new DossierFsmError(
       `Cannot ${actionLabel} sealed dossier: Dossier is sealed and immutable; mutations and re-evaluations are prohibited on immutable or closed dossiers.`,
-      dossier.lifecycleState,
-      dossier.lifecycleState,
-      "DOSSIER_IMMUTABLE"
+      dossier.lifecycleState, dossier.lifecycleState, "DOSSIER_IMMUTABLE"
     );
   }
 }
@@ -83,84 +75,49 @@ export function assertCanTransition(
 
   if (dossier.tenantId !== actor.tenantId) {
     throw new DossierFsmError(
-      "Actor tenant does not match dossier tenant.",
-      dossier.lifecycleState,
-      toState,
-      "CROSS_TENANT_FORBIDDEN"
+      "Actor tenant does not match dossier tenant.", dossier.lifecycleState, toState, "CROSS_TENANT_FORBIDDEN"
     );
   }
 
-  if (toState === "APPROVED_FOR_EXPORT") {
-    if (actor.tenantType !== "PACKHOUSE_EXPORTER" || actor.persona !== "PACKHOUSE_MANAGER" || (actor.role !== "MANAGER" && actor.role !== "ADMIN")) {
-      const label = actor.role === "CLERK" ? "Clerk" : actor.role;
-      throw new DossierFsmError(
-        `${label} role is unauthorized for manager export sign-off.`,
-        dossier.lifecycleState,
-        toState,
-        "INSUFFICIENT_ROLE"
-      );
-    }
-  } else if (toState === "EXPORTED" || toState === "CLOSED") {
-    if (actor.tenantType !== "PACKHOUSE_EXPORTER" || actor.persona !== "PACKHOUSE_MANAGER" || (actor.role !== "MANAGER" && actor.role !== "ADMIN")) {
-      const label = actor.role === "CLERK" ? "Clerk" : actor.role;
-      throw new DossierFsmError(
-        `${label} role is unauthorized to export dossier.`,
-        dossier.lifecycleState,
-        toState,
-        "INSUFFICIENT_ROLE"
-      );
-    }
-  } else if (actor.role !== "CLERK" && actor.role !== "MANAGER" && actor.role !== "ADMIN") {
+  const isPackhouseMgr =
+    actor.tenantType === "PACKHOUSE_EXPORTER" &&
+    actor.persona === "PACKHOUSE_MANAGER" &&
+    (actor.role === "MANAGER" || actor.role === "ADMIN");
+
+  if (toState === "APPROVED_FOR_EXPORT" && !isPackhouseMgr) {
+    const label = actor.role === "CLERK" ? "Clerk" : actor.role;
+    throw new DossierFsmError(`${label} role is unauthorized for manager export sign-off.`, dossier.lifecycleState, toState, "INSUFFICIENT_ROLE");
+  }
+  if ((toState === "EXPORTED" || toState === "CLOSED") && !isPackhouseMgr) {
+    const label = actor.role === "CLERK" ? "Clerk" : actor.role;
+    throw new DossierFsmError(`${label} role is unauthorized to export dossier.`, dossier.lifecycleState, toState, "INSUFFICIENT_ROLE");
+  }
+  if (actor.role !== "CLERK" && actor.role !== "MANAGER" && actor.role !== "ADMIN") {
     throw new DossierFsmError(
-      `${actor.role} role is read-only and unauthorized to transition dossier state.`,
-      dossier.lifecycleState,
-      toState,
-      "INSUFFICIENT_ROLE"
+      `${actor.role} role is read-only and unauthorized to transition dossier state.`, dossier.lifecycleState, toState, "INSUFFICIENT_ROLE"
     );
   }
 
   if (dossier.isImmutable && toState !== "CLOSED") {
     throw new DossierFsmError(
-      "Dossier is cryptographically sealed (WORM locked) and immutable.",
-      dossier.lifecycleState,
-      toState,
-      "DOSSIER_IMMUTABLE"
+      "Dossier is cryptographically sealed (WORM locked) and immutable.", dossier.lifecycleState, toState, "DOSSIER_IMMUTABLE"
     );
   }
 
   if (!canTransition(dossier.lifecycleState, toState)) {
     throw new DossierFsmError(
-      `Illegal transition from '${dossier.lifecycleState}' to '${toState}'.`,
-      dossier.lifecycleState,
-      toState,
-      "ILLEGAL_TRANSITION"
+      `Illegal transition from '${dossier.lifecycleState}' to '${toState}'.`, dossier.lifecycleState, toState, "ILLEGAL_TRANSITION"
     );
   }
 }
 
-export function assertCanValidate(
-  dossier: ContainerDossier,
-  actor: AuthenticatedActor
-): void {
+export function assertCanValidate(dossier: ContainerDossier, actor: AuthenticatedActor): void {
   assertValidActor(actor);
-
   if (dossier.tenantId !== actor.tenantId) {
-    throw new DossierFsmError(
-      "Actor tenant does not match dossier tenant.",
-      dossier.lifecycleState,
-      dossier.lifecycleState,
-      "CROSS_TENANT_FORBIDDEN"
-    );
+    throw new DossierFsmError("Actor tenant does not match dossier tenant.", dossier.lifecycleState, dossier.lifecycleState, "CROSS_TENANT_FORBIDDEN");
   }
-
   if (actor.role !== "CLERK" && actor.role !== "MANAGER" && actor.role !== "ADMIN") {
-    throw new DossierFsmError(
-      `Role '${actor.role}' is read-only and unauthorized to run validation.`,
-      dossier.lifecycleState,
-      dossier.lifecycleState,
-      "INSUFFICIENT_ROLE"
-    );
+    throw new DossierFsmError(`${actor.role} role is read-only and unauthorized to trigger validation.`, dossier.lifecycleState, dossier.lifecycleState, "INSUFFICIENT_ROLE");
   }
-
   assertDossierMutable(dossier, "validate");
 }

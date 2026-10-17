@@ -142,82 +142,100 @@
   </style>
 </head>
 <body class="bg-background text-on-surface antialiased select-none min-h-screen flex justify-center items-start">
-
-<div style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 6px 12px; font-family: sans-serif; font-size: 11px; display: flex; gap: 8px; align-items: center; justify-content: space-between; overflow-x: auto;">
-  <a href="index.html" style="color: #10B981; text-decoration: none; font-weight: 700;">&larr; Desktop Workspace</a>
-  <span style="color: #6EE7B7;">|</span>
-  <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none;">📝 Soi Giấy</a>
-  <a href="excel-grid.html" style="color: #10B981; text-decoration: none;">📊 Excel Grid</a>
-  <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none;">💬 Zalo Bot</a>
+<!-- DURIOS UNIFIED TOP NAV BAR -->
+<div id="durios-unified-top-nav" style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 7px 14px; font-family: 'Inter', sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 23-SCREEN NAV</span>
+    <span style="color: #1F3327;">|</span>
+    <a href="gallery.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">⭐️ Master Hub</a>
+    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">1. Workspace</a>
+    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">2. Dossiers</a>
+    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">3. Auditor (5 Gates)</a>
+    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">4. Buyer Portal</a>
+    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">5. Cluster Ops</a>
+    <a href="portability.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">6. Portability</a>
+    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">7. Pro SaaS</a>
+    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">8. Style Guide</a>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
+    <a href="corridors.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🌏 9. Corridors</a>
+    <a href="blueprint.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🧭 10. Blueprint 25</a>
+    <a href="security-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px; ">🛡️ 11. Security Vault</a>
+    <a href="organic-escrow-guard.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">⚖️ 12. Escrow Guard</a>
+    <a href="webhook-sync-queue.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔄 13. Lab Webhooks</a>
+    <a href="socratic-introspector.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">🧠 14. Socratic 5-Turn</a>
+    <a href="rehearsal-command.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🎯 15. Rehearsal Cmd</a>
+    <a href="mit-verifier-lab.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔬 16. MIT Verifier Lab</a>
+    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">📝 Bút Dạ Quang</a>
+    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📊 Excel Grid</a>
+    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px; ">💬 Zalo Bot</a>
+    <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; background: rgba(16,185,129,0.22);">📱 Mobile</a>
+    <a href="field-proven.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">☀️ Field POS</a>
+    <a href="foundry.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🔐 Foundry</a>
+  </div>
 </div>
 
-<!-- Mobile Handheld Viewport Container (Locked 412px for Cai Lậy Rugged Handheld) -->
-<main class="w-full max-w-[420px] min-h-screen bg-surface-container-lowest flex flex-col relative pb-36">
-<!-- 1. TOP APP BAR (from Shared Component JSON) -->
-<header class="flex justify-between items-center w-full px-margin-mobile py-space-sm max-w-full bg-surface-container-low border-b border-outline-variant sticky top-0 z-40">
-<!-- Leading Station & Bay -->
-<div class="flex items-center gap-space-xs">
-<span class="material-symbols-outlined text-primary text-[18px]">precision_manufacturing</span>
-<div class="flex flex-col">
-<div class="flex items-center gap-1.5">
-<span class="font-headline-sm text-headline-sm font-bold tracking-tight text-primary">VN-TG-PH-001</span>
-<span class="inline-flex items-center gap-1 px-1.5 py-0.2 bg-primary/10 border border-primary/40 rounded text-primary font-label-sm text-label-sm">
-<span class="w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
-              Bay 04
-            </span>
+<!-- DURIOS UNIFIED TOP NAV BAR -->
+<div id="durios-unified-top-nav" style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 7px 14px; font-family: 'Inter', sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 22-SCREEN NAV</span>
+    <span style="color: #1F3327;">|</span>
+    <a href="gallery.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">⭐️ Master Hub</a>
+    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">1. Workspace</a>
+    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">2. Dossiers</a>
+    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">3. Auditor (5 Gates)</a>
+    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">4. Buyer Portal</a>
+    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">5. Cluster Ops</a>
+    <a href="portability.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">6. Portability</a>
+    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">7. Pro SaaS</a>
+    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">8. Style Guide</a>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
+    <a href="corridors.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🌏 9. Corridors</a>
+    <a href="blueprint.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🧭 10. Blueprint 25</a>
+    <a href="security-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px; ">🛡️ 11. Security Vault</a>
+    <a href="organic-escrow-guard.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">⚖️ 12. Escrow Guard</a>
+    <a href="webhook-sync-queue.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔄 13. Lab Webhooks</a>
+    <a href="socratic-introspector.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">🧠 14. Socratic 5-Turn</a>
+    <a href="rehearsal-command.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🎯 15. Rehearsal Cmd</a>
+    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">📝 Bút Dạ Quang</a>
+    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📊 Excel Grid</a>
+    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px; ">💬 Zalo Bot</a>
+    <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; background: rgba(16,185,129,0.22);">📱 Mobile</a>
+    <a href="field-proven.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">☀️ Field POS</a>
+    <a href="foundry.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🔐 Foundry</a>
+  </div>
 </div>
-<span class="font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1">
-            MSKU 123456 5 <span class="text-secondary-fixed-dim text-[10px] font-bold">[ISO 6346]</span>
-</span>
-</div>
-</div>
-<!-- Trailing Countdown Telemetry Pill -->
-<div class="flex items-center gap-1.5 bg-surface-container-highest px-2.5 py-1 rounded border border-outline-variant">
-<span class="material-symbols-outlined text-tertiary text-[16px]">timer</span>
-<div class="flex flex-col items-end">
-<span class="font-label-sm text-label-sm text-on-surface-variant leading-none">SLA REMAIN</span>
-<span class="font-code-md text-code-md font-bold text-primary tracking-wider leading-tight">02:45</span>
-</div>
-</div>
-</header>
-<!-- 2. LIVE CAMERA / VIEWPORT OVERLAY (Customs Bolt Seal Target) -->
-<section class="relative w-full h-72 bg-surface-container-high overflow-hidden border-b border-outline-variant">
-<!-- Live Video Feed Placeholder -->
-<img alt="High-security bolt seal inspection live feed showing ISO 17712 container locking bar under sunlight" class="w-full h-full object-cover brightness-95 contrast-105" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCWhXI7rf1l4gLnEUS786FEhPr8vi3oJP_aw7f8NfatROUJeYPtNYgeN61iTUUlqkdkyeHoUhdho9mc8G22QFmLSoHge1AFHI1KF_cMH_NbuHXfvhBUxkrVHRz_FX53AUHrAQ6I9P1BnzZcbyy9xMa64YoLSD9hDi80FcCSX5MIv2YRHCzZXMPevg2Mc8gPgzmiZ2wfJsPhaZKu3DWr11Nkx24JgpgkdlFCYMY8c8SEUpgXafrAXns8AUnZn53fe5LHa4jqf3gB9GU"/>
-<!-- Grid Overlay & Mechanical Frame HUD -->
-<div class="absolute inset-0 pointer-events-none border-x-4 border-outline/20">
-<!-- 3x3 Composition Guidelines -->
-<div class="w-full h-full grid grid-cols-3 grid-rows-3 border border-outline-variant/30">
-<div class="border-r border-b border-outline-variant/25"></div>
-<div class="border-r border-b border-outline-variant/25"></div>
-<div class="border-b border-outline-variant/25"></div>
-<div class="border-r border-b border-outline-variant/25"></div>
-<div class="border-r border-b border-outline-variant/25 relative flex items-center justify-center">
-<!-- Central Reticle Bounding Box -->
-<div class="w-36 h-28 border-2 border-primary/90 rounded-sm relative shadow-[0_0_15px_rgba(16,185,129,0.35)]">
-<!-- Corner Brackets -->
-<span class="absolute -top-1.5 -left-1.5 w-3 h-3 border-t-2 border-l-2 border-primary-fixed"></span>
-<span class="absolute -top-1.5 -right-1.5 w-3 h-3 border-t-2 border-r-2 border-primary-fixed"></span>
-<span class="absolute -bottom-1.5 -left-1.5 w-3 h-3 border-b-2 border-l-2 border-primary-fixed"></span>
-<span class="absolute -bottom-1.5 -right-1.5 w-3 h-3 border-b-2 border-r-2 border-primary-fixed"></span>
-<!-- Crosshair Center -->
-<div class="absolute inset-0 flex items-center justify-center">
-<span class="w-2.5 h-[1px] bg-primary"></span>
-<span class="h-2.5 w-[1px] bg-primary"></span>
-</div>
-<!-- Animated Neon Laser Scanline -->
-<div class="absolute inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-primary to-transparent shadow-[0_0_8px_#10b981] hud-scanner"></div>
-<!-- Target Tag Label -->
-<div class="absolute -bottom-6 left-1/2 -translate-x-1/2 bg-surface-container-lowest/90 px-2 py-0.5 rounded border border-primary/40 font-code-sm text-code-sm text-primary whitespace-nowrap">
-                FOCAL: SEAL-VN-9872
-              </div>
-</div>
-</div>
-<div class="border-b border-outline-variant/25"></div>
-<div class="border-r border-outline-variant/25"></div>
-<div class="border-r border-outline-variant/25"></div>
-<div></div>
-</div>
+
+<!-- DURIOS UNIFIED TOP NAV BAR -->
+<div id="durios-unified-top-nav" style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 7px 14px; font-family: 'Inter', sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 21-SCREEN NAV</span>
+    <span style="color: #1F3327;">|</span>
+    <a href="gallery.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">⭐️ Master Hub</a>
+    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">1. Workspace</a>
+    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">2. Dossiers</a>
+    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">3. Auditor (5 Gates)</a>
+    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">4. Buyer Portal</a>
+    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">5. Cluster Ops</a>
+    <a href="portability.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">6. Portability</a>
+    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">7. Pro SaaS</a>
+    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">8. Style Guide</a>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
+    <a href="corridors.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🌏 9. Corridors</a>
+    <a href="blueprint.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🧭 10. Blueprint 25</a>
+    <a href="security-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px; ">🛡️ 11. Security Vault</a>
+    <a href="organic-escrow-guard.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">⚖️ 12. Escrow Guard</a>
+    <a href="webhook-sync-queue.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔄 13. Lab Webhooks</a>
+    <a href="socratic-introspector.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">🧠 14. Socratic 5-Turn</a>
+    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">📝 Bút Dạ Quang</a>
+    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📊 Excel Grid</a>
+    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px; ">💬 Zalo Bot</a>
+    <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; background: rgba(16,185,129,0.22);">📱 Mobile</a>
+    <a href="field-proven.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">☀️ Field POS</a>
+    <a href="foundry.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🔐 Foundry</a>
+  </div>
 </div>
 <!-- Top HUD Floating Badges -->
 <div class="absolute top-space-sm inset-x-space-sm flex justify-between items-start pointer-events-auto">
@@ -407,4 +425,5 @@
 </button>
 </nav>
 </main>
+  <script src="/stitch/durios-live-bridge.js" defer></script>
 </body></html>

@@ -20,12 +20,8 @@ export interface EquivalenceActors {
 }
 
 export type CompareCallFn = <T = Record<string, unknown>>(
-  suffixApi: string,
-  suffixV1: string,
-  method: string,
-  actorPair: ActorHeaderPair,
-  bodyObj?: unknown,
-  expectedStatus?: number
+  suffixApi: string, suffixV1: string, method: string, actorPair: ActorHeaderPair,
+  bodyObj?: unknown, expectedStatus?: number
 ) => Promise<{ bodyApi: T; bodyV1: T }>;
 
 const DYNAMIC_ID_RE = /^(DOS|DOC|FLD|SHR|ORG|EVT|AUD)-[A-Za-z0-9-]+$/;
@@ -46,9 +42,7 @@ export function createEquivalenceHarness(
   wsV1: ContainerDossierWorkspace
 ): { actors: EquivalenceActors; compareCall: CompareCallFn } {
   const seedMatchingActor = (
-    id: string,
-    username: string,
-    tenantId: string,
+    id: string, username: string, tenantId: string,
     tenantType: "PACKHOUSE_EXPORTER" | "BUYER_IMPORTER" | "INSPECTION_AUDITOR",
     role: "CLERK" | "MANAGER" | "ADMIN" | "VIEWER" | "AUDITOR",
     persona: "PACKHOUSE_CLERK" | "PACKHOUSE_MANAGER" | "BUYER_VIEWER" | "SYSTEM_AUDITOR"
@@ -80,8 +74,7 @@ export function createEquivalenceHarness(
   function registerIdPair(apiVal: string, v1Val: string): void {
     if (!idMapApi.has(apiVal) && !idMapV1.has(v1Val)) {
       const prefixApi = apiVal.split("-")[0];
-      const prefixV1 = v1Val.split("-")[0];
-      expect(prefixV1).toBe(prefixApi);
+      expect(v1Val.split("-")[0]).toBe(prefixApi);
       idSeq += 1;
       const token = `<${prefixApi}_ID_${idSeq}>`;
       idMapApi.set(apiVal, token);
@@ -116,8 +109,7 @@ export function createEquivalenceHarness(
       if (TIMESTAMP_KEYS.has(keyName)) {
         const tApi = Date.parse(valApi);
         const tV1 = Date.parse(valV1);
-        expect(Number.isNaN(tApi)).toBe(false);
-        expect(Number.isNaN(tV1)).toBe(false);
+        expect(Number.isNaN(tApi) || Number.isNaN(tV1)).toBe(false);
         expect(Math.abs(tApi - tV1)).toBeLessThan(5000);
         return [`<TIMESTAMP:${keyName}>`, `<TIMESTAMP:${keyName}>`];
       }
@@ -144,12 +136,8 @@ export function createEquivalenceHarness(
   }
 
   const compareCall: CompareCallFn = async <T = Record<string, unknown>>(
-    suffixApi: string,
-    suffixV1: string,
-    method: string,
-    actorPair: ActorHeaderPair,
-    bodyObj?: unknown,
-    expectedStatus?: number
+    suffixApi: string, suffixV1: string, method: string, actorPair: ActorHeaderPair,
+    bodyObj?: unknown, expectedStatus?: number
   ): Promise<{ bodyApi: T; bodyV1: T }> => {
     const bodyInit = bodyObj !== undefined ? { body: JSON.stringify(bodyObj) } : {};
     const resApi = await routeHttpRequest(wsApi, new Request(`http://localhost:3000/api${suffixApi}`, { method, headers: actorPair.apiHeaders, ...bodyInit }));

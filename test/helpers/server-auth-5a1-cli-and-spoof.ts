@@ -25,14 +25,9 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
   expect(() =>
     runPilotOpsCliArgs(
       [
-        "provision-account",
-        "--username", "bad.cli",
-        "--password", "PlaintextArgvSecret",
-        "--name", "Bad CLI",
-        "--tenant", "TENANT-A",
-        "--tenant-type", "PACKHOUSE_EXPORTER",
-        "--role", "CLERK",
-        "--persona", "PACKHOUSE_CLERK",
+        "provision-account", "--username", "bad.cli", "--password", "PlaintextArgvSecret",
+        "--name", "Bad CLI", "--tenant", "TENANT-A", "--tenant-type", "PACKHOUSE_EXPORTER",
+        "--role", "CLERK", "--persona", "PACKHOUSE_CLERK",
       ],
       app.authService
     )
@@ -50,14 +45,9 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
   // 3. Provision valid account via CLI and login via Cookie
   runPilotOpsCliArgs(
     [
-      "provision-account",
-      "--id", "ACT-CLI-01",
-      "--username", "clerk.cli",
-      "--name", "Le Van Clerk",
-      "--tenant", "TENANT-REAL-01",
-      "--tenant-type", "PACKHOUSE_EXPORTER",
-      "--role", "CLERK",
-      "--persona", "PACKHOUSE_CLERK",
+      "provision-account", "--id", "ACT-CLI-01", "--username", "clerk.cli",
+      "--name", "Le Van Clerk", "--tenant", "TENANT-REAL-01", "--tenant-type", "PACKHOUSE_EXPORTER",
+      "--role", "CLERK", "--persona", "PACKHOUSE_CLERK",
     ],
     app.authService,
     { DURIOS_PILOT_PASSWORD: "CliPassword#1" }
@@ -65,8 +55,7 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
 
   const loginRes = await app.handler(
     new Request("http://127.0.0.1/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: "clerk.cli", password: "CliPassword#1" }),
     })
   );
@@ -79,12 +68,9 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
       "http://127.0.0.1/api/dossiers?actorId=ACT-SPOOF&tenantId=TENANT-SPOOF&tenantType=INSPECTION_AUDITOR&role=ADMIN&persona=PACKHOUSE_MANAGER",
       {
         headers: {
-          "x-actor-id": "ACT-SPOOF",
-          "x-actor-name": "Spoofed Admin",
-          "x-tenant-id": "TENANT-SPOOF",
-          "x-tenant-type": "INSPECTION_AUDITOR",
-          "x-actor-role": "ADMIN",
-          "x-persona": "PACKHOUSE_MANAGER",
+          "x-actor-id": "ACT-SPOOF", "x-actor-name": "Spoofed Admin",
+          "x-tenant-id": "TENANT-SPOOF", "x-tenant-type": "INSPECTION_AUDITOR",
+          "x-actor-role": "ADMIN", "x-persona": "PACKHOUSE_MANAGER",
         },
       }
     )
@@ -96,25 +82,17 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
       "http://127.0.0.1/api/auth/me?actorId=ACT-SPOOF&tenantId=TENANT-SPOOF&tenantType=BUYER_IMPORTER&role=ADMIN&persona=PACKHOUSE_MANAGER",
       {
         headers: {
-          Cookie: cookiePair,
-          "x-actor-id": "ACT-SPOOF",
-          "x-actor-name": "Spoofed Admin",
-          "x-tenant-id": "TENANT-SPOOF",
-          "x-tenant-type": "BUYER_IMPORTER",
-          "x-actor-role": "ADMIN",
-          "x-persona": "PACKHOUSE_MANAGER",
+          Cookie: cookiePair, "x-actor-id": "ACT-SPOOF", "x-actor-name": "Spoofed Admin",
+          "x-tenant-id": "TENANT-SPOOF", "x-tenant-type": "BUYER_IMPORTER",
+          "x-actor-role": "ADMIN", "x-persona": "PACKHOUSE_MANAGER",
         },
       }
     )
   );
   expect(meSpoofRes.status).toBe(200);
   expect(((await meSpoofRes.json()) as LoginAndDossierPayload).data.actor).toEqual({
-    id: "ACT-CLI-01",
-    name: "Le Van Clerk",
-    tenantId: "TENANT-REAL-01",
-    tenantType: "PACKHOUSE_EXPORTER",
-    role: "CLERK",
-    persona: "PACKHOUSE_CLERK",
+    id: "ACT-CLI-01", name: "Le Van Clerk", tenantId: "TENANT-REAL-01",
+    tenantType: "PACKHOUSE_EXPORTER", role: "CLERK", persona: "PACKHOUSE_CLERK",
   });
 
   const createWithSpoofRes = await app.handler(
@@ -123,20 +101,13 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
       {
         method: "POST",
         headers: {
-          Cookie: cookiePair,
-          "Content-Type": "application/json",
-          "x-actor-id": "ACT-SPOOF",
-          "x-actor-name": "Spoofed Admin",
-          "x-tenant-id": "TENANT-SPOOF",
-          "x-actor-role": "ADMIN",
+          Cookie: cookiePair, "Content-Type": "application/json",
+          "x-actor-id": "ACT-SPOOF", "x-actor-name": "Spoofed Admin",
+          "x-tenant-id": "TENANT-SPOOF", "x-actor-role": "ADMIN",
         },
         body: JSON.stringify({
-          dossierCode: "DOS-SPOOF-CHECK-01",
-          containerNumber: "MSKU1234565",
-          sealNumber: "SEAL-SPOOF-01",
-          targetMarket: "CN",
-          borderGate: "Huu Nghi",
-          targetTemperatureC: 13.5,
+          dossierCode: "DOS-SPOOF-CHECK-01", containerNumber: "MSKU1234565",
+          sealNumber: "SEAL-SPOOF-01", targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
         }),
       }
     )
@@ -144,17 +115,12 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
   expect(createWithSpoofRes.status).toBe(201);
   const createdSpoofDossier = ((await createWithSpoofRes.json()) as LoginAndDossierPayload).data;
   expect(createdSpoofDossier.tenantId).toBe("TENANT-REAL-01");
-  const spoofAuditEvents = app.workspace.auditLedger.getEventsForDossier(
-    createdSpoofDossier.id,
-    "TENANT-REAL-01"
-  );
+  const spoofAuditEvents = app.workspace.auditLedger.getEventsForDossier(createdSpoofDossier.id, "TENANT-REAL-01");
   expect(spoofAuditEvents[0]?.actorId).toBe("ACT-CLI-01");
   expect(spoofAuditEvents[0]?.actorRole).toBe("CLERK");
   expect(spoofAuditEvents[0]?.tenantId).toBe("TENANT-REAL-01");
   const rawAuditRow = app.sqliteClient.db
-    .query<{ actor_name: string }, [string]>(
-      "SELECT actor_name FROM audit_events WHERE dossier_id = ? LIMIT 1"
-    )
+    .query<{ actor_name: string }, [string]>("SELECT actor_name FROM audit_events WHERE dossier_id = ? LIMIT 1")
     .get(createdSpoofDossier.id);
   expect(rawAuditRow?.actor_name).toBe("Le Van Clerk");
 

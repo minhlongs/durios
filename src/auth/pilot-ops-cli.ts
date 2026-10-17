@@ -41,8 +41,7 @@ export function executePilotOpsCommand(
 
 function getArg(args: readonly string[], flag: string): string | undefined {
   const idx = args.indexOf(flag);
-  if (idx !== -1 && idx + 1 < args.length) return args[idx + 1];
-  return undefined;
+  return idx !== -1 && idx + 1 < args.length ? args[idx + 1] : undefined;
 }
 
 export function runPilotOpsCliArgs(
@@ -63,22 +62,15 @@ export function runPilotOpsCliArgs(
 
   const action = argv[0];
   if (action === "provision-account") {
-    const username = getArg(argv, "--username");
-    const actorName = getArg(argv, "--name");
-    const tenantId = getArg(argv, "--tenant");
+    const [username, actorName, tenantId] = [getArg(argv, "--username"), getArg(argv, "--name"), getArg(argv, "--tenant")];
     const tenantType = getArg(argv, "--tenant-type") as TenantType | undefined;
     const role = getArg(argv, "--role") as UserRole | undefined;
     const persona = getArg(argv, "--persona") as ProductPersona | undefined;
     const password = env.DURIOS_PILOT_PASSWORD;
-
     if (!username || !actorName || !tenantId || !tenantType || !role || !persona) {
-      throw new Error(
-        "Missing required flags for provision-account: --username, --name, --tenant, --tenant-type, --role, and --persona must all be explicitly provided (no implicit defaults)."
-      );
+      throw new Error("Missing required flags for provision-account: --username, --name, --tenant, --tenant-type, --role, and --persona must all be explicitly provided (no implicit defaults).");
     }
-    if (!password) {
-      throw new Error("Missing required environment variable: DURIOS_PILOT_PASSWORD.");
-    }
+    if (!password) throw new Error("Missing required environment variable: DURIOS_PILOT_PASSWORD.");
     return executePilotOpsCommand(authService, {
       action: "provision-account", id: getArg(argv, "--id"), username, password,
       phoneNumber: getArg(argv, "--phone"), actorName, tenantId, tenantType, role, persona,
@@ -86,9 +78,7 @@ export function runPilotOpsCliArgs(
   }
 
   if (action === "issue-token") {
-    const accountId = getArg(argv, "--account-id");
-    const deviceLabel = getArg(argv, "--device");
-    const expiresAt = getArg(argv, "--expires-at");
+    const [accountId, deviceLabel, expiresAt] = [getArg(argv, "--account-id"), getArg(argv, "--device"), getArg(argv, "--expires-at")];
     if (!accountId || !deviceLabel || !expiresAt) {
       throw new Error("Missing required flags for issue-token: --account-id, --device, --expires-at");
     }
@@ -99,9 +89,7 @@ export function runPilotOpsCliArgs(
     const tokenId = getArg(argv, "--token-id");
     if (!tokenId) throw new Error("Missing required flag for revoke-token: --token-id");
     return executePilotOpsCommand(authService, {
-      action: "revoke-token",
-      tokenId,
-      reason: getArg(argv, "--reason") ?? "Operator CLI token revocation",
+      action: "revoke-token", tokenId, reason: getArg(argv, "--reason") ?? "Operator CLI token revocation",
     });
   }
 
@@ -109,19 +97,13 @@ export function runPilotOpsCliArgs(
     const sessionId = getArg(argv, "--session-id");
     if (!sessionId) throw new Error("Missing required flag for revoke-session: --session-id");
     return executePilotOpsCommand(authService, {
-      action: "revoke-session",
-      sessionId,
-      reason: getArg(argv, "--reason") ?? "Operator CLI session revocation",
+      action: "revoke-session", sessionId, reason: getArg(argv, "--reason") ?? "Operator CLI session revocation",
     });
   }
 
   if (action === "backup-site") {
-    const dbPath = getArg(argv, "--db") ?? env.DURIOS_DB_PATH;
-    const dataDir = getArg(argv, "--data-dir") ?? env.DURIOS_DATA_DIR;
-    const backupDir = getArg(argv, "--backup-dir");
-    if (!dbPath || !dataDir || !backupDir) {
-      throw new Error("Missing required flags for backup-site: --db, --data-dir, --backup-dir");
-    }
+    const [dbPath, dataDir, backupDir] = [getArg(argv, "--db") ?? env.DURIOS_DB_PATH, getArg(argv, "--data-dir") ?? env.DURIOS_DATA_DIR, getArg(argv, "--backup-dir")];
+    if (!dbPath || !dataDir || !backupDir) throw new Error("Missing required flags for backup-site: --db, --data-dir, --backup-dir");
     return createSiteBackup(dbPath, dataDir, backupDir);
   }
 
@@ -132,31 +114,24 @@ export function runPilotOpsCliArgs(
   }
 
   if (action === "restore-site") {
-    const backupDir = getArg(argv, "--backup-dir");
-    const targetDb = getArg(argv, "--target-db");
-    const targetDataDir = getArg(argv, "--target-data-dir");
+    const [backupDir, targetDb, targetDataDir] = [getArg(argv, "--backup-dir"), getArg(argv, "--target-db"), getArg(argv, "--target-data-dir")];
     if (!backupDir || !targetDb || !targetDataDir) {
       throw new Error("Missing required flags for restore-site: --backup-dir, --target-db, --target-data-dir");
     }
     return restoreSiteBackup(backupDir, targetDb, targetDataDir);
   }
 
-  throw new Error(
-    "Usage: bun run src/auth/pilot-ops-cli.ts <provision-account|issue-token|revoke-token|revoke-session|backup-site|verify-backup|restore-site> [flags]"
-  );
+  throw new Error("Usage: bun run src/auth/pilot-ops-cli.ts <provision-account|issue-token|revoke-token|revoke-session|backup-site|verify-backup|restore-site> [flags]");
 }
 
 if (import.meta.main) {
   const argv = process.argv.slice(2);
-  const dbPath = getArg(argv, "--db") ?? process.env.DURIOS_DB_PATH ?? "./data/durios.db";
-  const client = new SqliteClient({ dbPath });
-  const authService = new SqliteAuthService(client);
+  const client = new SqliteClient({ dbPath: getArg(argv, "--db") ?? process.env.DURIOS_DB_PATH ?? "./data/durios.db" });
   try {
-    const result = runPilotOpsCliArgs(argv, authService, process.env);
-    const out =
-      "rawToken" in result
-        ? { success: true, tokenId: result.tokenId, accountId: result.accountId, expiresAt: result.expiresAt }
-        : { success: true, result };
+    const result = runPilotOpsCliArgs(argv, new SqliteAuthService(client), process.env);
+    const out = "rawToken" in result
+      ? { success: true, tokenId: result.tokenId, accountId: result.accountId, expiresAt: result.expiresAt }
+      : { success: true, result };
     process.stdout.write(`${JSON.stringify(out)}\n`);
   } finally {
     client.close();

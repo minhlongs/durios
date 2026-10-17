@@ -160,6 +160,7 @@ DuriOS được phát hành theo mô hình **Open-Core Dual-License** (`LICENSE`
 
 ### 8.3 Các Endpoint Open-Core Portability & Onboarding
 - **`GET /api/v1/open-core/edition-manifest`**: Truy vấn danh mục module Open-Core, phân tầng giấy phép và thông số kinh tế thực chứng.
+- **`GET /api/v1/open-core/blueprint-status` (`?deep=true`)**: Kiểm tra tự động 25 bước tái cấu trúc Open-Core & 5 vòng đối chiếu Socratic (`--deep`: cách ly SDK `MIT`, vệ sinh bảo mật GitHub, Ed25519 Zero-Lock-In, biên lợi nhuận gộp `94.67%`).
 - **`GET /api/v1/open-core/portability`**: Xuất gói `SignedWorkspacePortabilityBundle` (kèm `VerifiedOrganizationProfile` và chữ ký HMAC-SHA256, không chứa khóa bí mật) để nâng cấp liền mạch từ bản tự lưu trữ lên Pro/Enterprise.
 - **`POST /api/v1/open-core/portability/verify`**: Xác minh tính toàn vẹn SHA-256 và chữ ký HMAC của gói chuyển đổi.
 - **Tài liệu Onboarding chi tiết**: Xem `docs/pilot-readiness/06_OPERATOR_AND_DEVELOPER_ONBOARDING.md`.

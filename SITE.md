@@ -4,11 +4,12 @@ DuriOS is the open-core operating system for verified durian export trade under 
 
 ## Stitch Project
 
-- **Project ID (numeric):** 4832488622931116638 (Mekong Emerald Terminal - 13 screens generated)
+- **Project ID (numeric):** 4832488622931116638 (Mekong Emerald Terminal — 18 screens generated)
+- **Design System Asset ID:** `assets/b8277f9f4ed545e78bf435b2edea4df2`
 - **Secondary Project (Field-Proven):** 51298203293328037
 - **Secondary Project (Foundry Command):** 6552666709104526615
 
-## Full Multi-Page Production Sitemap (site/public/ & /stitch/*)
+## Full Multi-Page Production Sitemap (`site/public/` & `/stitch/*`)
 
 ### Executive Hub
 - [x] `gallery.html` — DuriOS Master Command Hub & Visual Screen Directory (Screen 15: Executive Hub)
@@ -33,5 +34,18 @@ DuriOS is the open-core operating system for verified durian export trade under 
 - [x] `field-proven.html` — Field-Proven High Contrast POS Mode (Alternative Screen 1)
 - [x] `foundry.html` — Foundry Cryptographic Command Mode (Alternative Screen 1)
 
+### Multi-Market Corridors, 25-Step Blueprint, On-Prem Security & Non-Custodial Ecosystem (Stitch-Loop Expansion)
+- [x] `corridors.html` — ASEAN Multi-Market Corridor & GACC Protocol Rule Pack Console (Screen 16: `VN_CN`, `TH_CN`, `MY_CN`, `PH_CN` & `RULE-01..08`)
+- [x] `blueprint.html` — 25-Step Open-Core Blueprint & Cryptographic Architecture Audit Console (Screen 17: Composite SHA-256 & Stage-Zero Guardrails)
+- [x] `security-vault.html` — On-Premise Security, PDPL Consent (Law 91/2025/QH15) & Air-Gapped Disaster Recovery Vault (Screen 18: `GATE-01..04` & Hot SQLite Backup)
+- [x] `organic-escrow-guard.html` — Stage-Gated Organic Evidence & Non-Custodial B2B Trade Room Guardrail Console (Screen 19: `OrganicEvidenceManager` + `EscrowStateMachine` under Decree 52/2024/NĐ-CP)
+- [x] `webhook-sync-queue.html` — Partner Lab Webhook Ingestor (HMAC-SHA256) & Offline Hybrid Edge Sync Queue (Screen 20: `PartnerWebhookIngestor` + `HybridEdgeSyncQueue`)
+- [x] `socratic-introspector.html` — 5-Turn Deep Socratic Open-Core & SaaS Unit Economics Introspector (Screen 21: `OpenCoreDeepIntrospector` & `94.67%` gross margin validation)
+- [x] `rehearsal-command.html` — Cai Lậy Stage-Zero Pilot Rehearsal & Blind-Fault Injection Command Center (Screen 22: `seedGate05PilotRehearsal` & `compilePilotGoLiveDossierPack`)
+- [x] `mit-verifier-lab.html` — Standalone MIT Cryptographic Manifest Verifier & ISO 6346 Check-Digit Lab (Screen 23: `verifyStandaloneExportManifest` & `validateIso6346Container`)
+
+## Creative Freedom & Next Baton Backlog
+- [ ] `cloud-ocr-vault.html` — Cloud Vision OCR Draft Extractor & E2EE AES-256-GCM Backup Vault Console (`CloudOcrExtractorAdapter` & `CloudVaultBackupConnector`)
+
 ## Live Server Routing
-All 15 pages and PNG previews are served directly by the Bun HTTP Server at `GET /stitch/<page>.html`.
+All 23 pages, `durios-live-bridge.js`, and PNG previews are served directly by the Bun HTTP Server at `GET /stitch/<page>.html`.

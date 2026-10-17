@@ -1,8 +1,5 @@
 import type {
-  AuthenticatedActor,
-  ProductPersona,
-  TenantType,
-  UserRole,
+  AuthenticatedActor, ProductPersona, TenantType, UserRole,
 } from "../domain/types.js";
 
 export type AccessErrorCode =
@@ -30,37 +27,12 @@ interface AllowedTupleRule {
   readonly allowedRoles: readonly UserRole[];
 }
 
-/**
- * Canonical table of valid (ProductPersona, TenantType, UserRole) combinations
- * ratified in PRODUCT-PRD-V1.md (Section 5.2.3) and
- * PRODUCT-ARCHITECTURE-AND-ROADMAP-V1.md (Section 2.1.A).
- */
 const ALLOWED_IDENTITY_TUPLES: readonly AllowedTupleRule[] = [
-  {
-    persona: "ORCHARD_OFFICER",
-    allowedTenantTypes: ["ORCHARD_COOP"],
-    allowedRoles: ["CLERK", "MANAGER", "ADMIN"],
-  },
-  {
-    persona: "PACKHOUSE_CLERK",
-    allowedTenantTypes: ["PACKHOUSE_EXPORTER"],
-    allowedRoles: ["CLERK"],
-  },
-  {
-    persona: "PACKHOUSE_MANAGER",
-    allowedTenantTypes: ["PACKHOUSE_EXPORTER"],
-    allowedRoles: ["MANAGER", "ADMIN"],
-  },
-  {
-    persona: "BUYER_VIEWER",
-    allowedTenantTypes: ["BUYER_IMPORTER", "PACKHOUSE_EXPORTER"],
-    allowedRoles: ["VIEWER"],
-  },
-  {
-    persona: "SYSTEM_AUDITOR",
-    allowedTenantTypes: ["INSPECTION_AUDITOR", "PACKHOUSE_EXPORTER", "ORCHARD_COOP"],
-    allowedRoles: ["AUDITOR"],
-  },
+  { persona: "ORCHARD_OFFICER", allowedTenantTypes: ["ORCHARD_COOP"], allowedRoles: ["CLERK", "MANAGER", "ADMIN"] },
+  { persona: "PACKHOUSE_CLERK", allowedTenantTypes: ["PACKHOUSE_EXPORTER"], allowedRoles: ["CLERK"] },
+  { persona: "PACKHOUSE_MANAGER", allowedTenantTypes: ["PACKHOUSE_EXPORTER"], allowedRoles: ["MANAGER", "ADMIN"] },
+  { persona: "BUYER_VIEWER", allowedTenantTypes: ["BUYER_IMPORTER", "PACKHOUSE_EXPORTER"], allowedRoles: ["VIEWER"] },
+  { persona: "SYSTEM_AUDITOR", allowedTenantTypes: ["INSPECTION_AUDITOR", "PACKHOUSE_EXPORTER", "ORCHARD_COOP"], allowedRoles: ["AUDITOR"] },
 ];
 
 export function isValidIdentityTuple(

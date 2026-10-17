@@ -1,21 +1,16 @@
 import { describe, expect, it } from "bun:test";
 import { verifyExportManifest } from "../src/export/standalone-manifest-verifier.js";
 import {
-  createSignedSaasLicenseKey,
-  generateEphemeralSaasLicenseKeyPair,
+  createSignedSaasLicenseKey, generateEphemeralSaasLicenseKeyPair,
 } from "../src/saas/saas-tier-policy.js";
 import {
-  decryptCloudVaultBackupEnvelope,
-  encryptBackupManifestForCloudVault,
+  decryptCloudVaultBackupEnvelope, encryptBackupManifestForCloudVault,
 } from "../src/saas/cloud-vault-backup-connector.js";
 import {
-  evaluateGaccRegistryWatch,
-  issueCrossBorderBuyerVerificationRoom,
-  type GaccCodeRegistryEntry,
+  evaluateGaccRegistryWatch, issueCrossBorderBuyerVerificationRoom, type GaccCodeRegistryEntry,
 } from "../src/saas/gacc-registry-watch-service.js";
 import {
-  anchorAuditLedgerHeadToCloud,
-  verifyCloudLedgerAnchorReceipt,
+  anchorAuditLedgerHeadToCloud, verifyCloudLedgerAnchorReceipt,
 } from "../src/saas/cloud-ledger-anchor.js";
 import { getMarketCompliancePack } from "../src/rules/multi-market-pack-registry.js";
 import { ContainerDossierWorkspace } from "../src/workspace/container-dossier-workspace.js";
@@ -35,14 +30,10 @@ const MANAGER: AuthenticatedActor = {
 const TEST_GACC_SNAPSHOT: ReadonlyMap<string, GaccCodeRegistryEntry> = new Map([
   ["VN-TG-ORCHARD-0042", { code: "VN-TG-ORCHARD-0042", codeType: "PUC", province: "Tiền Giang", status: "APPROVED_ACTIVE", updatedAt: "2026-10-01T00:00:00.000Z" }],
   ["VN-TG-PACK-0018", { code: "VN-TG-PACK-0018", codeType: "PHC", province: "Tiền Giang", status: "APPROVED_ACTIVE", updatedAt: "2026-10-01T00:00:00.000Z" }],
-  ["VN-TG-ORCHARD-SUSPENDED-99", { code: "VN-TG-ORCHARD-SUSPENDED-99", codeType: "PUC", province: "Tiền Giang", status: "SUSPENDED_BY_GACC", updatedAt: "2026-10-10T00:00:00.000Z", suspensionReasonVi: "Tạm ngưng xuất khẩu theo thông báo kiểm dịch GACC." }],
+  ["VN-TG-ORCHARD-SUSPENDED-99", { code: "VN-TG-ORCHARD-SUSPENDED-99", codeType: "PUC", province: "Tiền Giang", status: "SUSPENDED_BY_GACC", updatedAt: "2026-10-15T00:00:00.000Z" }],
 ]);
 
-function buildSealedWorkspaceAndManifest(): {
-  ws: ContainerDossierWorkspace;
-  dossierId: string;
-  manifest: DossierExportManifest;
-} {
+function buildSealedWorkspaceAndManifest(): { ws: ContainerDossierWorkspace; dossierId: string; manifest: DossierExportManifest } {
   const ws = new ContainerDossierWorkspace();
   const created = ws.createDossier(
     {
@@ -71,7 +62,6 @@ function buildSealedWorkspaceAndManifest(): {
       ws.verifyField(created.id, doc.id, { fieldId: f.id, confirmedValue: f.rawValue }, CLERK);
     }
   }
-
   ws.runValidation(created.id, MANAGER);
   ws.approveForExport(created.id, MANAGER);
   return { ws, dossierId: created.id, manifest: ws.exportDossier(created.id, MANAGER) };
@@ -92,14 +82,11 @@ describe("25-Step Open-Core & SaaS Cloud Connectors Suite", () => {
   it("verifies sealed DossierExportManifest with MIT standalone verifier and rejects tampering or non-manifest JSON", () => {
     const { manifest } = buildSealedWorkspaceAndManifest();
     const validRes = verifyExportManifest(manifest);
-
     expect(validRes.valid).toBe(true);
     expect(validRes.iso6346ContainerValid).toBe(true);
     expect(validRes.verificationSealBadge).toBe("DuriOS Local Manifest Hash Check Passed (MIT Verifier)");
     expect(validRes.publicVerificationUrl).toBeUndefined();
-
-    const withUrl = verifyExportManifest(manifest, "https://verify.example.org/m");
-    expect(withUrl.publicVerificationUrl).toContain(manifest.compositeManifestSha256);
+    expect(verifyExportManifest(manifest, "https://verify.example.org/m").publicVerificationUrl).toContain(manifest.compositeManifestSha256);
 
     const tampered = verifyExportManifest({ ...manifest, sealNumber: "SL-TAMPERED" });
     expect(tampered.valid).toBe(false);
@@ -117,39 +104,28 @@ describe("25-Step Open-Core & SaaS Cloud Connectors Suite", () => {
       blobs: [{ relativePath: "DOC-1.bin", sha256: "b".repeat(64), sizeBytes: 1024 }],
     };
 
-    expect(() =>
-      encryptBackupManifestForCloudVault("ten-cailay-001", sampleBackup, "ValidPassphrase#2026", {})
-    ).toThrow("requires an active PACKHOUSE_PRO_SAAS");
-
+    expect(() => encryptBackupManifestForCloudVault("ten-cailay-001", sampleBackup, "ValidPassphrase#2026", {})).toThrow("requires an active PACKHOUSE_PRO_SAAS");
     const envelope = encryptBackupManifestForCloudVault("ten-cailay-001", sampleBackup, "ValidPassphrase#2026", proEnv);
     expect(envelope.algorithm).toBe("AES-256-GCM");
     expect(envelope.kdf).toBe("scrypt-sha256-v1");
     expect(envelope.payloadScope).toBe("MANIFEST_METADATA_ONLY_NOT_BLOBS");
 
-    const decrypted = decryptCloudVaultBackupEnvelope(envelope, "ValidPassphrase#2026", "ten-cailay-001");
-    expect(decrypted).toEqual(sampleBackup);
+    expect(decryptCloudVaultBackupEnvelope(envelope, "ValidPassphrase#2026", "ten-cailay-001")).toEqual(sampleBackup);
     expect(() => decryptCloudVaultBackupEnvelope(envelope, "WrongPassphrase#9999", "ten-cailay-001")).toThrow();
     expect(() => decryptCloudVaultBackupEnvelope(envelope, "ValidPassphrase#2026", "ten-other-999")).toThrow("tenant mismatch");
-    expect(() =>
-      decryptCloudVaultBackupEnvelope({ ...envelope, aadContext: "ten-other-999|1.0.0|bad" }, "ValidPassphrase#2026")
-    ).toThrow();
+    expect(() => decryptCloudVaultBackupEnvelope({ ...envelope, aadContext: "ten-other-999|1.0.0|bad" }, "ValidPassphrase#2026")).toThrow();
   });
 
   it("evaluates GACC PUC/PHC watch with explicit snapshot, buyer rooms with explicit portalBaseUrl, and statutory market packs", () => {
     const { manifest } = buildSealedWorkspaceAndManifest();
-    expect(() => evaluateGaccRegistryWatch("VN-TG-ORCHARD-0042", "VN-TG-PACK-0018", proEnv)).toThrow(
-      "GACC registry snapshot feed is required"
-    );
-
-    const activeWatch = evaluateGaccRegistryWatch("VN-TG-ORCHARD-0042", "VN-TG-PACK-0018", proEnv, TEST_GACC_SNAPSHOT, "ten-cailay-001");
-    expect(activeWatch.allActive).toBe(true);
+    expect(() => evaluateGaccRegistryWatch("VN-TG-ORCHARD-0042", "VN-TG-PACK-0018", proEnv)).toThrow("GACC registry snapshot feed is required");
+    expect(evaluateGaccRegistryWatch("VN-TG-ORCHARD-0042", "VN-TG-PACK-0018", proEnv, TEST_GACC_SNAPSHOT, "ten-cailay-001").allActive).toBe(true);
 
     const suspendedWatch = evaluateGaccRegistryWatch("VN-TG-ORCHARD-SUSPENDED-99", "VN-TG-PACK-0018", proEnv, TEST_GACC_SNAPSHOT, "ten-cailay-001");
     expect(suspendedWatch.allActive).toBe(false);
     expect(suspendedWatch.alertsVi[0]).toContain("SUSPENDED_BY_GACC");
 
     expect(() => issueCrossBorderBuyerVerificationRoom(manifest, "SHR-CAILAY-001", "2027-11-01T00:00:00.000Z", proEnv)).toThrow("Explicit buyer portal base URL");
-
     const room = issueCrossBorderBuyerVerificationRoom(manifest, "SHR-CAILAY-001", "2027-11-01T00:00:00.000Z", proEnv, "https://portal.example.org");
     expect(room.supportedLocales).toEqual(["vi-VN", "zh-CN", "en-US"]);
     expect(room.portalUrl).toContain("https://portal.example.org/rooms/");
@@ -164,8 +140,7 @@ describe("25-Step Open-Core & SaaS Cloud Connectors Suite", () => {
 
     expect(() =>
       anchorAuditLedgerHeadToCloud(MANAGER.tenantId, dossierId, events, {
-        DURIOS_SAAS_LICENSE_KEY: proKey,
-        DURIOS_SAAS_LICENSE_PUBLIC_KEY: keyPair.publicKeyPem,
+        DURIOS_SAAS_LICENSE_KEY: proKey, DURIOS_SAAS_LICENSE_PUBLIC_KEY: keyPair.publicKeyPem,
       })
     ).toThrow("Explicit DURIOS_LEDGER_ANCHOR_SIGNING_KEY");
 

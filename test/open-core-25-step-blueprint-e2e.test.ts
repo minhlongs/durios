@@ -92,8 +92,7 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
         })
       );
       expect(verifyRes.status).toBe(200);
-      const verifyJson = (await verifyRes.json()) as { success: boolean; data: { valid: boolean } };
-      expect(verifyJson.data.valid).toBe(true);
+      expect(((await verifyRes.json()) as { data: { valid: boolean } }).data.valid).toBe(true);
 
       const tamperedBundle = {
         ...exportJson.data.bundle,
@@ -107,8 +106,7 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
           body: JSON.stringify({ bundle: tamperedBundle }),
         })
       );
-      const tamperJson = (await tamperRes.json()) as { success: boolean; data: { valid: boolean } };
-      expect(tamperJson.data.valid).toBe(false);
+      expect(((await tamperRes.json()) as { data: { valid: boolean } }).data.valid).toBe(false);
     } finally {
       process.env.DURIOS_PORTABILITY_HMAC_SECRET = prevSecret;
       app.sqliteClient.close();
@@ -154,11 +152,7 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
     };
     expect(companyJson.name).toBe("DuriOS");
     expect(companyJson.open_core_manifest_api.endpoints).toContain("GET /api/v1/open-core/edition-manifest");
-
-    const planMd = readFileSync("plans/company-blueprint/plan.md", "utf-8");
-    expect((planMd.match(/^## \d+\./gm) ?? []).length).toBe(25);
-
-    const tasksMd = readFileSync("plans/company-blueprint/tasks.md", "utf-8");
-    expect((tasksMd.match(/\*\*Step \d+:/g) ?? []).length).toBe(25);
+    expect((readFileSync("plans/company-blueprint/plan.md", "utf-8").match(/^## \d+\./gm) ?? []).length).toBe(25);
+    expect((readFileSync("plans/company-blueprint/tasks.md", "utf-8").match(/\*\*Step \d+:/g) ?? []).length).toBe(25);
   });
 });

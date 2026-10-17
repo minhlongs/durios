@@ -2,7 +2,9 @@ import { existsSync } from "node:fs";
 import type { AuthenticatedActor, ContainerDossier } from "../domain/types.js";
 import type { ContainerDossierWorkspace } from "../workspace/container-dossier-workspace.js";
 import { createOtpProviderFromEnv } from "./otp-provider.js";
-import { computeGate05KpiFromDossiers, evaluateGate05PilotKpi, type Gate05KpiEvaluationReport } from "./pilot-kpi-evaluator.js";
+import {
+  computeGate05KpiFromDossiers, evaluateGate05PilotKpi, type Gate05KpiEvaluationReport,
+} from "./pilot-kpi-evaluator.js";
 import { verifySiteBackup } from "./site-backup-manager.js";
 import { assertLoopbackHostname, createWorkspaceApp } from "../server/server.js";
 
@@ -20,11 +22,7 @@ export interface SingleSiteLaunchGateReport {
   readonly passedCount: number;
   readonly totalGates: 5;
   readonly gates: readonly [
-    GateCheckStatus,
-    GateCheckStatus,
-    GateCheckStatus,
-    GateCheckStatus,
-    GateCheckStatus,
+    GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus
   ];
   readonly kpiSummary: Gate05KpiEvaluationReport;
 }
@@ -74,9 +72,7 @@ function buildGateReport(
   try {
     assertLoopbackHostname(configuredHost);
     loopbackOk = true;
-  } catch {
-    loopbackOk = false;
-  }
+  } catch { loopbackOk = false; }
   const gate03Passed = loopbackOk && auditChainValid;
   const gate03: GateCheckStatus = {
     gateId: "GATE-03",
@@ -84,7 +80,7 @@ function buildGateReport(
     passed: gate03Passed,
     statusLabel: gate03Passed ? "PASS" : "SECURITY_CONFIG_INCOMPLETE",
     detail: gate03Passed
-      ? `Host '${configuredHost}' hợp lệ (loopback) và chuỗi băm kiểm toán toàn vẹn.`
+      ? `Host '${configuredHost}' hợp lệ (loopback) && chuỗi băm kiểm toán toàn vẹn.`
       : `Loopback=${loopbackOk}, AuditChainValid=${auditChainValid}.`,
   };
 
@@ -105,63 +101,40 @@ function buildGateReport(
     detail: gate04Detail,
   };
 
-  const gate05Passed = kpiSummary.gate05Passed;
   const gate05: GateCheckStatus = {
     gateId: "GATE-05",
     title: "Diễn tập 5 Container & Bắt 100% Lỗi Gài Mù (< 5 phút/container)",
-    passed: gate05Passed,
-    statusLabel: gate05Passed ? "PASS" : "REHEARSAL_INCOMPLETE",
+    passed: kpiSummary.gate05Passed,
+    statusLabel: kpiSummary.gate05Passed ? "PASS" : "REHEARSAL_INCOMPLETE",
     detail: `Containers=${kpiSummary.totalContainers}/5, Mean=${kpiSummary.meanDeltaSeconds}s, BlindFaults=${kpiSummary.blindFaultsCaught}/${kpiSummary.blindFaultCount}.`,
   };
 
   const gates: readonly [GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus] = [
-    gate01,
-    gate02,
-    gate03,
-    gate04,
-    gate05,
+    gate01, gate02, gate03, gate04, gate05,
   ];
   const passedCount = gates.filter((g) => g.passed).length;
 
   return {
-    evaluatedAt: new Date().toISOString(),
-    goForLiveCustomerData: passedCount === 5,
-    passedCount,
-    totalGates: 5,
-    gates,
-    kpiSummary,
+    evaluatedAt: new Date().toISOString(), goForLiveCustomerData: passedCount === 5,
+    passedCount, totalGates: 5, gates, kpiSummary,
   };
 }
 
 export function evaluateWorkspaceLaunchGates(
-  workspace: ContainerDossierWorkspace,
-  actor: AuthenticatedActor,
-  options: VerifyLaunchGatesOptions = {}
+  workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, options: VerifyLaunchGatesOptions = {}
 ): SingleSiteLaunchGateReport {
   const dossiers: readonly ContainerDossier[] = workspace.listDossiers(actor);
-  const kpiSummary = computeGate05KpiFromDossiers(dossiers);
-  const auditChainValid = workspace.auditLedger.verifyIntegrity();
-  return buildGateReport(auditChainValid, kpiSummary, options);
+  return buildGateReport(workspace.auditLedger.verifyIntegrity(), computeGate05KpiFromDossiers(dossiers), options);
 }
 
-export function verifySingleSiteLaunchGates(
-  options: VerifyLaunchGatesOptions = {}
-): SingleSiteLaunchGateReport {
+export function verifySingleSiteLaunchGates(options: VerifyLaunchGatesOptions = {}): SingleSiteLaunchGateReport {
   const env = options.env ?? process.env;
   const dbPath = options.dbPath ?? env.DURIOS_DB_PATH ?? "./data/durios.db";
   const dataDir = options.dataDir ?? env.DURIOS_DATA_DIR ?? "./data/uploads";
   const app = createWorkspaceApp({ dbPath, dataDir });
-  let auditChainValid = false;
   try {
-    auditChainValid = app.workspace.auditLedger.verifyIntegrity();
+    return buildGateReport(app.workspace.auditLedger.verifyIntegrity(), evaluateGate05PilotKpi({ dbPath, dataDir }), options);
   } finally {
     app.sqliteClient.close();
   }
-  const kpiSummary = evaluateGate05PilotKpi({ dbPath, dataDir });
-  return buildGateReport(auditChainValid, kpiSummary, options);
-}
-
-if (import.meta.main) {
-  const report = verifySingleSiteLaunchGates();
-  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
 }

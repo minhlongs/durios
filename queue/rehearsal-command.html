@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DuriOS // Cai Lậy Stage-Zero Pilot Rehearsal & Blind-Fault Command Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <style>
+    :root {
+      --bg-canvas: #0B130E;
+      --bg-surface: #132018;
+      --bg-card: #18281F;
+      --border: #1F3327;
+      --border-highlight: #10B981;
+      --text-primary: #ECFDF5;
+      --text-secondary: #6EE7B7;
+      --text-muted: #34D399;
+      --accent-primary: #10B981;
+      --accent-gold: #F59E0B;
+      --accent-danger: #EF4444;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-card: 6px;
+      --shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.12);
+    }
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-display { font-family: var(--font-display); }
+    .font-mono { font-family: var(--font-mono); }
+    .font-body { font-family: var(--font-body); }
+    
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B130E;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1F3327;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #10B981;
+    }
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+    }
+    .pulse-dot {
+      box-shadow: 0 0 10px #10B981;
+    }
+    .pulse-danger {
+      box-shadow: 0 0 10px #EF4444;
+    }
+    .pulse-gold {
+      box-shadow: 0 0 10px #F59E0B;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#0B130E] text-[#ECFDF5] text-xs select-none">
+
+  <!-- TOP OPERATIONAL COMMAND BAR (56px) -->
+  <header class="h-14 border-b border-[#1F3327] bg-[#0d1711] px-4 flex items-center justify-between z-30 sticky top-0">
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 pr-3 border-r border-[#1F3327]">
+        <div class="w-7 h-7 rounded bg-[#10B981]/15 border border-[#10B981]/50 flex items-center justify-center text-[#10B981]">
+          <span class="material-symbols-outlined text-[18px]">biotech</span>
+        </div>
+        <div>
+          <span class="font-mono font-bold tracking-wider text-sm text-[#10B981]">DURIOS</span>
+          <span class="text-[#34D399] font-mono text-[10px] ml-1 opacity-70">// CAI LẬY STAGE-ZERO PILOT REHEARSAL & BLIND-FAULT</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-2 bg-[#132018] px-2.5 py-1 rounded border border-[#1F3327]">
+        <span class="inline-block w-2 h-2 rounded-full bg-[#10B981] pulse-dot animate-pulse"></span>
+        <span class="font-mono text-[11px] font-semibold text-[#6EE7B7]">SITE-CAILAY-TIENGIANG-01</span>
+        <span class="text-[#1F3327]">|</span>
+        <span class="font-mono text-[10px] text-[#F59E0B] bg-[#F59E0B]/10 px-1.5 py-0.5 rounded font-medium border border-[#F59E0B]/30">GATE-05 DRESS REHEARSAL ACTIVE</span>
+      </div>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2 text-[11px] font-mono text-[#6EE7B7]/80 bg-[#132018] px-3 py-1 rounded border border-[#1F3327]">
+        <span class="text-[#34D399]">AIR-GAP ENGINE:</span>
+        <span class="text-[#10B981] font-semibold">127.0.0.1:8443 (ACTIVE)</span>
+        <span class="text-[#1F3327]">|</span>
+        <span class="text-[#34D399]">SHA:</span>
+        <span class="text-white/80 font-mono">9c4e...81b2</span>
+      </div>
+
+      <!-- Primary Action CTA -->
+      <button id="btn-reseed" onclick="triggerReseedAnimation()" class="bg-[#10B981] hover:bg-[#059669] text-[#08100b] font-display font-bold px-3.5 py-1.5 rounded transition flex items-center gap-1.5 text-xs shadow-[0_0_15px_rgba(16,185,129,0.3)] active:scale-95">
+        <span class="material-symbols-outlined text-[16px]">rocket_launch</span>
+        <span>Seed 5 Rehearsal Containers + Compile Go-Live Pack</span>
+      </button>
+
+      <button onclick="toggleModal('audit-modal')" class="p-1.5 rounded hover:bg-[#18281F] text-[#6EE7B7] border border-[#1F3327] transition" title="Raw Audit Payload">
+        <span class="material-symbols-outlined text-[18px]">terminal</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- TOP 4-CARD REHEARSAL KPI & GO-LIVE PACK RIBBON -->
+  <section class="grid grid-cols-4 gap-3 p-4 pb-2 bg-[#0B130E] border-b border-[#1F3327]">
+    <!-- KPI Card 1 -->
+    <div class="bg-[#132018] border border-[#1F3327] rounded-[6px] p-3 flex flex-col justify-between hover:border-[#10B981]/40 transition relative overflow-hidden group">
+      <div class="absolute -right-6 -bottom-6 opacity-5 group-hover:opacity-10 transition pointer-events-none">
+        <span class="material-symbols-outlined text-[90px] text-[#10B981]">inventory_2</span>
+      </div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-[#6EE7B7] text-[11px] font-mono uppercase tracking-wider flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[14px] text-[#10B981]">dataset</span>
+          1. 5-Container Dress Rehearsal
+        </span>
+        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-bold">seedGate05PilotRehearsal</span>
+      </div>
+      <div class="flex items-baseline gap-2 mb-1">
+        <div class="text-2xl font-display font-bold text-white tracking-tight">5 / 5 <span class="text-sm font-normal text-[#6EE7B7]">Containers</span></div>
+        <span class="text-[11px] font-mono text-[#10B981] font-semibold">100% Seeded</span>
+      </div>
+      <div class="flex items-center justify-between text-[10px] font-mono pt-2 border-t border-[#1F3327]/70 text-[#6EE7B7]">
+        <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>3 CLEAN_READY</span>
+        <span class="flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#EF4444]"></span>2 BLIND_FAULT_INJECTED</span>
+      </div>
+    </div>
+
+    <!-- KPI Card 2 -->
+    <div class="bg-[#132018] border border-[#1F3327] rounded-[6px] p-3 flex flex-col justify-between hover:border-[#10B981]/40 transition relative overflow-hidden group">
+      <div class="absolute -right-6 -bottom-6 opacity-5 group-hover:opacity-10 transition pointer-events-none">
+        <span class="material-symbols-outlined text-[90px] text-[#10B981]">security</span>
+      </div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-[#6EE7B7] text-[11px] font-mono uppercase tracking-wider flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[14px] text-[#10B981]">verified_user</span>
+          2. Blind-Fault Detection Rate
+        </span>
+        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-bold">GATE-05 KPI</span>
+      </div>
+      <div class="flex items-baseline gap-2 mb-1">
+        <div class="text-2xl font-display font-bold text-[#10B981] tracking-tight">100% <span class="text-sm font-normal text-white">Caught</span></div>
+        <span class="text-[11px] font-mono text-[#10B981] bg-[#10B981]/15 px-1.5 py-0.5 rounded border border-[#10B981]/30">2 / 2 Blocked</span>
+      </div>
+      <div class="text-[10px] font-mono pt-2 border-t border-[#1F3327]/70 text-[#6EE7B7] flex items-center justify-between">
+        <span class="text-[#34D399]">False approvals: <strong class="text-white">0</strong></span>
+        <span class="text-[#6EE7B7] font-semibold">Strict Invariant Held</span>
+      </div>
+    </div>
+
+    <!-- KPI Card 3 -->
+    <div class="bg-[#132018] border border-[#1F3327] rounded-[6px] p-3 flex flex-col justify-between hover:border-[#10B981]/40 transition relative overflow-hidden group">
+      <div class="absolute -right-6 -bottom-6 opacity-5 group-hover:opacity-10 transition pointer-events-none">
+        <span class="material-symbols-outlined text-[90px] text-[#F59E0B]">timer</span>
+      </div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-[#6EE7B7] text-[11px] font-mono uppercase tracking-wider flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[14px] text-[#F59E0B]">speed</span>
+          3. Mean Verification Velocity
+        </span>
+        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/40 font-bold">&lt; 300s SLA</span>
+      </div>
+      <div class="flex items-baseline gap-2 mb-1">
+        <div class="text-2xl font-display font-bold text-[#F59E0B] tracking-tight">142s <span class="text-xs font-normal text-white/80">(2m 22s) / box</span></div>
+      </div>
+      <div class="text-[10px] font-mono pt-2 border-t border-[#1F3327]/70 text-[#6EE7B7] flex items-center justify-between">
+        <span class="text-[#34D399]">Statutory Limit: 300s (5m)</span>
+        <span class="text-[#10B981] font-semibold font-mono">52.6% Faster</span>
+      </div>
+    </div>
+
+    <!-- KPI Card 4 -->
+    <div class="bg-[#132018] border border-[#1F3327] rounded-[6px] p-3 flex flex-col justify-between hover:border-[#10B981]/40 transition relative overflow-hidden group">
+      <div class="absolute -right-6 -bottom-6 opacity-5 group-hover:opacity-10 transition pointer-events-none">
+        <span class="material-symbols-outlined text-[90px] text-[#10B981]">workspace_premium</span>
+      </div>
+      <div class="flex items-center justify-between mb-1.5">
+        <span class="text-[#6EE7B7] text-[11px] font-mono uppercase tracking-wider flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[14px] text-[#10B981]">verified</span>
+          4. Signed Go-Live Pack
+        </span>
+        <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-bold">compileGoLivePack</span>
+      </div>
+      <div class="flex items-baseline gap-2 mb-1">
+        <div class="text-sm font-display font-bold text-[#10B981] tracking-wide truncate">GOLIVE-SITE-CAILAY-TIENGIANG-01</div>
+      </div>
+      <div class="text-[10px] font-mono pt-2 border-t border-[#1F3327]/70 text-[#6EE7B7] flex items-center justify-between">
+        <span class="truncate text-[#34D399]">reportSha256: 9c4e...81b2</span>
+        <span class="bg-[#10B981]/15 text-[#10B981] px-1 py-0.5 rounded font-bold uppercase text-[9px] border border-[#10B981]/30">VERIFIED</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- CENTER 2-COLUMN SPLIT WORKBENCH (7 Cols Left / 5 Cols Right) -->
+  <main class="flex-1 grid grid-cols-12 gap-4 p-4 min-h-0 overflow-y-auto">
+
+    <!-- LEFT PANEL: 5-Container Synthetic Rehearsal & Blind-Fault Matrix (7 COLS) -->
+    <div class="col-span-7 flex flex-col gap-3 min-w-0">
+      
+      <!-- Panel Header Bar & Filter/Action Strip -->
+      <div class="bg-[#132018] border border-[#1F3327] rounded-[6px] p-3 flex flex-col gap-2">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-[#10B981] text-[18px]">table_rows</span>
+            <h2 class="font-display font-bold text-sm tracking-wide text-white">5-Container Synthetic Rehearsal Matrix</h2>
+            <span class="font-mono text-[10px] text-[#6EE7B7] bg-[#18281F] px-2 py-0.5 rounded border border-[#1F3327]">DOS-CAILAY-R01..R05</span>
+          </div>
+          
+          <!-- Role Switcher -->
+          <div class="flex items-center gap-1.5 bg-[#0B130E] p-1 rounded border border-[#1F3327]">
+            <span class="text-[10px] font-mono text-[#34D399] px-1.5">ACTING ROLE:</span>
+            <button id="role-clerk" onclick="switchRole('clerk')" class="px-2 py-0.5 rounded font-mono text-[10px] font-semibold bg-[#10B981] text-[#08100b] transition">
+              clerk.cailay [CLERK]
+            </button>
+            <button id="role-mgr" onclick="switchRole('mgr')" class="px-2 py-0.5 rounded font-mono text-[10px] font-semibold text-[#6EE7B7] hover:text-white transition">
+              manager.cailay [MANAGER]
+            </button>
+          </div>
+        </div>
+
+        <div class="flex items-center justify-between text-[11px] font-mono text-[#6EE7B7]/80 pt-1 border-t border-[#1F3327]/70">
+          <div class="flex items-center gap-3">
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-[#10B981]"></span> 3 Clean Baseline</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-[#EF4444]"></span> 1 Seal Invariant Mismatch</span>
+            <span class="flex items-center gap-1"><span class="w-2 h-2 rounded bg-[#F59E0B]"></span> 1 Unverified Extracted Fields</span>
+          </div>
+          <span class="text-[#34D399]">Dataset: Vietnam Decree 248/249 + GACC Cross-Border Spec</span>
+        </div>
+      </div>
+
+      <!-- High-Density Containers Matrix Table -->
+      <div class="bg-[#132018] border border-[#1F3327] rounded-[6px] overflow-hidden flex-1 flex flex-col">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left border-collapse">
+            <thead>
+              <tr class="bg-[#0e1912] border-b border-[#1F3327] font-mono text-[10px] text-[#6EE7B7] uppercase tracking-wider">
+                <th class="p-2.5 font-semibold">Dossier / ISO Code</th>
+                <th class="p-2.5 font-semibold">Rehearsal Scenario</th>
+                <th class="p-2.5 font-semibold">Seal Integrity Cross-Check</th>
+                <th class="p-2.5 font-semibold">Cadmium / Telemetry</th>
+                <th class="p-2.5 font-semibold">HITL Status</th>
+                <th class="p-2.5 font-semibold text-right">Gate-05 Verdict</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#1F3327] font-mono text-[11px]">
+              
+              <!-- CONTAINER 1: CLEAN_READY -->
+              <tr class="hover:bg-[#18281F]/70 transition cursor-pointer" onclick="selectContainer('R01')">
+                <td class="p-2.5">
+                  <div class="font-bold text-white flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+                    DOS-CAILAY-R01
+                  </div>
+                  <div class="text-[10px] text-[#6EE7B7] flex items-center gap-1 mt-0.5">
+                    <span class="text-white font-semibold">CSQU 305438 3</span>
+                    <span class="text-[9px] px-1 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30">ISO-6346:OK</span>
+                  </div>
+                </td>
+                <td class="p-2.5">
+                  <span class="px-2 py-0.5 rounded bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30 text-[10px] font-bold">
+                    CLEAN_READY
+                  </span>
+                  <div class="text-[10px] text-[#34D399] mt-1">Ri6 Durian · 18,240 kg</div>
+                </td>
+                <td class="p-2.5">
+                  <div class="flex items-center gap-1 text-[10px]">
+                    <span class="text-white">VN-SEAL-9001</span>
+                    <span class="text-[#10B981] font-bold">==</span>
+                    <span class="text-white">VN-SEAL-9001</span>
+                  </div>
+                  <div class="text-[10px] text-[#10B981] flex items-center gap-0.5 mt-0.5">
+                    <span class="material-symbols-outlined text-[13px]">check_circle</span>
+                    Bolt + RFID Matched
+                  </div>
+                </td>
+                <td class="p-2.5">
+                  <div class="text-white font-semibold">0.025 mg/kg</div>
+                  <div class="text-[10px] text-[#10B981]">50% Margin (≤ 0.050)</div>
+                </td>
+                <td class="p-2.5">
+                  <span class="text-[#10B981] font-semibold flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">done_all</span>
+                    12/12 Fields
+                  </span>
+                  <span class="text-[9px] text-[#34D399] block">Operator Signed</span>
+                </td>
+                <td class="p-2.5 text-right">
+                  <span class="inline-block px-2.5 py-1 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-bold text-[10px]">
+                    READY_FOR_REVIEW
+                  </span>
+                  <div class="text-[9px] text-[#10B981] font-mono mt-0.5">PASS (100% Valid)</div>
+                </td>
+              </tr>
+
+              <!-- CONTAINER 2: CLEAN_READY -->
+              <tr class="hover:bg-[#18281F]/70 transition cursor-pointer" onclick="selectContainer('R02')">
+                <td class="p-2.5">
+                  <div class="font-bold text-white flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+                    DOS-CAILAY-R02
+                  </div>
+                  <div class="text-[10px] text-[#6EE7B7] flex items-center gap-1 mt-0.5">
+                    <span class="text-white font-semibold">MSCU 601234 9</span>
+                    <span class="text-[9px] px-1 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30">ISO-6346:OK</span>
+                  </div>
+                </td>
+                <td class="p-2.5">
+                  <span class="px-2 py-0.5 rounded bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30 text-[10px] font-bold">
+                    CLEAN_READY
+                  </span>
+                  <div class="text-[10px] text-[#34D399] mt-1">Monthong Dona · 18,500 kg</div>
+                </td>
+                <td class="p-2.5">
+                  <div class="flex items-center gap-1 text-[10px]">
+                    <span class="text-white">VN-SEAL-9002</span>
+                    <span class="text-[#10B981] font-bold">==</span>
+                    <span class="text-white">VN-SEAL-9002</span>
+                  </div>
+                  <div class="text-[10px] text-[#10B981] flex items-center gap-0.5 mt-0.5">
+                    <span class="material-symbols-outlined text-[13px]">check_circle</span>
+                    Bolt + RFID Matched
+                  </div>
+                </td>
+                <td class="p-2.5">
+                  <div class="text-white font-semibold">0.025 mg/kg</div>
+                  <div class="text-[10px] text-[#10B981]">50% Margin (≤ 0.050)</div>
+                </td>
+                <td class="p-2.5">
+                  <span class="text-[#10B981] font-semibold flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">done_all</span>
+                    12/12 Fields
+                  </span>
+                  <span class="text-[9px] text-[#34D399] block">Operator Signed</span>
+                </td>
+                <td class="p-2.5 text-right">
+                  <span class="inline-block px-2.5 py-1 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-bold text-[10px]">
+                    READY_FOR_REVIEW
+                  </span>
+                  <div class="text-[9px] text-[#10B981] font-mono mt-0.5">PASS (100% Valid)</div>
+                </td>
+              </tr>
+
+              <!-- CONTAINER 3: CLEAN_READY -->
+              <tr class="hover:bg-[#18281F]/70 transition cursor-pointer" onclick="selectContainer('R03')">
+                <td class="p-2.5">
+                  <div class="font-bold text-white flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+                    DOS-CAILAY-R03
+                  </div>
+                  <div class="text-[10px] text-[#6EE7B7] flex items-center gap-1 mt-0.5">
+                    <span class="text-white font-semibold">MAEU 712345 0</span>
+                    <span class="text-[9px] px-1 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30">ISO-6346:OK</span>
+                  </div>
+                </td>
+                <td class="p-2.5">
+                  <span class="px-2 py-0.5 rounded bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30 text-[10px] font-bold">
+                    CLEAN_READY
+                  </span>
+                  <div class="text-[10px] text-[#34D399] mt-1">Musang King (Cai Lậy) · 17,900 kg</div>
+                </td>
+                <td class="p-2.5">
+                  <div class="flex items-center gap-1 text-[10px]">
+                    <span class="text-white">VN-SEAL-9003</span>
+                    <span class="text-[#10B981] font-bold">==</span>
+                    <span class="text-white">VN-SEAL-9003</span>
+                  </div>
+                  <div class="text-[10px] text-[#10B981] flex items-center gap-0.5 mt-0.5">
+                    <span class="material-symbols-outlined text-[13px]">check_circle</span>
+                    Bolt + RFID Matched
+                  </div>
+                </td>
+                <td class="p-2.5">
+                  <div class="text-white font-semibold">0.025 mg/kg</div>
+                  <div class="text-[10px] text-[#10B981]">50% Margin (≤ 0.050)</div>
+                </td>
+                <td class="p-2.5">
+                  <span class="text-[#10B981] font-semibold flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">done_all</span>
+                    12/12 Fields
+                  </span>
+                  <span class="text-[9px] text-[#34D399] block">Operator Signed</span>
+                </td>
+                <td class="p-2.5 text-right">
+                  <span class="inline-block px-2.5 py-1 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-bold text-[10px]">
+                    READY_FOR_REVIEW
+                  </span>
+                  <div class="text-[9px] text-[#10B981] font-mono mt-0.5">PASS (100% Valid)</div>
+                </td>
+              </tr>
+
+              <!-- CONTAINER 4: BLIND_FAULT_SEAL_MISMATCH -->
+              <tr class="bg-[#EF4444]/10 hover:bg-[#EF4444]/15 transition border-l-4 border-l-[#EF4444] cursor-pointer" onclick="selectContainer('R04')">
+                <td class="p-2.5">
+                  <div class="font-bold text-[#EF4444] flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#EF4444] pulse-danger animate-pulse"></span>
+                    DOS-CAILAY-R04
+                  </div>
+                  <div class="text-[10px] text-[#6EE7B7] flex items-center gap-1 mt-0.5">
+                    <span class="text-white font-semibold">CMAU 823456 1</span>
+                    <span class="text-[9px] px-1 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30">ISO-6346:OK</span>
+                  </div>
+                </td>
+                <td class="p-2.5">
+                  <span class="px-2 py-0.5 rounded bg-[#EF4444]/20 text-[#EF4444] border border-[#EF4444]/40 text-[10px] font-bold">
+                    BLIND_FAULT_SEAL_MISMATCH
+                  </span>
+                  <div class="text-[10px] text-[#EF4444] mt-1 font-semibold">Injected Synthetic Mutation</div>
+                </td>
+                <td class="p-2.5">
+                  <div class="flex items-center gap-1 text-[10px]">
+                    <span class="text-white bg-[#EF4444]/20 px-1 rounded">VN-SEAL-9004</span>
+                    <span class="text-[#EF4444] font-bold">!=</span>
+                    <span class="text-[#EF4444] bg-[#EF4444]/30 px-1 rounded font-bold">VN-SEAL-9999</span>
+                  </div>
+                  <div class="text-[10px] text-[#EF4444] flex items-center gap-0.5 mt-0.5">
+                    <span class="material-symbols-outlined text-[13px]">error</span>
+                    Header != Packing List Seal
+                  </div>
+                </td>
+                <td class="p-2.5">
+                  <div class="text-white font-semibold">0.025 mg/kg</div>
+                  <div class="text-[10px] text-[#10B981]">≤ 0.050 mg/kg</div>
+                </td>
+                <td class="p-2.5">
+                  <span class="text-[#10B981] font-semibold flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">done_all</span>
+                    12/12 Fields
+                  </span>
+                  <span class="text-[9px] text-[#34D399] block">Docs Matched</span>
+                </td>
+                <td class="p-2.5 text-right">
+                  <span class="inline-block px-2 py-1 rounded bg-[#EF4444]/25 text-[#EF4444] border border-[#EF4444]/50 font-bold text-[10px] pulse-danger">
+                    CRITICAL_BLOCKER
+                  </span>
+                  <div class="text-[9px] text-[#EF4444] font-mono mt-0.5 font-bold">RUL-CROSS-SEAL (BLOCKED)</div>
+                </td>
+              </tr>
+
+              <!-- CONTAINER 5: BLIND_FAULT_UNVERIFIED_EVIDENCE -->
+              <tr class="bg-[#F59E0B]/10 hover:bg-[#F59E0B]/15 transition border-l-4 border-l-[#F59E0B] cursor-pointer" onclick="selectContainer('R05')">
+                <td class="p-2.5">
+                  <div class="font-bold text-[#F59E0B] flex items-center gap-1.5">
+                    <span class="w-1.5 h-1.5 rounded-full bg-[#F59E0B] pulse-gold animate-pulse"></span>
+                    DOS-CAILAY-R05
+                  </div>
+                  <div class="text-[10px] text-[#6EE7B7] flex items-center gap-1 mt-0.5">
+                    <span class="text-white font-semibold">OOLU 934567 2</span>
+                    <span class="text-[9px] px-1 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30">ISO-6346:OK</span>
+                  </div>
+                </td>
+                <td class="p-2.5">
+                  <span class="px-2 py-0.5 rounded bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/40 text-[10px] font-bold">
+                    BLIND_FAULT_UNVERIFIED
+                  </span>
+                  <div class="text-[10px] text-[#F59E0B] mt-1 font-semibold">0 Verified HITL Evidence</div>
+                </td>
+                <td class="p-2.5">
+                  <div class="flex items-center gap-1 text-[10px]">
+                    <span class="text-white">VN-SEAL-9005</span>
+                    <span class="text-[#10B981] font-bold">==</span>
+                    <span class="text-white">VN-SEAL-9005</span>
+                  </div>
+                  <div class="text-[10px] text-[#34D399] flex items-center gap-0.5 mt-0.5">
+                    <span class="material-symbols-outlined text-[13px]">check_circle</span>
+                    Hardware Seal Intact
+                  </div>
+                </td>
+                <td class="p-2.5">
+                  <div class="text-white font-semibold">0.025 mg/kg</div>
+                  <div class="text-[10px] text-[#10B981]">≤ 0.050 mg/kg</div>
+                </td>
+                <td class="p-2.5">
+                  <span class="text-[#F59E0B] font-semibold flex items-center gap-1">
+                    <span class="material-symbols-outlined text-[14px]">pending_actions</span>
+                    12 Fields in DRAFT
+                  </span>
+                  <span class="text-[9px] text-[#F59E0B] block">0 Confirmed by Human</span>
+                </td>
+                <td class="p-2.5 text-right">
+                  <span class="inline-block px-2 py-1 rounded bg-[#F59E0B]/25 text-[#F59E0B] border border-[#F59E0B]/50 font-bold text-[10px]">
+                    EXPORT BLOCKED
+                  </span>
+                  <div class="text-[9px] text-[#F59E0B] font-mono mt-0.5 font-bold">HUMAN_VERIF_REQ</div>
+                </td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Selected Container Detail Inspector & Remediation Sandbox -->
+        <div id="inspector-card" class="m-3 mt-auto p-3 rounded bg-[#0e1912] border border-[#1F3327] flex flex-col gap-2">
+          <div class="flex items-center justify-between border-b border-[#1F3327] pb-2">
+            <div class="flex items-center gap-2">
+              <span class="text-xs font-mono font-bold text-white flex items-center gap-1">
+                <span class="material-symbols-outlined text-[16px] text-[#EF4444]">shield_with_heart</span>
+                ACTIVE INSPECTOR: <span id="insp-title" class="text-[#EF4444]">DOS-CAILAY-R04 (CMAU8234561)</span>
+              </span>
+              <span id="insp-badge" class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[#EF4444]/20 text-[#EF4444] border border-[#EF4444]/30 font-bold">
+                BLIND_FAULT_SEAL_MISMATCH
+              </span>
+            </div>
+            <span class="text-[10px] font-mono text-[#34D399]">Deterministic Invariant Rule: RUL-CROSS-SEAL</span>
+          </div>
+
+          <div class="grid grid-cols-3 gap-2 text-[10px] font-mono py-1">
+            <div class="bg-[#132018] p-2 rounded border border-[#1F3327]">
+              <span class="text-[#34D399] block mb-0.5">CONTAINER & PUC:</span>
+              <span class="text-white font-semibold">CMAU 823456 1</span>
+              <span class="text-[#6EE7B7] block text-[9px]">PUC: VN-TG-OR-088 (Mỹ Đức Đông)</span>
+            </div>
+            <div class="bg-[#132018] p-2 rounded border border-[#1F3327]">
+              <span class="text-[#34D399] block mb-0.5">HEADER SEAL VS PACKING LIST:</span>
+              <span class="text-white font-semibold">VN-SEAL-9004</span> <span class="text-[#EF4444]">!=</span> <span class="text-[#EF4444] font-bold">VN-SEAL-9999</span>
+              <span class="text-[#EF4444] block text-[9px]">Hash diff: 0x8a1c vs 0x4f2e</span>
+            </div>
+            <div class="bg-[#132018] p-2 rounded border border-[#1F3327]">
+              <span class="text-[#34D399] block mb-0.5">FAIL-CLOSED ACTION:</span>
+              <span class="text-[#EF4444] font-bold">QUARANTINE ENFORCED</span>
+              <span class="text-[#6EE7B7] block text-[9px]">Auto-Clearance Signal Severed</span>
+            </div>
+          </div>
+
+          <!-- Remediation Trigger Bar -->
+          <div class="flex items-center justify-between pt-2 border-t border-[#1F3327] text-[11px]">
+            <div class="flex items-center gap-2">
+              <span class="material-symbols-outlined text-[16px] text-[#F59E0B]">lock</span>
+              <span id="remediation-text" class="text-white/80 font-mono text-[10px]">
+                Requires <strong class="text-[#F59E0B]">PACKHOUSE_MANAGER</strong> signature to re-verify physical bolt tag or quarantine.
+              </span>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="simulateRemediation()" class="bg-[#18281F] hover:bg-[#1F3327] text-[#6EE7B7] border border-[#1F3327] px-2.5 py-1 rounded font-mono text-[10px] transition flex items-center gap-1">
+                <span class="material-symbols-outlined text-[13px]">refresh</span>
+                Re-scan Barcode
+              </button>
+              <button onclick="executeQuarantine()" class="bg-[#EF4444]/20 hover:bg-[#EF4444]/30 text-[#EF4444] border border-[#EF4444]/40 px-3 py-1 rounded font-mono text-[10px] font-bold transition flex items-center gap-1">
+                <span class="material-symbols-outlined text-[13px]">gavel</span>
+                Confirm Blind-Fault Block
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL: Field Auditor 5-Gate Checklist & Statutory Disclaimers (5 COLS) -->
+    <div class="col-span-5 flex flex-col gap-3 min-w-0">
+      
+      <!-- Panel Header Bar -->
+      <div class="bg-[#132018] border border-[#1F3327] rounded-[6px] p-3 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[#10B981] text-[18px]">fact_check</span>
+          <h2 class="font-display font-bold text-sm tracking-wide text-white">Field Auditor 5-Gate Checklist</h2>
+        </div>
+        <div class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-[#10B981] pulse-dot"></span>
+          <span class="font-mono text-[10px] text-[#10B981] font-bold bg-[#10B981]/15 px-2 py-0.5 rounded border border-[#10B981]/30">5 / 5 VERIFIED</span>
+        </div>
+      </div>
+
+      <!-- Checklist Cards (CHK-01 to CHK-05) from compilePilotGoLiveDossierPack -->
+      <div class="flex flex-col gap-2.5 flex-1">
+        
+        <!-- CHK-01 -->
+        <div class="bg-[#132018] border border-[#10B981]/40 rounded-[6px] p-3 hover:border-[#10B981] transition">
+          <div class="flex items-start justify-between mb-1">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded bg-[#10B981]/20 text-[#10B981] flex items-center justify-center font-mono font-bold text-[10px] border border-[#10B981]/40">
+                ✓
+              </span>
+              <div>
+                <span class="font-mono text-[11px] font-bold text-white">CHK-01 // GATE-01</span>
+                <h3 class="text-xs font-semibold text-[#ECFDF5]">Site Data Processing Consent</h3>
+              </div>
+            </div>
+            <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[#10B981]/15 text-[#10B981] font-bold border border-[#10B981]/30">
+              PASSED
+            </span>
+          </div>
+          <p class="text-[10px] text-[#6EE7B7]/80 pl-7 leading-relaxed font-mono">
+            Signed Site Data Processing Consent (Statutory Decree Law 91/2025/QH15) — 100% Cai Lậy sorter/packhouse operator consent keys archived on-chain.
+          </p>
+          <div class="pl-7 mt-2 flex items-center gap-2 text-[9px] font-mono text-[#34D399]">
+            <span>DocRef: DPA-VN-TG-01</span>
+            <span>•</span>
+            <span class="text-white/60">SHA-256: 4b29...081e</span>
+          </div>
+        </div>
+
+        <!-- CHK-02 -->
+        <div class="bg-[#132018] border border-[#10B981]/40 rounded-[6px] p-3 hover:border-[#10B981] transition">
+          <div class="flex items-start justify-between mb-1">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded bg-[#10B981]/20 text-[#10B981] flex items-center justify-center font-mono font-bold text-[10px] border border-[#10B981]/40">
+                ✓
+              </span>
+              <div>
+                <span class="font-mono text-[11px] font-bold text-white">CHK-02 // GATE-02</span>
+                <h3 class="text-xs font-semibold text-[#ECFDF5]">Live OTP Channel & Fail-Closed Guard</h3>
+              </div>
+            </div>
+            <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[#10B981]/15 text-[#10B981] font-bold border border-[#10B981]/30">
+              PASSED
+            </span>
+          </div>
+          <p class="text-[10px] text-[#6EE7B7]/80 pl-7 leading-relaxed font-mono">
+            Verified Live OTP Channel (Zalo ZNS / SMS Brandname) or Fail-Closed HTTP 503 fallback. 10/10 test delivery drills executed with mean latency 4.2s.
+          </p>
+          <div class="pl-7 mt-2 flex items-center gap-2 text-[9px] font-mono text-[#34D399]">
+            <span>Channel: Zalo ZNS Primary</span>
+            <span>•</span>
+            <span class="text-white/60">Failover: Viettel SMS Brand</span>
+          </div>
+        </div>
+
+        <!-- CHK-03 -->
+        <div class="bg-[#132018] border border-[#10B981]/40 rounded-[6px] p-3 hover:border-[#10B981] transition">
+          <div class="flex items-start justify-between mb-1">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded bg-[#10B981]/20 text-[#10B981] flex items-center justify-center font-mono font-bold text-[10px] border border-[#10B981]/40">
+                ✓
+              </span>
+              <div>
+                <span class="font-mono text-[11px] font-bold text-white">CHK-03 // GATE-03</span>
+                <h3 class="text-xs font-semibold text-[#ECFDF5]">On-Prem Loopback & Audit Hash-Chain</h3>
+              </div>
+            </div>
+            <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[#10B981]/15 text-[#10B981] font-bold border border-[#10B981]/30">
+              PASSED
+            </span>
+          </div>
+          <p class="text-[10px] text-[#6EE7B7]/80 pl-7 leading-relaxed font-mono">
+            Weighbridge + CCTV bound strictly to on-prem <code class="text-white bg-[#0B130E] px-1 rounded">127.0.0.1:3000</code>. Zero unauthorized cloud egress; tamper-evident SHA-256 forward ledger.
+          </p>
+          <div class="pl-7 mt-2 flex items-center gap-2 text-[9px] font-mono text-[#34D399]">
+            <span>NetInterface: lo0 (Local Only)</span>
+            <span>•</span>
+            <span class="text-[#10B981]">0 WAN Leaks Detected</span>
+          </div>
+        </div>
+
+        <!-- CHK-04 -->
+        <div class="bg-[#132018] border border-[#10B981]/40 rounded-[6px] p-3 hover:border-[#10B981] transition">
+          <div class="flex items-start justify-between mb-1">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded bg-[#10B981]/20 text-[#10B981] flex items-center justify-center font-mono font-bold text-[10px] border border-[#10B981]/40">
+                ✓
+              </span>
+              <div>
+                <span class="font-mono text-[11px] font-bold text-white">CHK-04 // GATE-04</span>
+                <h3 class="text-xs font-semibold text-[#ECFDF5]">Site Backup & Restore Drill</h3>
+              </div>
+            </div>
+            <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[#10B981]/15 text-[#10B981] font-bold border border-[#10B981]/30">
+              PASSED
+            </span>
+          </div>
+          <p class="text-[10px] text-[#6EE7B7]/80 pl-7 leading-relaxed font-mono">
+            SQLite WAL hot backup drill completed. Injected cold restart verified 100% SHA-256 blob match (0 byte delta, RPO &lt; 30s).
+          </p>
+          <div class="pl-7 mt-2 flex items-center gap-2 text-[9px] font-mono text-[#34D399]">
+            <span>WAL Checksum: 0x8f2c...49a1</span>
+            <span>•</span>
+            <span class="text-[#10B981]">100% Binary Restored</span>
+          </div>
+        </div>
+
+        <!-- CHK-05 -->
+        <div class="bg-[#132018] border border-[#10B981] rounded-[6px] p-3 bg-gradient-to-r from-[#132018] to-[#18281F]">
+          <div class="flex items-start justify-between mb-1">
+            <div class="flex items-center gap-2">
+              <span class="w-5 h-5 rounded bg-[#10B981] text-[#08100b] flex items-center justify-center font-mono font-bold text-[10px]">
+                ★
+              </span>
+              <div>
+                <span class="font-mono text-[11px] font-bold text-[#10B981]">CHK-05 // GATE-05 (CURRENT REHEARSAL)</span>
+                <h3 class="text-xs font-semibold text-white">5-Container Rehearsal & Blind-Fault Catch</h3>
+              </div>
+            </div>
+            <span class="font-mono text-[9px] px-1.5 py-0.5 rounded bg-[#10B981] text-[#08100b] font-bold">
+              100% PASS
+            </span>
+          </div>
+          <p class="text-[10px] text-[#ECFDF5] pl-7 leading-relaxed font-mono">
+            5/5 synthetic containers evaluated. Mean velocity 142s (&lt; 300s statutory limit). 2/2 blind faults intercepted with zero false approvals.
+          </p>
+          <div class="pl-7 mt-2 flex items-center gap-3 text-[9px] font-mono text-[#10B981]">
+            <span class="font-bold">✓ RUL-CROSS-SEAL Intercepted</span>
+            <span>•</span>
+            <span class="font-bold">✓ RUL-HITL-DRAFT Intercepted</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Cryptographic Go-Live Pack JSON Exporter Box -->
+      <div class="bg-[#0e1912] border border-[#1F3327] rounded-[6px] p-3 flex flex-col gap-2.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-1.5 font-mono text-[11px] font-bold text-white">
+            <span class="material-symbols-outlined text-[16px] text-[#10B981]">enhanced_encryption</span>
+            <span>PILOT GO-LIVE DOSSIER PACK (.JSON)</span>
+          </div>
+          <span class="font-mono text-[9px] px-2 py-0.5 rounded bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30 font-bold">
+            RFC-6962 COMPLIANT
+          </span>
+        </div>
+
+        <div class="bg-[#08100B] p-2.5 rounded font-mono text-[10px] text-[#6EE7B7] border border-[#1F3327]/80 max-h-24 overflow-y-auto leading-relaxed">
+<pre class="text-[#6EE7B7]/90">{
+  "dossierPackId": "GOLIVE-SITE-CAILAY-TIENGIANG-01",
+  "facility": "VN-TG-PH-001 (Cai Lậy Hub)",
+  "rehearsalTimestamp": "2026-10-17T09:14:00Z",
+  "evaluatedGates": ["CHK-01", "CHK-02", "CHK-03", "CHK-04", "CHK-05"],
+  "blindFaultsInjected": 2,
+  "blindFaultsCaught": 2,
+  "meanVelocitySeconds": 142.4,
+  "signerEd25519": "ed25519:pk-vn-tg-ph-001-cailay-9c4e",
+  "reportSha256": "9c4e518fb2084c718a914ec081b29dfa"
+}</pre>
+        </div>
+
+        <div class="flex items-center justify-between pt-1">
+          <div class="flex items-center gap-1.5 text-[10px] font-mono text-[#34D399]">
+            <span class="material-symbols-outlined text-[14px] text-[#10B981]">verified</span>
+            <span>verifyPilotGoLiveDossierPackIntegrity: <strong class="text-white">VALID</strong></span>
+          </div>
+
+          <button onclick="downloadGoLivePack()" class="bg-[#10B981] hover:bg-[#059669] text-[#08100b] px-3 py-1 rounded font-display font-bold text-xs flex items-center gap-1.5 transition active:scale-95 shadow-[0_0_12px_rgba(16,185,129,0.25)]">
+            <span class="material-symbols-outlined text-[15px]">download</span>
+            <span>Download Signed Go-Live Pack (.json)</span>
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER STATUS STRIP (32px) -->
+  <footer class="h-8 border-t border-[#1F3327] bg-[#0d1711] px-4 flex items-center justify-between text-[10px] font-mono text-[#6EE7B7]/70 z-20">
+    <div class="flex items-center gap-3">
+      <span class="flex items-center gap-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+        DURIOS CAI LẬY HUB #VN-84B
+      </span>
+      <span class="text-[#1F3327]">|</span>
+      <span>CORRIDOR: TIÊN GIANG ➔ HỮU NGHỊ (YOUYI GUAN)</span>
+      <span class="text-[#1F3327]">|</span>
+      <span>DECREE 248/249 HARMONIZED</span>
+    </div>
+
+    <div class="flex items-center gap-4">
+      <span class="text-[#34D399]">PILOT VELOCITY SLA: <strong class="text-[#10B981]">142s / 300s (PASS)</strong></span>
+      <span class="text-[#1F3327]">|</span>
+      <span class="text-[#34D399]">BLIND FAULT INTERCEPTION: <strong class="text-[#10B981]">100% (2/2)</strong></span>
+      <span class="text-[#1F3327]">|</span>
+      <span class="text-white/60">AGPL-3.0 AIR-GAP ENCLAVE</span>
+    </div>
+  </footer>
+
+  <!-- RAW AUDIT MODAL -->
+  <div id="audit-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-6">
+    <div class="bg-[#132018] border border-[#10B981]/50 rounded-[8px] max-w-2xl w-full p-4 flex flex-col gap-3 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+      <div class="flex items-center justify-between border-b border-[#1F3327] pb-2">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[#10B981]">terminal</span>
+          <h3 class="font-display font-bold text-white text-sm">Synthetic Rehearsal Raw Telemetry Stream</h3>
+        </div>
+        <button onclick="toggleModal('audit-modal')" class="text-[#6EE7B7] hover:text-white">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+      <div class="bg-[#0B130E] p-3 rounded font-mono text-[10px] text-[#6EE7B7] border border-[#1F3327] h-64 overflow-y-auto leading-relaxed">
+[2026-10-17 09:12:01.102] INFO: Initializing Gate-05 Rehearsal Runner (Cai Lậy Site-01)
+[2026-10-17 09:12:01.144] OK: seedGate05PilotRehearsal() initialized. Generating 5 synthetic containers.
+[2026-10-17 09:12:01.210] SEED: DOS-CAILAY-R01 [CSQU3054383] -> CLEAN_READY (Pass)
+[2026-10-17 09:12:01.285] SEED: DOS-CAILAY-R02 [MSCU6012349] -> CLEAN_READY (Pass)
+[2026-10-17 09:12:01.350] SEED: DOS-CAILAY-R03 [MAEU7123450] -> CLEAN_READY (Pass)
+[2026-10-17 09:12:01.412] INJECT: DOS-CAILAY-R04 [CMAU8234561] -> BLIND_FAULT_SEAL_MISMATCH (VN-SEAL-9004 != VN-SEAL-9999)
+[2026-10-17 09:12:01.478] INJECT: DOS-CAILAY-R05 [OOLU9345672] -> BLIND_FAULT_UNVERIFIED_EVIDENCE (12 Extracted Fields in DRAFT)
+[2026-10-17 09:12:01.520] EVAL: Executing deterministic cross-seal invariant rule RUL-CROSS-SEAL...
+[2026-10-17 09:12:01.530] CATCH: DOS-CAILAY-R04 intercepted at Gate 02. Seal mismatch blocked from live customs telegram.
+[2026-10-17 09:12:01.545] CATCH: DOS-CAILAY-R05 intercepted at Gate 03. Unverified evidence blocked from signing.
+[2026-10-17 09:12:01.580] SUCCESS: Blind fault catch rate = 2/2 (100%). Mean verification latency = 142.4s.
+[2026-10-17 09:12:01.610] PACK: compilePilotGoLiveDossierPack() produced GOLIVE-SITE-CAILAY-TIENGIANG-01
+[2026-10-17 09:12:01.625] INTEGRITY: SHA-256 9c4e518fb2084c718a914ec081b29dfa verified against local enclave.
+      </div>
+      <div class="flex justify-end pt-1">
+        <button onclick="toggleModal('audit-modal')" class="bg-[#18281F] hover:bg-[#1F3327] text-white px-3 py-1.5 rounded font-mono text-xs border border-[#1F3327]">
+          Close Stream
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTERACTION SCRIPTS -->
+  <script>
+    let currentRole = 'clerk';
+    const containers = {
+      R01: {
+        id: 'DOS-CAILAY-R01 (CSQU3054383)',
+        badge: 'CLEAN_READY',
+        badgeColor: 'text-[#10B981] bg-[#10B981]/20 border-[#10B981]/30',
+        titleColor: 'text-[#10B981]',
+        puc: 'VN-TG-OR-088 (Mỹ Đức Đông, Cai Lậy)',
+        seal: 'VN-SEAL-9001 == VN-SEAL-9001 (Match)',
+        action: 'READY FOR SIGNATURE',
+        actionColor: 'text-[#10B981]',
+        remediation: 'All 12 documents & physical bolt seals intact. Ready for export manifest sealing.'
+      },
+      R02: {
+        id: 'DOS-CAILAY-R02 (MSCU6012349)',
+        badge: 'CLEAN_READY',
+        badgeColor: 'text-[#10B981] bg-[#10B981]/20 border-[#10B981]/30',
+        titleColor: 'text-[#10B981]',
+        puc: 'VN-TG-OR-088 (Mỹ Đức Đông, Cai Lậy)',
+        seal: 'VN-SEAL-9002 == VN-SEAL-9002 (Match)',
+        action: 'READY FOR SIGNATURE',
+        actionColor: 'text-[#10B981]',
+        remediation: 'All 12 documents & physical bolt seals intact. Ready for export manifest sealing.'
+      },
+      R03: {
+        id: 'DOS-CAILAY-R03 (MAEU7123450)',
+        badge: 'CLEAN_READY',
+        badgeColor: 'text-[#10B981] bg-[#10B981]/20 border-[#10B981]/30',
+        titleColor: 'text-[#10B981]',
+        puc: 'VN-TG-OR-088 (Mỹ Đức Đông, Cai Lậy)',
+        seal: 'VN-SEAL-9003 == VN-SEAL-9003 (Match)',
+        action: 'READY FOR SIGNATURE',
+        actionColor: 'text-[#10B981]',
+        remediation: 'All 12 documents & physical bolt seals intact. Ready for export manifest sealing.'
+      },
+      R04: {
+        id: 'DOS-CAILAY-R04 (CMAU8234561)',
+        badge: 'BLIND_FAULT_SEAL_MISMATCH',
+        badgeColor: 'text-[#EF4444] bg-[#EF4444]/20 border-[#EF4444]/30',
+        titleColor: 'text-[#EF4444]',
+        puc: 'VN-TG-OR-088 (Mỹ Đức Đông, Cai Lậy)',
+        seal: 'VN-SEAL-9004 != VN-SEAL-9999 (MISMATCH)',
+        action: 'QUARANTINE ENFORCED',
+        actionColor: 'text-[#EF4444]',
+        remediation: 'Requires PACKHOUSE_MANAGER signature to re-verify physical bolt tag or quarantine.'
+      },
+      R05: {
+        id: 'DOS-CAILAY-R05 (OOLU9345672)',
+        badge: 'BLIND_FAULT_UNVERIFIED_EVIDENCE',
+        badgeColor: 'text-[#F59E0B] bg-[#F59E0B]/20 border-[#F59E0B]/30',
+        titleColor: 'text-[#F59E0B]',
+        puc: 'VN-TG-OR-088 (Mỹ Đức Đông, Cai Lậy)',
+        seal: 'VN-SEAL-9005 == VN-SEAL-9005 (Intact)',
+        action: 'EXPORT BLOCKED (HITL)',
+        actionColor: 'text-[#F59E0B]',
+        remediation: '12 extracted document fields remain in DRAFT status. Human sign-off mandatory.'
+      }
+    };
+
+    function selectContainer(code) {
+      const data = containers[code];
+      if (!data) return;
+      document.getElementById('insp-title').innerText = data.id;
+      document.getElementById('insp-title').className = data.titleColor;
+      
+      const badge = document.getElementById('insp-badge');
+      badge.innerText = data.badge;
+      badge.className = `font-mono text-[9px] px-1.5 py-0.5 rounded border font-bold ${data.badgeColor}`;
+      
+      document.getElementById('remediation-text').innerHTML = data.remediation;
+    }
+
+    function switchRole(role) {
+      currentRole = role;
+      const clerkBtn = document.getElementById('role-clerk');
+      const mgrBtn = document.getElementById('role-mgr');
+      if (role === 'clerk') {
+        clerkBtn.className = 'px-2 py-0.5 rounded font-mono text-[10px] font-semibold bg-[#10B981] text-[#08100b] transition';
+        mgrBtn.className = 'px-2 py-0.5 rounded font-mono text-[10px] font-semibold text-[#6EE7B7] hover:text-white transition';
+      } else {
+        mgrBtn.className = 'px-2 py-0.5 rounded font-mono text-[10px] font-semibold bg-[#F59E0B] text-[#08100b] transition';
+        clerkBtn.className = 'px-2 py-0.5 rounded font-mono text-[10px] font-semibold text-[#6EE7B7] hover:text-white transition';
+      }
+    }
+
+    function triggerReseedAnimation() {
+      const btn = document.getElementById('btn-reseed');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<span class="material-symbols-outlined text-[16px] animate-spin">refresh</span><span>Synthesizing 5 Rehearsal Containers...</span>`;
+      btn.classList.add('opacity-80');
+      setTimeout(() => {
+        btn.innerHTML = `<span class="material-symbols-outlined text-[16px]">check_circle</span><span>Seeded & Verified (100% Caught)</span>`;
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.classList.remove('opacity-80');
+        }, 1500);
+      }, 900);
+    }
+
+    function simulateRemediation() {
+      alert("CCTV & Barcode Rescan initiated at Cai Lậy Bay 02: Physical bolt tag OCR re-read matches VN-SEAL-9004. Synthetic mutation isolated.");
+    }
+
+    function executeQuarantine() {
+      alert("Intervention Confirmed: DOS-CAILAY-R04 diverted to Quarantine Bay #03. Customs telegram submission blocked.");
+    }
+
+    function downloadGoLivePack() {
+      const payload = {
+        dossierPackId: "GOLIVE-SITE-CAILAY-TIENGIANG-01",
+        facility: "VN-TG-PH-001 (Cai Lậy Hub)",
+        rehearsalTimestamp: new Date().toISOString(),
+        evaluatedGates: ["CHK-01", "CHK-02", "CHK-03", "CHK-04", "CHK-05"],
+        blindFaultsInjected: 2,
+        blindFaultsCaught: 2,
+        meanVelocitySeconds: 142.4,
+        signerEd25519: "ed25519:pk-vn-tg-ph-001-cailay-9c4e",
+        reportSha256: "9c4e518fb2084c718a914ec081b29dfa"
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "GOLIVE-SITE-CAILAY-TIENGIANG-01.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function toggleModal(id) {
+      const el = document.getElementById(id);
+      if (el.classList.contains('hidden')) {
+        el.classList.remove('hidden');
+      } else {
+        el.classList.add('hidden');
+      }
+    }
+  </script>
+</body>
+</html>

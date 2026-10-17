@@ -36,18 +36,11 @@ export class SqliteAuthService {
     this.otpProvider = otpProvider ?? new UnconfiguredOtpProvider();
   }
 
-  public setOtpProvider(provider: OtpProviderAdapter): void {
-    this.otpProvider = provider;
-  }
-
-  public getOtpProvider(): OtpProviderAdapter {
-    return this.otpProvider;
-  }
+  public setOtpProvider(provider: OtpProviderAdapter): void { this.otpProvider = provider; }
+  public getOtpProvider(): OtpProviderAdapter { return this.otpProvider; }
 
   public provisionPilotAccount(input: ProvisionPilotAccountInput): PilotAccountRecord {
-    const username = input.username?.trim();
-    const tenantId = input.tenantId?.trim();
-    const actorName = input.actorName?.trim();
+    const [username, tenantId, actorName] = [input.username?.trim(), input.tenantId?.trim(), input.actorName?.trim()];
     if (!username || !input.password || !tenantId || !actorName) {
       throw new Error("username, password, actorName, and tenantId are required.");
     }
@@ -56,15 +49,11 @@ export class SqliteAuthService {
     const id = input.id?.trim() || `ACT-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
     const now = new Date().toISOString();
     const salt = generateSaltHex();
-    const passwordHash = hashSecretWithSalt(input.password, salt);
     const phone = input.phoneNumber?.trim() || null;
 
     this.client.db.run(
-      `INSERT INTO pilot_accounts (
-        id, username, phone_number, password_hash, password_salt,
-        actor_name, tenant_id, tenant_type, role, persona, is_active, created_at, updated_at
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`,
-      [id, username, phone, passwordHash, salt, actorName, tenantId, input.tenantType, input.role, input.persona, now, now]
+      `INSERT INTO pilot_accounts (id, username, phone_number, password_hash, password_salt, actor_name, tenant_id, tenant_type, role, persona, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`,
+      [id, username, phone, hashSecretWithSalt(input.password, salt), salt, actorName, tenantId, input.tenantType, input.role, input.persona, now, now]
     );
     return { id, username, phoneNumber: phone ?? undefined, actorName, tenantId, tenantType: input.tenantType, role: input.role, persona: input.persona, isActive: true, createdAt: now };
   }
@@ -72,20 +61,12 @@ export class SqliteAuthService {
   public loginWithPassword(username: string, password: string, ttlMs = 12 * 3600 * 1000): IssuedAuthSession {
     const normalizedUser = username.trim();
     const bucketKey = `pw_login:${normalizedUser.toLowerCase()}`;
-    assertRateLimitAllowed(
-      this.client,
-      bucketKey,
-      "Too many failed password login attempts. Account login is temporarily locked."
-    );
+    const lockMsg = "Too many failed password login attempts. Account login is temporarily locked.";
+    assertRateLimitAllowed(this.client, bucketKey, lockMsg);
 
     const row = this.client.db.query<AccountRow, [string]>("SELECT * FROM pilot_accounts WHERE username = ?").get(normalizedUser);
     if (!row || !verifySecretWithSalt(password, row.password_salt, row.password_hash)) {
-      recordRateLimitAttempt(
-        this.client,
-        bucketKey,
-        PASSWORD_LOGIN_LIMIT_POLICY,
-        "Too many failed password login attempts. Account login is temporarily locked."
-      );
+      recordRateLimitAttempt(this.client, bucketKey, PASSWORD_LOGIN_LIMIT_POLICY, lockMsg);
       throw new AuthenticationError("Invalid username or password.", "INVALID_CREDENTIALS");
     }
     if (!row.is_active) throw new AuthenticationError("Pilot account is disabled.", "ACCOUNT_DISABLED");
@@ -100,14 +81,13 @@ export class SqliteAuthService {
     }
     const phone = phoneNumber.trim();
     const row = this.client.db.query<AccountRow, [string]>("SELECT * FROM pilot_accounts WHERE phone_number = ?").get(phone);
-    const activeAccountId = row && row.is_active ? row.id : null;
-    return createOtpChallengeRecord(this.client, this.otpProvider, activeAccountId, phone, channel, ttlMs);
+    return createOtpChallengeRecord(this.client, this.otpProvider, row && row.is_active ? row.id : null, phone, channel, ttlMs);
   }
 
   public verifyOtpChallenge(challengeId: string, otpCode: string, sessionTtlMs = 12 * 3600 * 1000): IssuedAuthSession {
     const accountId = consumeVerifiedOtpChallenge(this.client, challengeId, otpCode);
     const account = this.client.db.query<AccountRow, [string]>("SELECT * FROM pilot_accounts WHERE id = ?").get(accountId);
-    if (!account || !account.is_active) throw new AuthenticationError("Pilot account is disabled or missing.", "ACCOUNT_DISABLED");
+    if (!account || !account.is_active) throw new AuthenticationError("Pilot account is disabled or not found.", "ACCOUNT_DISABLED");
     return this.createSession(account, "OTP_SESSION", sessionTtlMs);
   }
 
@@ -121,10 +101,9 @@ export class SqliteAuthService {
     }
     const tokenId = `MPT-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
     const rawToken = generateOpaqueToken("dpt");
-    const now = new Date().toISOString();
     this.client.db.run(
       `INSERT INTO managed_pilot_tokens (id, token_hash, account_id, device_label, expires_at, revoked_at, revocation_reason, created_at) VALUES (?, ?, ?, ?, ?, NULL, NULL, ?)`,
-      [tokenId, hashOpaqueToken(rawToken), account.id, deviceLabel.trim(), expDate.toISOString(), now]
+      [tokenId, hashOpaqueToken(rawToken), account.id, deviceLabel.trim(), expDate.toISOString(), new Date().toISOString()]
     );
     return { tokenId, rawToken, accountId: account.id, deviceLabel: deviceLabel.trim(), expiresAt: expDate.toISOString(), actor };
   }
@@ -143,9 +122,8 @@ export class SqliteAuthService {
     const cleaned = rawToken.trim();
     if (!cleaned) throw new AuthenticationError("Missing authentication token.", "MISSING_CREDENTIALS");
     const isMpt = cleaned.startsWith("dpt_");
-    const table = isMpt ? "managed_pilot_tokens" : "auth_sessions";
     const row = this.client.db
-      .query<{ account_id: string; expires_at: string; revoked_at: string | null }, [string]>(`SELECT account_id, expires_at, revoked_at FROM ${table} WHERE token_hash = ?`)
+      .query<{ account_id: string; expires_at: string; revoked_at: string | null }, [string]>(`SELECT account_id, expires_at, revoked_at FROM ${isMpt ? "managed_pilot_tokens" : "auth_sessions"} WHERE token_hash = ?`)
       .get(hashOpaqueToken(cleaned));
     if (!row) throw new AuthenticationError("Unrecognized authentication token.", "INVALID_CREDENTIALS");
     if (row.revoked_at) throw new AuthenticationError("Authentication token has been revoked.", isMpt ? "TOKEN_REVOKED" : "SESSION_REVOKED");

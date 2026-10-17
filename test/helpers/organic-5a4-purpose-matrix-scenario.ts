@@ -2,33 +2,13 @@ import { expect } from "bun:test";
 import type { createWorkspaceApp } from "../../src/server/server.js";
 import { seedTestPilotActor } from "./auth-test-helper.js";
 
-interface DossierCreatedPayload {
-  data: { id: string };
-}
-
-interface ErrorPayload {
-  errorCode?: string;
-}
-
-interface AuditPayload {
-  data: { events: Array<{ dossierId: string; tenantId: string }> };
-}
-
-interface OrganicListPayload {
-  evidence: Array<{ issuerClaimedStatus: string; duriosRecordStatus: string }>;
-}
-
-interface ShareGrantPayload {
-  grant: { id: string };
-}
-
+interface DossierCreatedPayload { data: { id: string } }
+interface ErrorPayload { errorCode?: string }
+interface AuditPayload { data: { events: Array<{ dossierId: string; tenantId: string }> } }
+interface OrganicListPayload { evidence: Array<{ issuerClaimedStatus: string; duriosRecordStatus: string }> }
+interface ShareGrantPayload { grant: { id: string } }
 interface DossierDetailPayload {
-  data: {
-    documents: Array<{
-      id: string;
-      extractedFields: Array<{ id: string; rawValue: string }>;
-    }>;
-  };
+  data: { documents: Array<{ id: string; extractedFields: Array<{ id: string; rawValue: string }> }> };
 }
 
 export async function runSharePurposeMatrixScenario(
@@ -44,8 +24,7 @@ export async function runSharePurposeMatrixScenario(
   const callHttp = (path: string, cookie: string, method = "GET", body?: unknown) =>
     app.handler(
       new Request(`http://127.0.0.1${path}`, {
-        method,
-        headers: { Cookie: cookie, "Content-Type": "application/json" },
+        method, headers: { Cookie: cookie, "Content-Type": "application/json" },
         ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
       })
     );
@@ -68,27 +47,20 @@ export async function runSharePurposeMatrixScenario(
 
   await callHttp(`/api/dossiers/${dossierId}/organic-evidence`, aMgr.sessionCookie, "POST", {
     certifierName: "Demo Bio-Inspect Agency (Synthetic)",
-    certificateNumber: "SYNTH-CERT-5A4",
-    standardCode: "EU_ORGANIC_2018_848",
-    standardDescription: "Synthetic EU Organic",
-    certifiedScope: "Durian Lot 5A4",
-    validFrom: "2026-01-01T00:00:00.000Z",
-    validTo: "2027-12-31T23:59:59.000Z",
-    issuingDate: "2026-01-01",
-    issuerClaimedStatus: "CERTIFIED",
+    certificateNumber: "SYNTH-CERT-5A4", standardCode: "EU_ORGANIC_2018_848",
+    standardDescription: "Synthetic EU Organic", certifiedScope: "Durian Lot 5A4",
+    validFrom: "2026-01-01T00:00:00.000Z", validTo: "2027-12-31T23:59:59.000Z",
+    issuingDate: "2026-01-01", issuerClaimedStatus: "CERTIFIED",
   });
 
-  // 1. Owner reads both /audit and /organic-evidence without any share grant (200)
   const ownerAuditRes = await callHttp(`/api/dossiers/${dossierId}/audit`, aMgr.sessionCookie, "GET");
   expect(ownerAuditRes.status).toBe(200);
-  const ownerAuditData = ((await ownerAuditRes.json()) as AuditPayload).data;
-  expect(ownerAuditData.events.length).toBeGreaterThanOrEqual(3);
+  expect(((await ownerAuditRes.json()) as AuditPayload).data.events.length).toBeGreaterThanOrEqual(3);
 
   const ownerOrgRes = await callHttp(`/api/dossiers/${dossierId}/organic-evidence`, aMgr.sessionCookie, "GET");
   expect(ownerOrgRes.status).toBe(200);
   expect(((await ownerOrgRes.json()) as OrganicListPayload).evidence.length).toBe(1);
 
-  // 2. Unshared tenant or non-existent dossier gets 404 (never 200 with empty array)
   expect((await callHttp(`/api/dossiers/${dossierId}/audit`, bUnshared.sessionCookie, "GET")).status).toBe(404);
   expect((await callHttp(`/api/dossiers/${dossierId}/organic-evidence`, bUnshared.sessionCookie, "GET")).status).toBe(404);
   expect((await callHttp("/api/dossiers/DOS-NONEXISTENT/audit", aMgr.sessionCookie, "GET")).status).toBe(404);
@@ -108,7 +80,6 @@ export async function runSharePurposeMatrixScenario(
   });
   const auditGrantId = ((await auditGrantRes.json()) as ShareGrantPayload).grant.id;
 
-  // 3. Purpose matrix for /audit
   const logAuditRes = await callHttp(`/api/dossiers/${dossierId}/audit`, bLogistics.sessionCookie, "GET");
   expect(logAuditRes.status).toBe(403);
   expect(((await logAuditRes.json()) as ErrorPayload).errorCode).toBe("SHARE_PURPOSE_FORBIDDEN");
@@ -139,7 +110,6 @@ export async function runSharePurposeMatrixScenario(
   expect((await callHttp(`/api/dossiers/${otherDossierId}/audit`, bAuditor.sessionCookie, "GET")).status).toBe(404);
   expect((await callHttp(`/api/dossiers/${otherDossierId}/organic-evidence`, bAuditor.sessionCookie, "GET")).status).toBe(404);
 
-  // 4. Purpose matrix for /organic-evidence
   const logOrgRes = await callHttp(`/api/dossiers/${dossierId}/organic-evidence`, bLogistics.sessionCookie, "GET");
   expect(logOrgRes.status).toBe(403);
   expect(((await logOrgRes.json()) as ErrorPayload).errorCode).toBe("SHARE_PURPOSE_FORBIDDEN");
@@ -153,7 +123,6 @@ export async function runSharePurposeMatrixScenario(
     expect(evList[0]!.duriosRecordStatus).toBe("EVIDENCE_STORED_NOT_CERTIFIED");
   }
 
-  // 5. Multi-grant purpose combination
   const extraBuyerGrantRes = await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", {
     granteeTenantId: "TEN-LOGISTICS", purpose: "BUYER_VERIFICATION", scope: "READ_ONLY", expiresAt: futureIso,
   });

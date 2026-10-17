@@ -3,9 +3,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import {
-  createSignedSaasLicenseKey,
-  generateEphemeralSaasLicenseKeyPair,
-  resolveSaasSubscriptionStatus,
+  createSignedSaasLicenseKey, generateEphemeralSaasLicenseKeyPair, resolveSaasSubscriptionStatus,
 } from "../src/saas/saas-tier-policy.js";
 import { computeTenantUsageAndRoiReport } from "../src/saas/usage-metering-service.js";
 import { CloudVisionOcrExtractorAdapter } from "../src/saas/cloud-ocr-extractor-adapter.js";
@@ -16,12 +14,8 @@ import { seedTestPilotActor } from "./helpers/auth-test-helper.js";
 import type { AuthenticatedActor } from "../src/domain/types.js";
 
 const MANAGER: AuthenticatedActor = {
-  id: "usr-mgr-saas-01",
-  tenantId: "ten-cailay-001",
-  tenantType: "PACKHOUSE_EXPORTER",
-  role: "MANAGER",
-  persona: "PACKHOUSE_MANAGER",
-  name: "Cai Lay Manager",
+  id: "usr-mgr-saas-01", tenantId: "ten-cailay-001", tenantType: "PACKHOUSE_EXPORTER",
+  role: "MANAGER", persona: "PACKHOUSE_MANAGER", name: "Cai Lay Manager",
 };
 
 describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
@@ -61,9 +55,7 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
     expect(mismatch.degradedToCommunityReason).toBe("TENANT_MISMATCH_GRACEFUL_DOWNGRADE");
 
     const missingPubKey = resolveSaasSubscriptionStatus(
-      { DURIOS_SAAS_LICENSE_KEY: validProKey },
-      "2026-10-17T00:00:00.000Z",
-      "ten-cailay-001"
+      { DURIOS_SAAS_LICENSE_KEY: validProKey }, "2026-10-17T00:00:00.000Z", "ten-cailay-001"
     );
     expect(missingPubKey.licenseValid).toBe(false);
     expect(missingPubKey.degradedToCommunityReason).toBe("MISSING_LICENSE_PUBLIC_KEY_GRACEFUL_DOWNGRADE");
@@ -71,8 +63,7 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
     const otherKeyPair = generateEphemeralSaasLicenseKeyPair();
     const tampered = resolveSaasSubscriptionStatus(
       { DURIOS_SAAS_LICENSE_KEY: validProKey, DURIOS_SAAS_LICENSE_PUBLIC_KEY: otherKeyPair.publicKeyPem },
-      "2026-10-17T00:00:00.000Z",
-      "ten-cailay-001"
+      "2026-10-17T00:00:00.000Z", "ten-cailay-001"
     );
     expect(tampered.licenseValid).toBe(false);
     expect(tampered.degradedToCommunityReason).toBe("INVALID_LICENSE_SIGNATURE_GRACEFUL_DOWNGRADE");
@@ -94,26 +85,19 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
     };
 
     const communityAdapter = new CloudVisionOcrExtractorAdapter({
-      env: {},
-      simulatedCloudResponse: ocrFixture,
-      ocrTransport: () => ocrFixture,
+      env: {}, simulatedCloudResponse: ocrFixture, ocrTransport: () => ocrFixture,
     } as ConstructorParameters<typeof CloudVisionOcrExtractorAdapter>[0]);
     expect(communityAdapter.isAvailable).toBe(false);
 
     const proAdapter = new CloudVisionOcrExtractorAdapter({
       env: { DURIOS_SAAS_LICENSE_KEY: proKey, DURIOS_SAAS_LICENSE_PUBLIC_KEY: publicKeyPem },
-      expectedTenantId: "ten-cailay-001",
-      simulatedCloudResponse: ocrFixture,
-      ocrTransport: () => ocrFixture,
+      expectedTenantId: "ten-cailay-001", simulatedCloudResponse: ocrFixture, ocrTransport: () => ocrFixture,
     } as ConstructorParameters<typeof CloudVisionOcrExtractorAdapter>[0]);
     expect(proAdapter.isAvailable).toBe(true);
 
     const extracted = proAdapter.extractFields(new Uint8Array([1, 2, 3]), {
-      documentId: "DOC-CLOUD-01",
-      documentType: "LAB_TEST_REPORT",
-      fileName: "ZaloScan.jpg",
-      mimeType: "image/jpeg",
-      sha256Hash: "a".repeat(64),
+      documentId: "DOC-CLOUD-01", documentType: "LAB_TEST_REPORT",
+      fileName: "ZaloScan.jpg", mimeType: "image/jpeg", sha256Hash: "a".repeat(64),
     });
     expect(extracted).toHaveLength(2);
     expect(extracted.every((f) => f.verificationStatus === "DRAFT")).toBe(true);
@@ -123,14 +107,9 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
     const ws = new ContainerDossierWorkspace();
     ws.createDossier(
       {
-        dossierCode: "DOS-SAAS-001",
-        containerNumber: "MSKU1234565",
-        sealNumber: "SL-998822",
-        targetMarket: "CN",
-        borderGate: "Huu Nghi",
-        targetTemperatureC: 14,
-        declaredNetWeightKg: 18240,
-        declaredBoxCount: 960,
+        dossierCode: "DOS-SAAS-001", containerNumber: "MSKU1234565", sealNumber: "SL-998822",
+        targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 14,
+        declaredNetWeightKg: 18240, declaredBoxCount: 960,
       },
       MANAGER
     );

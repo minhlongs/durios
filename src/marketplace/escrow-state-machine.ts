@@ -1,7 +1,5 @@
 import { AccessControlError, assertValidActor } from "../auth/rbac-policy.js";
-import type {
-  AuthenticatedActor, ContainerDossier, DossierExportManifest,
-} from "../domain/types.js";
+import type { AuthenticatedActor, ContainerDossier, DossierExportManifest } from "../domain/types.js";
 import type {
   BankEscrowWebhookCallbackInput, CreateMarketplaceListingInput,
   DurianMarketplaceListing, InitiateNonCustodialEscrowInput, NonCustodialEscrowContract,
@@ -102,18 +100,13 @@ export class NonCustodialEscrowCoordinator {
     if (cached) return cached;
     const contract = this.contracts.get(callback.contractId);
     if (!contract) throw new Error(`Escrow contract '${callback.contractId}' not found.`);
-    if (contract.bankEscrowReferenceNo !== callback.bankEscrowReferenceNo) {
-      throw new Error("Bank escrow reference mismatch.");
-    }
+    if (contract.bankEscrowReferenceNo !== callback.bankEscrowReferenceNo) throw new Error("Bank escrow reference mismatch.");
     if (callback.eventType === "BANK_SETTLEMENT_COMPLETED" && contract.status !== "RELEASE_AUTHORIZED_AT_BANK") {
       throw new Error("Cannot settle escrow before release is authorized at bank.");
     }
     const nextStatus =
-      callback.eventType === "BANK_FUNDS_LOCKED"
-        ? "BANK_ESCROW_LOCKED"
-        : callback.eventType === "BANK_SETTLEMENT_COMPLETED"
-          ? "SETTLED_DIRECTLY_BY_BANK"
-          : "DISPUTED_AT_BANK";
+      callback.eventType === "BANK_FUNDS_LOCKED" ? "BANK_ESCROW_LOCKED"
+        : callback.eventType === "BANK_SETTLEMENT_COMPLETED" ? "SETTLED_DIRECTLY_BY_BANK" : "DISPUTED_AT_BANK";
     const updated: NonCustodialEscrowContract = {
       ...contract, status: nextStatus, lastIdempotencyKey: callback.idempotencyKey, updatedAt: new Date().toISOString(),
     };
@@ -132,9 +125,7 @@ export class NonCustodialEscrowCoordinator {
     if (actor.tenantId !== contract.sellerTenantId && actor.tenantId !== contract.buyerTenantId) {
       throw new AccessControlError("Only participating buyer or seller tenant can authorize bank escrow release.", "CROSS_TENANT_FORBIDDEN");
     }
-    if (contract.status !== "BANK_ESCROW_LOCKED") {
-      throw new Error(`Cannot authorize release when escrow status is '${contract.status}'.`);
-    }
+    if (contract.status !== "BANK_ESCROW_LOCKED") throw new Error(`Cannot authorize release when escrow status is '${contract.status}'.`);
     if (dossier.id !== contract.dossierId || dossier.lifecycleState !== "EXPORTED" || !dossier.isImmutable) {
       throw new Error("Escrow release requires a sealed EXPORTED container dossier.");
     }

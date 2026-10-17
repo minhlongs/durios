@@ -37,13 +37,8 @@ export interface DossierPayload {
   [key: string]: unknown;
 }
 
-export interface DossierDetailResponse {
-  data: DossierPayload;
-}
-
-export interface DossierListOrDetailResponse {
-  data: DossierPayload | DossierPayload[];
-}
+export interface DossierDetailResponse { data: DossierPayload }
+export interface DossierListOrDetailResponse { data: DossierPayload | DossierPayload[] }
 
 export function createPdfBytes(tag: string): Uint8Array {
   return new TextEncoder().encode(`%PDF-1.4 Synthetic PDF Content [${tag}]`);
@@ -55,27 +50,15 @@ export function makeActor(
   id = `ACT-${tenantId}-${role}`
 ): AuthenticatedActor {
   const persona =
-    role === "MANAGER" || role === "ADMIN"
-      ? "PACKHOUSE_MANAGER"
-      : role === "AUDITOR"
-        ? "SYSTEM_AUDITOR"
-        : role === "VIEWER"
-          ? "BUYER_VIEWER"
-          : "PACKHOUSE_CLERK";
+    role === "MANAGER" || role === "ADMIN" ? "PACKHOUSE_MANAGER"
+      : role === "AUDITOR" ? "SYSTEM_AUDITOR"
+      : role === "VIEWER" ? "BUYER_VIEWER"
+      : "PACKHOUSE_CLERK";
   const tenantType =
-    role === "AUDITOR"
-      ? "INSPECTION_AUDITOR"
-      : role === "VIEWER"
-        ? "BUYER_IMPORTER"
-        : "PACKHOUSE_EXPORTER";
-  return {
-    id,
-    name: `User ${id}`,
-    tenantId,
-    tenantType,
-    role,
-    persona,
-  };
+    role === "AUDITOR" ? "INSPECTION_AUDITOR"
+      : role === "VIEWER" ? "BUYER_IMPORTER"
+      : "PACKHOUSE_EXPORTER";
+  return { id, name: `User ${id}`, tenantId, tenantType, role, persona };
 }
 
 export function seedAndMakeActor(
@@ -85,12 +68,8 @@ export function seedAndMakeActor(
 ) {
   const actor = makeActor(tenantId, role);
   const seeded = seedTestPilotActor(ws.authService, {
-    id: actor.id,
-    actorName: actor.name,
-    tenantId: actor.tenantId,
-    tenantType: actor.tenantType,
-    role: actor.role,
-    persona: actor.persona,
+    id: actor.id, actorName: actor.name, tenantId: actor.tenantId,
+    tenantType: actor.tenantType, role: actor.role, persona: actor.persona,
   });
   return { ...seeded, actor };
 }
@@ -102,14 +81,9 @@ export function buildValidDossierReadyForValidation(
 ): ContainerDossier {
   const dossier = ws.createDossier(
     {
-      dossierCode,
-      containerNumber: "MSKU1234565",
-      sealNumber: "SEAL-VALID-01",
-      targetMarket: "CN",
-      borderGate: "Huu Nghi",
-      targetTemperatureC: 13.5,
-      declaredNetWeightKg: 18000,
-      declaredBoxCount: 900,
+      dossierCode, containerNumber: "MSKU1234565", sealNumber: "SEAL-VALID-01",
+      targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
+      declaredNetWeightKg: 18000, declaredBoxCount: 900,
     },
     actor
   );
@@ -121,25 +95,20 @@ export function buildValidDossierReadyForValidation(
     {
       type: "PACKING_LIST",
       fields: {
-        container_number: { raw: "MSKU1234565" },
-        seal_number: { raw: "SEAL-VALID-01" },
-        box_count: { raw: "900" },
-        net_weight_kg: { raw: "18000" },
+        container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-VALID-01" },
+        box_count: { raw: "900" }, net_weight_kg: { raw: "18000" },
       },
     },
     {
       type: "LAB_TEST_REPORT",
       fields: {
-        cadmium_mg_kg: { raw: "0.028" },
-        sample_code: { raw: "SYNTH-LAB-2026-9081" },
-        sampling_date: { raw: "2026-10-06" },
+        cadmium_mg_kg: { raw: "0.028" }, sample_code: { raw: "SYNTH-LAB-2026-9081" }, sampling_date: { raw: "2026-10-06" },
       },
     },
     {
       type: "PHYTOSANITARY_CERTIFICATE",
       fields: {
-        container_number: { raw: "MSKU1234565" },
-        seal_number: { raw: "SEAL-VALID-01" },
+        container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-VALID-01" },
         phyto_cert_number: { raw: "SYNTH-KDTV-2026-09928" },
       },
     },
@@ -147,20 +116,11 @@ export function buildValidDossierReadyForValidation(
 
   for (const item of requiredDocs) {
     const { document } = ws.uploadDocument(
-      dossier.id,
-      createPdfBytes(`${dossierCode}-${item.type}`),
-      `${item.type.toLowerCase()}.pdf`,
-      item.type,
-      actor,
-      item.fields
+      dossier.id, createPdfBytes(`${dossierCode}-${item.type}`),
+      `${item.type.toLowerCase()}.pdf`, item.type, actor, item.fields
     );
     for (const field of document.extractedFields) {
-      ws.verifyField(
-        dossier.id,
-        document.id,
-        { fieldId: field.id, confirmedValue: field.rawValue },
-        actor
-      );
+      ws.verifyField(dossier.id, document.id, { fieldId: field.id, confirmedValue: field.rawValue }, actor);
     }
   }
 

@@ -1,32 +1,33 @@
 import {
-  existsSync, mkdirSync, readdirSync, readFileSync,
-  renameSync, rmdirSync, statSync, unlinkSync, writeFileSync,
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  renameSync,
+  rmdirSync,
+  unlinkSync,
+  writeFileSync,
 } from "node:fs";
 import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import type { Database } from "bun:sqlite";
 import { calculateSha256 } from "../ingestion/document-hasher.js";
+import {
+  reconcileLegacyBlobsInSqlite,
+  type LegacyBlobMigrationItem,
+  type LegacyBlobReconciliationReport,
+  type LegacyUnmigratedReason,
+} from "./legacy-blob-reconciler.js";
 
-export type LegacyUnmigratedReason =
-  | "MISSING_LEGACY_FILE" | "AMBIGUOUS_LEGACY_FILES" | "SHA256_MISMATCH" | "UNSAFE_LEGACY_PATH";
+export type {
+  LegacyBlobMigrationItem,
+  LegacyBlobReconciliationReport,
+  LegacyUnmigratedReason,
+};
 
 export interface StoredBlobResult {
   readonly storagePath: string;
   readonly sha256: string;
   readonly createdNew: boolean;
-}
-
-export interface LegacyBlobMigrationItem {
-  readonly documentId: string;
-  readonly dossierId: string;
-  readonly previousStoragePath: string;
-  readonly newStoragePath?: string | undefined;
-  readonly sha256Hash: string;
-  readonly reason?: LegacyUnmigratedReason | undefined;
-}
-
-export interface LegacyBlobReconciliationReport {
-  readonly migrated: readonly LegacyBlobMigrationItem[];
-  readonly unmigrated: readonly LegacyBlobMigrationItem[];
 }
 
 export class FileStorageService {
@@ -37,11 +38,19 @@ export class FileStorageService {
     if (!existsSync(this.storageDir)) mkdirSync(this.storageDir, { recursive: true });
   }
 
-  public getStorageRoot(): string { return this.storageDir; }
+  public getStorageRoot(): string {
+    return this.storageDir;
+  }
 
-  public storeFile(fileBytes: Uint8Array, _originalFileName?: string, _docId?: string): StoredBlobResult {
+  public storeFile(
+    fileBytes: Uint8Array,
+    _originalFileName?: string,
+    _docId?: string
+  ): StoredBlobResult {
     const sha256 = calculateSha256(fileBytes);
-    if (!/^[a-f0-9]{64}$/.test(sha256)) throw new Error(`Invalid SHA-256 digest generated: '${sha256}'`);
+    if (!/^[a-f0-9]{64}$/.test(sha256)) {
+      throw new Error(`Invalid SHA-256 digest generated: '${sha256}'`);
+    }
 
     const relativeStoragePath = `storage/blobs/${sha256}.bin`;
     const targetPath = this.resolveSafePath(relativeStoragePath);
@@ -55,7 +64,9 @@ export class FileStorageService {
         existingBytes.byteLength === fileBytes.byteLength &&
         Buffer.compare(Buffer.from(existingBytes), Buffer.from(fileBytes)) === 0;
       if (!isIdentical) {
-        throw new Error(`Integrity violation: existing blob at '${relativeStoragePath}' does not match SHA-256 '${sha256}'`);
+        throw new Error(
+          `Integrity violation: existing blob at '${relativeStoragePath}' does not match SHA-256 '${sha256}'`
+        );
       }
       return { storagePath: relativeStoragePath, sha256, createdNew: false };
     }
@@ -68,7 +79,9 @@ export class FileStorageService {
       }
       renameSync(tempPath, targetPath);
     } catch (err) {
-      if (existsSync(tempPath)) { try { unlinkSync(tempPath); } catch { /* ignore */ } }
+      if (existsSync(tempPath)) {
+        try { unlinkSync(tempPath); } catch { /* ignore */ }
+      }
       throw err;
     }
     return { storagePath: relativeStoragePath, sha256, createdNew: true };
@@ -88,13 +101,15 @@ export class FileStorageService {
     try {
       if (existsSync(blobsDir) && readdirSync(blobsDir).length === 0) rmdirSync(blobsDir);
       if (existsSync(storageSubDir) && readdirSync(storageSubDir).length === 0) rmdirSync(storageSubDir);
-    } catch { /* ignore empty directory cleanup errors */ }
+    } catch { /* ignore */ }
   }
 
   public resolveSafePath(userOrRelativePath: string): string {
     if (
-      typeof userOrRelativePath !== "string" || userOrRelativePath.trim() === "" ||
-      userOrRelativePath.includes("\0") || isAbsolute(userOrRelativePath) ||
+      typeof userOrRelativePath !== "string" ||
+      userOrRelativePath.trim() === "" ||
+      userOrRelativePath.includes("\0") ||
+      isAbsolute(userOrRelativePath) ||
       /^[a-zA-Z]:[\\/]/.test(userOrRelativePath)
     ) {
       throw new Error("Security violation: path traversal detected");
@@ -114,66 +129,11 @@ export class FileStorageService {
   }
 
   public reconcileLegacyDocumentBlobs(db: Database): LegacyBlobReconciliationReport {
-    const hasDocumentsTable = db.query<{ name: string }, []>("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'documents'").get();
-    if (!hasDocumentsTable) return { migrated: [], unmigrated: [] };
-
-    const rows = db.query<{ id: string; dossier_id: string; file_name: string; sha256_hash: string; storage_path: string }, []>(
-      "SELECT id, dossier_id, file_name, sha256_hash, storage_path FROM documents ORDER BY uploaded_at ASC, id ASC"
-    ).all();
-
-    const migrated: LegacyBlobMigrationItem[] = [];
-    const unmigrated: LegacyBlobMigrationItem[] = [];
-
-    for (const row of rows) {
-      const canonicalRelPath = `storage/blobs/${row.sha256_hash}.bin`;
-      if (row.storage_path === canonicalRelPath) {
-        const canonicalFullPath = this.resolveSafePath(canonicalRelPath);
-        if (existsSync(canonicalFullPath) && calculateSha256(new Uint8Array(readFileSync(canonicalFullPath))) === row.sha256_hash) {
-          continue;
-        }
-      }
-
-      const candidate = this.findDeterministicLegacyFile(row.id, row.storage_path);
-      if (candidate.status !== "FOUND") {
-        unmigrated.push({ documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path, sha256Hash: row.sha256_hash, reason: candidate.reason });
-        continue;
-      }
-
-      const fileBytes = new Uint8Array(readFileSync(candidate.fullPath));
-      if (calculateSha256(fileBytes) !== row.sha256_hash) {
-        unmigrated.push({ documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path, sha256Hash: row.sha256_hash, reason: "SHA256_MISMATCH" });
-        continue;
-      }
-
-      const stored = this.storeFile(fileBytes, row.file_name, row.id);
-      db.run("UPDATE documents SET storage_path = ? WHERE id = ?", [stored.storagePath, row.id]);
-      migrated.push({ documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path, newStoragePath: stored.storagePath, sha256Hash: row.sha256_hash });
-    }
-    return { migrated, unmigrated };
-  }
-
-  private findDeterministicLegacyFile(
-    docId: string,
-    recordedStoragePath: string
-  ): { readonly status: "FOUND"; readonly fullPath: string } | { readonly status: "UNRESOLVED"; readonly reason: LegacyUnmigratedReason } {
-    try {
-      const directSafe = this.resolveSafePath(recordedStoragePath);
-      if (existsSync(directSafe) && statSync(directSafe).isFile()) return { status: "FOUND", fullPath: directSafe };
-      if (recordedStoragePath.startsWith("data/uploads/")) {
-        const strippedSafe = this.resolveSafePath(recordedStoragePath.slice("data/uploads/".length));
-        if (existsSync(strippedSafe) && statSync(strippedSafe).isFile()) return { status: "FOUND", fullPath: strippedSafe };
-      }
-    } catch {
-      return { status: "UNRESOLVED", reason: "UNSAFE_LEGACY_PATH" };
-    }
-
-    if (!existsSync(this.storageDir)) return { status: "UNRESOLVED", reason: "MISSING_LEGACY_FILE" };
-    const prefix = `doc_${docId.replace(/[^a-zA-Z0-9_-]/g, "")}_`;
-    const entries = readdirSync(this.storageDir).filter((entry) => entry.startsWith(prefix));
-    if (entries.length === 1) {
-      const matchedFull = this.resolveSafePath(entries[0]!);
-      if (existsSync(matchedFull) && statSync(matchedFull).isFile()) return { status: "FOUND", fullPath: matchedFull };
-    }
-    return { status: "UNRESOLVED", reason: entries.length > 1 ? "AMBIGUOUS_LEGACY_FILES" : "MISSING_LEGACY_FILE" };
+    return reconcileLegacyBlobsInSqlite(
+      db,
+      this.storageDir,
+      (relPath) => this.resolveSafePath(relPath),
+      (bytes, fileName, docId) => this.storeFile(bytes, fileName, docId)
+    );
   }
 }

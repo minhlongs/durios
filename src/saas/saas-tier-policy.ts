@@ -37,19 +37,12 @@ export interface SaasLicensePayload {
 const OPEN_SOURCE_LICENSE_LABEL = "AGPL-3.0-only (Core) + MIT (Verifier SDK)" as const;
 
 function buildEntitlements(edition: DuriosProductEdition): SaasFeatureEntitlements {
-  const isProOrAbove =
-    edition === "PACKHOUSE_PRO_SAAS" || edition === "EXPORTER_ENTERPRISE";
+  const isProOrAbove = edition === "PACKHOUSE_PRO_SAAS" || edition === "EXPORTER_ENTERPRISE";
   const isEnterprise = edition === "EXPORTER_ENTERPRISE";
   return {
-    localDeterministicCompliance: true,
-    localSqliteAndManifestVerifier: true,
-    localDataAccessGuaranteed: true,
-    cloudVisionOcr: isProOrAbove,
-    managedZaloZnsRelay: isProOrAbove,
-    cloudE2eeBackupVault: isProOrAbove,
-    gaccLiveRegistryWatch: isProOrAbove,
-    crossBorderBuyerPortal: isProOrAbove,
-    multiSiteEnterpriseSync: isEnterprise,
+    localDeterministicCompliance: true, localSqliteAndManifestVerifier: true, localDataAccessGuaranteed: true,
+    cloudVisionOcr: isProOrAbove, managedZaloZnsRelay: isProOrAbove, cloudE2eeBackupVault: isProOrAbove,
+    gaccLiveRegistryWatch: isProOrAbove, crossBorderBuyerPortal: isProOrAbove, multiSiteEnterpriseSync: isEnterprise,
   };
 }
 
@@ -59,8 +52,7 @@ function downgradeToCommunity(
   extra?: { licensedTenantId?: string; expiresAt?: string }
 ): SaasSubscriptionStatus {
   return {
-    edition: "COMMUNITY_OPEN_CORE",
-    licenseValid: false,
+    edition: "COMMUNITY_OPEN_CORE", licenseValid: false,
     ...(reason ? { degradedToCommunityReason: reason } : {}),
     ...(extra?.licensedTenantId ? { licensedTenantId: extra.licensedTenantId } : {}),
     ...(extra?.expiresAt ? { expiresAt: extra.expiresAt } : {}),
@@ -106,34 +98,21 @@ export function resolveSaasSubscriptionStatus(
   const publicKeyPem = env.DURIOS_SAAS_LICENSE_PUBLIC_KEY?.trim();
   const upgradePortalUrl = env.DURIOS_UPGRADE_PORTAL_URL?.trim();
 
-  if (!rawKey) {
-    return downgradeToCommunity(undefined, upgradePortalUrl);
-  }
+  if (!rawKey) return downgradeToCommunity(undefined, upgradePortalUrl);
 
   const parts = rawKey.split(".");
   if (parts.length !== 3 || parts[0] !== "DURIOS" || !parts[1] || !parts[2]) {
     return downgradeToCommunity("MALFORMED_LICENSE_KEY_GRACEFUL_DOWNGRADE", upgradePortalUrl);
   }
-
   if (!publicKeyPem || !publicKeyPem.includes("PUBLIC KEY")) {
     return downgradeToCommunity("MISSING_LICENSE_PUBLIC_KEY_GRACEFUL_DOWNGRADE", upgradePortalUrl);
   }
 
   let signatureOk = false;
   try {
-    signatureOk = verify(
-      null,
-      Buffer.from(parts[1], "utf-8"),
-      publicKeyPem,
-      Buffer.from(parts[2], "base64url")
-    );
-  } catch {
-    signatureOk = false;
-  }
-
-  if (!signatureOk) {
-    return downgradeToCommunity("INVALID_LICENSE_SIGNATURE_GRACEFUL_DOWNGRADE", upgradePortalUrl);
-  }
+    signatureOk = verify(null, Buffer.from(parts[1], "utf-8"), publicKeyPem, Buffer.from(parts[2], "base64url"));
+  } catch { signatureOk = false; }
+  if (!signatureOk) return downgradeToCommunity("INVALID_LICENSE_SIGNATURE_GRACEFUL_DOWNGRADE", upgradePortalUrl);
 
   const decodedParts = Buffer.from(parts[1], "base64url").toString("utf-8").split("|");
   if (decodedParts.length !== 3) {
@@ -145,35 +124,20 @@ export function resolveSaasSubscriptionStatus(
 
   if (
     (editionRaw !== "PACKHOUSE_PRO_SAAS" && editionRaw !== "EXPORTER_ENTERPRISE") ||
-    !tenantId ||
-    !expiresAt ||
-    Number.isNaN(parsedExpiry) ||
-    Number.isNaN(parsedNow)
+    !tenantId || !expiresAt || Number.isNaN(parsedExpiry) || Number.isNaN(parsedNow)
   ) {
     return downgradeToCommunity("CORRUPTED_LICENSE_PAYLOAD_GRACEFUL_DOWNGRADE", upgradePortalUrl);
   }
-
-  if (
-    expectedTenantId !== undefined &&
-    (expectedTenantId.trim() === "" || expectedTenantId !== tenantId)
-  ) {
+  if (expectedTenantId !== undefined && (expectedTenantId.trim() === "" || expectedTenantId !== tenantId)) {
     return downgradeToCommunity("TENANT_MISMATCH_GRACEFUL_DOWNGRADE", upgradePortalUrl);
   }
-
   if (parsedExpiry <= parsedNow) {
-    return downgradeToCommunity("EXPIRED_SUBSCRIPTION_GRACEFUL_DOWNGRADE", upgradePortalUrl, {
-      licensedTenantId: tenantId,
-      expiresAt,
-    });
+    return downgradeToCommunity("EXPIRED_SUBSCRIPTION_GRACEFUL_DOWNGRADE", upgradePortalUrl, { licensedTenantId: tenantId, expiresAt });
   }
 
   return {
-    edition: editionRaw,
-    licenseValid: true,
-    licensedTenantId: tenantId,
-    expiresAt,
-    entitlements: buildEntitlements(editionRaw),
-    openSourceLicense: OPEN_SOURCE_LICENSE_LABEL,
+    edition: editionRaw, licenseValid: true, licensedTenantId: tenantId, expiresAt,
+    entitlements: buildEntitlements(editionRaw), openSourceLicense: OPEN_SOURCE_LICENSE_LABEL,
     ...(upgradePortalUrl ? { upgradePortalUrl } : {}),
   };
 }

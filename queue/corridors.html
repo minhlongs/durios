@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DuriOS // Mekong Emerald Terminal - Corridors Command Station</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter & JetBrains Mono -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-fixed": "#68fcbf",
+            "inverse-primary": "#006c49",
+            "surface-dim": "#0d1510",
+            "surface-container-highest": "#2e3731",
+            "on-primary-container": "#00422b",
+            "on-primary": "#003824",
+            "surface-container": "#19211c",
+            "secondary": "#45dfa4",
+            "surface-container-high": "#242c26",
+            "on-secondary-container": "#00452e",
+            "on-error-container": "#ffdad6",
+            "inverse-surface": "#dce5dc",
+            "background": "#0d1510",
+            "primary-fixed": "#6ffbbe",
+            "secondary-fixed-dim": "#45dfa4",
+            "outline-variant": "#3c4a42",
+            "surface-container-low": "#151d18",
+            "error": "#ffb4ab",
+            "inverse-on-surface": "#2a322c",
+            "on-secondary-fixed-variant": "#005137",
+            "tertiary-fixed-dim": "#ffb95f",
+            "on-primary-fixed-variant": "#005236",
+            "surface-bright": "#333b35",
+            "tertiary-fixed": "#ffddb8",
+            "tertiary-container": "#e29100",
+            "primary-container": "#10b981",
+            "surface-container-lowest": "#08100b",
+            "on-secondary-fixed": "#002114",
+            "on-tertiary-fixed-variant": "#653e00",
+            "surface-variant": "#2e3731",
+            "surface-tint": "#4edea3",
+            "error-container": "#93000a",
+            "on-tertiary": "#472a00",
+            "tertiary": "#ffb95f",
+            "surface": "#0d1510",
+            "on-error": "#690005",
+            "on-background": "#dce5dc",
+            "on-secondary": "#003825",
+            "on-primary-fixed": "#002113",
+            "on-tertiary-container": "#523200",
+            "on-tertiary-fixed": "#2a1700",
+            "secondary-container": "#00bd85",
+            "primary": "#4edea3",
+            "primary-fixed-dim": "#4edea3",
+            "outline": "#86948a",
+            "on-surface": "#dce5dc",
+            "on-surface-variant": "#bbcabf"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xl": "2rem",
+            "gutter-compact": "0.5rem",
+            "space-md": "0.75rem",
+            "space-xs": "0.25rem",
+            "margin-mobile": "0.75rem",
+            "space-sm": "0.5rem",
+            "gutter": "1rem",
+            "space-lg": "1.25rem",
+            "margin": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-xl-mobile": ["Inter"],
+            "body-sm": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "code-lg": ["JetBrains Mono"],
+            "headline-md": ["Inter"],
+            "body-lg": ["Inter"],
+            "body-md": ["Inter"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-xl": ["Inter"],
+            "headline-sm": ["Inter"],
+            "headline-lg": ["Inter"],
+            "code-md": ["JetBrains Mono"],
+            "label-md": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "headline-xl-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "code-lg": ["15px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 16px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      -webkit-font-smoothing: antialiased;
+      vertical-align: middle;
+    }
+    
+    /* Hardware Telemetry Pulse Animation */
+    @keyframes pulse-emerald {
+      0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 2px #10b981); }
+      50% { opacity: 0.45; transform: scale(0.92); filter: drop-shadow(0 0 0px #10b981); }
+    }
+    .indicator-pulse {
+      animation: pulse-emerald 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+
+    /* Custom range input styling */
+    input[type=range] {
+      -webkit-appearance: none;
+      background: #19211c;
+      border: 1px solid #3c4a42;
+      border-radius: 2px;
+      height: 6px;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 14px;
+      width: 14px;
+      border-radius: 2px;
+      background: #10b981;
+      cursor: pointer;
+      border: 1px solid #08100b;
+      box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface antialiased overflow-x-hidden min-h-screen flex flex-col font-body-md select-none">
+<!-- TOP APP BAR (from Shared Component JSON: docked full-width top-0 h-14, style_separation_logic) -->
+<header class="bg-surface-container dark:bg-surface-container border-b border-outline-variant dark:border-outline-variant w-full h-14 flex justify-between items-center px-4 sticky top-0 z-50">
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-2">
+<span class="indicator-pulse w-2.5 h-2.5 rounded-full bg-primary-container"></span>
+<span class="text-headline-sm font-headline-sm font-bold text-on-surface dark:text-on-surface uppercase tracking-wider">
+          MEKONG CLEAR // ASEAN CORRIDOR &amp; RULE ENGINE v2.4
+        </span>
+</div>
+<!-- Live Corridor Status Pill -->
+<div class="hidden xl:flex items-center space-x-2 px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span class="font-label-sm text-label-sm text-primary uppercase tracking-wider">VN_CN ACTIVE (GACC DECREE 248/249)</span>
+</div>
+<!-- Node Latency Indicator -->
+<div class="hidden lg:flex items-center space-x-1.5 font-code-sm text-code-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-outline">hub</span>
+<span>12ms air-gapped node</span>
+</div>
+</div>
+<!-- Navigation Links & Trailing Actions -->
+<div class="flex items-center space-x-4">
+<nav class="hidden md:flex items-center space-x-5 font-label-md text-label-md">
+<a class="border-b-2 border-primary text-primary dark:text-primary font-bold pb-1 transition-colors duration-150" href="#">Corridor Matrix</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface transition-colors duration-150" href="#">Rule Engine</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface transition-colors duration-150" href="#">Pack Registry</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface dark:hover:text-on-surface transition-colors duration-150" href="#">Telemetry Link</a>
+</nav>
+<div class="flex items-center space-x-2 border-l border-outline-variant pl-4">
+<button class="bg-surface-container-high hover:bg-surface-container dark:hover:bg-surface-container text-primary border border-outline-variant hover:border-primary px-2.5 py-1.5 rounded text-label-sm font-label-sm transition-colors duration-150 flex items-center space-x-1">
+<span class="material-symbols-outlined text-sm">terminal</span>
+<span>SYNC PROTOCOL</span>
+</button>
+<button class="bg-primary-container hover:bg-secondary text-surface-container-lowest font-headline-sm font-bold px-3 py-1.5 rounded text-label-sm shadow-[0_0_12px_rgba(16,185,129,0.35)] hover:shadow-[0_0_18px_rgba(69,223,164,0.5)] transition-all duration-150 flex items-center space-x-1.5" id="run-simulation-btn">
+<span class="material-symbols-outlined text-sm">verified_user</span>
+<span>SIMULATE CLEARANCE</span>
+</button>
+</div>
+</div>
+</header>
+<!-- MAIN WRAPPER: SIDEBAR + VIEWPORT -->
+<div class="flex flex-1 w-full overflow-hidden">
+<!-- LEFT SIDEBAR RAIL (docked left h-[calc(100vh-3.5rem)] w-64, style_separation_logic) -->
+<aside class="bg-surface-container-low dark:bg-surface-container-low border-r border-outline-variant dark:border-outline-variant w-64 flex-shrink-0 flex flex-col justify-between p-3 select-none">
+<!-- Upper Section: Facility Header & Navigation -->
+<div class="space-y-4">
+<!-- Station Header -->
+<div class="p-2.5 rounded bg-surface-container border border-outline-variant">
+<div class="flex items-center space-x-2.5">
+<div class="w-8 h-8 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">dashboard</span>
+</div>
+<div>
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface uppercase">STATION 04 // MEKONG</div>
+<div class="font-code-sm text-code-sm text-outline">CLEARANCE GATE ID: MK-8821</div>
+</div>
+</div>
+<div class="mt-2.5 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-code-sm font-code-sm">
+<span class="text-outline">FACILITY #VN-84B / TIEN GIANG</span>
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+</div>
+</div>
+<!-- Navigation Tabs List -->
+<nav class="space-y-1">
+<a class="flex items-center space-x-3 text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface hover:bg-surface-container px-3 py-2 rounded text-label-md font-label-md transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-on-surface-variant">dashboard</span>
+<span>Dashboard</span>
+</a>
+<!-- ACTIVE NAVIGATION (corridors.html intent) -->
+<a class="flex items-center space-x-3 border-l-2 border-primary text-primary dark:text-primary bg-surface-container-high dark:bg-surface-container-high font-bold px-3 py-2 rounded text-label-md font-label-md transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-primary">alt_route</span>
+<span>Corridors</span>
+</a>
+<a class="flex items-center space-x-3 text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface hover:bg-surface-container px-3 py-2 rounded text-label-md font-label-md transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-on-surface-variant">gavel</span>
+<span>Rule Catalog</span>
+</a>
+<a class="flex items-center space-x-3 text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface hover:bg-surface-container px-3 py-2 rounded text-label-md font-label-md transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-on-surface-variant">inventory_2</span>
+<span>Pack Registry</span>
+</a>
+<a class="flex items-center space-x-3 text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface hover:bg-surface-container px-3 py-2 rounded text-label-md font-label-md transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-on-surface-variant">thermostat</span>
+<span>Sensors &amp; Reefer</span>
+</a>
+<a class="flex items-center space-x-3 text-on-surface-variant dark:text-on-surface-variant hover:text-on-surface hover:bg-surface-container px-3 py-2 rounded text-label-md font-label-md transition-colors duration-150" href="#">
+<span class="material-symbols-outlined text-on-surface-variant">receipt_long</span>
+<span>Audit Ledger</span>
+</a>
+</nav>
+</div>
+<!-- Lower Section: CTA & Footers -->
+<div class="space-y-3 pt-3 border-t border-outline-variant">
+<button class="w-full bg-surface-container-high hover:bg-surface-container text-primary border border-primary/40 font-code-sm text-code-sm py-2 px-3 rounded flex items-center justify-center space-x-2 transition-colors">
+<span class="material-symbols-outlined text-xs indicator-pulse">terminal</span>
+<span>LIVE HARVEST TELEMETRY</span>
+</button>
+<div class="space-y-0.5">
+<a class="flex items-center space-x-2 text-on-surface-variant hover:text-on-surface px-2 py-1.5 rounded font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">tune</span>
+<span>Engine Settings</span>
+</a>
+<a class="flex items-center space-x-2 text-on-surface-variant hover:text-on-surface px-2 py-1.5 rounded font-label-md text-label-md transition-colors" href="#">
+<span class="material-symbols-outlined text-sm">description</span>
+<span>Documentation</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- CENTER COMMAND CANVAS (Scrollable Viewport) -->
+<main class="flex-1 overflow-y-auto p-4 space-y-4 bg-surface-container-lowest">
+<!-- SECTION 2: TOP 4-CARD ASEAN TRADE CORRIDOR PROTOCOL MATRIX -->
+<section class="space-y-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center space-x-2">
+<span class="font-label-sm text-label-sm uppercase tracking-wider text-outline">Bilateral Protocol Crosswalk Matrix</span>
+<span class="text-xs text-outline-variant">//</span>
+<span class="font-code-sm text-code-sm text-secondary">4 ASEAN-GACC CORRIDOR PROFILES LOADED</span>
+</div>
+<span class="font-code-sm text-code-sm text-outline">HARMONIZED TARIFF SCHEDULE: 0810.60.00</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+<!-- CARD 1: VN_CN (Active Core - Emerald Border) -->
+<div class="bg-surface-container rounded border-2 border-primary-container p-3.5 space-y-3 relative shadow-[0_0_15px_rgba(16,185,129,0.12)]">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center space-x-2">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">VN_CN</span>
+<span class="font-label-sm text-label-sm text-outline">Vietnam → China</span>
+</div>
+<div class="font-code-sm text-code-sm text-secondary mt-0.5">PPD-VN → GACC Clearance</div>
+</div>
+<span class="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded bg-primary-container/20 border border-primary text-primary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-xs">verified</span>
+<span>ACTIVE (AGPL-3.0 CORE)</span>
+</span>
+</div>
+<div class="space-y-1.5 border-t border-b border-outline-variant py-2 font-code-sm text-code-sm">
+<div class="flex justify-between">
+<span class="text-outline">Statutory Framework</span>
+<span class="text-on-surface font-medium text-right truncate max-w-[150px]">Nghị định thư NN-GACC</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Max Cadmium (Cd)</span>
+<span class="text-primary font-bold">≤ 0.05 mg/kg</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Reefer Core Temp</span>
+<span class="text-on-surface">12.0°C – 15.0°C</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Mandatory Seals</span>
+<span class="text-on-surface truncate">ISO 17712 Bolt + RFID</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="font-label-sm text-label-sm text-outline uppercase">Mandatory Tri-Tuple Docs:</div>
+<div class="flex flex-wrap gap-1 font-code-sm text-code-sm">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-on-surface-variant">PACKING_LIST</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-on-surface-variant">LAB_TEST</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-on-surface-variant">PHYTO_CERT</span>
+</div>
+</div>
+</div>
+<!-- CARD 2: TH_CN (Thailand → China) -->
+<div class="bg-surface-container rounded border border-outline-variant p-3.5 space-y-3 relative hover:border-outline transition-colors">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center space-x-2">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">TH_CN</span>
+<span class="font-label-sm text-label-sm text-outline">Thailand → China</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mt-0.5">DOA-TH → GACC Clearance</div>
+</div>
+<span class="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded bg-tertiary-container/20 border border-tertiary text-tertiary font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-xs">science</span>
+<span>MIN DRY MATTER ≥ 32%</span>
+</span>
+</div>
+<div class="space-y-1.5 border-t border-b border-outline-variant py-2 font-code-sm text-code-sm">
+<div class="flex justify-between">
+<span class="text-outline">Statutory Framework</span>
+<span class="text-on-surface font-medium text-right">MOAC-GACC / TAS 3-2013</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Max Cadmium (Cd)</span>
+<span class="text-primary font-bold">≤ 0.05 mg/kg</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Reefer Core Temp</span>
+<span class="text-on-surface">13.0°C – 15.0°C</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Traceability Standard</span>
+<span class="text-on-surface">GAP / GMP+ DOA Stamped QR</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="font-label-sm text-label-sm text-outline uppercase">Statutory Gateway Rule:</div>
+<div class="text-code-sm font-code-sm text-on-surface-variant bg-surface-container-high p-1.5 rounded border border-outline-variant">
+                Monthong ripeness verification: minimum 32.0% dry pulp mass.
+              </div>
+</div>
+</div>
+<!-- CARD 3: MY_CN (Malaysia → China) -->
+<div class="bg-surface-container rounded border border-outline-variant p-3.5 space-y-3 relative hover:border-outline transition-colors">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center space-x-2">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">MY_CN</span>
+<span class="font-label-sm text-label-sm text-outline">Malaysia → China</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mt-0.5">DOA-MY → GACC Clearance</div>
+</div>
+<span class="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-outline font-label-sm text-label-sm">
+<span>STANDBY NODE</span>
+</span>
+</div>
+<div class="space-y-1.5 border-t border-b border-outline-variant py-2 font-code-sm text-code-sm">
+<div class="flex justify-between">
+<span class="text-outline">Statutory Framework</span>
+<span class="text-on-surface font-medium text-right">MAFI-GACC Protocol 2024</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Max Cadmium (Cd)</span>
+<span class="text-primary font-bold">≤ 0.05 mg/kg</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Branch Modes</span>
+<span class="text-on-surface">Fresh + N2 Frozen (-18°C)</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Cultivar Registry</span>
+<span class="text-on-surface">Musang King (D197) / D200</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="font-label-sm text-label-sm text-outline uppercase">Dual-Mode Reefer Profile:</div>
+<div class="text-code-sm font-code-sm text-on-surface-variant bg-surface-container-high p-1.5 rounded border border-outline-variant">
+                Whole fresh: 12-15°C | Cryo-sealed: -18.0°C batch locked.
+              </div>
+</div>
+</div>
+<!-- CARD 4: PH_CN (Philippines → China) -->
+<div class="bg-surface-container rounded border border-outline-variant p-3.5 space-y-3 relative hover:border-outline transition-colors">
+<div class="flex items-start justify-between">
+<div>
+<div class="flex items-center space-x-2">
+<span class="font-headline-sm text-headline-sm font-bold text-on-surface">PH_CN</span>
+<span class="font-label-sm text-label-sm text-outline">Philippines → China</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mt-0.5">BPI-PH → GACC Clearance</div>
+</div>
+<span class="inline-flex items-center space-x-1 px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-outline font-label-sm text-label-sm">
+<span>STANDBY NODE</span>
+</span>
+</div>
+<div class="space-y-1.5 border-t border-b border-outline-variant py-2 font-code-sm text-code-sm">
+<div class="flex justify-between">
+<span class="text-outline">Statutory Framework</span>
+<span class="text-on-surface font-medium text-right">DA-BPI Protocol 2023</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Max Cadmium (Cd)</span>
+<span class="text-primary font-bold">≤ 0.05 mg/kg</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Reefer Core Temp</span>
+<span class="text-on-surface">12.0°C – 15.0°C</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline">Orchard Zone</span>
+<span class="text-on-surface">Davao Puyat &amp; Duyaya</span>
+</div>
+</div>
+<div class="space-y-1">
+<div class="font-label-sm text-label-sm text-outline uppercase">Designated Source Mandate:</div>
+<div class="text-code-sm font-code-sm text-on-surface-variant bg-surface-container-high p-1.5 rounded border border-outline-variant">
+                Strict BPI export accreditation required for all Davao packing houses.
+              </div>
+</div>
+</div>
+</div>
+</section>
+<!-- SECTION 3: CENTER SPLIT WORKBENCH (12-Column Grid: 7 Cols Left / 5 Cols Right) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+<!-- LEFT COLUMN (7 Cols): Deterministic Rule Catalog & Live Evaluation Matrix -->
+<div class="lg:col-span-7 space-y-3">
+<div class="bg-surface-container rounded border border-outline-variant p-3.5 space-y-3">
+<!-- Engine Header & Deterministic Tag -->
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant pb-3">
+<div>
+<h2 class="font-headline-sm text-headline-sm font-bold text-on-surface tracking-wide">
+                  DETERMINISTIC STATUTORY RULE EXECUTION ENGINE
+                </h2>
+<div class="font-code-sm text-code-sm text-secondary mt-0.5 flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-xs">memory</span>
+<span>8 RULES COMPILED (100% DETERMINISTIC, ZERO AI DRIFT, AIR-GAPPED EVAL)</span>
+</div>
+</div>
+<!-- Quick Filter Pills -->
+<div class="flex items-center space-x-1 font-label-sm text-label-sm">
+<button class="px-2 py-0.5 rounded bg-primary-container text-surface-container-lowest font-bold">All 8 Rules</button>
+<button class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface hover:text-primary">Passed (7)</button>
+<button class="px-2 py-0.5 rounded bg-surface-container-high text-on-surface hover:text-tertiary">Guards Armed (1)</button>
+</div>
+</div>
+<!-- Deterministic Evaluation Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant font-label-sm text-label-sm uppercase tracking-wider text-outline bg-surface-container-low">
+<th class="py-2 px-2.5">Rule ID</th>
+<th class="py-2 px-2.5">Evaluation Scope</th>
+<th class="py-2 px-2.5">Specification Criteria</th>
+<th class="py-2 px-2.5">Runtime Value</th>
+<th class="py-2 px-2.5 text-center">Status</th>
+<th class="py-2 px-2.5 text-right">Latency</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/60 font-code-sm text-code-sm">
+<!-- ROW 1 -->
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-2 px-2.5 font-bold text-primary">RULE-01</td>
+<td class="py-2 px-2.5 text-on-surface">Mandatory Tri-Tuple Completeness</td>
+<td class="py-2 px-2.5 text-outline">PACKING_LIST + LAB_TEST + PHYTO_CERT</td>
+<td class="py-2 px-2.5 text-on-surface font-medium">3 of 3 Loaded</td>
+<td class="py-2 px-2.5 text-center">
+<span class="inline-flex items-center px-1.5 py-0.2 rounded bg-primary-container/20 text-primary border border-primary/40 font-label-sm">PASSED</span>
+</td>
+<td class="py-2 px-2.5 text-right text-outline">0.4ms</td>
+</tr>
+<!-- ROW 2 -->
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-2 px-2.5 font-bold text-primary">RULE-02</td>
+<td class="py-2 px-2.5 text-on-surface">ISO 6346 Container Check Digit</td>
+<td class="py-2 px-2.5 text-outline">MSKU 907032-3 (Mod-11 Algo)</td>
+<td class="py-2 px-2.5 text-on-surface font-medium">Matched (Bay #04 CCTV OCR)</td>
+<td class="py-2 px-2.5 text-center">
+<span class="inline-flex items-center px-1.5 py-0.2 rounded bg-primary-container/20 text-primary border border-primary/40 font-label-sm">PASSED</span>
+</td>
+<td class="py-2 px-2.5 text-right text-outline">0.1ms</td>
+</tr>
+<!-- ROW 3 -->
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-2 px-2.5 font-bold text-primary">RULE-03</td>
+<td class="py-2 px-2.5 text-on-surface">Cross-Document Seal Consistency</td>
+<td class="py-2 px-2.5 text-outline">SEAL-VN-88412 matching BOL + RFID</td>
+<td class="py-2 px-2.5 text-on-surface font-medium">18.4 kN Tamper Check OK</td>
+<td class="py-2 px-2.5 text-center">
+<span class="inline-flex items-center px-1.5 py-0.2 rounded bg-primary-container/20 text-primary border border-primary/40 font-label-sm">PASSED</span>
+</td>
+<td class="py-2 px-2.5 text-right text-outline">0.2ms</td>
+</tr>
+<!-- ROW 4 -->
+<tr class="hover:bg-surface-container-high transition-colors bg-surface-container-low/50">
+<td class="py-2 px-2.5 font-bold text-primary">RULE-04</td>
+<td class="py-2 px-2.5 text-on-surface">Statutory Cadmium Ceiling</td>
+<td class="py-2 px-2.5 text-outline">≤ 0.050 mg/kg (NAFIQAD ICP-MS)</td>
+<td class="py-2 px-2.5 text-secondary font-bold" id="table-cd-val">0.024 mg/kg (52% under)</td>
+<td class="py-2 px-2.5 text-center">
+<span class="inline-flex items-center px-1.5 py-0.2 rounded bg-primary-container/20 text-primary border border-primary/40 font-label-sm">PASSED</span>
+</td>
+<td class="py-2 px-2.5 text-right text-outline">0.1ms</td>
+</tr>
+<!-- ROW 5 -->
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-2 px-2.5 font-bold text-primary">RULE-05</td>
+<td class="py-2 px-2.5 text-on-surface">Registered PUC/PHC Bilateral Crosswalk</td>
+<td class="py-2 px-2.5 text-outline">VN-TG-OR-088 in GACC DB</td>
+<td class="py-2 px-2.5 text-on-surface font-medium">Valid through Dec 2026</td>
+<td class="py-2 px-2.5 text-center">
+<span class="inline-flex items-center px-1.5 py-0.2 rounded bg-primary-container/20 text-primary border border-primary/40 font-label-sm">PASSED</span>
+</td>
+<td class="py-2 px-2.5 text-right text-outline">0.3ms</td>
+</tr>
+<!-- ROW 6 -->
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-2 px-2.5 font-bold text-primary">RULE-06</td>
+<td class="py-2 px-2.5 text-on-surface">Reefer Core Pulp Temp Envelope</td>
+<td class="py-2 px-2.5 text-outline">+12.0°C to +15.0°C continuous</td>
+<td class="py-2 px-2.5 text-on-surface font-medium" id="table-temp-val">+13.5°C (Δ 0.2°C)</td>
+<td class="py-2 px-2.5 text-center">
+<span class="inline-flex items-center px-1.5 py-0.2 rounded bg-primary-container/20 text-primary border border-primary/40 font-label-sm">PASSED</span>
+</td>
+<td class="py-2 px-2.5 text-right text-outline">0.5ms</td>
+</tr>
+<!-- ROW 7 -->
+<tr class="hover:bg-surface-container-high transition-colors bg-surface-container-low/50">
+<td class="py-2 px-2.5 font-bold text-primary">RULE-07</td>
+<td class="py-2 px-2.5 text-on-surface">Ripeness Pulp Dry Matter</td>
+<td class="py-2 px-2.5 text-outline">Min ≥ 32.0% Ri6 / Monthong</td>
+<td class="py-2 px-2.5 text-tertiary font-bold" id="table-dm-val">34.2% Dry Matter</td>
+<td class="py-2 px-2.5 text-center">
+<span class="inline-flex items-center px-1.5 py-0.2 rounded bg-primary-container/20 text-primary border border-primary/40 font-label-sm">PASSED</span>
+</td>
+<td class="py-2 px-2.5 text-right text-outline">0.2ms</td>
+</tr>
+<!-- ROW 8 (FAIL-CLOSED GUARD) -->
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-2 px-2.5 font-bold text-tertiary">RULE-08</td>
+<td class="py-2 px-2.5 text-on-surface">Unverified Rule Fail-Closed Guard</td>
+<td class="py-2 px-2.5 text-outline">Unknown corridor or packhouse</td>
+<td class="py-2 px-2.5 text-on-surface-variant font-medium">Trap trigger enabled</td>
+<td class="py-2 px-2.5 text-center">
+<span class="inline-flex items-center px-1.5 py-0.2 rounded bg-tertiary-container/20 text-tertiary border border-tertiary/40 font-label-sm">ARMED</span>
+</td>
+<td class="py-2 px-2.5 text-right text-outline">0.1ms</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Execution Ledger Sub-Footer -->
+<div class="flex items-center justify-between text-code-sm font-code-sm border-t border-outline-variant pt-2.5 text-outline">
+<div class="flex items-center space-x-3">
+<span>TOTAL ENGINE CYCLE: <strong class="text-primary font-bold">1.9ms</strong></span>
+<span>•</span>
+<span>SHA-256 STATE: <strong class="text-on-surface">e9a8...3bf2</strong></span>
+</div>
+<div class="flex items-center space-x-1.5 text-secondary">
+<span class="material-symbols-outlined text-xs">lock</span>
+<span>IMMUTABLE RULESET SIGNED BY NAFIQAD</span>
+</div>
+</div>
+</div>
+<!-- Audit Telemetry Log Bar -->
+<div class="bg-surface-container rounded border border-outline-variant p-3 flex items-center justify-between font-code-sm text-code-sm">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm text-primary">terminal</span>
+<span class="text-outline">SYSTEM CONSOLE:</span>
+<span class="text-on-surface truncate max-w-md">[10:42:01.892] GACC Decree 248 compliance ledger sync verified at Vietnam-Hekou Gate.</span>
+</div>
+<span class="text-primary font-medium">SYNCED</span>
+</div>
+</div>
+<!-- RIGHT COLUMN (5 Cols): Multi-Market Pack Registry & Entitlement Gate + Interactive Simulator -->
+<div class="lg:col-span-5 space-y-4">
+<!-- BLOCK A: Multi-Market Regulatory Pack Registry & Entitlement Gate -->
+<div class="bg-surface-container rounded border border-outline-variant p-3.5 space-y-3">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm text-secondary">inventory_2</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">
+                  MULTI-MARKET PACK REGISTRY
+                </h3>
+</div>
+<span class="font-label-sm text-label-sm text-outline">ENTITLEMENT STATUS</span>
+</div>
+<div class="space-y-2">
+<!-- CN (Open Core) -->
+<div class="p-2.5 rounded bg-surface-container-high border border-primary/40 flex items-center justify-between">
+<div class="space-y-0.5">
+<div class="flex items-center space-x-2">
+<span class="font-bold text-on-surface">CN // GACC Decree 248/249</span>
+<span class="px-1.5 py-0.2 rounded bg-primary-container/20 text-primary border border-primary text-label-sm font-label-sm">UNLOCKED</span>
+</div>
+<div class="font-code-sm text-code-sm text-outline">Community Open Core (AGPL-3.0) • Active locally</div>
+</div>
+<span class="material-symbols-outlined text-primary">verified_user</span>
+</div>
+<!-- JP (Pro/Enterprise) -->
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant flex items-center justify-between opacity-85 hover:opacity-100 transition-opacity">
+<div class="space-y-0.5">
+<div class="flex items-center space-x-2">
+<span class="font-bold text-on-surface-variant">JP // MAFF Food Sanitation Act</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container text-tertiary border border-outline-variant text-label-sm font-label-sm">PRO REQUIRED</span>
+</div>
+<div class="font-code-sm text-code-sm text-outline">FAIL-CLOSED GUARD: Requires Ed25519 Commercial License</div>
+</div>
+<span class="material-symbols-outlined text-outline">lock</span>
+</div>
+<!-- KR (Pro/Enterprise) -->
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant flex items-center justify-between opacity-85 hover:opacity-100 transition-opacity">
+<div class="space-y-0.5">
+<div class="flex items-center space-x-2">
+<span class="font-bold text-on-surface-variant">KR // QIA Phytosanitary Act</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container text-tertiary border border-outline-variant text-label-sm font-label-sm">PRO REQUIRED</span>
+</div>
+<div class="font-code-sm text-code-sm text-outline">FAIL-CLOSED GUARD: Cryptographic Hardware Token Needed</div>
+</div>
+<span class="material-symbols-outlined text-outline">lock</span>
+</div>
+<!-- EU (Enterprise) -->
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant flex items-center justify-between opacity-85 hover:opacity-100 transition-opacity">
+<div class="space-y-0.5">
+<div class="flex items-center space-x-2">
+<span class="font-bold text-on-surface-variant">EU // EFSA TRACES MRL Protocol</span>
+<span class="px-1.5 py-0.2 rounded bg-surface-container text-tertiary border border-outline-variant text-label-sm font-label-sm">ENTERPRISE</span>
+</div>
+<div class="font-code-sm text-code-sm text-outline">Pesticide Residue Matrix 440 Compounds &amp; EUDAMED sync</div>
+</div>
+<span class="material-symbols-outlined text-outline">lock</span>
+</div>
+</div>
+</div>
+<!-- BLOCK B: Interactive Dry Matter & Cadmium Statutory Tolerance Simulator -->
+<div class="bg-surface-container rounded border border-outline-variant p-3.5 space-y-3.5">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm text-primary">tune</span>
+<h3 class="font-headline-sm text-headline-sm font-bold text-on-surface">
+                  STATUTORY TOLERANCE SIMULATOR
+                </h3>
+</div>
+<span class="font-code-sm text-code-sm text-secondary">AIR-GAPPED BENCH</span>
+</div>
+<!-- Interactive Metric Sliders -->
+<div class="space-y-3">
+<!-- SLIDER 1: Cadmium (Cd) -->
+<div class="space-y-1">
+<div class="flex justify-between items-center font-code-sm text-code-sm">
+<span class="text-on-surface">Tested Cadmium Heavy Metal (Cd)</span>
+<div class="flex items-center space-x-1">
+<span class="text-primary font-bold" id="slider-cd-display">0.024</span>
+<span class="text-outline">mg/kg</span>
+<span class="text-error font-mono text-xs">(Limit: ≤ 0.050)</span>
+</div>
+</div>
+<input class="w-full" id="slider-cd" max="0.080" min="0.005" step="0.001" type="range" value="0.024"/>
+<div class="flex justify-between text-label-sm font-label-sm text-outline">
+<span>0.005 (Pristine)</span>
+<span class="text-error font-bold">0.050 (GACC Reject Point)</span>
+<span>0.080</span>
+</div>
+</div>
+<!-- SLIDER 2: Pulp Dry Matter (%) -->
+<div class="space-y-1">
+<div class="flex justify-between items-center font-code-sm text-code-sm">
+<span class="text-on-surface">Pulp Dry Matter (Ripeness %)</span>
+<div class="flex items-center space-x-1">
+<span class="text-tertiary font-bold" id="slider-dm-display">34.2</span>
+<span class="text-outline">%</span>
+<span class="text-tertiary font-mono text-xs">(Req: ≥ 32.0%)</span>
+</div>
+</div>
+<input class="w-full" id="slider-dm" max="42.0" min="26.0" step="0.1" type="range" value="34.2"/>
+<div class="flex justify-between text-label-sm font-label-sm text-outline">
+<span>26.0% (Unripe)</span>
+<span class="text-tertiary font-bold">32.0% (TAS 3-2013 Statutory Line)</span>
+<span>42.0%</span>
+</div>
+</div>
+<!-- SLIDER 3: Reefer Pulp Temp (°C) -->
+<div class="space-y-1">
+<div class="flex justify-between items-center font-code-sm text-code-sm">
+<span class="text-on-surface">Reefer Cold Chain Setpoint</span>
+<div class="flex items-center space-x-1">
+<span class="text-on-surface font-bold" id="slider-temp-display">13.5</span>
+<span class="text-outline">°C</span>
+<span class="text-outline text-xs">(Envelope: 12.0°C - 15.0°C)</span>
+</div>
+</div>
+<input class="w-full" id="slider-temp" max="20.0" min="8.0" step="0.1" type="range" value="13.5"/>
+<div class="flex justify-between text-label-sm font-label-sm text-outline">
+<span>8.0°C (Chill Risk)</span>
+<span class="text-primary font-bold">12°C - 15°C (Safe Envelope)</span>
+<span>20.0°C (Rot Risk)</span>
+</div>
+</div>
+</div>
+<!-- Dynamic Result Status Banner -->
+<div class="p-3 rounded border border-primary bg-primary-container/15 transition-all duration-200" id="sim-status-banner">
+<div class="flex items-start space-x-2.5">
+<span class="material-symbols-outlined text-primary text-xl" id="sim-status-icon">check_circle</span>
+<div class="space-y-0.5">
+<div class="font-headline-sm text-headline-sm font-bold text-on-surface" id="sim-status-title">
+                    100% GACC &amp; ASEAN STATUTORY CONFORMANT
+                  </div>
+<div class="font-code-sm text-code-sm text-secondary" id="sim-status-desc">
+                    Auto-clearance cryptographic token issued for Gate 04. No manual quarantine intervention required.
+                  </div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="grid grid-cols-2 gap-2 pt-1 font-label-md text-label-md">
+<button class="px-3 py-2 rounded bg-surface-container-high hover:bg-surface-container-highest border border-outline-variant text-on-surface transition-colors flex items-center justify-center space-x-1.5" id="btn-simulate-anomaly">
+<span class="material-symbols-outlined text-sm">warning</span>
+<span>Simulate Anomaly</span>
+</button>
+<button class="px-3 py-2 rounded bg-surface-container-high hover:bg-surface-container-highest border border-primary/50 text-primary transition-colors flex items-center justify-center space-x-1.5" id="btn-export-spec">
+<span class="material-symbols-outlined text-sm">file_download</span>
+<span>Export Rule Pack .json</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- INTERACTIVE SIMULATOR LOGIC (Vanilla JS micro-interactions) -->
+<script>
+    const cdInput = document.getElementById('slider-cd');
+    const dmInput = document.getElementById('slider-dm');
+    const tempInput = document.getElementById('slider-temp');
+
+    const cdDisplay = document.getElementById('slider-cd-display');
+    const dmDisplay = document.getElementById('slider-dm-display');
+    const tempDisplay = document.getElementById('slider-temp-display');
+
+    const tableCdVal = document.getElementById('table-cd-val');
+    const tableDmVal = document.getElementById('table-dm-val');
+    const tableTempVal = document.getElementById('table-temp-val');
+
+    const simBanner = document.getElementById('sim-status-banner');
+    const simIcon = document.getElementById('sim-status-icon');
+    const simTitle = document.getElementById('sim-status-title');
+    const simDesc = document.getElementById('sim-status-desc');
+
+    const btnAnomaly = document.getElementById('btn-simulate-anomaly');
+    const btnSimulateHeader = document.getElementById('run-simulation-btn');
+    const btnExport = document.getElementById('btn-export-spec');
+
+    function evaluateMetrics() {
+      const cd = parseFloat(cdInput.value);
+      const dm = parseFloat(dmInput.value);
+      const temp = parseFloat(tempInput.value);
+
+      // Update text values
+      cdDisplay.textContent = cd.toFixed(3);
+      dmDisplay.textContent = dm.toFixed(1);
+      tempDisplay.textContent = temp.toFixed(1);
+
+      tableCdVal.textContent = cd.toFixed(3) + ' mg/kg (' + (cd <= 0.05 ? ((0.05 - cd)/0.05 * 100).toFixed(0) + '% under limit' : 'VIOLATION') + ')';
+      tableDmVal.textContent = dm.toFixed(1) + '% Dry Matter';
+      tableTempVal.textContent = '+' + temp.toFixed(1) + '°C (Δ ' + (Math.abs(temp - 13.5)).toFixed(1) + '°C)';
+
+      // Statutory Evaluation Rules
+      const cdViolation = cd > 0.050;
+      const dmViolation = dm < 32.0;
+      const tempViolation = temp < 12.0 || temp > 15.0;
+
+      if (cdViolation) {
+        simBanner.className = "p-3 rounded border border-error bg-error-container/30 transition-all duration-200";
+        simIcon.className = "material-symbols-outlined text-error text-xl";
+        simIcon.textContent = "cancel";
+        simTitle.textContent = "STATUTORY CLEARANCE REJECTED: CADMIUM SPIKE";
+        simTitle.className = "font-headline-sm text-headline-sm font-bold text-error";
+        simDesc.textContent = "Cd level " + cd.toFixed(3) + " mg/kg exceeds bilateral ceiling (<= 0.050 mg/kg). Immediate quarantine hold triggered.";
+        simDesc.className = "font-code-sm text-code-sm text-on-error-container";
+      } else if (dmViolation) {
+        simBanner.className = "p-3 rounded border border-tertiary bg-tertiary-container/20 transition-all duration-200";
+        simIcon.className = "material-symbols-outlined text-tertiary text-xl";
+        simIcon.textContent = "report_problem";
+        simTitle.textContent = "COMMERCIAL HOLD: INSUFFICIENT RIPENESS";
+        simTitle.className = "font-headline-sm text-headline-sm font-bold text-tertiary";
+        simDesc.textContent = "Dry matter " + dm.toFixed(1) + "% below statutory 32.0% threshold (TAS 3-2013). High export dispute risk.";
+        simDesc.className = "font-code-sm text-code-sm text-tertiary";
+      } else if (tempViolation) {
+        simBanner.className = "p-3 rounded border border-tertiary bg-tertiary-container/20 transition-all duration-200";
+        simIcon.className = "material-symbols-outlined text-tertiary text-xl";
+        simIcon.textContent = "thermostat";
+        simTitle.textContent = "COLD-CHAIN COMPLIANCE WARNING";
+        simTitle.className = "font-headline-sm text-headline-sm font-bold text-tertiary";
+        simDesc.textContent = "Core reefer temperature " + temp.toFixed(1) + "°C is outside optimal export corridor range (12°C - 15°C).";
+        simDesc.className = "font-code-sm text-code-sm text-tertiary";
+      } else {
+        simBanner.className = "p-3 rounded border border-primary bg-primary-container/15 transition-all duration-200";
+        simIcon.className = "material-symbols-outlined text-primary text-xl";
+        simIcon.textContent = "check_circle";
+        simTitle.textContent = "100% GACC & ASEAN STATUTORY CONFORMANT";
+        simTitle.className = "font-headline-sm text-headline-sm font-bold text-on-surface";
+        simDesc.textContent = "Auto-clearance cryptographic token issued for Gate 04. No manual quarantine intervention required.";
+        simDesc.className = "font-code-sm text-code-sm text-secondary";
+      }
+    }
+
+    cdInput.addEventListener('input', evaluateMetrics);
+    dmInput.addEventListener('input', evaluateMetrics);
+    tempInput.addEventListener('input', evaluateMetrics);
+
+    // Anomaly simulation button toggle
+    btnAnomaly.addEventListener('click', () => {
+      cdInput.value = 0.062;
+      dmInput.value = 29.5;
+      tempInput.value = 17.2;
+      evaluateMetrics();
+    });
+
+    // Reset & Run Compliance Simulation
+    btnSimulateHeader.addEventListener('click', () => {
+      cdInput.value = 0.024;
+      dmInput.value = 34.2;
+      tempInput.value = 13.5;
+      evaluateMetrics();
+    });
+
+    // Mock Export JSON Download
+    btnExport.addEventListener('click', () => {
+      const exportData = {
+        station: "STATION 04 // MEKONG",
+        gate: "MK-8821",
+        corridor: "VN_CN",
+        protocol: "GACC Decree 248/249",
+        deterministic_rules_count: 8,
+        tested_cadmium_mg_kg: parseFloat(cdInput.value),
+        tested_dry_matter_percent: parseFloat(dmInput.value),
+        core_reefer_temp_celsius: parseFloat(tempInput.value),
+        timestamp: new Date().toISOString(),
+        sha256_hash: "e9a8f4c718b90a612d6a54c9d9241b2a95c47f893e410b02f83196a67893bf2"
+      };
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "mekong-clearance-rulepack-spec.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    });
+  </script>
+</body></html>

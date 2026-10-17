@@ -25,7 +25,10 @@ export function serveStitchStaticAsset(pathname: string): Response | undefined {
   }
 
   const publicDir = join(process.cwd(), "site", "public");
-  const fullPath = join(publicDir, safeFilename);
+  const queueDir = join(process.cwd(), "queue");
+  const primaryPath = join(publicDir, safeFilename);
+  const fallbackPath = join(queueDir, safeFilename);
+  const fullPath = existsSync(primaryPath) ? primaryPath : fallbackPath;
 
   if (!existsSync(fullPath)) {
     return errorResponse(`Stitch asset '${safeFilename}' not found.`, 404, "STITCH_PAGE_NOT_FOUND");

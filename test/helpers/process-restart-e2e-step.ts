@@ -33,51 +33,35 @@ export async function runEndToEndProcessRestartScenario(
     expect(pid1).toBeGreaterThan(0);
 
     const createRes = await fetch(`${baseUrl}/api/dossiers`, {
-      method: "POST",
-      headers: authHeaders,
+      method: "POST", headers: authHeaders,
       body: JSON.stringify({
-        dossierCode: "DOS-RESTART-001",
-        containerNumber: "MSKU1234565",
-        sealNumber: "SEAL-RST-999",
-        borderGate: "Huu Nghi",
-        targetMarket: "CN",
-        targetTemperatureC: 13.5,
-        declaredNetWeightKg: 18400,
-        declaredBoxCount: 920,
+        dossierCode: "DOS-RESTART-001", containerNumber: "MSKU1234565", sealNumber: "SEAL-RST-999",
+        borderGate: "Huu Nghi", targetMarket: "CN", targetTemperatureC: 13.5,
+        declaredNetWeightKg: 18400, declaredBoxCount: 920,
       }),
     });
     expect(createRes.status).toBe(201);
-    const createData = (await createRes.json()) as { success: boolean; data: { id: string } };
-    const dossierId = createData.data.id;
+    const dossierId = ((await createRes.json()) as { success: boolean; data: { id: string } }).data.id;
     expect(dossierId).toBeDefined();
 
     const uploadRes = await fetch(`${baseUrl}/api/dossiers/${dossierId}/documents`, {
-      method: "POST",
-      headers: authHeaders,
+      method: "POST", headers: authHeaders,
       body: JSON.stringify({
-        fileName: "PackingList_RestartTest.pdf",
-        documentType: "PACKING_LIST",
+        fileName: "PackingList_RestartTest.pdf", documentType: "PACKING_LIST",
         base64Content: Buffer.from("%PDF-1.5 Synthetic Packing List for Process Restart Test").toString("base64"),
-        fixtureFields: {
-          container_number: { raw: "MSKU1234565" },
-          seal_number: { raw: "SEAL-RST-999" },
-        },
+        fixtureFields: { container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-RST-999" } },
       }),
     });
     expect(uploadRes.status).toBe(201);
-    const uploadData = (await uploadRes.json()) as {
-      success: boolean;
-      data: { documentId: string; sha256Hash: string };
-    };
-    const { documentId, sha256Hash: originalDocSha } = uploadData.data;
+    const { documentId, sha256Hash: originalDocSha } = (
+      (await uploadRes.json()) as { success: boolean; data: { documentId: string; sha256Hash: string } }
+    ).data;
     expect(documentId).toBeDefined();
     expect(originalDocSha).toBeDefined();
 
     const getRes1 = await fetch(`${baseUrl}/api/dossiers/${dossierId}`, { headers: authHeaders });
     const dossier1 = (await getRes1.json()) as {
-      data: {
-        documents: Array<{ id: string; extractedFields: Array<{ id: string; fieldKey: string; rawValue: string }> }>;
-      };
+      data: { documents: Array<{ id: string; extractedFields: Array<{ id: string; fieldKey: string; rawValue: string }> }> };
     };
     const targetDoc = dossier1.data.documents.find((d) => d.id === documentId);
     expect(targetDoc).toBeDefined();
@@ -98,7 +82,6 @@ export async function runEndToEndProcessRestartScenario(
     };
     expect(auditData1.success).toBe(true);
     expect(auditData1.data.events.length).toBeGreaterThanOrEqual(3);
-
     expect(existsSync(dbPath)).toBe(true);
     expect(existsSync(dataDir)).toBe(true);
     expect(readdirSync(dataDir).length).toBeGreaterThan(0);
@@ -109,9 +92,7 @@ export async function runEndToEndProcessRestartScenario(
     let serverIsDown = false;
     try {
       await fetch(`${baseUrl}/api/health`, { signal: AbortSignal.timeout(500) });
-    } catch {
-      serverIsDown = true;
-    }
+    } catch { serverIsDown = true; }
     expect(serverIsDown).toBe(true);
 
     runningProc = await startServerProcess();
@@ -124,14 +105,9 @@ export async function runEndToEndProcessRestartScenario(
     const dossier2 = (await getRes2.json()) as {
       success: boolean;
       data: {
-        id: string;
-        dossierCode: string;
-        containerNumber: string;
-        sealNumber: string;
-        lifecycleState: string;
+        id: string; dossierCode: string; containerNumber: string; sealNumber: string; lifecycleState: string;
         documents: Array<{
-          id: string;
-          sha256Hash: string;
+          id: string; sha256Hash: string;
           extractedFields: Array<{ id: string; fieldKey: string; confirmedValue: string; verificationStatus: string }>;
         }>;
       };
@@ -144,22 +120,17 @@ export async function runEndToEndProcessRestartScenario(
     expect(dossier2.data.sealNumber).toBe("SEAL-RST-999");
 
     const reloadedDoc = dossier2.data.documents.find((d) => d.id === documentId);
-    expect(reloadedDoc).toBeDefined();
     expect(reloadedDoc?.sha256Hash).toBe(originalDocSha);
-
     const reloadedField = reloadedDoc?.extractedFields.find((f) => f.id === fieldId);
-    expect(reloadedField).toBeDefined();
     expect(reloadedField?.confirmedValue).toBe("MSKU1234565");
     expect(reloadedField?.verificationStatus).toBe("HUMAN_VERIFIED");
 
     const auditRes2 = await fetch(`${baseUrl}/api/dossiers/${dossierId}/audit`, { headers: authHeaders });
     expect(auditRes2.status).toBe(200);
     const auditData2 = (await auditRes2.json()) as {
-      success: boolean;
-      data: { count: number; isChainValid: boolean; events: Array<{ id: string }> };
+      success: boolean; data: { count: number; isChainValid: boolean; events: Array<{ id: string }> };
     };
-    expect(auditData2.success).toBe(true);
-    expect(auditData2.data.isChainValid).toBe(true);
+    expect(auditData2.success && auditData2.data.isChainValid).toBe(true);
     expect(auditData2.data.events.length).toBe(auditData1.data.events.length);
 
     await terminateProcess(runningProc);

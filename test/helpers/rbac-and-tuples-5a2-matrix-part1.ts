@@ -1,14 +1,9 @@
 import { expect } from "bun:test";
 import { seedTestPilotActor } from "./auth-test-helper.js";
 import {
-  createHttpCaller,
-  type DocumentDetailItem,
-  type DossierDetailPayload,
-  type GrantResponsePayload,
-  type HttpCaller,
-  makeDocPayloads,
-  type SeededActor,
-  type WorkspaceAppInstance,
+  createHttpCaller, type DocumentDetailItem, type DossierDetailPayload,
+  type GrantResponsePayload, type HttpCaller, makeDocPayloads,
+  type SeededActor, type WorkspaceAppInstance,
 } from "./rbac-and-tuples-5a2-tuples.js";
 
 export interface RbacMatrixContext {
@@ -81,8 +76,7 @@ export async function runRbacMatrixCreateUploadShareVerifySteps(
   const clerkDocs = makeDocPayloads("SEAL-C", "C");
   const preUploadAudit = app.workspace.auditLedger.getEventsForDossier(dosClerkId, "TEN-A").length;
   for (const denied of [aViewer, aAuditor, bAdmin, bClerk]) {
-    const r = await callHttp(`/api/dossiers/${dosClerkId}/documents`, denied.sessionCookie, "POST", clerkDocs[0]);
-    expect(r.status).toBe(403);
+    expect((await callHttp(`/api/dossiers/${dosClerkId}/documents`, denied.sessionCookie, "POST", clerkDocs[0])).status).toBe(403);
   }
   expect(app.workspace.getRawDossier(dosClerkId)?.documents.length).toBe(0);
   expect(app.workspace.auditLedger.getEventsForDossier(dosClerkId, "TEN-A").length).toBe(preUploadAudit);
@@ -127,8 +121,7 @@ export async function runRbacMatrixCreateUploadShareVerifySteps(
   const roGrantId = ((await roGrant.json()) as GrantResponsePayload).grant.id;
   const preVerifyAudit = app.workspace.auditLedger.getEventsForDossier(dosClerkId, "TEN-A").length;
   for (const denied of [aViewer, aAuditor, bClerk, bMgr, bAdmin, bViewer, bAuditor]) {
-    const r = await callHttp(`/api/dossiers/${dosClerkId}/documents/${d0.id}/fields/${d0.extractedFields[0]!.id}/verify`, denied.sessionCookie, "POST", { confirmedValue: d0.extractedFields[0]!.rawValue });
-    expect(r.status).toBe(403);
+    expect((await callHttp(`/api/dossiers/${dosClerkId}/documents/${d0.id}/fields/${d0.extractedFields[0]!.id}/verify`, denied.sessionCookie, "POST", { confirmedValue: d0.extractedFields[0]!.rawValue })).status).toBe(403);
   }
   expect(app.workspace.auditLedger.getEventsForDossier(dosClerkId, "TEN-A").length).toBe(preVerifyAudit);
   await callHttp(`/api/dossiers/${dosClerkId}/shares/${roGrantId}/revoke`, aMgr.sessionCookie, "POST", {});
@@ -143,8 +136,7 @@ export async function runRbacMatrixCreateUploadShareVerifySteps(
     expect((await callHttp(`/api/dossiers/${dosClerkId}/documents/${d2.id}/fields/${f.id}/verify`, aAdmin.sessionCookie, "POST", { confirmedValue: f.rawValue })).status).toBe(200);
   }
 
-  const rvRes = await callHttp(`/api/dossiers/${dosClerkId}/shares`, aAdmin.sessionCookie, "POST", { ...shareBase, scope: "READ_AND_VERIFY" });
-  expect(rvRes.status).toBe(201);
+  expect((await callHttp(`/api/dossiers/${dosClerkId}/shares`, aAdmin.sessionCookie, "POST", { ...shareBase, scope: "READ_AND_VERIFY" })).status).toBe(201);
   for (const deniedPartner of [bViewer, bAuditor]) {
     expect((await callHttp(`/api/dossiers/${dosClerkId}/documents/${d0.id}/fields/${d0.extractedFields[0]!.id}/verify`, deniedPartner.sessionCookie, "POST", { confirmedValue: d0.extractedFields[0]!.rawValue })).status).toBe(403);
   }

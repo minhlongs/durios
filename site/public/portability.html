@@ -149,329 +149,102 @@
   </style>
 </head>
 <body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md select-none">
+<!-- DURIOS UNIFIED TOP NAV BAR -->
+<div id="durios-unified-top-nav" style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 7px 14px; font-family: 'Inter', sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 23-SCREEN NAV</span>
+    <span style="color: #1F3327;">|</span>
+    <a href="gallery.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">⭐️ Master Hub</a>
+    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">1. Workspace</a>
+    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">2. Dossiers</a>
+    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">3. Auditor (5 Gates)</a>
+    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">4. Buyer Portal</a>
+    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">5. Cluster Ops</a>
+    <a href="portability.html" style="color: #10B981; font-weight: 700; text-decoration: none; padding: 3px 8px; border-radius: 4px; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.45);">6. Portability</a>
+    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">7. Pro SaaS</a>
+    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">8. Style Guide</a>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
+    <a href="corridors.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🌏 9. Corridors</a>
+    <a href="blueprint.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🧭 10. Blueprint 25</a>
+    <a href="security-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px; ">🛡️ 11. Security Vault</a>
+    <a href="organic-escrow-guard.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">⚖️ 12. Escrow Guard</a>
+    <a href="webhook-sync-queue.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔄 13. Lab Webhooks</a>
+    <a href="socratic-introspector.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">🧠 14. Socratic 5-Turn</a>
+    <a href="rehearsal-command.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🎯 15. Rehearsal Cmd</a>
+    <a href="mit-verifier-lab.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔬 16. MIT Verifier Lab</a>
+    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">📝 Bút Dạ Quang</a>
+    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📊 Excel Grid</a>
+    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px; ">💬 Zalo Bot</a>
+    <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📱 Mobile</a>
+    <a href="field-proven.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">☀️ Field POS</a>
+    <a href="foundry.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🔐 Foundry</a>
+  </div>
+</div>
 
 <!-- DURIOS UNIFIED TOP NAV BAR -->
-<div style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 8px 16px; font-family: sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
-  <div style="display: flex; align-items: center; gap: 8px;">
-    <span style="font-weight: 800; color: #10B981; font-size: 13px; letter-spacing: 0.05em;">DURIOS NAV</span>
-    <span style="color: #6EE7B7;">|</span>
-    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px; border-radius: 4px; background: rgba(16,185,129,0.15);">1. Workspace</a>
-    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">2. Dossiers</a>
-    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">3. Auditor (5 Gates)</a>
-    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">4. Buyer Portal</a>
-    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">5. Cluster Ops</a>
-    <a href="portability.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">6. Portability</a>
-    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">7. Pro SaaS</a>
-    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">8. Style Guide</a>
+<div id="durios-unified-top-nav" style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 7px 14px; font-family: 'Inter', sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 22-SCREEN NAV</span>
+    <span style="color: #1F3327;">|</span>
+    <a href="gallery.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">⭐️ Master Hub</a>
+    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">1. Workspace</a>
+    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">2. Dossiers</a>
+    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">3. Auditor (5 Gates)</a>
+    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">4. Buyer Portal</a>
+    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">5. Cluster Ops</a>
+    <a href="portability.html" style="color: #10B981; font-weight: 700; text-decoration: none; padding: 3px 8px; border-radius: 4px; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.45);">6. Portability</a>
+    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">7. Pro SaaS</a>
+    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">8. Style Guide</a>
   </div>
-  <div style="display: flex; align-items: center; gap: 6px;">
-    <span style="color: #F59E0B; font-weight: 700;">Thực địa:</span>
-    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px;">📝 Bút Dạ Quang</a>
-    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">📊 Excel Grid</a>
-    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px;">💬 Zalo Bot</a>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
+    <a href="corridors.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🌏 9. Corridors</a>
+    <a href="blueprint.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🧭 10. Blueprint 25</a>
+    <a href="security-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px; ">🛡️ 11. Security Vault</a>
+    <a href="organic-escrow-guard.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">⚖️ 12. Escrow Guard</a>
+    <a href="webhook-sync-queue.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔄 13. Lab Webhooks</a>
+    <a href="socratic-introspector.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">🧠 14. Socratic 5-Turn</a>
+    <a href="rehearsal-command.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🎯 15. Rehearsal Cmd</a>
+    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">📝 Bút Dạ Quang</a>
+    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📊 Excel Grid</a>
+    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px; ">💬 Zalo Bot</a>
+    <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📱 Mobile</a>
+    <a href="field-proven.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">☀️ Field POS</a>
+    <a href="foundry.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🔐 Foundry</a>
   </div>
 </div>
 
-<!-- ========================================================================= -->
-<!-- 1. TOP COMMAND BAR (Based on Shared Components JSON)                      -->
-<!-- ========================================================================= -->
-<header class="flex justify-between items-center w-full px-margin h-14 bg-surface-container border-b border-outline-variant shrink-0 z-50">
-<!-- Left: Identity & Search/Scope Context -->
-<div class="flex items-center gap-space-lg">
-<div class="flex items-center gap-space-sm">
-<span class="material-symbols-outlined text-primary text-headline-sm" data-icon="terminal">terminal</span>
-<span class="text-headline-sm font-headline-sm uppercase tracking-wider text-primary font-bold">
-          MEKONG CLEAR // GACC DUR-EXP-OPS
-        </span>
-</div>
-<div class="hidden xl:flex items-center gap-space-sm text-code-sm font-code-sm text-on-surface-variant bg-surface-container-lowest px-space-md py-space-xs border border-outline-variant rounded">
-<span class="text-primary font-code-md">FACILITY:</span>
-<span>TIEN GIANG #VN-84B (CAI LẬY)</span>
-<span class="text-outline">|</span>
-<span class="text-secondary font-code-md">TENANT:</span>
-<span class="text-on-surface">Cai Lậy Hub #01 (VN-TG-PH-001)</span>
-</div>
-</div>
-<!-- Center: Navigation Links (Mapped to ecosystem destinations) -->
-<nav class="hidden md:flex items-center gap-space-lg">
-<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="index.html">Command Station</a>
-<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="dossiers.html">Dossiers</a>
-<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="auditor.html">Field Auditor</a>
-<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="buyer.html">Buyer Verification</a>
-<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="cluster.html">Cluster Ops</a>
-<a class="text-primary border-b-2 border-primary font-code-md text-code-md py-1" href="portability.html">Portability Hub</a>
-</nav>
-<!-- Right: Telemetry Health & Node Badges -->
-<div class="flex items-center gap-space-md">
-<div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 border border-outline-variant rounded">
-<span class="inline-block w-2 h-2 rounded-full bg-primary-container radar-pulse"></span>
-<span class="text-label-sm font-label-sm text-primary uppercase tracking-wider">LEDGER #942,109</span>
-<span class="text-code-sm font-code-sm text-on-surface-variant ml-1">12ms</span>
-</div>
-<div class="hidden sm:flex items-center gap-space-xs bg-surface-container-high px-space-sm py-1 border border-primary-container/40 rounded">
-<span class="material-symbols-outlined text-primary text-label-md" data-icon="lock_open_right">lock_open_right</span>
-<span class="text-label-sm font-label-sm text-primary tracking-tight">ZERO-LOCKIN AIR-GAP</span>
-</div>
-<!-- Icon actions -->
-<div class="flex items-center gap-1 text-on-surface-variant border-l border-outline-variant pl-space-sm">
-<button class="p-1.5 hover:bg-surface-variant hover:text-on-surface transition-colors duration-150 rounded" title="Sensors Mesh">
-<span class="material-symbols-outlined text-headline-sm" data-icon="sensors">sensors</span>
-</button>
-<button class="p-1.5 hover:bg-surface-variant hover:text-on-surface transition-colors duration-150 rounded" title="Alerts &amp; Audit">
-<span class="material-symbols-outlined text-headline-sm" data-icon="notifications">notifications</span>
-</button>
-</div>
-<div class="w-7 h-7 rounded border border-outline-variant bg-surface-container-high flex items-center justify-center text-primary font-code-md text-code-sm" title="Chief Customs Verification Officer Badge">
-        VN
-      </div>
-</div>
-</header>
-<!-- ========================================================================= -->
-<!-- 2. MAIN APPLICATION CONTENT CANVAS                                       -->
-<!-- ========================================================================= -->
-<main class="flex-1 flex flex-col p-gutter gap-gutter custom-scroll overflow-y-auto">
-<!-- SOVEREIGN CHARTER BANNER -->
-<section class="bg-surface-container-low border border-primary-container/30 rounded p-space-md relative overflow-hidden">
-<div class="absolute -right-10 -bottom-10 w-60 h-60 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
-<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
-<div class="space-y-1">
-<div class="flex flex-wrap items-center gap-space-sm">
-<span class="material-symbols-outlined text-primary text-headline-md" data-icon="verified_user">verified_user</span>
-<h1 class="text-headline-sm font-headline-sm text-on-surface font-bold tracking-tight">
-              100% DATA OWNERSHIP — EXPORT ANYTIME UNDER AGPL-3.0 CORE
-            </h1>
-<span class="px-space-xs py-0.5 rounded bg-primary-container/20 border border-primary text-primary text-label-sm font-label-sm uppercase tracking-wider">
-              Cryptographically Guaranteed
-            </span>
-</div>
-<p class="text-body-sm font-body-sm text-on-surface-variant max-w-5xl">
-            You are not locked into any proprietary SaaS vendor. All orchard telemetry, ICP-MS lab certificates, smart bolt RFID timestamps, and GACC customs dossiers are cryptographically sovereign and owned by <span class="text-on-surface font-code-sm text-code-sm">Cai Lậy Hub #01</span>. Full offline execution and self-hosting enabled.
-          </p>
-</div>
-<!-- Badges Grid -->
-<div class="flex flex-wrap items-center gap-space-xs shrink-0">
-<div class="px-space-sm py-1 bg-surface-container-lowest border border-outline-variant rounded flex items-center gap-1">
-<span class="material-symbols-outlined text-primary text-label-sm" data-icon="code">code</span>
-<span class="text-label-sm font-label-sm text-on-surface">AGPL-3.0 VERIFIED CORE</span>
-</div>
-<div class="px-space-sm py-1 bg-surface-container-lowest border border-outline-variant rounded flex items-center gap-1">
-<span class="material-symbols-outlined text-secondary text-label-sm" data-icon="shield">shield</span>
-<span class="text-label-sm font-label-sm text-on-surface">ZERO VENDOR LOCK-IN</span>
-</div>
-<div class="px-space-sm py-1 bg-surface-container-lowest border border-outline-variant rounded flex items-center gap-1">
-<span class="material-symbols-outlined text-tertiary text-label-sm" data-icon="visibility_off">visibility_off</span>
-<span class="text-label-sm font-label-sm text-on-surface">PEDERSEN BLIND PRIVACY</span>
-</div>
-<div class="px-space-sm py-1 bg-surface-container-lowest border border-outline-variant rounded flex items-center gap-1">
-<span class="material-symbols-outlined text-primary text-label-sm" data-icon="power_off">power_off</span>
-<span class="text-label-sm font-label-sm text-on-surface">STANDALONE OFFLINE</span>
-</div>
-</div>
-</div>
-</section>
-<!-- CORE WORKSPACE GRID: BUNDLE GENERATOR (LEFT) & VERIFICATION TERMINAL (RIGHT) -->
-<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
-<!-- ===================================================================== -->
-<!-- 3. CRYPTOGRAPHIC BUNDLE GENERATION CARD (7 COLS)                      -->
-<!-- ===================================================================== -->
-<section class="lg:col-span-7 bg-surface-container border border-outline-variant rounded p-space-lg flex flex-col gap-space-lg">
-<!-- Header -->
-<div class="border-b border-outline-variant pb-space-md flex justify-between items-start">
-<div>
-<div class="flex items-center gap-2">
-<span class="material-symbols-outlined text-primary text-headline-sm" data-icon="inventory_2">inventory_2</span>
-<h2 class="text-headline-sm font-headline-sm text-on-surface font-semibold">
-                Cryptographic Portability Bundle Generator
-              </h2>
-</div>
-<p class="text-code-sm font-code-sm text-on-surface-variant mt-0.5">
-              Specification: Mekong-GACC v3.4 / RFC 6962 Merkle Tree Export
-            </p>
-</div>
-<div class="text-right">
-<span class="text-label-sm font-label-sm uppercase text-outline">Target Schema</span>
-<div class="text-code-sm font-code-sm text-primary font-bold">MK-SOVEREIGN-JSON // v3.4</div>
-</div>
-</div>
-<!-- Date Range Filter & Quick Selectors -->
-<div class="space-y-space-xs">
-<label class="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">
-            Export Time Horizon &amp; Block Depth
-          </label>
-<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-xs">
-<button class="py-1 px-space-sm bg-surface-container-low border border-outline-variant hover:border-primary text-code-sm font-code-sm text-on-surface text-center rounded transition-colors">
-              Last 24h (Live)
-            </button>
-<button class="py-1 px-space-sm bg-surface-container-low border border-outline-variant hover:border-primary text-code-sm font-code-sm text-on-surface text-center rounded transition-colors">
-              Last 7 Days
-            </button>
-<button class="py-1 px-space-sm bg-surface-container-low border border-outline-variant hover:border-primary text-code-sm font-code-sm text-on-surface text-center rounded transition-colors">
-              Month-to-Date
-            </button>
-<button class="py-1 px-space-sm bg-surface-container-high border-2 border-primary text-code-sm font-code-sm text-primary text-center rounded font-semibold">
-              Feb 2025 (Full MTD)
-            </button>
-</div>
-<div class="flex items-center gap-2 mt-2 bg-surface-container-lowest p-space-sm border border-outline-variant rounded">
-<span class="material-symbols-outlined text-on-surface-variant text-label-md" data-icon="date_range">date_range</span>
-<span class="text-code-sm font-code-sm text-on-surface">Range Window:</span>
-<input class="bg-transparent border-0 text-code-sm font-code-sm text-primary focus:ring-0 w-full p-0" readonly="" type="text" value="2025-02-01T00:00:00Z  —  2025-02-28T23:59:59Z"/>
-<span class="text-label-sm font-label-sm text-outline uppercase">28 Days Selected</span>
-</div>
-</div>
-<!-- Scope Selection Checkboxes -->
-<div class="space-y-space-xs">
-<label class="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant flex justify-between">
-<span>Cryptographic Payload Scope</span>
-<span class="text-primary">100% Completeness</span>
-</label>
-<div class="space-y-2">
-<!-- Item 1 -->
-<label class="flex items-start gap-space-sm p-space-sm bg-surface-container-low border border-outline-variant rounded hover:border-primary/50 cursor-pointer transition-colors">
-<input checked="" class="mt-0.5 rounded-none text-primary-container focus:ring-0 bg-surface-container-lowest border-outline-variant" type="checkbox"/>
-<div class="flex-1">
-<div class="flex items-center justify-between">
-<span class="text-body-md font-body-md text-on-surface font-medium">All 14 Active Export Dossiers</span>
-<span class="text-label-sm font-label-sm text-primary uppercase">252,000 kg Durian Monthong &amp; Ri6</span>
-</div>
-<p class="text-body-sm font-body-sm text-on-surface-variant">Includes batch manifests, phytosanitary certificates, orchard coordinates &amp; GACC clearance tokens.</p>
-</div>
-</label>
-<!-- Item 2 -->
-<label class="flex items-start gap-space-sm p-space-sm bg-surface-container-low border border-outline-variant rounded hover:border-primary/50 cursor-pointer transition-colors">
-<input checked="" class="mt-0.5 rounded-none text-primary-container focus:ring-0 bg-surface-container-lowest border-outline-variant" type="checkbox"/>
-<div class="flex-1">
-<div class="flex items-center justify-between">
-<span class="text-body-md font-body-md text-on-surface font-medium">Immutable Audit Ledger</span>
-<span class="text-label-sm font-label-sm text-secondary uppercase">48 Signed State Transitions</span>
-</div>
-<p class="text-body-sm font-body-sm text-on-surface-variant">Raw SHA-256 state hashes, GACC customs officer signatures, quarantine timestamps &amp; cold-chain checks.</p>
-</div>
-</label>
-<!-- Item 3 -->
-<label class="flex items-start gap-space-sm p-space-sm bg-surface-container-low border border-outline-variant rounded hover:border-primary/50 cursor-pointer transition-colors">
-<input checked="" class="mt-0.5 rounded-none text-primary-container focus:ring-0 bg-surface-container-lowest border-outline-variant" type="checkbox"/>
-<div class="flex-1">
-<div class="flex items-center justify-between">
-<span class="text-body-md font-body-md text-on-surface font-medium">Cryptographic Manifests &amp; Bilateral e-Phyto Telegrams</span>
-<span class="text-label-sm font-label-sm text-tertiary uppercase">UN/CEFACT e-Phyto XML</span>
-</div>
-<p class="text-body-sm font-body-sm text-on-surface-variant">Official bilateral exchange payloads between Vietnam MARD and General Administration of Customs China.</p>
-</div>
-</label>
-<!-- Item 4 -->
-<label class="flex items-start gap-space-sm p-space-sm bg-surface-container-low border border-outline-variant rounded hover:border-primary/50 cursor-pointer transition-colors">
-<input checked="" class="mt-0.5 rounded-none text-primary-container focus:ring-0 bg-surface-container-lowest border-outline-variant" type="checkbox"/>
-<div class="flex-1">
-<div class="flex items-center justify-between">
-<span class="text-body-md font-body-md text-on-surface font-medium">Raw Cadmium ICP-MS Lab Spectra &amp; Calibration Datasets</span>
-<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">PPM Spectrometry</span>
-</div>
-<p class="text-body-sm font-body-sm text-on-surface-variant">Uncompressed Agilent ICP-MS spectral lines, curve regressions &amp; heavy-metal compliance proofs (&lt;0.05 mg/kg).</p>
-</div>
-</label>
-</div>
-</div>
-<!-- Key Signing & Provenance Section -->
-<div class="space-y-space-xs bg-surface-container-lowest p-space-md border border-outline-variant rounded">
-<div class="flex items-center justify-between">
-<label class="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
-<span class="material-symbols-outlined text-primary text-label-md" data-icon="key">key</span>
-              Packhouse Signer ECDSA Key / HMAC Authority
-            </label>
-<span class="text-code-sm font-code-sm text-primary">Valid • Registered at Tien Giang Node</span>
-</div>
-<div class="relative">
-<input class="w-full bg-surface-container-low border border-outline-variant text-code-md font-code-md text-on-surface px-space-md py-1.5 rounded focus:border-primary focus:ring-0" readonly="" type="text" value="ed25519-pk-vn-tg-ph-001-cailay-2025"/>
-<span class="absolute right-3 top-2 material-symbols-outlined text-on-surface-variant text-headline-sm" data-icon="check_circle">check_circle</span>
-</div>
-<div class="flex items-center justify-between text-code-sm font-code-sm pt-1">
-<span class="text-on-surface-variant">Simulated Merkle Root:</span>
-<span class="text-primary font-bold">0x8f2c39d48b11a7e28904df93b82149a15f02bc09312</span>
-</div>
-</div>
-<!-- Action Triggers -->
-<div class="flex flex-col sm:flex-row items-center gap-space-sm pt-space-xs">
-<button class="w-full sm:flex-1 py-2.5 px-space-lg bg-primary-container hover:bg-secondary text-on-primary-container font-headline-sm font-semibold rounded flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.99] shadow-sm">
-<span class="material-symbols-outlined" data-icon="download">download</span>
-<span>Generate &amp; Download Signed Portability Bundle (.json)</span>
-</button>
-<button class="w-full sm:w-auto py-2.5 px-space-md bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface text-code-md font-code-md rounded flex items-center justify-center gap-2 transition-colors">
-<span class="material-symbols-outlined text-primary" data-icon="qr_code_2">qr_code_2</span>
-<span>Air-Gapped QR Tarball (.tar.gz)</span>
-</button>
-</div>
-<div class="flex items-center justify-between text-code-sm font-code-sm text-outline border-t border-outline-variant pt-space-xs">
-<span>Est. Payload Size: ~4.8 MB uncompressed</span>
-<span>Integrity Engine: RFC-6962 SHA-256 Merkle Audit</span>
-</div>
-</section>
-<!-- ===================================================================== -->
-<!-- 4. STANDALONE VERIFICATION CLI ENGINE & MIGRATION PIPELINE (5 COLS)  -->
-<!-- ===================================================================== -->
-<section class="lg:col-span-5 bg-surface-container border border-outline-variant rounded p-space-md flex flex-col gap-space-md">
-<!-- Terminal Header with Unix Controls -->
-<div class="flex items-center justify-between border-b border-outline-variant pb-space-xs">
-<div class="flex items-center gap-2">
-<div class="flex items-center gap-1.5">
-<span class="w-3 h-3 rounded-full bg-error-container border border-error/50 inline-block"></span>
-<span class="w-3 h-3 rounded-full bg-tertiary-container border border-tertiary/50 inline-block"></span>
-<span class="w-3 h-3 rounded-full bg-primary-container border border-primary/50 inline-block"></span>
-</div>
-<span class="text-code-sm font-code-sm text-on-surface-variant font-semibold ml-2">
-              mekong-cli // standalone-migrator
-            </span>
-</div>
-<div class="flex items-center gap-1">
-<span class="text-label-sm font-label-sm uppercase bg-surface-container-lowest px-1.5 py-0.5 rounded border border-outline-variant text-primary">
-              BUN / NODE / DOCKER
-            </span>
-</div>
-</div>
-<!-- Description -->
-<div>
-<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">
-            Standalone Sovereign Migration &amp; Validation Engine
-          </h3>
-<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">
-            Zero-cloud dependence. You can run this open-source tool offline in a bunker or local facility server to verify signatures and unpack directly to PostgreSQL or SQLite.
-          </p>
-</div>
-<!-- Interactive Terminal CLI Box -->
-<div class="bg-surface-container-lowest border border-outline-variant rounded p-space-md text-code-sm font-code-sm space-y-3 font-mono leading-relaxed select-text overflow-x-auto custom-scroll">
-<div>
-<div class="text-outline"># 1. Fetch standalone open-core verification tool (zero-dep)</div>
-<div class="text-primary flex items-center gap-1">
-<span class="text-on-surface-variant">$</span> curl -fsSL https://open.mekongclear.vn/install-verifier.sh | sh
-            </div>
-</div>
-<div>
-<div class="text-outline"># 2. Validate signed bundle against local packhouse pubkey &amp; GACC root</div>
-<div class="text-primary flex items-center gap-1">
-<span class="text-on-surface-variant">$</span> bun run src/export/standalone-manifest-verifier.ts bundle-VN-TG-PH-001-20250228.json
-            </div>
-</div>
-<div>
-<div class="text-outline"># 3. Self-host migration / import to PostgreSQL or Local SQLite WAL</div>
-<div class="text-primary flex items-center gap-1">
-<span class="text-on-surface-variant">$</span> bun run src/export/import-sovereign-node.ts --target=localhost:5432/mekong_ops --bundle=bundle.json
-            </div>
-</div>
-<!-- Execution Output Mock -->
-<div class="border-t border-outline-variant/60 pt-2 space-y-1">
-<div class="text-secondary flex items-center gap-1.5">
-<span class="material-symbols-outlined text-label-sm" data-icon="check_circle">check_circle</span>
-<span>[INFO] Merkle Root: 0x8f2c...49a1 (14/14 leaf nodes valid)</span>
-</div>
-<div class="text-secondary flex items-center gap-1.5">
-<span class="material-symbols-outlined text-label-sm" data-icon="lock">lock</span>
-<span>[INFO] Zero leakage: Farmgate prices Pedersen-blinded.</span>
-</div>
-<div class="text-primary font-bold flex items-center gap-1.5">
-<span class="material-symbols-outlined text-label-sm" data-icon="done_all">done_all</span>
-<span>[SUCCESS] 100% Sovereign Portability Audit Passed. Offline DB hydrated.</span>
-</div>
-</div>
+
+<!-- DURIOS UNIFIED TOP NAV BAR -->
+<!-- DURIOS UNIFIED TOP NAV BAR -->
+<div id="durios-unified-top-nav" style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 7px 14px; font-family: 'Inter', sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 21-SCREEN NAV</span>
+    <span style="color: #1F3327;">|</span>
+    <a href="gallery.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">⭐️ Master Hub</a>
+    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">1. Workspace</a>
+    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">2. Dossiers</a>
+    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">3. Auditor (5 Gates)</a>
+    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">4. Buyer Portal</a>
+    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">5. Cluster Ops</a>
+    <a href="portability.html" style="color: #10B981; font-weight: 700; text-decoration: none; padding: 3px 8px; border-radius: 4px; background: rgba(16,185,129,0.2); border: 1px solid rgba(16,185,129,0.45);">6. Portability</a>
+    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">7. Pro SaaS</a>
+    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">8. Style Guide</a>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
+    <a href="corridors.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🌏 9. Corridors</a>
+    <a href="blueprint.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🧭 10. Blueprint 25</a>
+    <a href="security-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px; ">🛡️ 11. Security Vault</a>
+    <a href="organic-escrow-guard.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">⚖️ 12. Escrow Guard</a>
+    <a href="webhook-sync-queue.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔄 13. Lab Webhooks</a>
+    <a href="socratic-introspector.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">🧠 14. Socratic 5-Turn</a>
+    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">📝 Bút Dạ Quang</a>
+    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📊 Excel Grid</a>
+    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px; ">💬 Zalo Bot</a>
+    <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📱 Mobile</a>
+    <a href="field-proven.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">☀️ Field POS</a>
+    <a href="foundry.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🔐 Foundry</a>
+  </div>
 </div>
 <!-- Terminal Actions -->
 <div class="flex items-center gap-space-sm">
@@ -652,4 +425,5 @@
 <span class="text-primary font-bold">AGPLv3 Licensed</span>
 </div>
 </footer>
+  <script src="/stitch/durios-live-bridge.js" defer></script>
 </body></html>

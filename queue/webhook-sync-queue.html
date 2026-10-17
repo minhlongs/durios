@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DuriOS // Partner Lab Webhook Ingestor &amp; Hybrid Edge Sync Queue</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Inter, JetBrains Mono, Space Grotesk -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "primary-fixed-dim": "#4edea3",
+            "primary": "#4edea3",
+            "error": "#ffb4ab",
+            "tertiary": "#ffb95f",
+            "inverse-surface": "#dce5dc",
+            "on-tertiary-fixed-variant": "#653e00",
+            "on-secondary-fixed-variant": "#005137",
+            "on-background": "#dce5dc",
+            "on-secondary-fixed": "#002114",
+            "surface-container": "#19211c",
+            "on-surface-variant": "#bbcabf",
+            "inverse-primary": "#006c49",
+            "surface-dim": "#0d1510",
+            "surface-bright": "#333b35",
+            "on-tertiary-fixed": "#2a1700",
+            "on-error-container": "#ffdad6",
+            "on-tertiary-container": "#523200",
+            "surface-container-highest": "#2e3731",
+            "secondary": "#45dfa4",
+            "primary-container": "#10b981",
+            "on-surface": "#dce5dc",
+            "error-container": "#93000a",
+            "secondary-container": "#00bd85",
+            "on-primary-container": "#00422b",
+            "on-primary-fixed-variant": "#005236",
+            "surface-container-high": "#242c26",
+            "tertiary-container": "#e29100",
+            "on-tertiary": "#472a00",
+            "outline": "#86948a",
+            "on-secondary-container": "#00452e",
+            "secondary-fixed": "#68fcbf",
+            "background": "#0d1510",
+            "surface-container-lowest": "#08100b",
+            "secondary-fixed-dim": "#45dfa4",
+            "inverse-on-surface": "#2a322c",
+            "outline-variant": "#3c4a42",
+            "surface-container-low": "#151d18",
+            "surface": "#0d1510",
+            "on-primary": "#003824",
+            "surface-variant": "#2e3731",
+            "tertiary-fixed-dim": "#ffb95f",
+            "on-primary-fixed": "#002113",
+            "tertiary-fixed": "#ffddb8",
+            "primary-fixed": "#6ffbbe",
+            "surface-tint": "#4edea3",
+            "on-secondary": "#003825",
+            "on-error": "#690005"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin": "1.5rem",
+            "space-xl": "2rem",
+            "space-lg": "1.25rem",
+            "gutter-compact": "0.5rem",
+            "gutter": "1rem",
+            "margin-mobile": "0.75rem",
+            "space-xs": "0.25rem",
+            "space-md": "0.75rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "headline-xl": ["Inter", "sans-serif"],
+            "headline-lg": ["Inter", "sans-serif"],
+            "headline-md": ["Inter", "sans-serif"],
+            "headline-sm": ["Inter", "sans-serif"],
+            "body-lg": ["Inter", "sans-serif"],
+            "body-md": ["Inter", "sans-serif"],
+            "body-sm": ["Inter", "sans-serif"],
+            "label-md": ["JetBrains Mono", "monospace"],
+            "label-sm": ["JetBrains Mono", "monospace"],
+            "code-lg": ["JetBrains Mono", "monospace"],
+            "code-md": ["JetBrains Mono", "monospace"],
+            "code-sm": ["JetBrains Mono", "monospace"]
+          },
+          "fontSize": {
+            "headline-xl": ["32px", {"lineHeight": "40px", "fontWeight": "700"}],
+            "headline-lg": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+            "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+            "headline-sm": ["16px", {"lineHeight": "24px", "fontWeight": "600"}],
+            "body-lg": ["15px", {"lineHeight": "22px", "fontWeight": "400"}],
+            "body-md": ["13px", {"lineHeight": "18px", "fontWeight": "400"}],
+            "body-sm": ["12px", {"lineHeight": "16px", "fontWeight": "400"}],
+            "label-md": ["11px", {"lineHeight": "14px", "fontWeight": "600"}],
+            "label-sm": ["10px", {"lineHeight": "12px", "fontWeight": "600"}],
+            "code-lg": ["15px", {"lineHeight": "20px", "fontWeight": "500"}],
+            "code-md": ["13px", {"lineHeight": "18px", "fontWeight": "500"}],
+            "code-sm": ["11px", {"lineHeight": "14px", "fontWeight": "400"}]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 18px;
+      line-height: 1;
+      letter-spacing: normal;
+      text-transform: none;
+      display: inline-block;
+      white-space: nowrap;
+      word-wrap: normal;
+      direction: ltr;
+      -webkit-font-feature-settings: 'liga';
+      -webkit-font-smoothing: antialiased;
+    }
+    @keyframes emeraldPulse {
+      0%, 100% { opacity: 1; transform: scale(1); filter: drop-shadow(0 0 4px #10b981); }
+      50% { opacity: 0.4; transform: scale(0.92); filter: drop-shadow(0 0 1px #10b981); }
+    }
+    .pulse-indicator {
+      animation: emeraldPulse 2s infinite ease-in-out;
+    }
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background: #0d1510;
+    }
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background: #1f3b2c;
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased min-h-screen flex flex-col selection:bg-primary-container selection:text-on-primary-container">
+<!-- ==================== SHARED COMPONENT: TopNavBar ==================== -->
+<header class="flex justify-between items-center w-full px-4 h-14 bg-surface-container-lowest z-50 sticky top-0 border-b border-outline-variant">
+<div class="flex items-center gap-6">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container pulse-indicator"></span>
+<span class="text-headline-sm font-headline-sm font-bold tracking-tight text-primary">DuriOS Mekong Terminal</span>
+<span class="text-label-sm font-label-sm bg-surface-container px-1.5 py-0.5 text-secondary border border-outline-variant rounded">v3.45-WAL</span>
+</div>
+<!-- Navigation Links from JSON Anchor -->
+<nav class="hidden md:flex items-center gap-4 text-code-sm font-code-sm">
+<a class="text-on-surface-variant hover:text-on-surface transition-colors py-4" href="#telemetry">Telemetry</a>
+<!-- ACTIVE STATE: Lab Webhooks is the primary intent of this screen -->
+<a class="text-primary border-b-2 border-primary font-semibold py-4 flex items-center gap-1.5" href="#lab-webhooks">
+<span class="material-symbols-outlined text-primary" data-icon="webhook">webhook</span>
+          Lab Webhooks
+        </a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors py-4" href="#edge-sync">Edge Sync</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors py-4" href="#zalo-relay">Zalo Relay</a>
+<a class="text-on-surface-variant hover:text-on-surface transition-colors py-4" href="#audit-ledger">Audit Ledger</a>
+</nav>
+</div>
+<!-- Center Status Badges -->
+<div class="hidden xl:flex items-center gap-3">
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container border border-outline-variant rounded text-label-sm font-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span class="text-on-surface-variant">SQLITE OFFLINE WAL:</span>
+<span class="text-primary font-semibold" id="top-wal-status">ACTIVE (4 PENDING)</span>
+</div>
+<div class="flex items-center gap-1.5 px-2.5 py-1 bg-surface-container border border-outline-variant rounded text-label-sm font-label-sm">
+<span class="material-symbols-outlined text-tertiary text-xs" data-icon="shield">shield</span>
+<span class="text-on-surface-variant">HMAC-SHA256 GUARD:</span>
+<span class="text-tertiary font-semibold">ARMED</span>
+</div>
+<div class="flex items-center gap-1.5 px-2 py-1 bg-surface-container-high border border-outline-variant rounded text-label-sm font-label-sm text-secondary">
+<span class="material-symbols-outlined text-xs" data-icon="cell_tower">cell_tower</span>
+<span id="latency-val">12ms EDGE</span>
+</div>
+</div>
+<!-- Trailing Actions from JSON -->
+<div class="flex items-center gap-2">
+<button class="hidden sm:flex items-center gap-1.5 px-3 py-1.5 bg-surface-container border border-outline-variant text-on-surface text-label-sm font-label-sm rounded hover:bg-surface-container-high hover:border-primary transition-colors active:scale-[0.98]" id="air-gap-toggle-top">
+<span class="material-symbols-outlined text-sm" data-icon="sync">sync</span>
+<span>Air-Gap Sim</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1.5 bg-primary-container text-on-primary-container text-label-sm font-label-sm rounded font-semibold hover:bg-primary transition-colors active:scale-[0.98] shadow-[0_0_12px_rgba(16,185,129,0.25)]" id="flush-queue-top">
+<span class="material-symbols-outlined text-sm" data-icon="database">database</span>
+<span>Flush Pending Queue</span>
+</button>
+<div class="flex items-center border-l border-outline-variant pl-2 ml-1 gap-1 text-on-surface-variant">
+<button class="p-1.5 hover:bg-surface-container-high rounded transition-colors text-on-surface" title="Active Notifications">
+<span class="material-symbols-outlined text-sm" data-icon="notifications">notifications</span>
+</button>
+<button class="p-1.5 hover:bg-surface-container-high rounded transition-colors text-on-surface" title="Inspect Terminal">
+<span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span>
+</button>
+<div class="w-7 h-7 ml-1 rounded bg-surface-container-high border border-outline flex items-center justify-center font-label-sm text-primary" title="Lead Customs Compliance Officer Terminal Node">
+          VN
+        </div>
+</div>
+</div>
+</header>
+<!-- ==================== BODY WRAPPER ==================== -->
+<div class="flex flex-1 w-full overflow-hidden">
+<!-- ==================== SHARED COMPONENT: SideNavBar ==================== -->
+<aside class="w-60 flex-shrink-0 bg-surface-container-low border-r border-outline-variant flex flex-col justify-between py-3 px-2 z-40 hidden lg:flex">
+<!-- Upper Header Node Info -->
+<div class="flex flex-col gap-3">
+<div class="px-2 py-2 bg-surface-container border border-outline-variant rounded">
+<div class="flex items-center justify-between">
+<span class="text-headline-sm font-headline-sm font-bold text-on-surface">DuriOS Edge</span>
+<span class="w-2 h-2 rounded-full bg-primary-container"></span>
+</div>
+<div class="text-label-sm font-label-sm text-secondary mt-0.5">WAL: ONLINE | ICP-MS</div>
+<div class="text-code-sm font-code-sm text-outline mt-1 truncate">Node: #VN-84B-CAILAY</div>
+</div>
+<!-- Tab Items from JSON Anchor -->
+<nav class="flex flex-col gap-1 text-label-md font-label-md">
+<!-- Item 1: Live Ingest (Active tab for this Webhook/Ingest terminal) -->
+<a class="flex items-center gap-2.5 px-2.5 py-2 bg-surface-container-high text-primary border-l-2 border-primary rounded-r transition-colors" href="#">
+<span class="material-symbols-outlined text-primary" data-icon="webhook">webhook</span>
+<span>Live Ingest</span>
+<span class="ml-auto text-label-sm bg-primary-container/20 text-primary px-1 rounded">148</span>
+</a>
+<!-- Item 2: Sync Queue -->
+<a class="flex items-center gap-2.5 px-2.5 py-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="sync_alt">sync_alt</span>
+<span>Sync Queue</span>
+<span class="ml-auto text-label-sm text-tertiary" id="side-pending-badge">4</span>
+</a>
+<!-- Item 3: HMAC Shield -->
+<a class="flex items-center gap-2.5 px-2.5 py-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="security">security</span>
+<span>HMAC Shield</span>
+</a>
+<!-- Item 4: Merkle Roots -->
+<a class="flex items-center gap-2.5 px-2.5 py-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="hub">hub</span>
+<span>Merkle Roots</span>
+</a>
+<!-- Item 5: Alert Matrix -->
+<a class="flex items-center gap-2.5 px-2.5 py-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="cell_tower">cell_tower</span>
+<span>Alert Matrix</span>
+</a>
+<!-- Item 6: Node Config -->
+<a class="flex items-center gap-2.5 px-2.5 py-2 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded transition-colors" href="#">
+<span class="material-symbols-outlined" data-icon="tune">tune</span>
+<span>Node Config</span>
+</a>
+</nav>
+<!-- CTA from JSON -->
+<div class="px-1 pt-2">
+<button class="w-full flex items-center justify-center gap-2 px-3 py-2 bg-surface-container border border-outline hover:border-primary text-secondary text-label-sm font-label-sm rounded transition-all active:scale-[0.98]" id="trigger-sync-side">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="sync">sync</span>
+<span>Trigger Ingest Sync</span>
+</button>
+</div>
+</div>
+<!-- Footer Nav from JSON -->
+<div class="flex flex-col gap-1 border-t border-outline-variant pt-3">
+<a class="flex items-center gap-2.5 px-2.5 py-1.5 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded transition-colors text-label-sm font-label-sm" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="menu_book">menu_book</span>
+<span>Documentation</span>
+</a>
+<a class="flex items-center gap-2.5 px-2.5 py-1.5 text-on-surface-variant hover:bg-surface-container hover:text-on-surface rounded transition-colors text-label-sm font-label-sm" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="code">code</span>
+<span>Terminal Log</span>
+</a>
+<div class="px-2 pt-2 text-code-sm font-code-sm text-outline">
+<div class="text-[9px] text-outline">ENCLAVE: SEC_P256K1</div>
+<div class="text-[9px] text-outline">FARM: CAI LAY CLUSTER A</div>
+</div>
+</div>
+</aside>
+<!-- ==================== MAIN CONTENT CANVAS ==================== -->
+<main class="flex-1 flex flex-col overflow-y-auto scrollbar-thin bg-surface p-3 lg:p-4 gap-4">
+<!-- ==================== TOP 4-CARD TELEMETRY & SYNCHRONIZATION RIBBON ==================== -->
+<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
+<!-- Card 1: Partner Lab Ingestor -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-3 relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-[2px] bg-primary"></div>
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Partner Lab Ingestor</span>
+<span class="px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-primary/10 border border-primary text-primary flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span> ACTIVE
+              </span>
+</div>
+<div class="text-code-lg font-code-lg text-on-surface font-bold mt-1">148 Webhooks Today</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">HMAC-SHA256 verified pre-replay. Zero autonomous AI sign-off, emits strict candidate fields.</p>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-code-sm font-code-sm">
+<span class="text-outline">Validation Ratio</span>
+<span class="text-primary font-semibold">100% Validated (148/148)</span>
+</div>
+</div>
+<!-- Card 2: Replay & Conflict Shield -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-3 relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-[2px] bg-tertiary"></div>
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-tertiary uppercase tracking-wider">Replay &amp; Conflict Shield</span>
+<span class="px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-tertiary/10 border border-tertiary text-tertiary">24H NONCE</span>
+</div>
+<div class="text-code-lg font-code-lg text-tertiary font-bold mt-1">2 Attacks Blocked</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">409 Conflict rejection enforced. Invariant hash uniqueness across Mekong consignment IDs.</p>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-code-sm font-code-sm">
+<span class="text-outline">Nonce State</span>
+<span class="text-tertiary font-semibold">Sliding Nonce Cache Clean</span>
+</div>
+</div>
+<!-- Card 3: Offline Hybrid Edge Sync Queue -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-3 relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-[2px] bg-primary"></div>
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Offline Hybrid Sync</span>
+<span class="px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-surface-container-high border border-outline text-secondary" id="ribbon-airgap-tag">
+                WAL RECOVERABLE
+              </span>
+</div>
+<div class="text-code-lg font-code-lg text-primary font-bold mt-1" id="ribbon-queued-text">4 Queued Manifests</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">SQLite persistent WAL. Survives process kills, fails-closed when border WAN unconfigured.</p>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant flex items-center justify-between text-code-sm font-code-sm">
+<span class="text-outline">Dropped Frames</span>
+<span class="text-secondary font-semibold">0 Failed Drops</span>
+</div>
+</div>
+<!-- Card 4: Managed Zalo ZNS Alert Relay -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-3 relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-[2px] bg-primary"></div>
+<div>
+<div class="flex items-center justify-between">
+<span class="text-label-sm font-label-sm text-secondary uppercase tracking-wider">Zalo ZNS Relay</span>
+<span class="px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-surface-container-high text-on-surface-variant border border-outline-variant">QUOTA 68.4%</span>
+</div>
+<div class="text-code-lg font-code-lg text-on-surface font-bold mt-1">342 / 500 Used</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">Direct phytosanitary alert pipeline to customs brokers. Circuit breaker armed for air-gap.</p>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant">
+<div class="w-full bg-surface-container-high h-1.5 rounded overflow-hidden">
+<div class="bg-primary h-full" style="width: 68.4%;"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- ==================== CENTER 2-COLUMN SPLIT WORKBENCH ==================== -->
+<section class="grid grid-cols-1 xl:grid-cols-12 gap-4 flex-1">
+<!-- ==================== LEFT COLUMN (6 Cols): Accredited ICP-MS Lab Webhook Stream ==================== -->
+<div class="xl:col-span-6 flex flex-col gap-3">
+<!-- Stream Header & Filters -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-3">
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-2.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="science">science</span>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">ICP-MS Lab Webhook Stream</h2>
+<span class="text-label-sm font-label-sm text-outline">STEP 15</span>
+</div>
+<div class="flex items-center gap-1 text-label-sm font-label-sm">
+<button class="px-2 py-1 bg-surface-container-high text-primary border border-primary rounded font-semibold">All (148)</button>
+<button class="px-2 py-1 bg-surface-container text-on-surface-variant hover:text-on-surface rounded">Verified (142)</button>
+<button class="px-2 py-1 bg-surface-container text-on-surface-variant hover:text-on-surface rounded">Drafts (4)</button>
+<button class="px-2 py-1 bg-surface-container text-tertiary hover:bg-surface-container-high rounded">Replays (2)</button>
+</div>
+</div>
+<!-- Ingest Feed List -->
+<div class="flex flex-col gap-2.5 mt-3">
+<!-- Event 1: Eurofins Sắc Ký Hải Đăng (Pending Review) -->
+<div class="p-3 bg-surface-container rounded border border-primary/50 relative overflow-hidden transition-all hover:bg-surface-container-high">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="text-code-sm font-code-sm text-primary font-bold">wh_lab_99201</span>
+<span class="text-label-sm font-label-sm bg-surface-container-highest px-1.5 py-0.5 rounded text-secondary border border-outline-variant">Eurofins Sắc Ký Hải Đăng</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-tertiary/15 border border-tertiary text-tertiary flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="pending">pending</span>
+                    HUMAN_VERIFICATION_REQUIRED (DRAFT)
+                  </span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 pt-2 border-t border-outline-variant/60 text-code-sm font-code-sm">
+<div>
+<span class="text-outline block text-[10px]">CONTAINER TARGET</span>
+<span class="text-on-surface font-semibold">MSKU 907032-3</span>
+<span class="text-[10px] text-secondary block">Ri6 Grade A</span>
+</div>
+<div>
+<span class="text-outline block text-[10px]">CADMIUM RESIDUE</span>
+<span class="text-primary font-semibold">0.024 mg/kg</span>
+<span class="text-[10px] text-outline block">Limit &lt;= 0.050 mg/kg</span>
+</div>
+<div>
+<span class="text-outline block text-[10px]">YELLOW AURAMINE O</span>
+<span class="text-primary font-semibold">NOT_DETECTED</span>
+<span class="text-[10px] text-secondary block">Zero Tolerance Pass</span>
+</div>
+</div>
+<div class="mt-2.5 pt-2 border-t border-outline-variant/60 flex flex-wrap items-center justify-between gap-2">
+<div class="flex items-center gap-2 text-code-sm font-code-sm">
+<span class="text-outline text-[10px]">HMAC:</span>
+<span class="text-primary font-mono text-[11px] bg-surface-container-lowest px-1.5 py-0.5 rounded border border-outline-variant">0x7f4b...92ea [VALID]</span>
+<span class="text-outline text-[10px]">NONCE: non_cailay_881</span>
+</div>
+<button class="px-3 py-1 bg-primary-container text-on-primary-container rounded text-label-sm font-label-sm font-semibold hover:bg-primary transition-all active:scale-[0.98] shadow-sm">
+                    [Review &amp; Promote Draft]
+                  </button>
+</div>
+</div>
+<!-- Event 2: Quatest 3 (Replay Attack Blocked) -->
+<div class="p-3 bg-surface-container rounded border border-error/50 relative overflow-hidden transition-all hover:bg-surface-container-high">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="text-code-sm font-code-sm text-error font-bold">wh_lab_99204</span>
+<span class="text-label-sm font-label-sm bg-surface-container-highest px-1.5 py-0.5 rounded text-on-surface-variant border border-outline-variant">Quatest 3</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-error/20 border border-error text-error flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="block">block</span>
+                    BLOCKED (409 REPLAY_DETECTED)
+                  </span>
+</div>
+<div class="mt-2 text-body-sm font-body-sm text-error/90 bg-error-container/30 p-2 rounded border border-error/30 font-code-sm">
+                  Duplicate Nonce Replay Attempt on Container <span class="font-bold text-on-surface">CMAU 789210-2</span>. Nonce timestamp older than 24h window (31h 12m delta). Webhook rejected at perimeter before database write.
+                </div>
+<div class="mt-2 flex items-center justify-between text-code-sm font-code-sm">
+<span class="text-outline text-[10px]">REPLAY HASH: 0x93dd...41b0</span>
+<span class="text-error text-label-sm font-label-sm">SHIELD: REPLAY_CACHE_HIT</span>
+</div>
+</div>
+<!-- Event 3: SGS Vietnam (Attested & Locked) -->
+<div class="p-3 bg-surface-container rounded border border-outline-variant relative overflow-hidden transition-all hover:bg-surface-container-high">
+<div class="flex items-start justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="text-code-sm font-code-sm text-secondary font-bold">wh_lab_99198</span>
+<span class="text-label-sm font-label-sm bg-surface-container-highest px-1.5 py-0.5 rounded text-secondary border border-outline-variant">SGS Vietnam Inspection Co.</span>
+</div>
+<span class="px-2 py-0.5 rounded text-[10px] font-label-sm bg-primary/10 border border-primary text-primary flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="lock">lock</span>
+                    ATTESTED &amp; LOCKED
+                  </span>
+</div>
+<div class="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2 pt-2 border-t border-outline-variant/60 text-code-sm font-code-sm">
+<div>
+<span class="text-outline block text-[10px]">CONTAINER TARGET</span>
+<span class="text-on-surface font-semibold">OOLU 452910-8</span>
+<span class="text-[10px] text-secondary block">Monthong Export</span>
+</div>
+<div>
+<span class="text-outline block text-[10px]">CADMIUM RESIDUE</span>
+<span class="text-primary font-semibold">0.019 mg/kg</span>
+<span class="text-[10px] text-outline block">PASS (Limit &lt;= 0.050)</span>
+</div>
+<div>
+<span class="text-outline block text-[10px]">SULFITE RESIDUE</span>
+<span class="text-primary font-semibold">PASS (&lt; 10 ppm)</span>
+<span class="text-[10px] text-secondary block">Signed by Lab Director</span>
+</div>
+</div>
+<div class="mt-2 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-code-sm font-code-sm text-outline">
+<span>HMAC: 0x481b...ae91 [VALID]</span>
+<span class="text-secondary text-[11px]">LEDGER_TX: #892019-VN</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Interactive HMAC-SHA256 Signature & Payload Conflict Sandbox -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-3">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="terminal">terminal</span>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">HMAC-SHA256 Signature Sandbox</h3>
+</div>
+<span class="text-label-sm font-label-sm text-outline">ED25519 / SHA256 ENCLAVE</span>
+</div>
+<!-- Code payload display -->
+<div class="mt-3 bg-surface-container-lowest p-2.5 rounded border border-outline-variant font-code-sm text-code-sm text-secondary overflow-x-auto">
+<pre id="json-sandbox-display">{
+  "event": "icp_ms_batch_attestation",
+  "lab_id": "VN_LAB_QUATEST3_HCM",
+  "container_id": "MSKU 907032-3",
+  "signature": "<span class="text-primary" id="sig-token">0x9a8f4c2810a9f0e14c8103c8129034f9a12c8e9b</span>",
+  "nonce": "<span class="text-tertiary" id="nonce-token">non_9942a1_durios</span>",
+  "timestamp": 1714522800,
+  "payload_digest": "<span class="text-primary" id="digest-token">0x3b892a0194bc...</span>"
+}</pre>
+</div>
+<!-- Simulation Action Buttons -->
+<div class="flex flex-wrap items-center gap-2 mt-3">
+<button class="px-3 py-1.5 bg-surface-container-high border border-outline hover:border-primary text-primary text-label-sm font-label-sm rounded transition-colors active:scale-[0.98]" id="btn-test-valid">
+                [Test Valid Payload]
+              </button>
+<button class="px-3 py-1.5 bg-surface-container-high border border-outline hover:border-tertiary text-tertiary text-label-sm font-label-sm rounded transition-colors active:scale-[0.98]" id="btn-test-replay">
+                [Simulate Replay Nonce]
+              </button>
+<button class="px-3 py-1.5 bg-surface-container-high border border-outline hover:border-error text-error text-label-sm font-label-sm rounded transition-colors active:scale-[0.98]" id="btn-test-conflict">
+                [Simulate Conflict Digest (409)]
+              </button>
+</div>
+<!-- Output Response Badge -->
+<div class="mt-3 p-2 bg-surface-container rounded border border-outline-variant flex items-center justify-between" id="sandbox-output-panel">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-primary-container" id="status-dot"></span>
+<span class="text-code-sm font-code-sm font-bold text-primary" id="status-code-text">HTTP 200 OK — Candidate Draft Generated</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline font-mono" id="status-timing">0.84ms execution</span>
+</div>
+</div>
+</div>
+<!-- ==================== RIGHT COLUMN (6 Cols): SQLite Persistent Edge Sync Queue ==================== -->
+<div class="xl:col-span-6 flex flex-col gap-3">
+<!-- SQLite Header & Controls -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-3">
+<div class="flex flex-wrap items-center justify-between gap-2 border-b border-outline-variant pb-2.5">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="sync_alt">sync_alt</span>
+<h2 class="text-headline-sm font-headline-sm text-on-surface">SQLite Persistent Edge Sync Queue</h2>
+<span class="text-label-sm font-label-sm text-outline">STEP 18</span>
+</div>
+<!-- Edge Node Controls -->
+<div class="flex items-center gap-2">
+<button class="flex items-center gap-1 px-2.5 py-1 bg-surface-container border border-outline-variant hover:border-tertiary text-on-surface text-label-sm font-label-sm rounded transition-colors" id="btn-airgap-sim">
+<span class="w-2 h-2 rounded-full bg-primary" id="airgap-led"></span>
+<span id="airgap-btn-text">Air-Gap Mode: OFF (ONLINE)</span>
+</button>
+<button class="px-2.5 py-1 bg-primary-container text-on-primary-container text-label-sm font-label-sm font-semibold rounded hover:bg-primary transition-colors" id="btn-replay-queued">
+                  [Replay Queued Anchors]
+                </button>
+</div>
+</div>
+<!-- Table View: sync_queue (Local WAL DB) -->
+<div class="mt-3 overflow-x-auto">
+<table class="w-full text-left border-collapse text-code-sm font-code-sm">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-container-lowest text-outline text-[10px] font-label-sm">
+<th class="py-2 px-2">IDEMPOTENCY KEY</th>
+<th class="py-2 px-2">TARGET ANCHOR</th>
+<th class="py-2 px-2">RETRIES</th>
+<th class="py-2 px-2">COMPOSITE SHA-256</th>
+<th class="py-2 px-2">SYNC STATE</th>
+<th class="py-2 px-2 text-right">ACTION</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/40" id="sync-table-body">
+<!-- Row 1 -->
+<tr class="bg-surface-container/60 hover:bg-surface-container-high transition-colors" id="row-1">
+<td class="py-2 px-2 text-on-surface font-semibold font-mono text-[11px]">idemp_mkg_9921_cailay</td>
+<td class="py-2 px-2 text-secondary text-[11px]">GACC_BILATERAL_MANIFEST</td>
+<td class="py-2 px-2 text-outline">0</td>
+<td class="py-2 px-2 text-outline font-mono text-[10px]">8f4a2c91...3c19</td>
+<td class="py-2 px-2">
+<span class="px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-tertiary/15 border border-tertiary text-tertiary sync-status-pill">
+                        QUEUED_OFFLINE
+                      </span>
+</td>
+<td class="py-2 px-2 text-right">
+<button class="text-label-sm text-primary hover:underline sync-single-btn" data-row="1">[Sync Now]</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="bg-surface-container-lowest/40 hover:bg-surface-container-high transition-colors" id="row-2">
+<td class="py-2 px-2 text-on-surface font-semibold font-mono text-[11px]">idemp_mkg_9918_vungtau</td>
+<td class="py-2 px-2 text-secondary text-[11px]">ICP_MS_SPECTROMETRY_LEDGER</td>
+<td class="py-2 px-2 text-tertiary">1</td>
+<td class="py-2 px-2 text-outline font-mono text-[10px]">3a7b9e1c...4df8</td>
+<td class="py-2 px-2">
+<span class="px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-tertiary/15 border border-tertiary text-tertiary sync-status-pill">
+                        QUEUED_OFFLINE
+                      </span>
+</td>
+<td class="py-2 px-2 text-right">
+<button class="text-label-sm text-primary hover:underline sync-single-btn" data-row="2">[Sync Now]</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="bg-surface-container/60 hover:bg-surface-container-high transition-colors" id="row-3">
+<td class="py-2 px-2 text-on-surface font-semibold font-mono text-[11px]">idemp_mkg_9904_tiengiang</td>
+<td class="py-2 px-2 text-secondary text-[11px]">RECONCILIATION_ESCROW_SIGNAL</td>
+<td class="py-2 px-2 text-outline">0</td>
+<td class="py-2 px-2 text-outline font-mono text-[10px]">e9a82410...3bf2</td>
+<td class="py-2 px-2">
+<span class="px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-primary/10 border border-primary text-primary">
+                        SYNC_ACK_RECEIVED
+                      </span>
+</td>
+<td class="py-2 px-2 text-right text-outline text-[10px]">
+                      COMPLETED
+                    </td>
+</tr>
+<!-- Row 4 -->
+<tr class="bg-surface-container-lowest/40 hover:bg-surface-container-high transition-colors" id="row-4">
+<td class="py-2 px-2 text-on-surface font-semibold font-mono text-[11px]">idemp_mkg_9899_youyiguan</td>
+<td class="py-2 px-2 text-secondary text-[11px]">BOLT_SEAL_CHAIN_SYNC</td>
+<td class="py-2 px-2 text-outline">0</td>
+<td class="py-2 px-2 text-outline font-mono text-[10px]">4b1c8e22...a802</td>
+<td class="py-2 px-2">
+<span class="px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-primary/10 border border-primary text-primary">
+                        SYNC_ACK_RECEIVED
+                      </span>
+</td>
+<td class="py-2 px-2 text-right text-outline text-[10px]">
+                      COMPLETED
+                    </td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-2.5 pt-2 border-t border-outline-variant flex items-center justify-between text-code-sm font-code-sm text-outline">
+<span>TABLE: <code class="text-secondary">main.sync_queue</code></span>
+<span>INDEX: <code class="text-secondary">idx_idemp_unq (UNIQUE)</code></span>
+</div>
+</div>
+<!-- SQLite WAL Diagnostic Substrate -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-3">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="hub">hub</span>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">SQLite WAL Diagnostic Substrate</h3>
+</div>
+<span class="text-label-sm font-label-sm bg-surface-container px-2 py-0.5 rounded text-primary border border-outline-variant">DIRECT_IO FS_SAFE</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+<div class="p-2.5 bg-surface-container rounded border border-outline-variant">
+<span class="text-label-sm font-label-sm text-outline block">WAL CHECKPOINT STATUS</span>
+<div class="text-code-md font-code-md text-primary font-bold mt-0.5">PASSIVE_MODE</div>
+<div class="text-code-sm font-code-sm text-on-surface-variant mt-1">Uncommitted Frames: <span class="text-tertiary font-semibold" id="uncommitted-frames">4 frames</span></div>
+<div class="text-code-sm font-code-sm text-outline mt-0.5 truncate">Path: /var/durios/enclave/edge_sync.sqlite3-wal</div>
+</div>
+<div class="p-2.5 bg-surface-container rounded border border-outline-variant">
+<span class="text-label-sm font-label-sm text-outline block">MERKLE ROOT COMPOSITE ANCHOR</span>
+<div class="text-code-md font-code-md text-secondary font-mono font-bold mt-0.5 truncate">0x8f2c0194b92c49a1...ed25519</div>
+<div class="text-code-sm font-code-sm text-primary mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="verified">verified</span>
+<span>Cryptographic Enclave Signed</span>
+</div>
+<div class="text-code-sm font-code-sm text-outline mt-0.5">Fsync Latency: 0.12ms (Direct Block I/O)</div>
+</div>
+</div>
+<!-- In-Memory Log Substrate -->
+<div class="mt-3 p-2 bg-surface-container-lowest rounded border border-outline-variant text-[11px] font-mono text-outline leading-relaxed max-h-24 overflow-y-auto scrollbar-thin" id="log-terminal">
+<div>[14:21:02.102] [WAL] checkpoint(PASSIVE) -&gt; 12 pages committed to main DB</div>
+<div>[14:21:18.420] [HMAC] Nonce verification valid for wh_lab_99201 (Eurofins ICP-MS)</div>
+<div>[14:21:30.804] [SHIELD] Dropped replay signature from Quatest 3 (delta 31h &gt; 24h)</div>
+<div class="text-primary">[14:21:44.012] [EDGE_SYNC] Ready to emit bilateral manifest to Youyiguan border broker</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- ==================== FOOTER STATUS BAR ==================== -->
+<footer class="h-8 bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between px-3 text-label-sm font-label-sm text-outline shrink-0">
+<div class="flex items-center gap-3">
+<div class="flex items-center gap-1.5 text-secondary">
+<span class="w-1.5 h-1.5 rounded-full bg-primary-container"></span>
+<span>DURIOS EDGE NODE #VN-84B (CAI LẬY HUB)</span>
+</div>
+<span class="hidden md:inline text-outline-variant">|</span>
+<span class="hidden md:inline">SQLITE WAL V3.45</span>
+<span class="hidden md:inline text-outline-variant">|</span>
+<span class="hidden lg:inline">HMAC-SHA256 TIMELOCK: 24H</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="text-primary font-mono">ZERO-LOSS REPLAY SHIELD</span>
+<span class="text-outline-variant">|</span>
+<span class="font-mono text-on-surface-variant">AGPL-3.0 CORE</span>
+</div>
+</footer>
+<!-- ==================== LIGHTWEIGHT VANILLA JS FOR SIMULATIONS ==================== -->
+<script>
+    // Air Gap Toggle Simulation
+    let isAirGap = false;
+    const airgapBtn = document.getElementById('btn-airgap-sim');
+    const airgapTopBtn = document.getElementById('air-gap-toggle-top');
+    const airgapLed = document.getElementById('airgap-led');
+    const airgapText = document.getElementById('airgap-btn-text');
+    const ribbonTag = document.getElementById('ribbon-airgap-tag');
+    const latencyVal = document.getElementById('latency-val');
+    const topWalStatus = document.getElementById('top-wal-status');
+    const logTerminal = document.getElementById('log-terminal');
+
+    function appendLog(msg, colorClass = "text-on-surface-variant") {
+      const time = new Date().toTimeString().split(' ')[0] + '.' + Math.floor(Math.random()*900 + 100);
+      const div = document.createElement('div');
+      div.className = colorClass;
+      div.textContent = `[${time}] ${msg}`;
+      logTerminal.appendChild(div);
+      logTerminal.scrollTop = logTerminal.scrollHeight;
+    }
+
+    function toggleAirGap() {
+      isAirGap = !isAirGap;
+      if (isAirGap) {
+        airgapLed.className = "w-2 h-2 rounded-full bg-tertiary";
+        airgapText.textContent = "Air-Gap Mode: ON (AIR-GAP / WAL ONLY)";
+        ribbonTag.textContent = "AIR-GAP LOCKED";
+        ribbonTag.className = "px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-tertiary/15 border border-tertiary text-tertiary";
+        latencyVal.textContent = "OFFLINE WAL";
+        latencyVal.parentElement.className = "flex items-center gap-1.5 px-2 py-1 bg-surface-container-high border border-outline-variant rounded text-label-sm font-label-sm text-tertiary";
+        topWalStatus.textContent = "OFFLINE (AIR-GAP BUFFER)";
+        appendLog("[AIR-GAP] Transport layer unmounted. SQLite WAL fails closed into local storage queue.", "text-tertiary");
+      } else {
+        airgapLed.className = "w-2 h-2 rounded-full bg-primary";
+        airgapText.textContent = "Air-Gap Mode: OFF (ONLINE)";
+        ribbonTag.textContent = "WAL RECOVERABLE";
+        ribbonTag.className = "px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-surface-container-high border border-outline text-secondary";
+        latencyVal.textContent = "12ms EDGE";
+        latencyVal.parentElement.className = "flex items-center gap-1.5 px-2 py-1 bg-surface-container-high border border-outline-variant rounded text-label-sm font-label-sm text-secondary";
+        topWalStatus.textContent = "ACTIVE (4 PENDING)";
+        appendLog("[AIR-GAP] Secure gateway link restored. Socket handshake established with Mekong border portal.", "text-primary");
+      }
+    }
+
+    airgapBtn.addEventListener('click', toggleAirGap);
+    if(airgapTopBtn) airgapTopBtn.addEventListener('click', toggleAirGap);
+
+    // Sandbox Test Buttons
+    const btnValid = document.getElementById('btn-test-valid');
+    const btnReplay = document.getElementById('btn-test-replay');
+    const btnConflict = document.getElementById('btn-test-conflict');
+    const statusPanel = document.getElementById('sandbox-output-panel');
+    const statusDot = document.getElementById('status-dot');
+    const statusCodeText = document.getElementById('status-code-text');
+    const statusTiming = document.getElementById('status-timing');
+    const sigToken = document.getElementById('sig-token');
+    const nonceToken = document.getElementById('nonce-token');
+
+    btnValid.addEventListener('click', () => {
+      sigToken.textContent = "0x9a8f4c2810a9f0e14c8103c8129034f9a12c8e9b";
+      nonceToken.textContent = "non_" + Math.random().toString(36).substring(2, 9) + "_valid";
+      statusDot.className = "w-2 h-2 rounded-full bg-primary-container";
+      statusCodeText.className = "text-code-sm font-code-sm font-bold text-primary";
+      statusCodeText.textContent = "HTTP 200 OK — Candidate Draft Generated";
+      statusTiming.textContent = (Math.random() * 0.4 + 0.6).toFixed(2) + "ms execution";
+      appendLog("[WEBHOOK_INGEST] Valid HMAC-SHA256 signature verified. Emitted Candidate Draft fields for Lead Customs review.", "text-primary");
+    });
+
+    btnReplay.addEventListener('click', () => {
+      nonceToken.textContent = "non_9942a1_replay_cached";
+      statusDot.className = "w-2 h-2 rounded-full bg-tertiary";
+      statusCodeText.className = "text-code-sm font-code-sm font-bold text-tertiary";
+      statusCodeText.textContent = "HTTP 409 CONFLICT — Nonce Already Consumed (24H Shield)";
+      statusTiming.textContent = "0.22ms cached reject";
+      appendLog("[REPLAY_SHIELD] Nonce replay match intercepted: non_9942a1_replay_cached. HTTP 409 sent.", "text-tertiary");
+    });
+
+    btnConflict.addEventListener('click', () => {
+      sigToken.textContent = "0xBAD_SIGNATURE_TAMPERED_00000000000000000";
+      statusDot.className = "w-2 h-2 rounded-full bg-error";
+      statusCodeText.className = "text-code-sm font-code-sm font-bold text-error";
+      statusCodeText.textContent = "HTTP 401 UNAUTHORIZED — HMAC-SHA256 Digest Mismatch";
+      statusTiming.textContent = "0.19ms drop";
+      appendLog("[SECURITY] Signature mismatch detected. Possible payload tampering across transit link.", "text-error");
+    });
+
+    // Replay / Flush Queue Trigger
+    const btnFlushTop = document.getElementById('flush-queue-top');
+    const btnReplayQueued = document.getElementById('btn-replay-queued');
+    const triggerSyncSide = document.getElementById('trigger-sync-side');
+    const singleSyncButtons = document.querySelectorAll('.sync-single-btn');
+
+    function performFlush() {
+      if (isAirGap) {
+        alert("AIR-GAP MODE IS ACTIVE: Edge node is currently severed from cloud relays. WAL queue is safe and stored locally on NVMe flash.");
+        appendLog("[EDGE_SYNC] Flush aborted: Network transport is in Air-Gap mode.", "text-tertiary");
+        return;
+      }
+      
+      const queuedPills = document.querySelectorAll('.sync-status-pill');
+      queuedPills.forEach(pill => {
+        pill.className = "px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-primary/10 border border-primary text-primary";
+        pill.textContent = "SYNC_ACK_RECEIVED";
+      });
+
+      singleSyncButtons.forEach(btn => {
+        btn.parentElement.innerHTML = '<span class="text-outline text-[10px]">COMPLETED</span>';
+      });
+
+      document.getElementById('ribbon-queued-text').textContent = "0 Queued Manifests";
+      document.getElementById('side-pending-badge').textContent = "0";
+      document.getElementById('side-pending-badge').className = "ml-auto text-label-sm text-primary";
+      document.getElementById('top-wal-status').textContent = "SYNCHRONIZED (0 PENDING)";
+      document.getElementById('uncommitted-frames').textContent = "0 frames (Clean Checkpoint)";
+      document.getElementById('uncommitted-frames').className = "text-primary font-semibold";
+
+      appendLog("[WAL_CHECKPOINT] Executed TRUNCATE checkpoint. All 4 queued manifests synced to GACC & Customs Ledger.", "text-primary");
+    }
+
+    if (btnFlushTop) btnFlushTop.addEventListener('click', performFlush);
+    if (btnReplayQueued) btnReplayQueued.addEventListener('click', performFlush);
+    if (triggerSyncSide) triggerSyncSide.addEventListener('click', performFlush);
+
+    singleSyncButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const rowId = e.target.getAttribute('data-row');
+        const row = document.getElementById('row-' + rowId);
+        if (row) {
+          const pill = row.querySelector('.sync-status-pill');
+          if (pill) {
+            pill.className = "px-1.5 py-0.5 rounded text-[9px] font-label-sm bg-primary/10 border border-primary text-primary";
+            pill.textContent = "SYNC_ACK_RECEIVED";
+          }
+          e.target.parentElement.innerHTML = '<span class="text-outline text-[10px]">COMPLETED</span>';
+          appendLog(`[SYNC] Row #${rowId} committed and acknowledged by border escrow gateway.`, "text-secondary");
+        }
+      });
+    });
+  </script>
+</body></html>

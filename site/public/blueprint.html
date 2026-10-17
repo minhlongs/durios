@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DuriOS // 25-Step Open-Core Blueprint &amp; Strategic Guardrails Console</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error-container": "#93000a",
+            "secondary-container": "#00bd85",
+            "surface-container": "#19211c",
+            "inverse-surface": "#dce5dc",
+            "primary-fixed": "#6ffbbe",
+            "on-primary-container": "#00422b",
+            "primary-fixed-dim": "#4edea3",
+            "on-surface": "#dce5dc",
+            "tertiary-fixed-dim": "#ffb95f",
+            "surface-container-highest": "#2e3731",
+            "on-error": "#690005",
+            "inverse-on-surface": "#2a322c",
+            "tertiary-container": "#e29100",
+            "on-tertiary": "#472a00",
+            "on-primary-fixed": "#002113",
+            "tertiary": "#ffb95f",
+            "inverse-primary": "#006c49",
+            "secondary-fixed-dim": "#45dfa4",
+            "tertiary-fixed": "#ffddb8",
+            "secondary-fixed": "#68fcbf",
+            "on-secondary-fixed": "#002114",
+            "on-secondary": "#003825",
+            "on-secondary-container": "#00452e",
+            "surface-dim": "#0d1510",
+            "surface": "#0d1510",
+            "outline-variant": "#3c4a42",
+            "on-tertiary-fixed-variant": "#653e00",
+            "on-secondary-fixed-variant": "#005137",
+            "on-tertiary-fixed": "#2a1700",
+            "surface-variant": "#2e3731",
+            "surface-bright": "#333b35",
+            "surface-container-lowest": "#08100b",
+            "outline": "#86948a",
+            "on-surface-variant": "#bbcabf",
+            "surface-tint": "#4edea3",
+            "background": "#0d1510",
+            "primary-container": "#10b981",
+            "error": "#ffb4ab",
+            "on-tertiary-container": "#523200",
+            "on-primary-fixed-variant": "#005236",
+            "on-primary": "#003824",
+            "on-error-container": "#ffdad6",
+            "primary": "#4edea3",
+            "on-background": "#dce5dc",
+            "surface-container-low": "#151d18",
+            "surface-container-high": "#242c26",
+            "secondary": "#45dfa4"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-md": "0.75rem",
+            "margin": "1.5rem",
+            "space-sm": "0.5rem",
+            "gutter": "1rem",
+            "margin-mobile": "0.75rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2rem",
+            "space-lg": "1.25rem",
+            "gutter-compact": "0.5rem"
+          },
+          "fontFamily": {
+            "code-sm": ["JetBrains Mono"],
+            "label-sm": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "headline-xl-mobile": ["Inter"],
+            "headline-xl": ["Inter"],
+            "headline-md": ["Inter"],
+            "headline-lg": ["Inter"],
+            "code-md": ["JetBrains Mono"],
+            "headline-sm": ["Inter"],
+            "body-sm": ["Inter"],
+            "label-md": ["JetBrains Mono"],
+            "code-lg": ["JetBrains Mono"],
+            "body-md": ["Inter"],
+            "space": ["Space Grotesk"]
+          },
+          "fontSize": {
+            "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "headline-xl-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "code-lg": ["15px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #08100b;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #19211c;
+      border-radius: 2px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #3c4a42;
+    }
+    @keyframes pulse-emerald {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.92); }
+    }
+    .animate-pulse-emerald {
+      animation: pulse-emerald 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-md select-none min-h-screen flex flex-col custom-scroll overflow-x-hidden">
+<!-- DURIOS UNIFIED TOP NAV BAR -->
+<div id="durios-unified-top-nav" style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 7px 14px; font-family: 'Inter', sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 23-SCREEN NAV</span>
+    <span style="color: #1F3327;">|</span>
+    <a href="gallery.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">⭐️ Master Hub</a>
+    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">1. Workspace</a>
+    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">2. Dossiers</a>
+    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">3. Auditor (5 Gates)</a>
+    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">4. Buyer Portal</a>
+    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">5. Cluster Ops</a>
+    <a href="portability.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">6. Portability</a>
+    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">7. Pro SaaS</a>
+    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">8. Style Guide</a>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
+    <a href="corridors.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🌏 9. Corridors</a>
+    <a href="blueprint.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; background: rgba(16,185,129,0.22);">🧭 10. Blueprint 25</a>
+    <a href="security-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px; ">🛡️ 11. Security Vault</a>
+    <a href="organic-escrow-guard.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">⚖️ 12. Escrow Guard</a>
+    <a href="webhook-sync-queue.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔄 13. Lab Webhooks</a>
+    <a href="socratic-introspector.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">🧠 14. Socratic 5-Turn</a>
+    <a href="rehearsal-command.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🎯 15. Rehearsal Cmd</a>
+    <a href="mit-verifier-lab.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔬 16. MIT Verifier Lab</a>
+    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">📝 Bút Dạ Quang</a>
+    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📊 Excel Grid</a>
+    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px; ">💬 Zalo Bot</a>
+    <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📱 Mobile</a>
+    <a href="field-proven.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">☀️ Field POS</a>
+    <a href="foundry.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🔐 Foundry</a>
+  </div>
+</div>
+<!-- SECTION B: NON-CUSTODIAL ESCROW STATE MACHINE PREVIEW -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col space-y-space-md">
+<div class="flex items-center justify-between border-b border-outline-variant pb-space-sm">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-base">account_tree</span>
+<span class="font-space font-bold text-headline-sm text-on-surface">Escrow State Machine</span>
+</div>
+<span class="text-primary font-code-sm text-code-sm bg-surface-container px-2 py-0.5 rounded border border-outline-variant">NON-CUSTODIAL</span>
+</div>
+<!-- State Pipeline Diagram -->
+<div class="space-y-2 font-code-sm text-code-sm">
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-lowest border border-outline-variant">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-on-surface font-bold">1. INITIATED</span>
+</div>
+<span class="text-outline text-[10px]">BUYER/SELLER ATTEST</span>
+</div>
+<div class="flex justify-center text-outline">↓</div>
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-lowest border border-outline-variant">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-on-surface font-bold">2. BANK_WEBHOOK_VERIFIED</span>
+</div>
+<span class="text-outline text-[10px]">VIETCOMBANK / ICBC</span>
+</div>
+<div class="flex justify-center text-outline">↓</div>
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-lowest border border-outline-variant">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-on-surface font-bold">3. DOSSIER_SEALED_100_PCT</span>
+</div>
+<span class="text-outline text-[10px]">ALL 25 GATES PASS</span>
+</div>
+<div class="flex justify-center text-outline">↓</div>
+<div class="flex items-center justify-between p-2 rounded bg-surface-container-lowest border border-outline-variant">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-outline"></span>
+<span class="text-outline font-bold">4. RELEASE_AUTHORIZED</span>
+</div>
+<span class="text-outline text-[10px]">TRIGGER BANK DISBURSE</span>
+</div>
+</div>
+<!-- Current State Banner -->
+<div class="p-2.5 bg-surface-container border border-outline-variant rounded">
+<div class="flex justify-between items-center text-[10px] font-code-sm mb-1">
+<span class="text-outline uppercase">Active Pipeline Status</span>
+<span class="text-primary font-bold">MONITORING</span>
+</div>
+<div class="font-code-sm text-code-sm text-primary font-semibold">
+                IDLE / AWAITING CONSIGNMENT BATCH
+              </div>
+<p class="text-[11px] text-on-surface-variant font-body-sm mt-1 leading-snug">
+                Smart escrow triggers Vietcombank/ICBC bilateral webhook. Mekong Clear never holds fiat balances or escrow deposits.
+              </p>
+</div>
+</div>
+<!-- SECTION C: CONSOLE TERMINAL DIAGNOSTIC LOG -->
+<div class="bg-surface-container-lowest border border-outline-variant p-space-md rounded font-code-sm flex flex-col space-y-space-sm">
+<div class="flex items-center justify-between pb-space-xs border-b border-outline-variant">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-label-sm font-label-sm uppercase text-outline">Console Diagnostic Log</span>
+</div>
+<span class="text-[10px] text-outline">STREAM: ACTIVE</span>
+</div>
+<div class="space-y-1 text-code-sm text-[11px] font-mono leading-relaxed overflow-hidden">
+<div class="text-outline"><span class="text-on-surface-variant">[14:28:01]</span> Verifying 25/25 repo artifacts against HEAD... <span class="text-primary font-bold">OK</span></div>
+<div class="text-outline"><span class="text-on-surface-variant">[14:28:02]</span> Merkle root validated: <span class="text-primary">0x8f2c0194b92c49a1</span>... <span class="text-primary font-bold">OK</span></div>
+<div class="text-outline"><span class="text-on-surface-variant">[14:28:03]</span> Strategy V2 documents isolated in review sandbox.</div>
+<div class="text-outline"><span class="text-on-surface-variant">[14:28:04]</span> Stage Zero air-gap checksum: <span class="text-on-surface">VN-84B-CAI-LAY</span> lock confirmed.</div>
+<div class="text-outline"><span class="text-on-surface-variant">[14:28:05]</span> Non-custodial webhook listener attached on port 8443.</div>
+<div class="text-primary animate-pulse">&gt; Ready for operator attestation key input...</div>
+</div>
+</div>
+</aside>
+</div>
+</main>
+</div>
+  <script src="/stitch/durios-live-bridge.js" defer></script>
+</body></html>

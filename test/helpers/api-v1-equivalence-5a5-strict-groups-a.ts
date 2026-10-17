@@ -1,7 +1,5 @@
 import {
-  createPdfBytes,
-  type DossierDetailResponse,
-  type DossierDocumentPayload,
+  createPdfBytes, type DossierDetailResponse, type DossierDocumentPayload,
 } from "./redaction-and-blobs-5a5-scenarios.js";
 import type { CompareCallFn, EquivalenceActors } from "./api-v1-equivalence-5a5-normalizer.js";
 
@@ -28,8 +26,7 @@ export async function runEquivalenceGroups1And2And6(
   await compareCall("/dossiers", "/dossiers", "GET", unauthenticated, undefined, 401);
   await compareCall(
     "/dossiers", "/dossiers", "POST", ownerViewer,
-    { dossierCode: "DOS-EQ-DENIED", containerNumber: "MSKU1234565", sealNumber: "SEAL-EQ-01" },
-    403
+    { dossierCode: "DOS-EQ-DENIED", containerNumber: "MSKU1234565", sealNumber: "SEAL-EQ-01" }, 403
   );
   await compareCall("/dossiers", "/dossiers", "POST", ownerAdmin, { dossierCode: "" }, 400);
 
@@ -54,8 +51,7 @@ export async function runEquivalenceGroups1And2And6(
   // GROUP 2: Documents & Verify
   const docPayloads = [
     {
-      fileName: "eq_packing.pdf",
-      documentType: "PACKING_LIST",
+      fileName: "eq_packing.pdf", documentType: "PACKING_LIST",
       base64Content: Buffer.from(createPdfBytes("eq-pl-content")).toString("base64"),
       fixtureFields: {
         container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-EQ-01" },
@@ -64,23 +60,17 @@ export async function runEquivalenceGroups1And2And6(
       },
     },
     {
-      fileName: "eq_lab.pdf",
-      documentType: "LAB_TEST_REPORT",
+      fileName: "eq_lab.pdf", documentType: "LAB_TEST_REPORT",
       base64Content: Buffer.from(createPdfBytes("eq-lab-content")).toString("base64"),
       fixtureFields: {
-        cadmium_mg_kg: { raw: "0.024" },
-        sample_code: { raw: "SYNTH-EQ-SMP-01" },
-        sampling_date: { raw: "2026-10-06" },
+        cadmium_mg_kg: { raw: "0.024" }, sample_code: { raw: "SYNTH-EQ-SMP-01" }, sampling_date: { raw: "2026-10-06" },
       },
     },
     {
-      fileName: "eq_phyto.pdf",
-      documentType: "PHYTOSANITARY_CERTIFICATE",
+      fileName: "eq_phyto.pdf", documentType: "PHYTOSANITARY_CERTIFICATE",
       base64Content: Buffer.from(createPdfBytes("eq-phyto-content")).toString("base64"),
       fixtureFields: {
-        container_number: { raw: "MSKU1234565" },
-        seal_number: { raw: "SEAL-EQ-01" },
-        phyto_cert_number: { raw: "SYNTH-EQ-KDTV-01" },
+        container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-EQ-01" }, phyto_cert_number: { raw: "SYNTH-EQ-KDTV-01" },
       },
     },
   ];
@@ -111,8 +101,7 @@ export async function runEquivalenceGroups1And2And6(
       await compareCall(
         `/dossiers/${dosApiId}/documents/${docsApi[docIdx]!.id}/fields/${fieldsA[fIdx]!.id}/verify`,
         `/dossiers/${dosV1Id}/documents/${docsV1[docIdx]!.id}/fields/${fieldsB[fIdx]!.id}/verify`,
-        "POST", ownerClerk,
-        { confirmedValue: fieldsA[fIdx]!.rawValue, clerkNote: "Internal clerk note" }, 200
+        "POST", ownerClerk, { confirmedValue: fieldsA[fIdx]!.rawValue, clerkNote: "Internal clerk note" }, 200
       );
     }
   }

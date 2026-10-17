@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DuriOS // 5-Turn Socratic Open-Core & Unit Economics Introspector</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  
+  <style>
+    :root {
+      --bg-canvas: #0B130E;
+      --bg-surface: #132018;
+      --bg-card: #18281F;
+      --border: #1F3327;
+      --border-highlight: #10B981;
+      --text-primary: #ECFDF5;
+      --text-secondary: #6EE7B7;
+      --text-muted: #34D399;
+      --accent-primary: #10B981;
+      --accent-gold: #F59E0B;
+      --accent-danger: #EF4444;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --radius-card: 6px;
+      --shadow: 0 4px 20px -2px rgba(16, 185, 129, 0.12);
+    }
+
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+
+    .font-display { font-family: var(--font-display); }
+    .font-mono { font-family: var(--font-mono); }
+
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0B130E;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1F3327;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #10B981;
+    }
+
+    .border-custom { border-color: var(--border); }
+    .bg-surface-custom { background-color: var(--bg-surface); }
+    .bg-card-custom { background-color: var(--bg-card); }
+    
+    .pulse-emerald {
+      animation: pulseGlow 2.5s infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 1; filter: drop-shadow(0 0 4px rgba(16, 185, 129, 0.4)); }
+      50% { opacity: 0.65; filter: drop-shadow(0 0 1px rgba(16, 185, 129, 0.1)); }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#0B130E] text-[#ECFDF5] selection:bg-[#10B981] selection:text-[#0B130E]">
+<!-- DURIOS UNIFIED TOP NAV BAR -->
+<div id="durios-unified-top-nav" style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 7px 14px; font-family: 'Inter', sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
+    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 23-SCREEN NAV</span>
+    <span style="color: #1F3327;">|</span>
+    <a href="gallery.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">⭐️ Master Hub</a>
+    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">1. Workspace</a>
+    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">2. Dossiers</a>
+    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">3. Auditor (5 Gates)</a>
+    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">4. Buyer Portal</a>
+    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">5. Cluster Ops</a>
+    <a href="portability.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">6. Portability</a>
+    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">7. Pro SaaS</a>
+    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">8. Style Guide</a>
+  </div>
+  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
+    <a href="corridors.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🌏 9. Corridors</a>
+    <a href="blueprint.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🧭 10. Blueprint 25</a>
+    <a href="security-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px; ">🛡️ 11. Security Vault</a>
+    <a href="organic-escrow-guard.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">⚖️ 12. Escrow Guard</a>
+    <a href="webhook-sync-queue.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔄 13. Lab Webhooks</a>
+    <a href="socratic-introspector.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; background: rgba(16,185,129,0.22);">🧠 14. Socratic 5-Turn</a>
+    <a href="rehearsal-command.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🎯 15. Rehearsal Cmd</a>
+    <a href="mit-verifier-lab.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px; ">🔬 16. MIT Verifier Lab</a>
+    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">📝 Bút Dạ Quang</a>
+    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📊 Excel Grid</a>
+    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px; ">💬 Zalo Bot</a>
+    <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">📱 Mobile</a>
+    <a href="field-proven.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px; ">☀️ Field POS</a>
+    <a href="foundry.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px; ">🔐 Foundry</a>
+  </div>
+</div>
+
+      <!-- Turn 2 Card -->
+      <div class="bg-[#132018] border border-[#1F3327] hover:border-[#10B981]/60 rounded-[6px] p-3.5 transition group">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded flex items-center justify-center bg-[#18281F] border border-[#1F3327] font-mono text-xs font-bold text-[#10B981]">02</span>
+            <h3 class="font-display font-semibold text-sm text-[#ECFDF5]">
+              Turn 2 — Public GitHub Governance &amp; Secret Hygiene
+            </h3>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-mono text-[11px] font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">verified</span> PASSED
+          </span>
+        </div>
+
+        <div class="mt-2.5 bg-[#0B130E] border border-[#1F3327] rounded p-2.5 font-mono text-xs">
+          <p class="text-[#F59E0B] italic text-[11.5px] mb-1">
+            Q: "Are dual-license files, trademark policy, and .gitignore .db/.env protections present?"
+          </p>
+          <div class="text-[#6EE7B7] flex items-start gap-1.5 mt-1 text-[11px]">
+            <span class="material-symbols-outlined text-sm text-[#10B981] shrink-0">check_circle</span>
+            <span>
+              <strong>Cryptographic Proof:</strong> 7/7 governance files validated on HEAD. <code class="text-neutral-300">.gitignore</code> strictly shields SQLite WAL (<code class="text-neutral-300">data/*.db</code>) &amp; <code class="text-neutral-300">.env*</code> tokens from public commit leaks.
+            </span>
+          </div>
+        </div>
+
+        <!-- 7 Governance badges -->
+        <div class="mt-2.5 flex flex-wrap gap-1.5 font-mono text-[10px]">
+          <span class="px-2 py-0.5 rounded bg-[#18281F] border border-[#1F3327] text-neutral-300">LICENSE (AGPL-3.0)</span>
+          <span class="px-2 py-0.5 rounded bg-[#18281F] border border-[#1F3327] text-neutral-300">LICENSE-MIT</span>
+          <span class="px-2 py-0.5 rounded bg-[#18281F] border border-[#1F3327] text-neutral-300">COMMERCIAL-LICENSE.md</span>
+          <span class="px-2 py-0.5 rounded bg-[#18281F] border border-[#1F3327] text-neutral-300">TRADEMARK-POLICY.md</span>
+          <span class="px-2 py-0.5 rounded bg-[#18281F] border border-[#1F3327] text-neutral-300">CONTRIBUTING.md</span>
+          <span class="px-2 py-0.5 rounded bg-[#18281F] border border-[#1F3327] text-neutral-300">SECURITY.md</span>
+          <span class="px-2 py-0.5 rounded bg-[#18281F] border border-[#10B981]/40 text-[#10B981]">README.md (Verified)</span>
+        </div>
+      </div>
+
+      <!-- Turn 3 Card -->
+      <div class="bg-[#132018] border border-[#1F3327] hover:border-[#10B981]/60 rounded-[6px] p-3.5 transition group">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded flex items-center justify-center bg-[#18281F] border border-[#1F3327] font-mono text-xs font-bold text-[#10B981]">03</span>
+            <h3 class="font-display font-semibold text-sm text-[#ECFDF5]">
+              Turn 3 — Ed25519 Licensing &amp; Zero-Lock-In Graceful Downgrade
+            </h3>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-mono text-[11px] font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">verified</span> PASSED
+          </span>
+        </div>
+
+        <div class="mt-2.5 bg-[#0B130E] border border-[#1F3327] rounded p-2.5 font-mono text-xs">
+          <p class="text-[#F59E0B] italic text-[11.5px] mb-1">
+            Q: "Does Ed25519 unlock Pro SaaS and safely downgrade to Community without data lock-in?"
+          </p>
+          <div class="text-[#6EE7B7] flex items-start gap-1.5 mt-1 text-[11px]">
+            <span class="material-symbols-outlined text-sm text-[#10B981] shrink-0">check_circle</span>
+            <span>
+              <strong>Cryptographic Proof:</strong> Offline Ed25519 verification validates without outbound network calls. On license expiration or key revocation, runtime transitions to <code class="text-neutral-300">COMMUNITY_OPEN_CORE</code> with <code class="text-[#10B981]">localDataAccessGuaranteed=true</code>.
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-2.5 flex items-center justify-between text-xs font-mono bg-[#18281F] border border-[#1F3327] rounded p-2 text-neutral-300">
+          <span>Active Token: <code class="text-[#6EE7B7]">ed25519-pk-vn-tg-ph-001</code></span>
+          <span class="text-[#10B981] flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">lock_open</span> ZERO VENDOR LOCK-IN
+          </span>
+        </div>
+      </div>
+
+      <!-- Turn 4 Card -->
+      <div class="bg-[#132018] border border-[#1F3327] hover:border-[#10B981]/60 rounded-[6px] p-3.5 transition group">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded flex items-center justify-center bg-[#18281F] border border-[#1F3327] font-mono text-xs font-bold text-[#10B981]">04</span>
+            <h3 class="font-display font-semibold text-sm text-[#ECFDF5]">
+              Turn 4 — Unit Economics &amp; Multi-Revenue Stack Truth
+            </h3>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-mono text-[11px] font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">verified</span> PASSED
+          </span>
+        </div>
+
+        <div class="mt-2.5 bg-[#0B130E] border border-[#1F3327] rounded p-2.5 font-mono text-xs">
+          <p class="text-[#F59E0B] italic text-[11.5px] mb-1">
+            Q: "Does SaaS maintain &gt;=80% gross margin while accounting for Vietnam's 281-packhouse ceiling?"
+          </p>
+          <div class="text-[#6EE7B7] flex items-start gap-1.5 mt-1 text-[11px]">
+            <span class="material-symbols-outlined text-sm text-[#10B981] shrink-0">check_circle</span>
+            <span>
+              <strong>Cryptographic Proof:</strong> Per-container gross margin stands at <strong class="text-[#10B981]">94.67%</strong> (150k VND revenue vs 8k VND variable infrastructure cost). Pure SaaS ceiling at 100% market saturation yields <strong class="text-[#F59E0B]">$657,643</strong>, validating mandatory multi-revenue layers.
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-2.5 grid grid-cols-3 gap-2 font-mono text-[11px]">
+          <div class="p-2 rounded bg-[#18281F] border border-[#1F3327]">
+            <div class="text-neutral-400 text-[10px]">REVENUE / CONTAINER</div>
+            <div class="text-[#10B981] font-bold">150,000 VND</div>
+          </div>
+          <div class="p-2 rounded bg-[#18281F] border border-[#1F3327]">
+            <div class="text-neutral-400 text-[10px]">VARIABLE COGS</div>
+            <div class="text-neutral-300 font-bold">8,000 VND</div>
+          </div>
+          <div class="p-2 rounded bg-[#18281F] border border-[#1F3327]">
+            <div class="text-neutral-400 text-[10px]">VN CEILING CAP</div>
+            <div class="text-[#F59E0B] font-bold">281 Packhouses</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Turn 5 Card -->
+      <div class="bg-[#132018] border border-[#1F3327] hover:border-[#10B981]/60 rounded-[6px] p-3.5 transition group">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded flex items-center justify-center bg-[#18281F] border border-[#1F3327] font-mono text-xs font-bold text-[#10B981]">05</span>
+            <h3 class="font-display font-semibold text-sm text-[#ECFDF5]">
+              Turn 5 — 25-Step Blueprint &amp; Tri-Edition Completeness
+            </h3>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-mono text-[11px] font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">verified</span> PASSED
+          </span>
+        </div>
+
+        <div class="mt-2.5 bg-[#0B130E] border border-[#1F3327] rounded p-2.5 font-mono text-xs">
+          <p class="text-[#F59E0B] italic text-[11.5px] mb-1">
+            Q: "Are all 25 steps and all 3 Open-Core editions synchronized?"
+          </p>
+          <div class="text-[#6EE7B7] flex items-start gap-1.5 mt-1 text-[11px]">
+            <span class="material-symbols-outlined text-sm text-[#10B981] shrink-0">check_circle</span>
+            <span>
+              <strong>Cryptographic Proof:</strong> 25/25 architecture tasks verified against blueprint manifest. Composite Merkle root <code class="text-neutral-300">0x8f2c0194b92c49a1...ed25519</code> matches across repository manifests.
+            </span>
+          </div>
+        </div>
+
+        <div class="mt-2.5 flex items-center justify-between text-xs font-mono bg-[#18281F] border border-[#1F3327] rounded p-2">
+          <span class="text-neutral-400">Tri-Edition Matrix:</span>
+          <span class="text-[#ECFDF5]">
+            <span class="text-[#10B981]">Community (6)</span> · 
+            <span class="text-[#6EE7B7]">Pro SaaS (4)</span> · 
+            <span class="text-[#F59E0B]">Enterprise (2)</span>
+          </span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL: 8-Layer Multi-Revenue Stack & Ed25519 Graceful Downgrade Simulator (5 Cols) -->
+    <div class="lg:col-span-5 flex flex-col gap-3">
+
+      <!-- Module 1: 8-Layer Multi-Revenue Stack -->
+      <div class="bg-[#132018] border border-[#1F3327] rounded-[6px] p-3.5 flex flex-col">
+        <div class="flex items-center justify-between border-b border-[#1F3327] pb-2 mb-2.5">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[#10B981] text-base">stacked_bar_chart</span>
+            <h3 class="font-display font-bold text-xs uppercase tracking-wide text-[#ECFDF5]">
+              8-Layer Multi-Revenue Expansion Stack
+            </h3>
+          </div>
+          <span class="text-[10px] font-mono text-[#10B981] bg-[#10B981]/10 px-2 py-0.5 rounded border border-[#10B981]/30">
+            $1.48M POTENTIAL ARR
+          </span>
+        </div>
+
+        <p class="text-[11px] text-neutral-400 mb-2 font-mono">
+          Bridging the $657,643 pure-SaaS ceiling to target $1.0M+ ARR via value-added compliance layers:
+        </p>
+
+        <!-- 8 Layers Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left font-mono text-[10.5px]">
+            <thead>
+              <tr class="text-neutral-500 border-b border-[#1F3327]">
+                <th class="pb-1.5 font-medium">LAYER</th>
+                <th class="pb-1.5 font-medium">MODULE / PRODUCT</th>
+                <th class="pb-1.5 font-medium text-right">MODEL</th>
+                <th class="pb-1.5 font-medium text-right">POTENTIAL</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-[#1F3327]/60 text-neutral-300">
+              <tr class="hover:bg-[#18281F]/80">
+                <td class="py-1 text-[#10B981] font-bold">L1</td>
+                <td class="py-1">Packhouse Pro Base License</td>
+                <td class="py-1 text-right text-neutral-400">60M VND/yr</td>
+                <td class="py-1 text-right font-semibold text-[#ECFDF5]">$657,643</td>
+              </tr>
+              <tr class="hover:bg-[#18281F]/80">
+                <td class="py-1 text-[#10B981] font-bold">L2</td>
+                <td class="py-1">High-Speed Cloud OCR &amp; ZNS Packs</td>
+                <td class="py-1 text-right text-neutral-400">Usage-based</td>
+                <td class="py-1 text-right font-semibold text-[#6EE7B7]">$142,000</td>
+              </tr>
+              <tr class="hover:bg-[#18281F]/80">
+                <td class="py-1 text-[#10B981] font-bold">L3</td>
+                <td class="py-1">E2EE Disaster Recovery Backup Vault</td>
+                <td class="py-1 text-right text-neutral-400">12M VND/yr</td>
+                <td class="py-1 text-right font-semibold text-[#6EE7B7]">$84,000</td>
+              </tr>
+              <tr class="hover:bg-[#18281F]/80">
+                <td class="py-1 text-[#10B981] font-bold">L4</td>
+                <td class="py-1">GACC Live Watch Telemetry Service</td>
+                <td class="py-1 text-right text-neutral-400">18M VND/yr</td>
+                <td class="py-1 text-right font-semibold text-[#6EE7B7]">$98,000</td>
+              </tr>
+              <tr class="hover:bg-[#18281F]/80">
+                <td class="py-1 text-[#F59E0B] font-bold">L5</td>
+                <td class="py-1">Non-Custodial Trade Room Fee</td>
+                <td class="py-1 text-right text-neutral-400">120k VND/consign</td>
+                <td class="py-1 text-right font-semibold text-[#F59E0B]">$185,000</td>
+              </tr>
+              <tr class="hover:bg-[#18281F]/80">
+                <td class="py-1 text-[#F59E0B] font-bold">L6</td>
+                <td class="py-1">Trade-Finance &amp; L/C Escrow API</td>
+                <td class="py-1 text-right text-neutral-400">B2B Flat + Fee</td>
+                <td class="py-1 text-right font-semibold text-[#F59E0B]">$120,000</td>
+              </tr>
+              <tr class="hover:bg-[#18281F]/80">
+                <td class="py-1 text-[#6EE7B7] font-bold">L7</td>
+                <td class="py-1">ASEAN Corridors (TH, MY, PH &rarr; CN)</td>
+                <td class="py-1 text-right text-neutral-400">Country Packs</td>
+                <td class="py-1 text-right font-semibold text-[#6EE7B7]">$110,000</td>
+              </tr>
+              <tr class="hover:bg-[#18281F]/80">
+                <td class="py-1 text-[#6EE7B7] font-bold">L8</td>
+                <td class="py-1">Dedicated Multi-Site Enterprise Node</td>
+                <td class="py-1 text-right text-neutral-400">Custom SLA</td>
+                <td class="py-1 text-right font-semibold text-[#6EE7B7]">$85,000</td>
+              </tr>
+            </tbody>
+            <tfoot>
+              <tr class="border-t border-[#1F3327] font-bold">
+                <td colspan="3" class="pt-1.5 text-neutral-400">TOTAL COMBINED ANNUAL RUN-RATE:</td>
+                <td class="pt-1.5 text-right text-[#10B981] text-xs">$1,481,643</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+
+      <!-- Module 2: Ed25519 Graceful Downgrade Simulator -->
+      <div class="bg-[#132018] border border-[#1F3327] rounded-[6px] p-3.5 flex flex-col flex-1">
+        <div class="flex items-center justify-between border-b border-[#1F3327] pb-2 mb-2.5">
+          <div class="flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-[#F59E0B] text-base">key_visualizer</span>
+            <h3 class="font-display font-bold text-xs uppercase tracking-wide text-[#ECFDF5]">
+              Ed25519 Zero-Lock-In Downgrade Simulator
+            </h3>
+          </div>
+          <span id="simulatorStateBadge" class="text-[10px] font-mono text-[#10B981] bg-[#10B981]/10 px-2 py-0.5 rounded border border-[#10B981]/30">
+            STATE: ACTIVE_PRO_SAAS
+          </span>
+        </div>
+
+        <p class="text-[11px] text-neutral-400 mb-2 font-mono">
+          Simulate offline key expiration or cancellation. DuriOS immediately falls back to pure AGPL-3.0 with guaranteed local data access:
+        </p>
+
+        <!-- Interactive Simulator Controls -->
+        <div class="bg-[#0B130E] border border-[#1F3327] rounded p-2.5 mb-2.5 flex flex-col gap-2 font-mono text-xs">
+          <div class="flex items-center justify-between">
+            <span class="text-neutral-400">License Payload:</span>
+            <span class="text-[#6EE7B7] text-[11px]" id="simLicenseKey">DURIOS-PRO-2026-9A8B-4FE2</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-neutral-400">Signature:</span>
+            <span class="text-neutral-400 text-[10px]" id="simSigText">ed25519:6c8a...f10b (Valid)</span>
+          </div>
+
+          <div class="grid grid-cols-2 gap-2 mt-1">
+            <button onclick="setLicenseActive()" id="btnActivateLicense" class="px-2 py-1.5 rounded bg-[#10B981]/20 hover:bg-[#10B981]/30 text-[#10B981] border border-[#10B981]/50 text-center font-bold text-[11px] transition">
+              Simulate Valid Key
+            </button>
+            <button onclick="setLicenseExpired()" id="btnExpireLicense" class="px-2 py-1.5 rounded bg-[#EF4444]/20 hover:bg-[#EF4444]/30 text-[#EF4444] border border-[#EF4444]/50 text-center font-bold text-[11px] transition">
+              Simulate Expired Key
+            </button>
+          </div>
+        </div>
+
+        <!-- Dynamic Downgrade Telemetry Inspector -->
+        <div id="downgradeTelemetryBox" class="bg-[#18281F] border border-[#10B981]/40 rounded p-2.5 font-mono text-[11px] flex flex-col gap-1.5">
+          <div class="flex items-center justify-between">
+            <span class="text-neutral-400">Runtime Tier:</span>
+            <span id="tierValue" class="text-[#10B981] font-bold">PACKHOUSE_PRO_SAAS</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-neutral-400">SQLite WAL Access:</span>
+            <span id="walAccessValue" class="text-[#10B981] font-bold">UNRESTRICTED (Local Disk)</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-neutral-400">localDataAccessGuaranteed:</span>
+            <span id="localGuaranteedValue" class="text-[#10B981] font-bold">TRUE</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-neutral-400">Cloud Features:</span>
+            <span id="cloudFeatureValue" class="text-[#6EE7B7]">AUTO_SYNC + OCR_CLOUD + ZNS_RELAY</span>
+          </div>
+          <div class="flex items-center justify-between border-t border-[#1F3327] pt-1 mt-0.5">
+            <span class="text-neutral-400">Lock-In Assessment:</span>
+            <span id="lockInAssessment" class="text-[#10B981] font-bold flex items-center gap-1">
+              <span class="material-symbols-outlined text-xs">check</span> ZERO LOCK-IN CONFIRMED
+            </span>
+          </div>
+        </div>
+
+        <!-- Statutory Notice Footer -->
+        <div class="mt-auto pt-2.5 text-[10px] font-mono text-neutral-500 flex items-center justify-between">
+          <span>AGPL-3.0 Codebase Portability Guaranteed</span>
+          <span class="text-neutral-400">RFC 6962 Compliant</span>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Bottom Terminal Footprint -->
+  <footer class="h-8 border-t border-[#1F3327] bg-[#0B130E] px-4 flex items-center justify-between font-mono text-[10.5px] text-neutral-500">
+    <div class="flex items-center gap-3">
+      <span class="flex items-center gap-1 text-[#10B981]">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#10B981]"></span>
+        DURIOS SEC-OPS ENCLAVE
+      </span>
+      <span>NODE: #VN-84B (CAI LẬY HUB)</span>
+      <span class="hidden md:inline">CORRIDOR: HUU NGHI / YOUYI GUAN</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span>UNIT ECONOMICS: 94.67% MARGIN</span>
+      <span class="text-[#10B981] font-semibold">STATUS: EVAL_COMPLETED</span>
+    </div>
+  </footer>
+
+  <!-- Interactivity Logic -->
+  <script>
+    let isDeepMode = false;
+
+    function toggleSocraticDeepAudit() {
+      isDeepMode = !isDeepMode;
+      const btn = document.getElementById('deepAuditBtn');
+      if (isDeepMode) {
+        btn.innerHTML = `<span class="material-symbols-outlined text-sm font-bold">restart_alt</span><span>Deep Mode: ACTIVE (?deep=true)</span>`;
+        btn.classList.remove('bg-[#10B981]', 'text-[#0B130E]');
+        btn.classList.add('bg-[#F59E0B]', 'text-[#0B130E]');
+        // Highlight turns with subtle pulse
+        document.querySelectorAll('h3').forEach(el => el.classList.add('text-[#10B981]'));
+      } else {
+        btn.innerHTML = `<span class="material-symbols-outlined text-sm font-bold">bolt</span><span>Run Deep Socratic Audit (?deep=true)</span>`;
+        btn.classList.remove('bg-[#F59E0B]', 'text-[#0B130E]');
+        btn.classList.add('bg-[#10B981]', 'text-[#0B130E]');
+        document.querySelectorAll('h3').forEach(el => el.classList.remove('text-[#10B981]'));
+      }
+    }
+
+    function setLicenseExpired() {
+      document.getElementById('simulatorStateBadge').innerText = 'STATE: GRACEFUL_DOWNGRADE_COMMUNITY';
+      document.getElementById('simulatorStateBadge').className = 'text-[10px] font-mono text-[#F59E0B] bg-[#F59E0B]/10 px-2 py-0.5 rounded border border-[#F59E0B]/30';
+      
+      document.getElementById('simLicenseKey').innerText = 'DURIOS-PRO-2026-EXPIRED (REVOKED)';
+      document.getElementById('simLicenseKey').className = 'text-[#EF4444] text-[11px] line-through';
+      document.getElementById('simSigText').innerText = 'ed25519:SIG_EXPIRED_OR_ABSENT (Fall-through)';
+
+      document.getElementById('downgradeTelemetryBox').className = 'bg-[#18281F] border border-[#F59E0B]/50 rounded p-2.5 font-mono text-[11px] flex flex-col gap-1.5';
+      document.getElementById('tierValue').innerText = 'COMMUNITY_OPEN_CORE (AGPL-3.0)';
+      document.getElementById('tierValue').className = 'text-[#F59E0B] font-bold';
+
+      document.getElementById('walAccessValue').innerText = 'UNRESTRICTED (100% Read/Write)';
+      document.getElementById('walAccessValue').className = 'text-[#10B981] font-bold';
+
+      document.getElementById('localGuaranteedValue').innerText = 'TRUE (Zero Vendor Lock-In)';
+      document.getElementById('localGuaranteedValue').className = 'text-[#10B981] font-bold';
+
+      document.getElementById('cloudFeatureValue').innerText = 'DISABLED (Cloud OCR/ZNS requires active token)';
+      document.getElementById('cloudFeatureValue').className = 'text-neutral-400 italic';
+
+      document.getElementById('lockInAssessment').innerHTML = '<span class="material-symbols-outlined text-xs">check_circle</span> GRACEFUL DOWNGRADE SAFE';
+      document.getElementById('lockInAssessment').className = 'text-[#10B981] font-bold flex items-center gap-1';
+    }
+
+    function setLicenseActive() {
+      document.getElementById('simulatorStateBadge').innerText = 'STATE: ACTIVE_PRO_SAAS';
+      document.getElementById('simulatorStateBadge').className = 'text-[10px] font-mono text-[#10B981] bg-[#10B981]/10 px-2 py-0.5 rounded border border-[#10B981]/30';
+      
+      document.getElementById('simLicenseKey').innerText = 'DURIOS-PRO-2026-9A8B-4FE2';
+      document.getElementById('simLicenseKey').className = 'text-[#6EE7B7] text-[11px]';
+      document.getElementById('simSigText').innerText = 'ed25519:6c8a...f10b (Valid)';
+
+      document.getElementById('downgradeTelemetryBox').className = 'bg-[#18281F] border border-[#10B981]/40 rounded p-2.5 font-mono text-[11px] flex flex-col gap-1.5';
+      document.getElementById('tierValue').innerText = 'PACKHOUSE_PRO_SAAS';
+      document.getElementById('tierValue').className = 'text-[#10B981] font-bold';
+
+      document.getElementById('walAccessValue').innerText = 'UNRESTRICTED (Local Disk)';
+      document.getElementById('walAccessValue').className = 'text-[#10B981] font-bold';
+
+      document.getElementById('localGuaranteedValue').innerText = 'TRUE';
+      document.getElementById('localGuaranteedValue').className = 'text-[#10B981] font-bold';
+
+      document.getElementById('cloudFeatureValue').innerText = 'AUTO_SYNC + OCR_CLOUD + ZNS_RELAY';
+      document.getElementById('cloudFeatureValue').className = 'text-[#6EE7B7]';
+
+      document.getElementById('lockInAssessment').innerHTML = '<span class="material-symbols-outlined text-xs">check</span> ZERO LOCK-IN CONFIRMED';
+      document.getElementById('lockInAssessment').className = 'text-[#10B981] font-bold flex items-center gap-1';
+    }
+  </script>
+  <script src="/stitch/durios-live-bridge.js" defer></script>
+</body>
+</html>

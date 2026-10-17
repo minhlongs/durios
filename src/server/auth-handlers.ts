@@ -1,7 +1,5 @@
 import {
-  OtpProviderDispatchError,
-  OtpProviderNotConfiguredError,
-  type OtpChannel,
+  OtpProviderDispatchError, OtpProviderNotConfiguredError, type OtpChannel,
 } from "../auth/otp-provider.js";
 import type { SqliteAuthService } from "../auth/sqlite-auth-service.js";
 import { resolveAuthenticatedActor } from "./actor-resolver.js";
@@ -33,12 +31,9 @@ function sessionResponseWithCookie(
 }
 
 export async function handlePasswordLogin(
-  authService: SqliteAuthService | undefined,
-  req: Request
+  authService: SqliteAuthService | undefined, req: Request
 ): Promise<Response> {
-  if (!authService) {
-    return errorResponse("Authentication service unavailable", 503);
-  }
+  if (!authService) return errorResponse("Authentication service unavailable", 503);
   let body: { username?: string; password?: string };
   try {
     body = (await req.json()) as { username?: string; password?: string };
@@ -55,16 +50,11 @@ export async function handlePasswordLogin(
       {
         success: true,
         data: {
-          sessionId: session.sessionId,
-          authMethod: session.authMethod,
-          expiresAt: session.expiresAt,
-          actor: session.actor,
+          sessionId: session.sessionId, authMethod: session.authMethod,
+          expiresAt: session.expiresAt, actor: session.actor,
         },
       },
-      session.sessionToken,
-      session.expiresAt,
-      req,
-      200
+      session.sessionToken, session.expiresAt, req, 200
     );
   } catch (err) {
     return mapDomainErrorToResponse(err, "Password login failed");
@@ -72,21 +62,16 @@ export async function handlePasswordLogin(
 }
 
 export async function handleOtpChallengeRequest(
-  authService: SqliteAuthService | undefined,
-  req: Request
+  authService: SqliteAuthService | undefined, req: Request
 ): Promise<Response> {
-  if (!authService) {
-    return errorResponse("Authentication service unavailable", 503);
-  }
+  if (!authService) return errorResponse("Authentication service unavailable", 503);
   let body: { phoneNumber?: string; channel?: OtpChannel };
   try {
     body = (await req.json()) as { phoneNumber?: string; channel?: OtpChannel };
   } catch {
     return errorResponse("Invalid JSON payload", 400);
   }
-  if (!body.phoneNumber) {
-    return errorResponse("Missing required field: phoneNumber", 400);
-  }
+  if (!body.phoneNumber) return errorResponse("Missing required field: phoneNumber", 400);
 
   const channel: OtpChannel = body.channel === "SMS" ? "SMS" : "ZALO";
   try {
@@ -95,33 +80,24 @@ export async function handleOtpChallengeRequest(
       {
         success: true,
         data: {
-          challengeId: challenge.challengeId,
-          phoneNumber: challenge.phoneNumber,
-          channel: challenge.channel,
-          expiresAt: challenge.expiresAt,
+          challengeId: challenge.challengeId, phoneNumber: challenge.phoneNumber,
+          channel: challenge.channel, expiresAt: challenge.expiresAt,
           providerReference: challenge.providerReference,
         },
       },
       201
     );
   } catch (err) {
-    if (err instanceof OtpProviderNotConfiguredError) {
-      return errorResponse(err.message, 503, err.code);
-    }
-    if (err instanceof OtpProviderDispatchError) {
-      return errorResponse(err.message, 502, err.code);
-    }
+    if (err instanceof OtpProviderNotConfiguredError) return errorResponse(err.message, 503, err.code);
+    if (err instanceof OtpProviderDispatchError) return errorResponse(err.message, 502, err.code);
     return mapDomainErrorToResponse(err, "Failed to initiate OTP challenge");
   }
 }
 
 export async function handleOtpChallengeVerify(
-  authService: SqliteAuthService | undefined,
-  req: Request
+  authService: SqliteAuthService | undefined, req: Request
 ): Promise<Response> {
-  if (!authService) {
-    return errorResponse("Authentication service unavailable", 503);
-  }
+  if (!authService) return errorResponse("Authentication service unavailable", 503);
   let body: { challengeId?: string; otpCode?: string };
   try {
     body = (await req.json()) as { challengeId?: string; otpCode?: string };
@@ -138,16 +114,11 @@ export async function handleOtpChallengeVerify(
       {
         success: true,
         data: {
-          sessionId: session.sessionId,
-          authMethod: session.authMethod,
-          expiresAt: session.expiresAt,
-          actor: session.actor,
+          sessionId: session.sessionId, authMethod: session.authMethod,
+          expiresAt: session.expiresAt, actor: session.actor,
         },
       },
-      session.sessionToken,
-      session.expiresAt,
-      req,
-      200
+      session.sessionToken, session.expiresAt, req, 200
     );
   } catch (err) {
     return mapDomainErrorToResponse(err, "OTP verification failed");
@@ -155,13 +126,12 @@ export async function handleOtpChallengeVerify(
 }
 
 export function handleGetAuthenticatedMe(
-  authService: SqliteAuthService | undefined,
-  req: Request
+  authService: SqliteAuthService | undefined, req: Request
 ): Response {
   try {
     const actor = resolveAuthenticatedActor(req, authService);
     return jsonResponse({ success: true, data: { actor } });
   } catch (err) {
-    return mapDomainErrorToResponse(err, "Unauthorized");
+    return mapDomainErrorToResponse(err, "Authentication failed");
   }
 }

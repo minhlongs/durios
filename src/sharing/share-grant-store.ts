@@ -1,9 +1,5 @@
 import type { ContainerDossier } from "../domain/types.js";
-import type {
-  ShareAccessGrant,
-  SharePurpose,
-  ShareScope,
-} from "../domain/pilot-types.js";
+import type { ShareAccessGrant, SharePurpose, ShareScope } from "../domain/pilot-types.js";
 import type { SqliteClient } from "../storage/sqlite-client.js";
 
 export interface ShareGrantRow {
@@ -49,22 +45,13 @@ export function ensureDossierRowInSqlite(client: SqliteClient, dossier: Containe
       latest_validation_result, created_at, updated_at
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
-      dossier.id,
-      dossier.tenantId,
-      dossier.dossierCode,
-      dossier.containerNumber,
-      dossier.sealNumber,
-      dossier.targetMarket,
-      dossier.borderGate,
-      dossier.targetTemperatureC,
-      dossier.declaredNetWeightKg ?? null,
-      dossier.declaredBoxCount ?? null,
-      dossier.lifecycleState,
-      dossier.isImmutable ? 1 : 0,
-      dossier.exportSealedAt ?? null,
+      dossier.id, dossier.tenantId, dossier.dossierCode, dossier.containerNumber,
+      dossier.sealNumber, dossier.targetMarket, dossier.borderGate,
+      dossier.targetTemperatureC, dossier.declaredNetWeightKg ?? null,
+      dossier.declaredBoxCount ?? null, dossier.lifecycleState,
+      dossier.isImmutable ? 1 : 0, dossier.exportSealedAt ?? null,
       dossier.latestValidationResult ? JSON.stringify(dossier.latestValidationResult) : null,
-      dossier.createdAt,
-      dossier.updatedAt,
+      dossier.createdAt, dossier.updatedAt,
     ]
   );
 }
@@ -81,15 +68,8 @@ export function insertShareGrantRow(
       granted_at, granted_by, expires_at, is_revoked, revoked_at, revoked_by, revocation_reason
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NULL, NULL, NULL)`,
     [
-      grant.id,
-      grant.dossierId,
-      grant.ownerTenantId,
-      grant.granteeTenantId,
-      grant.purpose,
-      grant.scope,
-      grant.grantedAt,
-      grant.grantedBy,
-      grant.expiresAt,
+      grant.id, grant.dossierId, grant.ownerTenantId, grant.granteeTenantId,
+      grant.purpose, grant.scope, grant.grantedAt, grant.grantedBy, grant.expiresAt,
     ]
   );
 }

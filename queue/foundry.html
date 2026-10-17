@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DuriOS FOUNDRY // TRADE COMMAND</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;family=JetBrains+Mono:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary": "#412d00",
+            "outline": "#849495",
+            "on-surface": "#e5e2e1",
+            "on-primary-fixed-variant": "#004f54",
+            "on-primary-fixed": "#002022",
+            "on-secondary-container": "#007239",
+            "inverse-primary": "#006970",
+            "on-tertiary-fixed": "#271900",
+            "on-primary": "#00363a",
+            "surface-tint": "#00dbe9",
+            "surface-container-low": "#1c1b1b",
+            "inverse-on-surface": "#313030",
+            "outline-variant": "#3b494b",
+            "inverse-surface": "#e5e2e1",
+            "surface-dim": "#131313",
+            "on-tertiary-fixed-variant": "#5e4200",
+            "secondary": "#f5fff3",
+            "on-tertiary-container": "#7d5800",
+            "secondary-fixed-dim": "#00e479",
+            "error-container": "#93000a",
+            "on-secondary": "#003919",
+            "surface-container-highest": "#353534",
+            "background": "#131313",
+            "error": "#ffb4ab",
+            "primary": "#dbfcff",
+            "surface-container-high": "#2a2a2a",
+            "on-error": "#690005",
+            "surface-bright": "#3a3939",
+            "on-secondary-fixed-variant": "#005228",
+            "primary-fixed-dim": "#00dbe9",
+            "tertiary-fixed": "#ffdea8",
+            "on-background": "#e5e2e1",
+            "secondary-container": "#34ff8d",
+            "on-primary-container": "#006970",
+            "tertiary-fixed-dim": "#ffba20",
+            "surface-container-lowest": "#0e0e0e",
+            "primary-container": "#00f0ff",
+            "surface-container": "#201f1f",
+            "on-surface-variant": "#b9cacb",
+            "on-secondary-fixed": "#00210c",
+            "secondary-fixed": "#60ff99",
+            "primary-fixed": "#7df4ff",
+            "surface-variant": "#353534",
+            "tertiary": "#fff4e8",
+            "surface": "#131313",
+            "tertiary-container": "#ffd386",
+            "on-error-container": "#ffdad6"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.25rem",
+            "lg": "0.5rem",
+            "xl": "0.75rem",
+            "full": "9999px"
+          },
+          "spacing": {
+            "margin": "0.75rem",
+            "space-md": "0.75rem",
+            "gutter-desktop": "0.75rem",
+            "space-xl": "1.5rem",
+            "space-sm": "0.375rem",
+            "margin-desktop": "1rem",
+            "space-xs": "0.25rem",
+            "gutter": "0.5rem",
+            "space-lg": "1rem"
+          },
+          "fontFamily": {
+            "body-sm": ["Geist"],
+            "label-mono-lg": ["JetBrains Mono"],
+            "headline-lg": ["Geist"],
+            "headline-sm": ["Geist"],
+            "headline-xl-mobile": ["Geist"],
+            "label-mono-sm": ["JetBrains Mono"],
+            "headline-xl": ["Geist"],
+            "body-lg": ["Geist"],
+            "label-mono-xs": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "body-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-mono-lg": ["13px", { "lineHeight": "18px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-lg": ["22px", { "lineHeight": "28px", "letterSpacing": "-0.015em", "fontWeight": "600" }],
+            "headline-sm": ["16px", { "lineHeight": "22px", "letterSpacing": "-0.01em", "fontWeight": "500" }],
+            "headline-xl-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-mono-sm": ["11px", { "lineHeight": "14px", "letterSpacing": "0.02em", "fontWeight": "400" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "body-lg": ["14px", { "lineHeight": "20px", "letterSpacing": "0em", "fontWeight": "400" }],
+            "label-mono-xs": ["9px", { "lineHeight": "12px", "letterSpacing": "0.06em", "fontWeight": "500" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Precision terminal scanline and lattice backdrop */
+    body {
+      background-color: #050505;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.04) 0%, transparent 60%),
+        linear-gradient(rgba(0, 240, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 32px 32px, 32px 32px;
+    }
+    
+    .hud-scanline {
+      background: linear-gradient(180deg, rgba(0, 240, 255, 0) 0%, rgba(0, 240, 255, 0.06) 50%, rgba(0, 240, 255, 0) 100%);
+      background-size: 100% 8px;
+    }
+
+    /* Sub-pixel glass borders */
+    .border-glass-cyan {
+      border: 1px solid rgba(0, 240, 255, 0.16);
+    }
+    .border-glass-cyan-glow {
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      box-shadow: inset 0 0 16px rgba(0, 240, 255, 0.04), 0 0 12px rgba(0, 240, 255, 0.08);
+    }
+
+    /* Scrollbars */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(14, 14, 14, 0.8);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0, 240, 255, 0.2);
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(0, 240, 255, 0.5);
+    }
+  </style>
+</head>
+<body class="text-on-surface antialiased overflow-x-hidden selection:bg-primary-container selection:text-on-primary-fixed min-h-screen flex flex-col">
+<!-- TOP APP BAR (Shared Component JSON Contract) -->
+<header class="bg-surface-container-lowest/80 dark:bg-surface-container-lowest/80 backdrop-blur-md text-primary-container dark:text-primary-container docked full-width top-0 z-50 border-b border-outline-variant/30 flex justify-between items-center w-full px-space-md py-space-xs sticky">
+<!-- Left Section: Brand Logo & Node Consensus status -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary-container animate-spin text-lg" style="animation-duration: 9s;">token</span>
+<span class="text-headline-sm font-headline-sm font-semibold tracking-tight text-primary-container dark:text-primary-container">
+          DuriOS FOUNDRY // TRADE COMMAND
+        </span>
+</div>
+<div class="hidden xl:flex items-center gap-space-xs bg-surface-container-lowest border border-outline-variant/40 px-2 py-0.5 rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container animate-pulse"></span>
+<span class="font-label-mono-xs text-label-mono-xs text-secondary-container tracking-wider uppercase font-semibold">12/12 VALIDATORS ONLINE</span>
+<span class="font-label-mono-xs text-label-mono-xs text-outline mx-1">//</span>
+<span class="font-label-mono-xs text-label-mono-xs text-on-surface-variant font-mono">ROOT: 0x7E4A...B902</span>
+</div>
+</div>
+<!-- Center Section: Navigation Links & Ingest Telemetry Ticker -->
+<nav class="hidden lg:flex items-center gap-space-md">
+<a class="text-on-surface-variant dark:text-on-surface-variant font-normal hover:text-primary pb-1 font-label-mono-sm text-label-mono-sm hover:bg-surface-container-high/40 transition-colors duration-150" href="#">Consensus Telemetry</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-normal hover:text-primary pb-1 font-label-mono-sm text-label-mono-sm hover:bg-surface-container-high/40 transition-colors duration-150" href="#">Merkle Proofs</a>
+<a class="text-primary-container dark:text-primary-container font-medium border-b-2 border-primary-container pb-1 font-label-mono-sm text-label-mono-sm" href="#">Spectral Inspector</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-normal hover:text-primary pb-1 font-label-mono-sm text-label-mono-sm hover:bg-surface-container-high/40 transition-colors duration-150" href="#">GACC Protocol</a>
+<a class="text-on-surface-variant dark:text-on-surface-variant font-normal hover:text-primary pb-1 font-label-mono-sm text-label-mono-sm hover:bg-surface-container-high/40 transition-colors duration-150" href="#">Ledger Audit</a>
+</nav>
+<!-- Right Section: Trailing Actions, Authority & Metrics -->
+<div class="flex items-center gap-space-sm">
+<div class="hidden sm:flex items-center gap-2 font-label-mono-xs text-label-mono-xs text-outline border border-outline-variant/30 px-2 py-1 rounded bg-surface-container-lowest/60">
+<span class="text-primary-container flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px]">local_gas_station</span> 12 Gwei
+        </span>
+<span class="text-outline-variant">|</span>
+<span class="text-secondary-fixed-dim">4,200 TPS</span>
+</div>
+<div class="font-label-mono-xs text-label-mono-xs text-on-surface-variant bg-surface-container-high/40 border border-outline-variant/30 px-2 py-1 rounded hidden md:block">
+        AUTHORITY: 0x8F9C...3B11
+      </div>
+<!-- Icon Actions from JSON -->
+<div class="flex items-center gap-1 text-on-surface-variant">
+<button class="p-1 hover:text-primary-container hover:bg-surface-container-high/40 rounded transition-colors" title="Sensors">
+<span class="material-symbols-outlined text-base">sensors</span>
+</button>
+<button class="p-1 hover:text-primary-container hover:bg-surface-container-high/40 rounded transition-colors" title="Ping">
+<span class="material-symbols-outlined text-base">network_ping</span>
+</button>
+<button class="p-1 hover:text-primary-container hover:bg-surface-container-high/40 rounded transition-colors" title="Shield Locked">
+<span class="material-symbols-outlined text-base text-secondary-container">shield_locked</span>
+</button>
+<button class="p-1 hover:text-primary-container hover:bg-surface-container-high/40 rounded transition-colors" title="Terminal">
+<span class="material-symbols-outlined text-base">terminal</span>
+</button>
+</div>
+<!-- Primary Trailing Action from JSON -->
+<button class="font-label-mono-xs text-label-mono-xs bg-primary-container text-on-primary-fixed font-semibold px-2.5 py-1.5 rounded active:scale-[0.98] transition-transform duration-100 flex items-center gap-1 shadow-[0_0_10px_rgba(0,240,255,0.35)]">
+<span class="material-symbols-outlined text-xs">gavel</span>
+        EXECUTE SEAL
+      </button>
+</div>
+</header>
+<!-- SECONDARY TELEMETRY RUNNER STRIP -->
+<div class="bg-surface-container-lowest border-b border-outline-variant/20 px-space-md py-1 flex items-center justify-between text-label-mono-xs font-label-mono-xs overflow-x-auto whitespace-nowrap gap-6 text-on-surface-variant">
+<div class="flex items-center gap-4">
+<span class="flex items-center gap-1 text-primary-container font-medium">
+<span class="w-1.5 h-1.5 bg-primary-container rounded-sm inline-block animate-ping"></span>
+        CONSIGNMENT BATCH:
+        <span class="text-on-surface font-semibold">#TH-MY-8849-DX</span>
+</span>
+<span class="text-outline-variant">/</span>
+<span>ORIGIN: <span class="text-on-surface">CHUMPHON ORCHARD 04 (TH)</span></span>
+<span class="text-outline-variant">/</span>
+<span>DESTINATION: <span class="text-on-surface">GUANGZHOU PORT - GACC GATE 3 (CN)</span></span>
+</div>
+<div class="flex items-center gap-4 text-outline">
+<span>EPOCH: <strong class="text-primary-container font-mono">4,921.82</strong></span>
+<span>SYNC LATENCY: <strong class="text-secondary-fixed-dim font-mono">14ms</strong></span>
+<span>CONSORTIUM ID: <strong class="text-on-surface font-mono">ASEAN-DUR-NET//NODE-09</strong></span>
+<span class="text-tertiary-fixed-dim bg-surface-container-high px-1.5 py-0.5 rounded border border-outline-variant/30">TIMELOCK ACTIVE</span>
+</div>
+</div>
+<!-- MAIN VIEWPORT CONTAINER WITH SIDE RAIL -->
+<div class="flex-1 flex overflow-hidden">
+<!-- SIDE NAV RAIL (Shared Component JSON Contract) -->
+<aside class="bg-surface-container-lowest/90 dark:bg-surface-container-lowest/90 backdrop-blur-md border-r border-outline-variant/30 flex flex-col justify-between items-center py-space-sm w-16 shrink-0 z-40 select-none">
+<!-- Top Rail Header / Avatar node info -->
+<div class="flex flex-col items-center gap-1 w-full pb-2 border-b border-outline-variant/20">
+<div class="w-8 h-8 rounded border border-primary-container/40 bg-surface-container-high/60 flex items-center justify-center text-primary-container shadow-[0_0_8px_rgba(0,240,255,0.2)]">
+<span class="material-symbols-outlined text-sm">hub</span>
+</div>
+<span class="font-label-mono-xs text-[8px] text-primary-container font-bold tracking-tighter">DURI-09</span>
+<span class="font-label-mono-xs text-[7px] text-secondary-fixed-dim tracking-tighter">99.98%</span>
+</div>
+<!-- Tab Icons (Active: Biometric Telemetry / Spectral) -->
+<nav class="flex flex-col w-full my-auto gap-1">
+<!-- 1. Command Stack -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant py-2 hover:text-primary hover:bg-surface-container-high/30 transition-all duration-150 active:scale-[0.96] group" title="Command Stack">
+<span class="material-symbols-outlined text-lg">terminal</span>
+<span class="font-label-mono-xs text-[8px] mt-0.5 text-outline-variant group-hover:text-primary-container scale-90">Stack</span>
+</button>
+<!-- 2. Merkle Proofs -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant py-2 hover:text-primary hover:bg-surface-container-high/30 transition-all duration-150 active:scale-[0.96] group" title="Merkle Proofs">
+<span class="material-symbols-outlined text-lg">account_tree</span>
+<span class="font-label-mono-xs text-[8px] mt-0.5 text-outline-variant group-hover:text-primary-container scale-90">Merkle</span>
+</button>
+<!-- 3. Biometric Telemetry (ACTIVE per trade view) -->
+<button class="flex flex-col items-center justify-center text-primary-container dark:text-primary-container border-l-2 border-primary-container bg-surface-container-high/20 py-2 active:scale-[0.96] transition-transform duration-100" title="Biometric Telemetry">
+<span class="material-symbols-outlined text-lg" style="font-variation-settings: 'FILL' 1;">csv</span>
+<span class="font-label-mono-xs text-[8px] mt-0.5 font-bold tracking-tighter text-primary-container">BioTel</span>
+</button>
+<!-- 4. Consensus Matrix -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant py-2 hover:text-primary hover:bg-surface-container-high/30 transition-all duration-150 active:scale-[0.96] group" title="Consensus Matrix">
+<span class="material-symbols-outlined text-lg">verified_user</span>
+<span class="font-label-mono-xs text-[8px] mt-0.5 text-outline-variant group-hover:text-primary-container scale-90">Consensus</span>
+</button>
+<!-- 5. Audit Log -->
+<button class="flex flex-col items-center justify-center text-on-surface-variant dark:text-on-surface-variant py-2 hover:text-primary hover:bg-surface-container-high/30 transition-all duration-150 active:scale-[0.96] group" title="Audit Log">
+<span class="material-symbols-outlined text-lg">history_toggle_off</span>
+<span class="font-label-mono-xs text-[8px] mt-0.5 text-outline-variant group-hover:text-primary-container scale-90">Audit</span>
+</button>
+</nav>
+<!-- Bottom Controls: Kill Switch, Settings, Docs -->
+<div class="flex flex-col items-center gap-2 w-full pt-2 border-t border-outline-variant/20">
+<button class="w-10 h-7 rounded bg-error-container/20 border border-error/40 text-error hover:bg-error-container/40 flex items-center justify-center transition-colors" title="KILL_SWITCH">
+<span class="material-symbols-outlined text-sm">power_settings_new</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high/30 rounded" title="Settings">
+<span class="material-symbols-outlined text-sm">tune</span>
+</button>
+<button class="p-1 text-on-surface-variant hover:text-primary-container hover:bg-surface-container-high/30 rounded" title="Docs">
+<span class="material-symbols-outlined text-sm">description</span>
+</button>
+</div>
+</aside>
+<!-- TRIPLE-COLUMN HIGH DENSITY DISPATCH INTERFACE -->
+<main class="flex-1 grid grid-cols-1 lg:grid-cols-12 gap-space-sm p-space-sm overflow-y-auto lg:overflow-hidden max-h-[calc(100vh-62px)]">
+<!-- ======================================================== -->
+<!-- COLUMN A (LEFT): INGEST MERKLE PROOF STACK (lg:col-span-3) -->
+<!-- ======================================================== -->
+<section class="lg:col-span-3 flex flex-col gap-space-xs overflow-y-auto pr-1">
+<!-- Header Panel -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 p-space-sm rounded flex flex-col gap-1.5">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary-container text-sm">account_tree</span>
+<h2 class="font-headline-sm text-xs font-semibold uppercase tracking-wider text-on-surface">Ingest Merkle Proof Stack</h2>
+</div>
+<span class="font-label-mono-xs text-[9px] px-1.5 py-0.5 rounded border border-secondary-container/50 bg-secondary-container/10 text-secondary-container font-mono uppercase">
+              SHA-256 TREE VERIFIED
+            </span>
+</div>
+<div class="font-label-mono-xs text-outline flex items-center justify-between">
+<span>PROOF DEPTH: 4 LEAFS</span>
+<span>MEMPOOL STATUS: 0 ERR</span>
+</div>
+</div>
+<!-- Genesis Hash Card -->
+<div class="bg-surface-container-lowest/70 backdrop-blur-md border border-outline-variant/30 p-space-sm rounded flex flex-col gap-2">
+<div class="flex justify-between items-center text-label-mono-xs font-label-mono-xs">
+<span class="text-outline uppercase">Consignment Genesis Block</span>
+<span class="text-primary-container font-mono font-medium">#8,941,204</span>
+</div>
+<div class="space-y-1 text-label-mono-xs font-label-mono-xs">
+<div class="flex justify-between text-outline">
+<span>GENESIS TIMESTAMP:</span>
+<span class="text-on-surface font-mono">2025-05-18T04:12:09.481Z</span>
+</div>
+<div class="bg-surface-container-high/40 border border-outline-variant/20 p-1.5 rounded">
+<div class="text-outline text-[8px] uppercase tracking-wider mb-0.5">Merkle Root Hex</div>
+<div class="font-mono text-[9px] text-primary-container break-all leading-tight select-all">
+                e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855
+              </div>
+</div>
+</div>
+</div>
+<!-- Interactive Leaf Node Tree Visualizer -->
+<div class="bg-surface-container-lowest/70 backdrop-blur-md border border-outline-variant/30 p-space-sm rounded flex-1 flex flex-col">
+<div class="flex items-center justify-between pb-1.5 border-b border-outline-variant/20 mb-2">
+<span class="font-label-mono-xs text-label-mono-xs text-on-surface-variant uppercase font-semibold">Consortium Leaf Proof Nodes</span>
+<span class="font-label-mono-xs text-label-mono-xs text-secondary-container flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span> COMPLETE (4/4)
+            </span>
+</div>
+<!-- Tree Step Items -->
+<div class="space-y-2 flex-1">
+<!-- Leaf 01 -->
+<div class="border border-outline-variant/30 hover:border-primary-container/40 p-2 rounded bg-surface-container-high/10 transition-colors">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-mono-xs text-label-mono-xs text-primary-container font-semibold">LEAF_01 // ORCHARD SOIL &amp; GPS</span>
+<span class="material-symbols-outlined text-secondary-container text-xs">check_circle</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline text-[11px] leading-tight mb-1">
+                Chumphon plot coordinates 10.493° N, 99.180° E. Nitrates: 42 ppm, Phosphates: optimal. Tree micro-chipped ID #MK-902.
+              </p>
+<div class="flex items-center justify-between font-label-mono-xs text-[9px] text-outline-variant">
+<span>TX: 0x93FA...01D</span>
+<span class="text-secondary-container">FINALIZED (BLOCK 8941205)</span>
+</div>
+</div>
+<!-- Leaf 02 -->
+<div class="border border-outline-variant/30 hover:border-primary-container/40 p-2 rounded bg-surface-container-high/10 transition-colors">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-mono-xs text-label-mono-xs text-primary-container font-semibold">LEAF_02 // RFID &amp; ETHYLENE SURGE</span>
+<span class="material-symbols-outlined text-secondary-container text-xs">check_circle</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline text-[11px] leading-tight mb-1">
+                Harvester biometric scan 04:45 AM. Passive UHF RFID seal embedded in stem node. Baseline ethylene flux: 0.08 ppm.
+              </p>
+<div class="flex items-center justify-between font-label-mono-xs text-[9px] text-outline-variant">
+<span>TX: 0x51AC...B22</span>
+<span class="text-secondary-container">FINALIZED (BLOCK 8941209)</span>
+</div>
+</div>
+<!-- Leaf 03 -->
+<div class="border border-outline-variant/30 hover:border-primary-container/40 p-2 rounded bg-surface-container-high/10 transition-colors">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-mono-xs text-label-mono-xs text-primary-container font-semibold">LEAF_03 // REEFER COLD-CHAIN</span>
+<span class="material-symbols-outlined text-secondary-container text-xs">check_circle</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline text-[11px] leading-tight mb-1">
+                Nitrogen atmosphere container #MSC-491. Pulp thermal baseline -18.2°C steady. Zero temperature breach throughout 48h transit.
+              </p>
+<div class="flex items-center justify-between font-label-mono-xs text-[9px] text-outline-variant">
+<span>TX: 0x7E02...FF9</span>
+<span class="text-secondary-container">FINALIZED (BLOCK 8941214)</span>
+</div>
+</div>
+<!-- Leaf 04 -->
+<div class="border border-outline-variant/30 hover:border-primary-container/40 p-2 rounded bg-surface-container-high/10 transition-colors">
+<div class="flex items-center justify-between mb-1">
+<span class="font-label-mono-xs text-label-mono-xs text-primary-container font-semibold">LEAF_04 // PHYTOSANITARY &amp; DNA</span>
+<span class="material-symbols-outlined text-secondary-container text-xs">check_circle</span>
+</div>
+<p class="font-body-sm text-body-sm text-outline text-[11px] leading-tight mb-1">
+                PCR test: Bactrocera dorsalis negative. Genotyping: 100% genuine Musang King (D197) cultivar verified via electrophoresis.
+              </p>
+<div class="flex items-center justify-between font-label-mono-xs text-[9px] text-outline-variant">
+<span>TX: 0xBA41...89C</span>
+<span class="text-secondary-container">FINALIZED (BLOCK 8941220)</span>
+</div>
+</div>
+</div>
+<!-- Raw Byte Stream Hex Viewer -->
+<div class="mt-2 bg-surface-container-lowest border border-outline-variant/20 p-2 rounded">
+<div class="flex justify-between items-center mb-1 text-[8px] font-label-mono-xs text-outline">
+<span>RAW MERKLE WITNESS BUFFER (HEX)</span>
+<span class="text-primary-container">64 BYTES</span>
+</div>
+<div class="font-mono text-[8.5px] leading-relaxed text-on-surface-variant break-all opacity-80">
+              0000: 4a 8f 12 bc d8 91 30 fe 77 12 aa ff 09 88 43 1c<br/>
+              0010: b1 ca 00 ed 55 92 11 0a 34 bb 71 ee 29 fa 44 88<br/>
+              0020: 9a 10 3d e8 49 22 f1 65 89 2b cc 44 19 0e ef 31<br/>
+              0030: 88 49 1a ff ce 32 99 a1 04 77 bd 12 fa 90 22 41
+            </div>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- COLUMN B (CENTER): INVERTED SCAN INSPECTOR (lg:col-span-5) -->
+<!-- ======================================================== -->
+<section class="lg:col-span-5 flex flex-col gap-space-xs overflow-y-auto">
+<!-- Header Panel with Mode Selector -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 p-space-sm rounded flex flex-col gap-2">
+<div class="flex flex-wrap items-center justify-between gap-2">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary-container text-sm">filter_center_focus</span>
+<h2 class="font-headline-sm text-xs font-semibold uppercase tracking-wider text-on-surface">Spectral Scan Inspector // Biometric Array</h2>
+</div>
+<div class="flex items-center gap-1 font-label-mono-xs text-[9px] text-secondary-container bg-surface-container-high px-2 py-0.5 rounded border border-outline-variant/20">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-container"></span>
+              SENSOR ARRAY: OPTICAL + NIR + THz
+            </div>
+</div>
+<!-- Scan Mode Selector -->
+<div class="grid grid-cols-4 gap-1">
+<button class="bg-primary-container text-on-primary-fixed font-label-mono-xs text-[10px] font-semibold py-1 px-1 rounded text-center truncate shadow-[0_0_8px_rgba(0,240,255,0.4)]">
+              TERAHERTZ
+            </button>
+<button class="bg-surface-container-high/40 hover:bg-surface-container-high text-on-surface-variant font-label-mono-xs text-[10px] py-1 px-1 rounded text-center truncate border border-outline-variant/30 transition-colors">
+              X-RAY DENSITY
+            </button>
+<button class="bg-surface-container-high/40 hover:bg-surface-container-high text-on-surface-variant font-label-mono-xs text-[10px] py-1 px-1 rounded text-center truncate border border-outline-variant/30 transition-colors">
+              ETHYLENE FLUX
+            </button>
+<button class="bg-surface-container-high/40 hover:bg-surface-container-high text-on-surface-variant font-label-mono-xs text-[10px] py-1 px-1 rounded text-center truncate border border-outline-variant/30 transition-colors">
+              RFID MATRIX
+            </button>
+</div>
+</div>
+<!-- Central Biometric Visualizer HUD -->
+<div class="relative bg-surface-container-lowest/90 backdrop-blur-md border-glass-cyan rounded flex-1 flex flex-col min-h-[360px] overflow-hidden">
+<!-- Background image of premium Durian under spectral imaging -->
+<div class="absolute inset-0 bg-cover bg-center opacity-40 mix-blend-luminosity filter contrast-125" data-alt="A whole spiky Musang King durian captured in high-tech agricultural scanning laboratory, dramatic cinematic studio lighting with electric cyan rim glows and deep obsidian shadows. Micro-structured wireframe vectors, telemetry data overlays, and neon target reticles illuminate the contours of the thorny golden husk. Cyberpunk dark industrial aesthetics, hyper-detailed commercial commodity trade inspection photography." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCeJpKHGVzoLAbcfoXSrPlJxEn6KNMhLfAcztDAa0XPutQuZfpGIPVgNCyNCiCBhCG6DjI3EYsI1rFYyrLHoctIxjdsjRva4rroRjX_q1Y5JWQTX8tg0VkUQ8kNFf8qej7G4N-83rdDl5n0l1DOoUf2eDBwVQP7MvbRibe-JEecgidDBLtasNbfrWvDoeLbLb8kRhe6boJKfj5JtItqmY1nb-svzZUJyccyxoCffelqhJx_kJyihh5yat_qJaX6lbuTA1_SI-J6fIg')">
+</div>
+<!-- HUD Scanline Grid Overlay -->
+<div class="absolute inset-0 hud-scanline pointer-events-none"></div>
+<!-- Live Bounding Vector Box -->
+<div class="absolute inset-6 border border-primary-container/60 pointer-events-none rounded-none shadow-[inset_0_0_20px_rgba(0,240,255,0.15)] flex flex-col justify-between p-2">
+<!-- Corner Reticles -->
+<div class="flex justify-between items-start">
+<div class="text-[9px] font-label-mono-xs text-primary-container bg-surface-container-lowest/90 px-1.5 py-0.5 border border-primary-container/40">
+                [X: 412, Y: 189, W: 680, H: 540]
+              </div>
+<div class="flex items-center gap-1 text-[9px] font-label-mono-xs text-secondary-container bg-surface-container-lowest/90 px-1.5 py-0.5 border border-secondary-container/40 font-bold">
+<span class="w-1.5 h-1.5 bg-secondary-container rounded-full animate-ping"></span>
+                CONFIDENCE: 99.84%
+              </div>
+</div>
+<!-- Center Target Crosshair -->
+<div class="self-center flex flex-col items-center justify-center">
+<div class="w-16 h-16 border border-dashed border-primary-container/50 rounded-full flex items-center justify-center animate-spin" style="animation-duration: 20s;">
+<div class="w-8 h-8 border border-secondary-container/60 rounded-full"></div>
+</div>
+<span class="font-label-mono-xs text-[8px] text-primary-container mt-1 bg-surface-container-lowest/90 px-1 font-mono">
+                PULP_DENSITY_SURVEYOR
+              </span>
+</div>
+<!-- Bottom Reticle info -->
+<div class="flex justify-between items-end">
+<div class="text-[8px] font-label-mono-xs text-outline bg-surface-container-lowest/90 px-1.5 py-0.5 border border-outline-variant/30">
+                ISO-22000 PHYTO SCAN #DUR-TH-984
+              </div>
+<div class="text-[9px] font-label-mono-xs text-primary-container bg-surface-container-lowest/90 px-1.5 py-0.5 border border-primary-container/30">
+                TARGET: D197 MUSANG KING
+              </div>
+</div>
+</div>
+<!-- Bottom Floating Telemetry Micro-Cards -->
+<div class="relative z-10 mt-auto p-space-sm grid grid-cols-2 sm:grid-cols-4 gap-1.5 bg-surface-container-lowest/85 backdrop-blur-md border-t border-outline-variant/30">
+<div class="bg-surface-container-high/30 border border-outline-variant/20 p-1.5 rounded">
+<div class="font-label-mono-xs text-[8px] text-outline uppercase">Core Void Ratio</div>
+<div class="font-label-mono-lg text-xs font-bold text-secondary-container mt-0.5">0.02%</div>
+<div class="font-label-mono-xs text-[8px] text-outline-variant">DENSE PULP [OK]</div>
+</div>
+<div class="bg-surface-container-high/30 border border-outline-variant/20 p-1.5 rounded">
+<div class="font-label-mono-xs text-[8px] text-outline uppercase">Brix Sugar Index</div>
+<div class="font-label-mono-lg text-xs font-bold text-primary-container mt-0.5">38.4° Bx</div>
+<div class="font-label-mono-xs text-[8px] text-secondary-fixed-dim">OPTIMAL RANGE</div>
+</div>
+<div class="bg-surface-container-high/30 border border-outline-variant/20 p-1.5 rounded">
+<div class="font-label-mono-xs text-[8px] text-outline uppercase">Dry Matter</div>
+<div class="font-label-mono-lg text-xs font-bold text-on-surface mt-0.5">34.8%</div>
+<div class="font-label-mono-xs text-[8px] text-primary-container">CLASS A SUPERIOR</div>
+</div>
+<div class="bg-surface-container-high/30 border border-outline-variant/20 p-1.5 rounded">
+<div class="font-label-mono-xs text-[8px] text-outline uppercase">Husk Integrity</div>
+<div class="font-label-mono-lg text-xs font-bold text-secondary-container mt-0.5">14.2 PSI</div>
+<div class="font-label-mono-xs text-[8px] text-outline-variant">ZERO FRACTURE</div>
+</div>
+</div>
+</div>
+<!-- NIR Reflectance Spectral Graph Strip -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 p-space-sm rounded">
+<div class="flex items-center justify-between mb-1.5 text-label-mono-xs font-label-mono-xs">
+<span class="text-on-surface-variant font-medium flex items-center gap-1">
+<span class="material-symbols-outlined text-primary-container text-xs">ssid_chart</span>
+              NIR REFLECTION CURVE (700nm – 1050nm)
+            </span>
+<span class="text-secondary-container font-mono text-[9px]">PEAK LIPID SIGNATURE MATCH</span>
+</div>
+<!-- Dynamic SVG Waveform Chart with Target Band -->
+<div class="h-16 w-full bg-surface-container-lowest rounded relative overflow-hidden flex items-end">
+<!-- Optimal Band Area -->
+<div class="absolute inset-y-2 left-[30%] right-[25%] bg-secondary-container/10 border-x border-secondary-container/30 pointer-events-none flex items-start justify-center">
+<span class="text-[7.5px] font-label-mono-xs text-secondary-container uppercase tracking-tight">Consensus Target Band</span>
+</div>
+<!-- Waveform SVG Line -->
+<svg class="w-full h-full" preserveaspectratio="none" viewbox="0 0 400 80">
+<!-- Grid lines -->
+<line stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,2" x1="0" x2="400" y1="20" y2="20"></line>
+<line stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,2" x1="0" x2="400" y1="40" y2="40"></line>
+<line stroke="rgba(255,255,255,0.04)" stroke-dasharray="2,2" x1="0" x2="400" y1="60" y2="60"></line>
+<!-- Primary NIR Curve -->
+<path d="M 0 65 Q 40 55, 80 50 T 160 22 T 240 18 T 320 38 T 400 50" fill="none" stroke="#00F0FF" stroke-width="1.8"></path>
+<!-- Optimal Reference Line -->
+<path d="M 0 60 Q 40 52, 80 48 T 160 25 T 240 22 T 320 40 T 400 48" fill="none" opacity="0.6" stroke="#00FF88" stroke-dasharray="4,2" stroke-width="1"></path>
+<!-- Peak Detection Marker -->
+<circle class="animate-ping" cx="210" cy="18" fill="#00FF88" r="3" style="animation-duration: 2s;"></circle>
+<circle cx="210" cy="18" fill="#00FF88" r="3"></circle>
+</svg>
+</div>
+<div class="flex justify-between text-[8px] font-label-mono-xs text-outline mt-1 font-mono">
+<span>700nm</span>
+<span>800nm (Chlorophyll)</span>
+<span>900nm (Lipid Matrix)</span>
+<span>980nm (Moisture)</span>
+<span>1050nm</span>
+</div>
+</div>
+<!-- Environmental Cold-Chain Telemetry Ribbon -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 px-space-sm py-1.5 rounded flex items-center justify-between text-label-mono-xs font-label-mono-xs">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary-container text-xs">ac_unit</span>
+<span class="text-outline">REEFER TEMP:</span>
+<span class="text-primary-container font-mono font-bold">-18.4°C</span>
+</div>
+<div class="text-outline-variant">|</div>
+<div>
+<span class="text-outline">HUMIDITY:</span>
+<span class="text-on-surface font-mono font-bold">88.2%</span>
+</div>
+<div class="text-outline-variant">|</div>
+<div>
+<span class="text-outline">N₂ PURGE:</span>
+<span class="text-secondary-fixed-dim font-mono font-bold">98.1%</span>
+</div>
+<div class="text-outline-variant">|</div>
+<div class="text-outline truncate max-w-[120px]">
+            GEO: <span class="text-primary-container font-mono">WP-12 MALACCA</span>
+</div>
+</div>
+</section>
+<!-- ======================================================== -->
+<!-- COLUMN C (RIGHT): HITL CONSENSUS & GACC COMPLIANCE MATRIX (lg:col-span-4) -->
+<!-- ======================================================== -->
+<section class="lg:col-span-4 flex flex-col gap-space-xs overflow-y-auto">
+<!-- Header Panel with Stopwatch Display -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 p-space-sm rounded flex flex-col gap-2">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-tertiary-fixed-dim text-sm">how_to_reg</span>
+<h2 class="font-headline-sm text-xs font-semibold uppercase tracking-wider text-on-surface">HITL State Consensus Node</h2>
+</div>
+<span class="font-label-mono-xs text-[9px] px-1.5 py-0.5 rounded border border-tertiary-fixed-dim/40 bg-tertiary-fixed-dim/10 text-tertiary-fixed font-mono uppercase">
+              HUMAN-IN-THE-LOOP
+            </span>
+</div>
+<!-- Digital Verification Stopwatch (High Precision) -->
+<div class="bg-surface-container-high/30 border border-outline-variant/30 p-2 rounded flex items-center justify-between">
+<div>
+<div class="text-[8px] font-label-mono-xs text-outline uppercase tracking-wider">Verification Window Elapsed</div>
+<div class="font-mono text-xl font-bold tracking-tight text-primary-container mt-0.5" id="verification-stopwatch">
+                03:24.81
+              </div>
+</div>
+<div class="flex flex-col items-end">
+<span class="font-label-mono-xs text-[8px] text-tertiary-fixed-dim uppercase bg-surface-container-highest px-1.5 py-0.5 rounded border border-tertiary-fixed-dim/30">
+                TIMELOCK ESCROW ACTIVE
+              </span>
+<span class="font-label-mono-xs text-[8px] text-outline mt-1 font-mono">T-34 MIN UNTIL AUTO-SETTLE</span>
+</div>
+</div>
+</div>
+<!-- China Customs (GACC) Compliance Matrix -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 p-space-sm rounded flex flex-col gap-2">
+<div class="flex items-center justify-between pb-1 border-b border-outline-variant/20">
+<span class="font-label-mono-xs text-label-mono-xs text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary-container text-xs">verified</span>
+              GACC CHINA CUSTOMS COMPLIANCE MATRIX
+            </span>
+<span class="font-label-mono-xs text-[9px] text-secondary-fixed-dim font-mono">GATE 3 CLEARED</span>
+</div>
+<div class="space-y-1.5 text-label-mono-xs font-label-mono-xs">
+<div class="flex items-center justify-between p-1.5 bg-surface-container-high/20 rounded border border-outline-variant/20">
+<div>
+<div class="text-on-surface font-medium">GACC Decree 248 / 249 Facility Registration</div>
+<div class="text-[8px] text-outline font-mono">CN-FAC-REG: #THA-FR-2023-8819</div>
+</div>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/15 text-secondary-container font-semibold text-[9px] border border-secondary-container/30">
+                CERTIFIED VALID
+              </span>
+</div>
+<div class="flex items-center justify-between p-1.5 bg-surface-container-high/20 rounded border border-outline-variant/20">
+<div>
+<div class="text-on-surface font-medium">Quarantine Pest Free (Bactrocera correcta)</div>
+<div class="text-[8px] text-outline font-mono">LAB PCR TEST: #PCR-BCT-90142</div>
+</div>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/15 text-secondary-container font-semibold text-[9px] border border-secondary-container/30">
+                ZERO DETECTION
+              </span>
+</div>
+<div class="flex items-center justify-between p-1.5 bg-surface-container-high/20 rounded border border-outline-variant/20">
+<div>
+<div class="text-on-surface font-medium">Cadmium &amp; Heavy Metal Isotope Test</div>
+<div class="text-[8px] text-outline font-mono">LEVEL: &lt;0.01 mg/kg (GACC LIMIT: 0.05)</div>
+</div>
+<span class="px-1.5 py-0.5 rounded bg-secondary-container/15 text-secondary-container font-semibold text-[9px] border border-secondary-container/30">
+                PASSED [0.008]
+              </span>
+</div>
+<div class="flex items-center justify-between p-1.5 bg-surface-container-high/20 rounded border border-outline-variant/20">
+<div>
+<div class="text-on-surface font-medium">Bilateral Smart Escrow Contract</div>
+<div class="text-[8px] text-tertiary-fixed-dim font-mono">ESCROW: 0x994F...AC18 // CNH LOT 12</div>
+</div>
+<span class="text-primary-container font-mono font-bold text-[10px]">
+                ¥1,420,000 RMB
+              </span>
+</div>
+</div>
+</div>
+<!-- Consortium Multi-Sig Sign-off Checklist -->
+<div class="bg-surface-container-lowest/80 backdrop-blur-md border border-outline-variant/30 p-space-sm rounded flex flex-col gap-2 flex-1">
+<div class="flex items-center justify-between pb-1 border-b border-outline-variant/20">
+<span class="font-label-mono-xs text-label-mono-xs text-on-surface-variant font-semibold uppercase">Consortium Multi-Sig Signatures</span>
+<span class="font-label-mono-xs text-[9px] text-primary-container font-mono">QUORUM: 3 of 4</span>
+</div>
+<div class="space-y-1.5 flex-1">
+<div class="flex items-center justify-between p-1.5 rounded border border-secondary-container/30 bg-surface-container-high/15">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary-container text-sm">lock</span>
+<div>
+<div class="text-on-surface text-[10px] font-semibold">Thai DOA Inspector Key</div>
+<div class="text-[8px] text-outline font-mono">PUBKEY: 0x91F4...33E9</div>
+</div>
+</div>
+<span class="text-[8px] font-label-mono-xs px-1.5 py-0.5 rounded bg-secondary-container/20 text-secondary-container font-bold font-mono">
+                SIGNED #0x91F
+              </span>
+</div>
+<div class="flex items-center justify-between p-1.5 rounded border border-secondary-container/30 bg-surface-container-high/15">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary-container text-sm">lock</span>
+<div>
+<div class="text-on-surface text-[10px] font-semibold">Cold-Chain Logix Node</div>
+<div class="text-[8px] text-outline font-mono">PUBKEY: 0x32AE...5521</div>
+</div>
+</div>
+<span class="text-[8px] font-label-mono-xs px-1.5 py-0.5 rounded bg-secondary-container/20 text-secondary-container font-bold font-mono">
+                SIGNED #0x32A
+              </span>
+</div>
+<div class="flex items-center justify-between p-1.5 rounded border border-secondary-container/30 bg-surface-container-high/15">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary-container text-sm">lock</span>
+<div>
+<div class="text-on-surface text-[10px] font-semibold">Customhouse Node Nanning</div>
+<div class="text-[8px] text-outline font-mono">PUBKEY: 0x84EB...119A</div>
+</div>
+</div>
+<span class="text-[8px] font-label-mono-xs px-1.5 py-0.5 rounded bg-secondary-container/20 text-secondary-container font-bold font-mono">
+                SIGNED #0x84E
+              </span>
+</div>
+<!-- Pending Arbiter -->
+<div class="flex items-center justify-between p-1.5 rounded border border-primary-container/40 bg-surface-container-high/30 animate-pulse">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary-container text-sm">pending_actions</span>
+<div>
+<div class="text-primary-container text-[10px] font-semibold">Consortium Arbiter Node</div>
+<div class="text-[8px] text-outline font-mono">PUBKEY: 0x8F9C...3B11 (YOU)</div>
+</div>
+</div>
+<span class="text-[8px] font-label-mono-xs px-1.5 py-0.5 rounded bg-primary-container/20 text-primary-container font-bold font-mono">
+                PENDING EXECUTION
+              </span>
+</div>
+</div>
+<!-- Cryptographic Dossier Execution Triggers -->
+<div class="pt-2 border-t border-outline-variant/20 flex flex-col gap-2">
+<!-- MASTER EXECUTION BUTTON -->
+<button class="w-full bg-gradient-to-r from-primary-container via-surface-tint to-secondary-container text-on-primary-fixed py-2.5 px-3 rounded font-label-mono-lg font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(0,240,255,0.6)] active:scale-[0.98] transition-all duration-150 border border-primary-container/70 group">
+<span class="material-symbols-outlined text-base group-hover:scale-110 transition-transform">lock_clock</span>
+<span>EXECUTE IMMUTABLE DOSSIER SEAL (SHA-256)</span>
+</button>
+<!-- SECONDARY UTILITY ACTIONS -->
+<div class="grid grid-cols-2 gap-2 font-label-mono-xs text-[10px]">
+<button class="bg-surface-container-high/40 hover:bg-surface-container-high text-primary-container border border-primary-container/30 hover:border-primary-container py-1.5 px-2 rounded flex items-center justify-center gap-1 transition-all">
+<span class="material-symbols-outlined text-xs">key</span>
+                EXPORT .ZKEY PROOF
+              </button>
+<button class="bg-surface-container-high/40 hover:bg-error-container/20 text-error border border-error/30 hover:border-error py-1.5 px-2 rounded flex items-center justify-center gap-1 transition-all">
+<span class="material-symbols-outlined text-xs">emergency</span>
+                DISCREPANCY HOLD
+              </button>
+</div>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Terminal Live Micro-Interaction Logic (Lightweight & Vanilla) -->
+<script>
+    // Live ticking verification stopwatch simulation
+    let seconds = 204.81; // 03:24.81
+    const stopwatchEl = document.getElementById('verification-stopwatch');
+    
+    if (stopwatchEl) {
+      setInterval(() => {
+        seconds += 0.07;
+        const mins = Math.floor(seconds / 60);
+        const secs = (seconds % 60).toFixed(2);
+        const minStr = mins < 10 ? '0' + mins : mins;
+        const secStr = secs < 10 ? '0' + secs : secs;
+        stopwatchEl.innerText = `${minStr}:${secStr}`;
+      }, 70);
+    }
+  </script>
+</body></html>

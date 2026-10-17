@@ -1,0 +1,111 @@
+{
+  "projectId": "4832488622931116638",
+  "designSystemAssetId": "assets/b8277f9f4ed545e78bf435b2edea4df2",
+  "generatedAt": "2026-10-17T10:43:57.597Z",
+  "screens": [
+    {
+      "index": 1,
+      "page": "corridors",
+      "file": "corridors.html",
+      "title": "Screen 16: ASEAN Multi-Market Corridor & GACC Protocol Rule Pack Console",
+      "deviceType": "DESKTOP",
+      "screenId": "d9a9158b9c6d435ea63dd4c94ef924e8",
+      "stitchUrl": "https://stitch.withgoogle.com/projects/4832488622931116638?node-id=d9a9158b9c6d435ea63dd4c94ef924e8",
+      "queueHtml": "/Users/macbook/durios/queue/corridors.html",
+      "queuePng": "/Users/macbook/durios/queue/corridors.png",
+      "publicHtml": "/Users/macbook/durios/site/public/corridors.html",
+      "artifactPng": "/Users/macbook/.gemini/antigravity/brain/45625c63-b9f5-4f0d-a8e1-64e6ced906b8/durios-corridors.png"
+    },
+    {
+      "index": 2,
+      "page": "blueprint",
+      "file": "blueprint.html",
+      "title": "Screen 17: 25-Step Open-Core Blueprint & Cryptographic Architecture Audit Console",
+      "deviceType": "DESKTOP",
+      "screenId": "8063b2e6a9b24db785e25fd627aafe9e",
+      "stitchUrl": "https://stitch.withgoogle.com/projects/4832488622931116638?node-id=8063b2e6a9b24db785e25fd627aafe9e",
+      "queueHtml": "/Users/macbook/durios/queue/blueprint.html",
+      "queuePng": "/Users/macbook/durios/queue/blueprint.png",
+      "publicHtml": "/Users/macbook/durios/site/public/blueprint.html",
+      "artifactPng": "/Users/macbook/.gemini/antigravity/brain/45625c63-b9f5-4f0d-a8e1-64e6ced906b8/durios-blueprint.png"
+    },
+    {
+      "index": 3,
+      "page": "security-vault",
+      "file": "security-vault.html",
+      "title": "Screen 18: On-Premise Security, PDPL Consent & Air-Gapped Disaster Recovery Vault",
+      "deviceType": "DESKTOP",
+      "screenId": "9e822e6272864ab7becb3f4d67f80833",
+      "stitchUrl": "https://stitch.withgoogle.com/projects/4832488622931116638?node-id=9e822e6272864ab7becb3f4d67f80833",
+      "queueHtml": "/Users/macbook/durios/queue/security-vault.html",
+      "queuePng": "/Users/macbook/durios/queue/security-vault.png",
+      "publicHtml": "/Users/macbook/durios/site/public/security-vault.html",
+      "artifactPng": "/Users/macbook/.gemini/antigravity/brain/45625c63-b9f5-4f0d-a8e1-64e6ced906b8/durios-security-vault.png"
+    },
+    {
+      "index": 4,
+      "page": "organic-escrow-guard",
+      "file": "organic-escrow-guard.html",
+      "title": "Screen 19: Stage-Gated Organic Evidence & Non-Custodial B2B Trade Room Guardrail Console",
+      "deviceType": "DESKTOP",
+      "screenId": "73e6092793824533a62381475d6edfc9",
+      "stitchUrl": "https://stitch.withgoogle.com/projects/4832488622931116638?node-id=73e6092793824533a62381475d6edfc9",
+      "queueHtml": "/Users/macbook/durios/queue/organic-escrow-guard.html",
+      "queuePng": "/Users/macbook/durios/queue/organic-escrow-guard.png",
+      "publicHtml": "/Users/macbook/durios/site/public/organic-escrow-guard.html",
+      "artifactPng": "/Users/macbook/.gemini/antigravity/brain/45625c63-b9f5-4f0d-a8e1-64e6ced906b8/durios-organic-escrow-guard.png"
+    },
+    {
+      "index": 5,
+      "page": "webhook-sync-queue",
+      "file": "webhook-sync-queue.html",
+      "title": "Screen 20: Partner Lab Webhook Ingestor (HMAC-SHA256) & Offline Hybrid Edge Sync Queue",
+      "deviceType": "DESKTOP",
+      "screenId": "f58657987dc34c3f96fde7f6cbd2c7a9",
+      "stitchUrl": "https://stitch.withgoogle.com/projects/4832488622931116638?node-id=f58657987dc34c3f96fde7f6cbd2c7a9",
+      "queueHtml": "/Users/macbook/durios/queue/webhook-sync-queue.html",
+      "queuePng": "/Users/macbook/durios/queue/webhook-sync-queue.png",
+      "publicHtml": "/Users/macbook/durios/site/public/webhook-sync-queue.html",
+      "artifactPng": "/Users/macbook/.gemini/antigravity/brain/45625c63-b9f5-4f0d-a8e1-64e6ced906b8/durios-webhook-sync-queue.png"
+    },
+    {
+      "index": 6,
+      "page": "socratic-introspector",
+      "file": "socratic-introspector.html",
+      "title": "Screen 21: 5-Turn Deep Socratic Open-Core & SaaS Unit Economics Introspector",
+      "deviceType": "DESKTOP",
+      "screenId": "0445cac7f5164b7d9f619f0bd182bc0d",
+      "stitchUrl": "https://stitch.withgoogle.com/projects/4832488622931116638?node-id=0445cac7f5164b7d9f619f0bd182bc0d",
+      "queueHtml": "/Users/macbook/durios/queue/socratic-introspector.html",
+      "queuePng": "/Users/macbook/durios/queue/socratic-introspector.png",
+      "publicHtml": "/Users/macbook/durios/site/public/socratic-introspector.html",
+      "artifactPng": "/Users/macbook/.gemini/antigravity/brain/45625c63-b9f5-4f0d-a8e1-64e6ced906b8/durios-socratic-introspector.png"
+    },
+    {
+      "index": 7,
+      "page": "rehearsal-command",
+      "file": "rehearsal-command.html",
+      "title": "Screen 22: Cai Lậy Stage-Zero Pilot Rehearsal & Blind-Fault Injection Command Center",
+      "deviceType": "DESKTOP",
+      "screenId": "fe49459d43584d1fa43b6cb9d7a791f7",
+      "stitchUrl": "https://stitch.withgoogle.com/projects/4832488622931116638?node-id=fe49459d43584d1fa43b6cb9d7a791f7",
+      "queueHtml": "/Users/macbook/durios/queue/rehearsal-command.html",
+      "queuePng": "/Users/macbook/durios/queue/rehearsal-command.png",
+      "publicHtml": "/Users/macbook/durios/site/public/rehearsal-command.html",
+      "artifactPng": "/Users/macbook/.gemini/antigravity/brain/45625c63-b9f5-4f0d-a8e1-64e6ced906b8/durios-rehearsal-command.png"
+    },
+    {
+      "index": 8,
+      "page": "mit-verifier-lab",
+      "file": "mit-verifier-lab.html",
+      "title": "Screen 23: Standalone MIT Cryptographic Manifest Verifier & ISO 6346 Check-Digit Lab",
+      "deviceType": "DESKTOP",
+      "screenId": "8097ebf38d4b4e6eb1df6caba48809dd",
+      "stitchUrl": "https://stitch.withgoogle.com/projects/4832488622931116638?node-id=8097ebf38d4b4e6eb1df6caba48809dd",
+      "queueHtml": "/Users/macbook/durios/queue/mit-verifier-lab.html",
+      "queuePng": "/Users/macbook/durios/queue/mit-verifier-lab.png",
+      "publicHtml": "/Users/macbook/durios/site/public/mit-verifier-lab.html",
+      "artifactPng": "/Users/macbook/.gemini/antigravity/brain/45625c63-b9f5-4f0d-a8e1-64e6ced906b8/durios-mit-verifier-lab.png"
+    }
+  ]
+}

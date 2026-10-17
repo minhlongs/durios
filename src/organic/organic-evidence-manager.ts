@@ -42,10 +42,7 @@ export interface RecordOrganicEvidenceInput {
 }
 
 const VALID_ISSUER_STATUSES: readonly IssuerClaimedOrganicStatus[] = [
-  "IN_CONVERSION",
-  "CERTIFIED",
-  "EXPIRED",
-  "SUSPENDED",
+  "IN_CONVERSION", "CERTIFIED", "EXPIRED", "SUSPENDED",
 ];
 
 export class OrganicEvidenceManager {
@@ -77,23 +74,15 @@ export class OrganicEvidenceManager {
       );
     }
     if (rawPayload && "status" in rawPayload) {
-      throw new InvalidOrganicEvidenceError(
-        "Legacy field 'status' is no longer accepted; provide 'issuerClaimedStatus' only."
-      );
+      throw new InvalidOrganicEvidenceError("Legacy field 'status' is no longer accepted; provide 'issuerClaimedStatus' only.");
     }
-    if (!input.certifierName?.trim()) {
-      throw new InvalidOrganicEvidenceError("Certifier name is required.");
-    }
-    if (!input.certificateNumber?.trim()) {
-      throw new InvalidOrganicEvidenceError("Certificate number is required.");
-    }
+    if (!input.certifierName?.trim()) throw new InvalidOrganicEvidenceError("Certifier name is required.");
+    if (!input.certificateNumber?.trim()) throw new InvalidOrganicEvidenceError("Certificate number is required.");
     if (!VALID_ISSUER_STATUSES.includes(input.issuerClaimedStatus)) {
       throw new InvalidOrganicEvidenceError(`Invalid issuerClaimedStatus '${String(input.issuerClaimedStatus)}'.`);
     }
     if (input.issuerClaimedStatus === "EXPIRED" || input.issuerClaimedStatus === "SUSPENDED") {
-      throw new InvalidOrganicEvidenceError(
-        `Cannot record organic evidence with issuerClaimedStatus '${input.issuerClaimedStatus}' as active proof.`
-      );
+      throw new InvalidOrganicEvidenceError(`Cannot record organic evidence with issuerClaimedStatus '${input.issuerClaimedStatus}' as active proof.`);
     }
 
     const fromDate = new Date(input.validFrom);
@@ -102,15 +91,8 @@ export class OrganicEvidenceManager {
       throw new InvalidOrganicEvidenceError("Certificate validTo date must be strictly after validFrom date.");
     }
 
-    const nowDate =
-      referenceNow instanceof Date
-        ? referenceNow
-        : typeof referenceNow === "string"
-          ? new Date(referenceNow)
-          : this.clock();
-    if (isNaN(nowDate.getTime())) {
-      throw new InvalidOrganicEvidenceError("Invalid reference clock timestamp.");
-    }
+    const nowDate = referenceNow instanceof Date ? referenceNow : typeof referenceNow === "string" ? new Date(referenceNow) : this.clock();
+    if (isNaN(nowDate.getTime())) throw new InvalidOrganicEvidenceError("Invalid reference clock timestamp.");
     if (toDate.getTime() <= nowDate.getTime()) {
       throw new InvalidOrganicEvidenceError(
         `Cannot record expired organic evidence: validTo (${toDate.toISOString()}) must be strictly after current time (${nowDate.toISOString()}).`
@@ -119,55 +101,36 @@ export class OrganicEvidenceManager {
 
     const evidenceId = `ORG-${nowDate.getTime().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
     const evidence: OrganicCertificationEvidence = {
-      id: evidenceId,
-      dossierId: dossier.id,
-      tenantId: dossier.tenantId,
-      certifierName: input.certifierName.trim(),
-      certifierAccreditationNumber: input.certifierAccreditationNumber?.trim(),
-      certificateNumber: input.certificateNumber.trim(),
-      standardCode: input.standardCode,
-      standardDescription: input.standardDescription.trim(),
-      certifiedScope: input.certifiedScope.trim(),
-      validFrom: fromDate.toISOString(),
-      validTo: toDate.toISOString(),
-      issuingDate: input.issuingDate,
-      issuerClaimedStatus: input.issuerClaimedStatus,
-      duriosRecordStatus: DURIOS_ORGANIC_RECORD_STATUS,
-      evidenceDocumentId: input.evidenceDocumentId,
-      sourceDocumentUrl: input.sourceDocumentUrl,
-      regulatoryDisclaimer: DURIOS_ORGANIC_DISCLAIMER,
-      recordedAt: nowDate.toISOString(),
-      recordedBy: actor.id,
+      id: evidenceId, dossierId: dossier.id, tenantId: dossier.tenantId,
+      certifierName: input.certifierName.trim(), certifierAccreditationNumber: input.certifierAccreditationNumber?.trim(),
+      certificateNumber: input.certificateNumber.trim(), standardCode: input.standardCode,
+      standardDescription: input.standardDescription.trim(), certifiedScope: input.certifiedScope.trim(),
+      validFrom: fromDate.toISOString(), validTo: toDate.toISOString(), issuingDate: input.issuingDate,
+      issuerClaimedStatus: input.issuerClaimedStatus, duriosRecordStatus: DURIOS_ORGANIC_RECORD_STATUS,
+      evidenceDocumentId: input.evidenceDocumentId, sourceDocumentUrl: input.sourceDocumentUrl,
+      regulatoryDisclaimer: DURIOS_ORGANIC_DISCLAIMER, recordedAt: nowDate.toISOString(), recordedBy: actor.id,
     };
 
     this.client.transaction(() => {
       insertOrganicEvidenceRow(this.client, dossier, evidence);
-      auditLedger?.recordEvent(
-        actor, dossier.id, "ORGANIC_EVIDENCE_RECORDED", "CONTAINER_DOSSIER", evidenceId, null,
-        {
-          certifierName: evidence.certifierName, certificateNumber: evidence.certificateNumber,
-          standardCode: evidence.standardCode, issuerClaimedStatus: evidence.issuerClaimedStatus,
-          duriosRecordStatus: evidence.duriosRecordStatus, validFrom: evidence.validFrom,
-          validTo: evidence.validTo, disclaimerAccepted: true,
-        }
-      );
+      auditLedger?.recordEvent(actor, dossier.id, "ORGANIC_EVIDENCE_RECORDED", "CONTAINER_DOSSIER", evidenceId, null, {
+        certifierName: evidence.certifierName, certificateNumber: evidence.certificateNumber,
+        standardCode: evidence.standardCode, issuerClaimedStatus: evidence.issuerClaimedStatus,
+        duriosRecordStatus: evidence.duriosRecordStatus, validFrom: evidence.validFrom, validTo: evidence.validTo, disclaimerAccepted: true,
+      });
     });
     return evidence;
   }
 
   public listEvidenceForDossier(
-    dossierId: string,
-    hasDossierAccess: boolean,
-    ownerTenantId?: string | undefined
+    dossierId: string, hasDossierAccess: boolean, ownerTenantId?: string | undefined
   ): readonly OrganicCertificationEvidence[] {
     if (!hasDossierAccess) return [];
     return queryOrganicEvidenceByDossier(this.client, dossierId, ownerTenantId);
   }
 
   public getEvidence(
-    evidenceId: string,
-    hasDossierAccess: boolean,
-    ownerTenantId?: string | undefined
+    evidenceId: string, hasDossierAccess: boolean, ownerTenantId?: string | undefined
   ): OrganicCertificationEvidence | undefined {
     if (!hasDossierAccess) return undefined;
     return queryOrganicEvidenceById(this.client, evidenceId, ownerTenantId);

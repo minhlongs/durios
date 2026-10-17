@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dossiers // MEKONG CLEAR - GACC DUR-EXP-OPS</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;family=Space+Grotesk:wght@500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with configuration plugins -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "outline-variant": "#3c4a42",
+            "error": "#ffb4ab",
+            "secondary-fixed": "#68fcbf",
+            "on-surface-variant": "#bbcabf",
+            "tertiary-container": "#e29100",
+            "outline": "#86948a",
+            "surface-container-lowest": "#08100b",
+            "primary-fixed-dim": "#4edea3",
+            "inverse-primary": "#006c49",
+            "surface-bright": "#333b35",
+            "on-error-container": "#ffdad6",
+            "on-tertiary": "#472a00",
+            "error-container": "#93000a",
+            "surface-dim": "#0d1510",
+            "surface-tint": "#4edea3",
+            "secondary": "#45dfa4",
+            "on-secondary": "#003825",
+            "on-primary": "#003824",
+            "tertiary": "#ffb95f",
+            "on-secondary-fixed": "#002114",
+            "surface-container-low": "#151d18",
+            "on-tertiary-fixed": "#2a1700",
+            "surface": "#0d1510",
+            "on-surface": "#dce5dc",
+            "on-background": "#dce5dc",
+            "on-primary-fixed": "#002113",
+            "inverse-on-surface": "#2a322c",
+            "on-secondary-container": "#00452e",
+            "surface-variant": "#2e3731",
+            "primary-fixed": "#6ffbbe",
+            "tertiary-fixed-dim": "#ffb95f",
+            "secondary-container": "#00bd85",
+            "primary": "#4edea3",
+            "on-tertiary-fixed-variant": "#653e00",
+            "tertiary-fixed": "#ffddb8",
+            "surface-container": "#19211c",
+            "background": "#0d1510",
+            "surface-container-highest": "#2e3731",
+            "surface-container-high": "#242c26",
+            "secondary-fixed-dim": "#45dfa4",
+            "on-tertiary-container": "#523200",
+            "on-secondary-fixed-variant": "#005137",
+            "on-primary-fixed-variant": "#005236",
+            "inverse-surface": "#dce5dc",
+            "primary-container": "#10b981",
+            "on-primary-container": "#00422b",
+            "on-error": "#690005"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "space-md": "0.75rem",
+            "space-xl": "2rem",
+            "space-xs": "0.25rem",
+            "space-lg": "1.25rem",
+            "gutter-compact": "0.5rem",
+            "margin": "1.5rem",
+            "gutter": "1rem",
+            "margin-mobile": "0.75rem"
+          },
+          "fontFamily": {
+            "headline-lg": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "headline-sm": ["Inter"],
+            "label-sm": ["JetBrains Mono"],
+            "label-md": ["JetBrains Mono"],
+            "headline-xl": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "code-md": ["JetBrains Mono"],
+            "headline-md": ["Inter"],
+            "headline-xl-mobile": ["Inter"],
+            "code-lg": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "display": ["Space Grotesk", "Inter"]
+          },
+          "fontSize": {
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "headline-xl-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "code-lg": ["15px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      height: 6px;
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #08100b;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #3c4a42;
+      border-radius: 2px;
+    }
+    .pulse-glow {
+      box-shadow: 0 0 12px rgba(16, 185, 129, 0.4);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface min-h-screen flex flex-col font-body-md select-none overflow-x-hidden antialiased">
+<!-- TOP APP BAR / BRAND HEADER -->
+<header class="flex justify-between items-center w-full px-margin h-14 bg-surface-container border-b border-outline-variant shrink-0 z-30">
+<!-- Brand Anchor & Node Identity -->
+<div class="flex items-center space-x-space-lg">
+<div class="flex items-center space-x-space-sm">
+<span class="w-2.5 h-2.5 rounded-full bg-primary-container animate-ping inline-block"></span>
+<span class="text-headline-sm font-headline-sm uppercase tracking-wider text-primary font-bold font-display">
+          MEKONG CLEAR // GACC DUR-EXP-OPS
+        </span>
+</div>
+<!-- Facility & Node Breadcrumb -->
+<div class="hidden xl:flex items-center space-x-space-sm pl-space-md border-l border-outline-variant font-code-sm text-code-sm">
+<span class="px-1.5 py-0.5 bg-surface-container-high border border-outline-variant text-primary rounded">NODE: ACTIVE</span>
+<span class="text-on-surface-variant">FACILITY #VN-84B</span>
+<span class="text-outline">/</span>
+<span class="text-on-surface-variant">TIEN GIANG STATION</span>
+<span class="text-outline">/</span>
+<span class="text-secondary font-semibold">GACC PORT-ID: 7102</span>
+</div>
+</div>
+<!-- Central Top Nav Links -->
+<nav class="hidden md:flex items-center space-x-6 h-full">
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors" href="index.html">Overview</a>
+<a class="text-primary border-b-2 border-primary font-code-md text-code-md py-1 flex items-center space-x-1.5" href="dossiers.html">
+<span>Dossiers</span>
+<span class="bg-primary-container text-on-primary-container text-[10px] font-bold px-1.5 py-0.2 rounded-full">14</span>
+</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors" href="auditor.html">Auditor Gateway</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors" href="buyer.html">Buyer Portal</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors" href="cluster.html">Cluster Telemetry</a>
+</nav>
+<!-- Header Actions & Profile -->
+<div class="flex items-center space-x-space-md">
+<!-- Create Dossier Action -->
+<button class="flex items-center space-x-1.5 bg-primary-container text-on-primary-container px-space-md py-1.5 rounded font-label-md text-label-md uppercase tracking-wide font-bold hover:brightness-110 active:scale-[0.99] pulse-glow transition-all">
+<span class="material-symbols-outlined text-base" data-icon="add_circle">add_circle</span>
+<span>Create New Container Dossier</span>
+</button>
+<!-- Terminal / Telemetry Actions -->
+<div class="flex items-center space-x-1 border-l border-outline-variant pl-space-md">
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="Cold Chain Live Telemetry">
+<span class="material-symbols-outlined text-lg" data-icon="sensors">sensors</span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors relative" title="Quarantine Dispatch Alerts">
+<span class="material-symbols-outlined text-lg" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+<button class="p-1.5 text-on-surface-variant hover:text-primary hover:bg-surface-variant rounded transition-colors" title="GACC Direct EDI Terminal">
+<span class="material-symbols-outlined text-lg" data-icon="terminal">terminal</span>
+</button>
+</div>
+<!-- Chief Officer Badge -->
+<div class="hidden lg:flex items-center space-x-2 pl-space-sm">
+<div class="w-7 h-7 rounded border border-primary flex items-center justify-center bg-surface-container-high text-primary font-code-sm font-bold">
+          QO
+        </div>
+</div>
+</div>
+</header>
+<!-- MAIN VIEWPORT CONTAINER -->
+<div class="flex flex-1 w-full overflow-hidden">
+<!-- VERTICAL RAIL / SIDE INSPECTION NAVIGATION -->
+<aside class="hidden lg:flex flex-col justify-between w-60 border-r border-outline-variant bg-surface-container-lowest p-space-md shrink-0">
+<div class="flex flex-col space-y-space-md">
+<!-- Station Identity -->
+<div class="p-2 bg-surface-container-low border border-outline-variant rounded">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>TERMINAL CONSOLE</span>
+<span class="text-secondary font-code-sm">v4.82-REV</span>
+</div>
+<div class="mt-1 font-display font-semibold text-headline-sm text-on-surface tracking-tight">TIEN GIANG #VN-84B</div>
+<div class="text-code-sm font-code-sm text-on-surface-variant flex items-center space-x-1 mt-0.5">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>EXPORT DISPATCH DECK</span>
+</div>
+</div>
+<!-- Rail Navigation Tabs -->
+<nav class="flex flex-col space-y-1">
+<a class="bg-surface-container-high text-primary border-l-2 border-primary px-space-md py-space-sm font-code-sm flex items-center justify-between" href="#">
+<div class="flex items-center space-x-space-sm">
+<span class="material-symbols-outlined text-base" data-icon="verified">verified</span>
+<span>Verify Ops</span>
+</div>
+<span class="text-[10px] bg-primary text-on-primary font-bold px-1 rounded">14</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface px-space-md py-space-sm font-code-sm flex items-center justify-between transition-colors" href="#">
+<div class="flex items-center space-x-space-sm">
+<span class="material-symbols-outlined text-base" data-icon="biotech">biotech</span>
+<span>Cadmium Lab</span>
+</div>
+<span class="text-[10px] text-tertiary font-code-sm">96% Warn</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface px-space-md py-space-sm font-code-sm flex items-center justify-between transition-colors" href="#">
+<div class="flex items-center space-x-space-sm">
+<span class="material-symbols-outlined text-base" data-icon="ac_unit">ac_unit</span>
+<span>Cold Chain</span>
+</div>
+<span class="text-[10px] text-secondary font-code-sm">13.2°C avg</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface px-space-md py-space-sm font-code-sm flex items-center justify-between transition-colors" href="#">
+<div class="flex items-center space-x-space-sm">
+<span class="material-symbols-outlined text-base" data-icon="lock">lock</span>
+<span>Seal Chain</span>
+</div>
+<span class="text-[10px] text-primary font-code-sm">100% OK</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface px-space-md py-space-sm font-code-sm flex items-center justify-between transition-colors" href="#">
+<div class="flex items-center space-x-space-sm">
+<span class="material-symbols-outlined text-base" data-icon="receipt_long">receipt_long</span>
+<span>Audit Trail</span>
+</div>
+<span class="text-[10px] text-outline">SEC-V2</span>
+</a>
+</nav>
+<!-- Compliance Quick CTA -->
+<div class="pt-space-sm">
+<button class="w-full flex items-center justify-center space-x-1.5 py-2 px-3 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface font-code-sm rounded transition-all">
+<span class="material-symbols-outlined text-base text-primary" data-icon="lock_clock">lock_clock</span>
+<span>Lock Container Seal</span>
+</button>
+</div>
+</div>
+<!-- Rail Footer Navigation -->
+<div class="flex flex-col space-y-1 border-t border-outline-variant pt-space-md">
+<a class="text-on-surface-variant hover:text-on-surface px-space-md py-1.5 font-code-sm flex items-center space-x-space-sm" href="#">
+<span class="material-symbols-outlined text-base text-secondary" data-icon="sync">sync</span>
+<span>Telemetry Sync</span>
+</a>
+<a class="text-on-surface-variant hover:text-on-surface px-space-md py-1.5 font-code-sm flex items-center space-x-space-sm" href="#">
+<span class="material-symbols-outlined text-base text-outline" data-icon="settings">settings</span>
+<span>System Specs</span>
+</a>
+<div class="text-[9px] text-outline font-code-sm px-space-md pt-2">
+          GACC-VN DEPT PLANT PROT #2024-81
+        </div>
+</div>
+</aside>
+<!-- WORKSPACE CANVAS -->
+<main class="flex-1 flex flex-col h-full overflow-y-auto custom-scroll bg-surface-dim">
+<!-- SUB-HEADER / TITLE BANNER -->
+<div class="px-margin py-3 bg-surface-container-low border-b border-outline-variant flex flex-wrap justify-between items-center gap-3">
+<div>
+<div class="flex items-center space-x-2">
+<h1 class="text-headline-md font-headline-md font-display text-on-surface font-bold tracking-tight">
+              Export Dossier Registry &amp; Container Verification Matrix
+            </h1>
+<span class="px-2 py-0.5 rounded bg-primary-container/15 text-primary border border-primary font-label-sm text-label-sm uppercase">
+              VN-PPD PROTOCOL 2024-C7
+            </span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">
+            Active clearance pipelines for Fresh Durian (Monthong DONA / Ri6) transiting through Youyi Guan / Mohan Land Border Corridors.
+          </p>
+</div>
+<div class="flex items-center space-x-2 font-code-sm text-code-sm">
+<span class="text-outline">SYSTEM CLOCK:</span>
+<span class="text-secondary font-semibold" id="sys-clock">2025-02-28 14:48:22 UTC+7</span>
+<span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+</div>
+</div>
+<div class="p-margin flex flex-col space-y-space-md">
+<!-- 3. TOP KPI RIBBON (4 Metric Cards with Micro-graphs/Sparklines/Deltas) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-gutter">
+<!-- KPI CARD 1 -->
+<div class="bg-surface-container border border-outline-variant p-3.5 relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-[2px] bg-primary"></div>
+<div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant tracking-wider uppercase">
+<span>Active Dossiers in Progress</span>
+<span class="material-symbols-outlined text-primary text-base" data-icon="dataset">dataset</span>
+</div>
+<div class="mt-2 flex items-baseline space-x-2">
+<span class="text-3xl font-bold font-code-lg text-primary tracking-tight">14</span>
+<span class="text-label-sm font-label-sm text-secondary font-semibold">+2 queued</span>
+</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-col space-y-1">
+<div class="flex justify-between items-center text-code-sm font-code-sm text-on-surface-variant">
+<span>Packhouse Bay 1-4:</span>
+<span class="text-on-surface font-semibold">8 units</span>
+</div>
+<div class="flex justify-between items-center text-code-sm font-code-sm text-on-surface-variant">
+<span>Pre-departure Hold:</span>
+<span class="text-tertiary font-semibold">6 units</span>
+</div>
+<!-- Micro Progress Line -->
+<div class="w-full bg-surface-container-highest h-1 rounded overflow-hidden flex mt-1">
+<div class="bg-primary h-full w-[57%]"></div>
+<div class="bg-tertiary h-full w-[43%]"></div>
+</div>
+</div>
+</div>
+<!-- KPI CARD 2 -->
+<div class="bg-surface-container border border-outline-variant p-3.5 relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-[2px] bg-secondary-container"></div>
+<div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant tracking-wider uppercase">
+<span>Mean Verification Time</span>
+<span class="material-symbols-outlined text-secondary text-base" data-icon="timer">timer</span>
+</div>
+<div class="mt-2 flex items-baseline space-x-2">
+<span class="text-3xl font-bold font-code-lg text-on-surface tracking-tight">3.4 <span class="text-lg font-normal text-outline">mins</span></span>
+<span class="text-label-sm font-label-sm text-primary flex items-center font-semibold">
+<span class="material-symbols-outlined text-sm" data-icon="trending_down">trending_down</span>
+                  18s vs avg
+                </span>
+</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between">
+<div class="flex items-center space-x-1.5">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-code-sm font-code-sm text-on-surface-variant">SLA target &lt; 5.0 mins</span>
+</div>
+<span class="text-label-sm font-label-sm text-primary uppercase font-bold px-1.5 py-0.5 bg-surface-container-high border border-primary/30 rounded">
+                COMPLIANT
+              </span>
+</div>
+</div>
+<!-- KPI CARD 3 -->
+<div class="bg-surface-container border border-outline-variant p-3.5 relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-[2px] bg-tertiary"></div>
+<div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant tracking-wider uppercase">
+<span>Blind Faults Caught</span>
+<span class="material-symbols-outlined text-tertiary text-base" data-icon="shield_with_heart">shield_with_heart</span>
+</div>
+<div class="mt-2 flex items-baseline space-x-2">
+<span class="text-3xl font-bold font-code-lg text-tertiary tracking-tight">2 / 2</span>
+<span class="text-label-sm font-label-sm text-primary font-semibold">100% CATCH</span>
+</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 space-y-1 font-code-sm text-code-sm">
+<div class="flex items-center justify-between text-error">
+<span class="truncate">1x Bolt Seal Tamper</span>
+<span class="font-bold uppercase text-[9px] bg-error-container text-on-error-container px-1 rounded">INTERCEPTED</span>
+</div>
+<div class="flex items-center justify-between text-tertiary">
+<span class="truncate">1x Cadmium Threshold</span>
+<span class="font-bold uppercase text-[9px] bg-tertiary-container/30 text-tertiary px-1 rounded">HOLD 96%</span>
+</div>
+</div>
+</div>
+<!-- KPI CARD 4 -->
+<div class="bg-surface-container border border-outline-variant p-3.5 relative overflow-hidden flex flex-col justify-between">
+<div class="absolute top-0 left-0 right-0 h-[2px] bg-primary-container"></div>
+<div>
+<div class="flex items-center justify-between text-label-sm font-label-sm text-on-surface-variant tracking-wider uppercase">
+<span>Total Exported Net Weight</span>
+<span class="material-symbols-outlined text-primary text-base" data-icon="scale">scale</span>
+</div>
+<div class="mt-2 flex items-baseline space-x-2">
+<span class="text-3xl font-bold font-code-lg text-primary tracking-tight">252,000 <span class="text-lg font-normal text-outline">kg</span></span>
+</div>
+</div>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex items-center justify-between text-code-sm font-code-sm">
+<span class="text-on-surface-variant">Cleared Batch:</span>
+<span class="text-secondary font-bold">13 Reefer Units</span>
+<span class="text-outline text-[10px]">100% GACC VERIFIED</span>
+</div>
+</div>
+</div>
+<!-- 4. ADVANCED FILTER TOOLBAR -->
+<div class="bg-surface-container border border-outline-variant p-3 flex flex-col space-y-3">
+<!-- Top Row: Search and FSM Filter Pills -->
+<div class="flex flex-wrap items-center justify-between gap-3">
+<!-- ISO Search Bar -->
+<div class="relative flex-1 min-w-[280px] max-w-lg">
+<span class="material-symbols-outlined absolute left-2.5 top-2.5 text-outline text-lg pointer-events-none" data-icon="search">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant pl-9 pr-3 py-1.5 text-code-md text-on-surface placeholder:text-outline focus:outline-none focus:border-primary rounded font-code-sm" placeholder="Search container ISO code (e.g. MSKU 123456 5, TGHU...)" type="text"/>
+</div>
+<!-- FSM Lifecycle State filter pills -->
+<div class="flex items-center flex-wrap gap-1.5 font-label-sm text-label-sm">
+<button class="px-2.5 py-1 bg-primary text-on-primary font-bold rounded border border-primary flex items-center space-x-1">
+<span>ALL (14)</span>
+</button>
+<button class="px-2.5 py-1 bg-surface-container-high text-on-surface-variant hover:text-on-surface border border-outline-variant rounded transition-colors flex items-center space-x-1">
+<span class="w-1.5 h-1.5 bg-outline rounded-full"></span>
+<span>DRAFT (2)</span>
+</button>
+<button class="px-2.5 py-1 bg-surface-container-high text-tertiary border border-tertiary/40 rounded flex items-center space-x-1 hover:bg-surface-variant transition-colors">
+<span class="w-1.5 h-1.5 bg-tertiary rounded-full animate-pulse"></span>
+<span>HUMAN_VERIFICATION_REQUIRED (3)</span>
+</button>
+<button class="px-2.5 py-1 bg-surface-container-high text-primary border border-outline-variant rounded hover:border-primary hover:text-primary transition-colors flex items-center space-x-1">
+<span class="material-symbols-outlined text-[13px] text-primary" data-icon="check_circle">check_circle</span>
+<span>VERIFIED (5)</span>
+</button>
+<button class="px-2.5 py-1 bg-surface-container-high text-secondary-fixed border border-secondary-fixed/40 rounded flex items-center space-x-1 hover:bg-surface-variant transition-colors">
+<span class="w-1.5 h-1.5 bg-secondary-fixed rounded-full"></span>
+<span>EXPORTED (4)</span>
+</button>
+</div>
+</div>
+<!-- Bottom Row: Secondary Dropdowns and Batch Tools -->
+<div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-outline-variant/60 text-code-sm font-code-sm">
+<div class="flex items-center flex-wrap gap-2">
+<!-- Date Selector -->
+<div class="flex items-center bg-surface-container-lowest border border-outline-variant rounded px-2 py-1">
+<span class="material-symbols-outlined text-outline text-sm mr-1" data-icon="calendar_today">calendar_today</span>
+<span class="text-on-surface">Today, 2025-02-28</span>
+</div>
+<!-- Packhouse Dropdown -->
+<div class="flex items-center bg-surface-container-lowest border border-outline-variant rounded px-2 py-1">
+<span class="text-outline mr-1">PACKHOUSE:</span>
+<select class="bg-transparent text-primary focus:outline-none cursor-pointer pr-1">
+<option class="bg-surface-container">VN-TG-PH-001 - Cai Be Hub</option>
+<option class="bg-surface-container">VN-TG-PH-004 - Cho Gao Facility</option>
+<option class="bg-surface-container">VN-DL-PH-012 - Dak Lak Central</option>
+</select>
+</div>
+<!-- Variety Filter -->
+<div class="flex items-center bg-surface-container-lowest border border-outline-variant rounded px-2 py-1">
+<span class="text-outline mr-1">CULTIVAR:</span>
+<select class="bg-transparent text-on-surface focus:outline-none cursor-pointer pr-1">
+<option class="bg-surface-container">All (Monthong DONA + Ri6)</option>
+<option class="bg-surface-container">Monthong DONA (Yellow Flesh)</option>
+<option class="bg-surface-container">Ri6 Durian (Grade A)</option>
+</select>
+</div>
+</div>
+<!-- Batch Actions / Export Telemetry -->
+<div class="flex items-center space-x-2">
+<button class="flex items-center space-x-1 px-2.5 py-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded text-code-sm transition-colors">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="file_download">file_download</span>
+<span>Export Dossier Telemetry (.JSON)</span>
+</button>
+<button class="flex items-center space-x-1 px-2.5 py-1 bg-surface-container-high border border-outline-variant hover:border-outline text-on-surface-variant rounded text-code-sm transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="refresh">refresh</span>
+<span>Auto-refresh (5s)</span>
+</button>
+</div>
+</div>
+</div>
+<!-- 5. MAIN DATA TABLE (Rich, dense table with monospace IDs, compliance badges, and inline actions) -->
+<div class="border border-outline-variant bg-surface-container overflow-hidden">
+<div class="overflow-x-auto custom-scroll">
+<table class="w-full text-left border-collapse text-body-md font-body-md">
+<thead>
+<tr class="bg-surface-container-lowest border-b border-outline-variant font-label-sm text-label-sm text-outline tracking-wider uppercase select-none">
+<th class="py-2.5 px-3 w-10 text-center">
+<input class="rounded-none bg-surface-container border-outline-variant text-primary focus:ring-0" type="checkbox"/>
+</th>
+<th class="py-2.5 px-3">Container ISO ID</th>
+<th class="py-2.5 px-3">Customs Bolt Seal</th>
+<th class="py-2.5 px-3">Net Weight &amp; Cargo</th>
+<th class="py-2.5 px-3">Heavy Metals / Cadmium</th>
+<th class="py-2.5 px-3">FSM Lifecycle Status</th>
+<th class="py-2.5 px-3">Verification SLA</th>
+<th class="py-2.5 px-3 text-right">Inspection Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-code-sm text-code-sm">
+<!-- ROW 1: HUMAN_VERIFICATION_REQUIRED (Amber Alert) -->
+<tr class="hover:bg-surface-container-high transition-colors bg-surface-container border-l-2 border-tertiary">
+<td class="py-3 px-3 text-center">
+<input class="rounded-none bg-surface-container border-outline-variant text-primary focus:ring-0" type="checkbox"/>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-2">
+<span class="font-code-md text-code-md font-bold text-on-surface">MSKU 123456 5</span>
+<span class="text-[9px] bg-secondary-container/20 text-secondary border border-secondary/40 px-1 rounded font-mono" title="ISO 6346 Check Digit Verified">CD:5 [VALID]</span>
+</div>
+<div class="text-[10px] text-outline mt-0.5">REEFER 40FT HIGH CUBE // BAY 2</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="lock">lock</span>
+<span class="font-semibold text-on-surface font-mono">SEAL-VN-9872</span>
+</div>
+<div class="flex items-center space-x-1 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="text-[10px] text-primary">RFID TAMPER-VERIFIED</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="text-on-surface font-semibold">18,240 KG // 1,280 Crates</div>
+<div class="text-[10px] text-outline mt-0.5">Monthong DONA (Grade A - Pulp &gt;32%)</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-1.5">
+<span class="text-tertiary font-bold font-mono">0.048 mg/kg</span>
+<span class="text-[9px] bg-tertiary/20 text-tertiary border border-tertiary px-1 rounded uppercase font-bold">WARN 96%</span>
+</div>
+<div class="w-24 bg-surface-container-highest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-tertiary h-full w-[96%]"></div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-tertiary/15 border border-tertiary text-tertiary font-label-sm text-label-sm font-bold uppercase animate-pulse">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+<span>HUMAN_VERIFICATION_REQUIRED</span>
+</span>
+<div class="text-[10px] text-error mt-0.5">Reason: Cadmium threshold warning trigger</div>
+</td>
+<td class="py-3 px-3">
+<div class="text-on-surface font-mono font-semibold">03:12</div>
+<div class="w-16 bg-surface-container-highest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-primary h-full w-[64%]"></div>
+</div>
+</td>
+<td class="py-3 px-3 text-right">
+<div class="flex items-center justify-end space-x-1">
+<a class="px-2 py-1 bg-primary text-on-primary font-bold text-label-sm rounded hover:brightness-110 flex items-center space-x-1 transition-all" href="arbitration.html?cid=MSKU1234565">
+<span>View Split-Screen</span>
+<span class="material-symbols-outlined text-xs" data-icon="open_in_new">open_in_new</span>
+</a>
+<button class="p-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded" title="Download Manifest JSON">
+<span class="material-symbols-outlined text-sm" data-icon="file_download">file_download</span>
+</button>
+<button class="p-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded" title="Audit Trail Log">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 2: VERIFIED (Emerald Active) -->
+<tr class="hover:bg-surface-container-high transition-colors bg-surface-container-low border-l-2 border-primary">
+<td class="py-3 px-3 text-center">
+<input class="rounded-none bg-surface-container border-outline-variant text-primary focus:ring-0" type="checkbox"/>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-2">
+<span class="font-code-md text-code-md font-bold text-on-surface">CMAU 789210 2</span>
+<span class="text-[9px] bg-secondary-container/20 text-secondary border border-secondary/40 px-1 rounded font-mono">CD:2 [VALID]</span>
+</div>
+<div class="text-[10px] text-outline mt-0.5">REEFER 40FT // BAY 1</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="lock">lock</span>
+<span class="font-semibold text-on-surface font-mono">SEAL-VN-9888</span>
+</div>
+<div class="flex items-center space-x-1 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span class="text-[10px] text-primary">RFID TAMPER-VERIFIED</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="text-on-surface font-semibold">19,100 KG // 1,320 Crates</div>
+<div class="text-[10px] text-outline mt-0.5">Ri6 Premium (Cai Be Hub Certified)</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-1.5">
+<span class="text-primary font-bold font-mono">0.021 mg/kg</span>
+<span class="text-[9px] bg-primary/15 text-primary border border-primary/40 px-1 rounded uppercase font-bold">PASS 42%</span>
+</div>
+<div class="w-24 bg-surface-container-highest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-primary h-full w-[42%]"></div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-primary-container/20 border border-primary text-primary font-label-sm text-label-sm font-bold uppercase">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span>
+<span>VERIFIED</span>
+</span>
+<div class="text-[10px] text-on-surface-variant mt-0.5">GACC Export Manifest Stamped</div>
+</td>
+<td class="py-3 px-3">
+<div class="text-on-surface font-mono font-semibold">02:48</div>
+<div class="w-16 bg-surface-container-highest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-primary h-full w-[56%]"></div>
+</div>
+</td>
+<td class="py-3 px-3 text-right">
+<div class="flex items-center justify-end space-x-1">
+<a class="px-2 py-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface text-label-sm rounded flex items-center space-x-1 transition-colors" href="arbitration.html?cid=CMAU7892102">
+<span>View Split-Screen</span>
+<span class="material-symbols-outlined text-xs" data-icon="open_in_new">open_in_new</span>
+</a>
+<button class="p-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded" title="Download Manifest JSON">
+<span class="material-symbols-outlined text-sm" data-icon="file_download">file_download</span>
+</button>
+<button class="p-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded" title="Audit Trail Log">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 3: HUMAN_VERIFICATION_REQUIRED (Seal Discrepancy) -->
+<tr class="hover:bg-surface-container-high transition-colors bg-surface-container border-l-2 border-error">
+<td class="py-3 px-3 text-center">
+<input class="rounded-none bg-surface-container border-outline-variant text-primary focus:ring-0" type="checkbox"/>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-2">
+<span class="font-code-md text-code-md font-bold text-on-surface">OOLU 452910 8</span>
+<span class="text-[9px] bg-secondary-container/20 text-secondary border border-secondary/40 px-1 rounded font-mono">CD:8 [VALID]</span>
+</div>
+<div class="text-[10px] text-outline mt-0.5">REEFER 40FT // BAY 4</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-sm text-error" data-icon="gpp_bad">gpp_bad</span>
+<span class="font-semibold text-error font-mono">SEAL-VN-9801?</span>
+</div>
+<div class="flex items-center space-x-1 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-error animate-ping"></span>
+<span class="text-[10px] text-error font-bold">RFID SIGNATURE MISMATCH</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="text-on-surface font-semibold">18,500 KG // 1,290 Crates</div>
+<div class="text-[10px] text-outline mt-0.5">Monthong DONA Export Grade</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-1.5">
+<span class="text-primary font-bold font-mono">0.018 mg/kg</span>
+<span class="text-[9px] bg-primary/15 text-primary border border-primary/40 px-1 rounded uppercase font-bold">PASS 36%</span>
+</div>
+<div class="w-24 bg-surface-container-highest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-primary h-full w-[36%]"></div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-error/15 border border-error text-error font-label-sm text-label-sm font-bold uppercase">
+<span class="material-symbols-outlined text-xs" data-icon="warning">warning</span>
+<span>HUMAN_VERIFICATION_REQUIRED</span>
+</span>
+<div class="text-[10px] text-error font-semibold mt-0.5">Alert: Physical Bolt Seal vs RFID Hash Mismatch</div>
+</td>
+<td class="py-3 px-3">
+<div class="text-on-surface font-mono font-semibold">04:05</div>
+<div class="w-16 bg-surface-container-highest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-tertiary h-full w-[81%]"></div>
+</div>
+</td>
+<td class="py-3 px-3 text-right">
+<div class="flex items-center justify-end space-x-1">
+<a class="px-2 py-1 bg-error text-on-error font-bold text-label-sm rounded hover:brightness-110 flex items-center space-x-1 transition-all" href="arbitration.html?cid=OOLU4529108">
+<span>Resolve Audit</span>
+<span class="material-symbols-outlined text-xs" data-icon="assignment_late">assignment_late</span>
+</a>
+<button class="p-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded" title="Download Manifest JSON">
+<span class="material-symbols-outlined text-sm" data-icon="file_download">file_download</span>
+</button>
+<button class="p-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded" title="Audit Trail Log">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 4: EXPORTED (Cyan / Cleared Corridor) -->
+<tr class="hover:bg-surface-container-high transition-colors bg-surface-container-low border-l-2 border-secondary-fixed">
+<td class="py-3 px-3 text-center">
+<input class="rounded-none bg-surface-container border-outline-variant text-primary focus:ring-0" type="checkbox"/>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-2">
+<span class="font-code-md text-code-md font-bold text-on-surface">TGHU 904321 4</span>
+<span class="text-[9px] bg-secondary-container/20 text-secondary border border-secondary/40 px-1 rounded font-mono">CD:4 [VALID]</span>
+</div>
+<div class="text-[10px] text-outline mt-0.5">IN TRANSIT // PINGXIANG CORRIDOR</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-sm text-secondary-fixed" data-icon="verified_user">verified_user</span>
+<span class="font-semibold text-on-surface font-mono">SEAL-VN-9740</span>
+</div>
+<div class="flex items-center space-x-1 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary-fixed"></span>
+<span class="text-[10px] text-secondary-fixed font-mono">CLEARED GATEWAY</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="text-on-surface font-semibold">19,450 KG // 1,350 Crates</div>
+<div class="text-[10px] text-outline mt-0.5">Ri6 Premium Durian</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-1.5">
+<span class="text-primary font-bold font-mono">0.015 mg/kg</span>
+<span class="text-[9px] bg-primary/15 text-primary border border-primary/40 px-1 rounded uppercase font-bold">PASS 30%</span>
+</div>
+<div class="w-24 bg-surface-container-highest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-primary h-full w-[30%]"></div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-secondary-fixed/15 border border-secondary-fixed/50 text-secondary-fixed font-label-sm text-label-sm font-bold uppercase">
+<span class="material-symbols-outlined text-xs" data-icon="local_shipping">local_shipping</span>
+<span>EXPORTED</span>
+</span>
+<div class="text-[10px] text-on-surface-variant mt-0.5">Crossing CN-Youyi Guan Gate</div>
+</td>
+<td class="py-3 px-3">
+<div class="text-on-surface font-mono font-semibold">01:52</div>
+<div class="w-16 bg-surface-container-highest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-secondary h-full w-[37%]"></div>
+</div>
+</td>
+<td class="py-3 px-3 text-right">
+<div class="flex items-center justify-end space-x-1">
+<a class="px-2 py-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface text-label-sm rounded flex items-center space-x-1 transition-colors" href="#">
+<span>Telemetry</span>
+<span class="material-symbols-outlined text-xs" data-icon="insights">insights</span>
+</a>
+<button class="p-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded" title="Download Manifest JSON">
+<span class="material-symbols-outlined text-sm" data-icon="file_download">file_download</span>
+</button>
+<button class="p-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded" title="Audit Trail Log">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- ROW 5: DRAFT (Packhouse staging) -->
+<tr class="hover:bg-surface-container-high transition-colors bg-surface-container border-l-2 border-outline">
+<td class="py-3 px-3 text-center">
+<input class="rounded-none bg-surface-container border-outline-variant text-primary focus:ring-0" type="checkbox"/>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-2">
+<span class="font-code-md text-code-md font-bold text-on-surface">MSCU 332189 0</span>
+<span class="text-[9px] bg-secondary-container/20 text-secondary border border-secondary/40 px-1 rounded font-mono">CD:0 [VALID]</span>
+</div>
+<div class="text-[10px] text-outline mt-0.5">LOADING BAY 3 // CAI BE HUB</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-1.5">
+<span class="material-symbols-outlined text-sm text-outline" data-icon="lock_open">lock_open</span>
+<span class="font-semibold text-outline font-mono">PENDING SEAL</span>
+</div>
+<div class="flex items-center space-x-1 mt-0.5">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+<span class="text-[10px] text-outline">CRATE SCAN: 840/1280</span>
+</div>
+</td>
+<td class="py-3 px-3">
+<div class="text-on-surface font-semibold">12,100 KG (IN PROGRESS)</div>
+<div class="text-[10px] text-outline mt-0.5">Monthong DONA (Pre-Cooling Staging)</div>
+</td>
+<td class="py-3 px-3">
+<div class="flex items-center space-x-1.5">
+<span class="text-on-surface-variant font-mono">0.024 mg/kg</span>
+<span class="text-[9px] bg-surface-container-high text-outline border border-outline-variant px-1 rounded uppercase">LAB PRE-PASS</span>
+</div>
+<div class="w-24 bg-surface-container-highest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-secondary-container h-full w-[48%]"></div>
+</div>
+</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center space-x-1 px-2 py-0.5 rounded bg-surface-container-highest border border-outline-variant text-outline font-label-sm text-label-sm uppercase font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+<span>DRAFT</span>
+</span>
+<div class="text-[10px] text-outline mt-0.5">Pre-Departure Sensor Check Pending</div>
+</td>
+<td class="py-3 px-3">
+<div class="text-outline font-mono font-semibold">--:--</div>
+<div class="w-16 bg-surface-container-highest h-1 rounded mt-1 overflow-hidden">
+<div class="bg-outline h-full w-[10%]"></div>
+</div>
+</td>
+<td class="py-3 px-3 text-right">
+<div class="flex items-center justify-end space-x-1">
+<a class="px-2 py-1 bg-surface-container-high border border-outline-variant hover:border-outline text-on-surface-variant text-label-sm rounded flex items-center space-x-1" href="#">
+<span>Edit Dossier</span>
+<span class="material-symbols-outlined text-xs" data-icon="edit">edit</span>
+</a>
+<button class="p-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded opacity-50 cursor-not-allowed" title="Download Manifest JSON">
+<span class="material-symbols-outlined text-sm" data-icon="file_download">file_download</span>
+</button>
+<button class="p-1 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded" title="Audit Trail Log">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long">receipt_long</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- 6. PAGINATION & WEBSOCKET STATUS FOOTER BAR -->
+<div class="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-surface-container border border-outline-variant font-code-sm text-code-sm">
+<!-- Pagination Meta & Controls -->
+<div class="flex items-center space-x-4">
+<span class="text-on-surface-variant">
+              Showing <span class="text-on-surface font-semibold">1</span> to <span class="text-on-surface font-semibold">5</span> of <span class="text-primary font-bold">14</span> Active Export Dossiers
+            </span>
+<div class="flex items-center space-x-1">
+<button class="px-2 py-0.5 bg-surface-container-high border border-outline-variant text-outline rounded cursor-not-allowed" disabled="">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_left">chevron_left</span>
+</button>
+<button class="px-2.5 py-0.5 bg-primary text-on-primary font-bold rounded">1</button>
+<button class="px-2.5 py-0.5 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded">2</button>
+<button class="px-2.5 py-0.5 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded">3</button>
+<button class="px-2 py-0.5 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface rounded">
+<span class="material-symbols-outlined text-sm" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Real-Time WebSocket & Security Status -->
+<div class="flex items-center space-x-4">
+<div class="flex items-center space-x-1.5">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-on-surface-variant">WEBSOCKET: <span class="text-primary font-semibold">CONNECTED</span></span>
+</div>
+<div class="text-on-surface-variant hidden sm:inline">
+              PING: <span class="text-secondary font-mono">24ms</span>
+</div>
+<div class="flex items-center space-x-1 text-primary">
+<span class="material-symbols-outlined text-sm" data-icon="cloud_done">cloud_done</span>
+<span>GACC BORDER NODE SYNCHRONIZED</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- Inline Script for dynamic time & micro-interactions -->
+<script>
+    function updateClock() {
+      const now = new Date();
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      const hours = String(now.getHours()).padStart(2, '0');
+      const mins = String(now.getMinutes()).padStart(2, '0');
+      const secs = String(now.getSeconds()).padStart(2, '0');
+      const el = document.getElementById('sys-clock');
+      if (el) {
+        el.innerText = `${year}-${month}-${day} ${hours}:${mins}:${secs} UTC+7`;
+      }
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+  </script>
+</body></html>

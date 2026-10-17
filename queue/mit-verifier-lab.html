@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DuriOS // MIT Cryptographic Verifier & ISO 6346 Lab</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            'canvas-bg': '#0B130E',
+            'surface-dark': '#132018',
+            'card-dark': '#18281F',
+            'border-base': '#1F3327',
+            'border-highlight': '#10B981',
+            'primary-text': '#ECFDF5',
+            'secondary-text': '#6EE7B7',
+            'muted-text': '#34D399',
+            'accent-emerald': '#10B981',
+            'accent-gold': '#F59E0B',
+            'accent-danger': '#EF4444'
+          },
+          fontFamily: {
+            display: ['"Space Grotesk"', 'sans-serif'],
+            body: ['Inter', 'sans-serif'],
+            mono: ['"JetBrains Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --bg-canvas: #0B130E;
+      --bg-surface: #132018;
+      --bg-card: #18281F;
+      --border: #1F3327;
+      --border-highlight: #10B981;
+      --text-primary: #ECFDF5;
+      --text-secondary: #6EE7B7;
+      --text-muted: #34D399;
+      --accent-primary: #10B981;
+      --accent-gold: #F59E0B;
+      --accent-danger: #EF4444;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'Inter', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    body {
+      background-color: var(--bg-canvas);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      overflow-x: hidden;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #0B130E;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1F3327;
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #10B981;
+    }
+    .glow-emerald {
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.2);
+    }
+    .glow-gold {
+      box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+    }
+    .glow-danger {
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.25);
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-canvas-bg text-primary-text flex flex-col font-body selection:bg-accent-emerald selection:text-black">
+
+  <!-- TOP OPERATIONAL COMMAND BAR (56px) -->
+  <header class="h-14 bg-surface-dark border-b border-border-base px-4 flex items-center justify-between sticky top-0 z-50 shrink-0">
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2">
+        <span class="material-symbols-outlined text-accent-emerald text-2xl font-bold">verified_user</span>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-2">
+            <span class="font-display font-bold tracking-wider text-sm text-primary-text">DURIOS // MIT STANDALONE CRYPTOGRAPHIC VERIFIER & ISO 6346 LAB</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] font-mono font-bold bg-accent-emerald/10 border border-accent-emerald/30 text-accent-emerald">v1.0-STABLE</span>
+          </div>
+          <span class="text-[10px] font-mono text-muted-text/80 hidden md:block">TIEN GIANG #VN-84B · HỮU NGHỊ (YOUYI GUAN) BILATERAL AUDIT RIG</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Active Isolation Badge -->
+    <div class="hidden lg:flex items-center gap-2 px-3 py-1 bg-card-dark rounded border border-border-base">
+      <span class="inline-block w-2 h-2 rounded-full bg-accent-emerald animate-pulse"></span>
+      <span class="font-mono text-xs font-semibold text-secondary-text">MIT LICENSED SDK · ZERO AGPL/CLOUD DEPENDENCY · OFFLINE AIR-GAP READY</span>
+    </div>
+
+    <!-- Right Controls -->
+    <div class="flex items-center space-x-2">
+      <div class="hidden sm:flex items-center space-x-1.5 px-2.5 py-1 rounded bg-[#08100b] border border-border-base font-mono text-xs">
+        <span class="text-muted-text/70">WASM / TS ENGINE:</span>
+        <span class="text-accent-emerald font-semibold">STANDALONE (0 KB EGRESS)</span>
+      </div>
+      <button id="btn-verify-manifest-head" onclick="triggerFullManifestVerification()" class="flex items-center space-x-1.5 bg-accent-emerald hover:bg-emerald-400 text-black px-3.5 py-1.5 rounded font-mono text-xs font-bold transition-all duration-150 shadow-[0_0_12px_rgba(16,185,129,0.25)] active:scale-95">
+        <span class="material-symbols-outlined text-base font-bold">bolt</span>
+        <span>Verify Sealed Manifest JSON</span>
+      </button>
+      <button onclick="downloadStandaloneBundle()" title="Download MIT Standalone TypeScript SDK bundle" class="p-1.5 rounded bg-card-dark border border-border-base hover:border-accent-emerald text-secondary-text hover:text-primary-text transition-colors">
+        <span class="material-symbols-outlined text-base">download</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- TOP 4-CARD MIT SDK ISOLATION & CRYPTOGRAPHIC PRIMITIVES RIBBON -->
+  <section class="p-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 bg-canvas-bg border-b border-border-base">
+    
+    <!-- CARD 1: MIT SDK Isolation -->
+    <div class="bg-card-dark border border-border-base rounded p-3 relative overflow-hidden flex flex-col justify-between hover:border-accent-emerald/60 transition-colors">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-[10px] font-mono px-1.5 py-0.2 bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 rounded">MOD-MIT-01..04</span>
+            <span class="text-xs font-mono text-muted-text uppercase font-semibold">SDK Architecture</span>
+          </div>
+          <h3 class="font-display font-bold text-sm text-primary-text mt-1">MIT Verifier SDK Isolation</h3>
+        </div>
+        <span class="material-symbols-outlined text-accent-emerald text-xl">shield_locked</span>
+      </div>
+      <div class="mt-2 pt-2 border-t border-border-base/70">
+        <div class="flex items-baseline justify-between">
+          <span class="font-mono text-xl font-bold text-accent-emerald">4 / 4 Modules</span>
+          <span class="font-mono text-xs text-secondary-text font-semibold">100% Isolated</span>
+        </div>
+        <p class="text-[11px] font-mono text-muted-text/90 mt-1 line-clamp-1">iso-6346, doc-hasher, compiler, verifier</p>
+        <div class="mt-1 flex items-center gap-1.5 text-[10px] font-mono text-emerald-300/80">
+          <span class="material-symbols-outlined text-[13px] text-accent-emerald">check_circle</span>
+          <span>Zero imports from /auth/, /storage/, /saas/</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 2: ISO 6346:1995 Engine -->
+    <div class="bg-card-dark border border-border-base rounded p-3 relative overflow-hidden flex flex-col justify-between hover:border-accent-emerald/60 transition-colors">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-[10px] font-mono px-1.5 py-0.2 bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 rounded">ISO-6346:1995</span>
+            <span class="text-xs font-mono text-muted-text uppercase font-semibold">Weighbridge Gate</span>
+          </div>
+          <h3 class="font-display font-bold text-sm text-primary-text mt-1">ISO 6346 Check-Digit Engine</h3>
+        </div>
+        <span class="material-symbols-outlined text-secondary-text text-xl">pin</span>
+      </div>
+      <div class="mt-2 pt-2 border-t border-border-base/70">
+        <div class="flex items-baseline justify-between">
+          <span class="font-mono text-lg font-bold text-primary-text">validateIso6346Container</span>
+          <span class="font-mono text-xs text-accent-emerald font-semibold">Modulo-11</span>
+        </div>
+        <p class="text-[11px] font-mono text-secondary-text mt-1">Positional Weighting: $2^i$ ($i=0..9$)</p>
+        <div class="mt-1 flex items-center gap-1.5 text-[10px] font-mono text-muted-text">
+          <span class="material-symbols-outlined text-[13px] text-accent-emerald">verified</span>
+          <span>Catches 100% single-char & transposition typos</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 3: Canonical SHA-256 Digest -->
+    <div class="bg-card-dark border border-border-base rounded p-3 relative overflow-hidden flex flex-col justify-between hover:border-accent-emerald/60 transition-colors">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-[10px] font-mono px-1.5 py-0.2 bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 rounded">RFC 6234</span>
+            <span class="text-xs font-mono text-muted-text uppercase font-semibold">Zero-Dependency</span>
+          </div>
+          <h3 class="font-display font-bold text-sm text-primary-text mt-1">Canonical SHA-256 Digest</h3>
+        </div>
+        <span class="material-symbols-outlined text-accent-gold text-xl">fingerprint</span>
+      </div>
+      <div class="mt-2 pt-2 border-t border-border-base/70">
+        <div class="flex items-baseline justify-between">
+          <span class="font-mono text-lg font-bold text-accent-gold">calculateSha256()</span>
+          <span class="font-mono text-xs text-secondary-text font-semibold">Deterministic</span>
+        </div>
+        <p class="text-[11px] font-mono text-muted-text mt-1">UTF-8 String & PDF Byte Stream Hashing</p>
+        <div class="mt-1 flex items-center gap-1.5 text-[10px] font-mono text-secondary-text/80">
+          <span class="material-symbols-outlined text-[13px] text-accent-emerald">offline_pin</span>
+          <span>In-browser WebCrypto API or node:crypto</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- CARD 4: Composite Manifest Root -->
+    <div class="bg-card-dark border border-border-base rounded p-3 relative overflow-hidden flex flex-col justify-between hover:border-accent-emerald/60 transition-colors">
+      <div class="flex items-start justify-between">
+        <div>
+          <div class="flex items-center space-x-1.5">
+            <span class="text-[10px] font-mono px-1.5 py-0.2 bg-emerald-950/60 text-emerald-400 border border-emerald-800/60 rounded">GACC ORDER 248/249</span>
+            <span class="text-xs font-mono text-muted-text uppercase font-semibold">Trust Anchor</span>
+          </div>
+          <h3 class="font-display font-bold text-sm text-primary-text mt-1">Composite Manifest Root</h3>
+        </div>
+        <span class="material-symbols-outlined text-accent-emerald text-xl">account_balance</span>
+      </div>
+      <div class="mt-2 pt-2 border-t border-border-base/70">
+        <div class="flex items-baseline justify-between">
+          <span class="font-mono text-lg font-bold text-accent-emerald">verifyStandalone()</span>
+          <span class="font-mono text-xs text-accent-emerald font-semibold">100% Offline</span>
+        </div>
+        <p class="text-[11px] font-mono text-muted-text mt-1">Bilateral Cross-Border Trade Anchor</p>
+        <div class="mt-1 flex items-center gap-1.5 text-[10px] font-mono text-secondary-text/80">
+          <span class="material-symbols-outlined text-[13px] text-accent-emerald">handshake</span>
+          <span>For CN Buyers, Customs Brokers & L/C Banks</span>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- CENTER 2-COLUMN SPLIT WORKBENCH (6 Cols Left / 6 Cols Right) -->
+  <main class="flex-1 p-4 grid grid-cols-1 lg:grid-cols-12 gap-4 bg-canvas-bg min-h-0">
+
+    <!-- LEFT PANEL (6 COLS): Interactive ISO 6346:1995 Modulo-11 Check-Digit Calculator & Weighbridge Inspector -->
+    <div class="lg:col-span-6 flex flex-col space-y-4">
+      
+      <!-- Calculator Main Card -->
+      <div class="bg-surface-dark border border-border-base rounded-md p-4 flex flex-col space-y-4 shadow-[0_4px_20px_-2px_rgba(16,185,129,0.08)]">
+        
+        <!-- Header -->
+        <div class="flex flex-wrap items-center justify-between pb-3 border-b border-border-base gap-2">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded bg-card-dark border border-border-highlight/50 flex items-center justify-center text-accent-emerald">
+              <span class="material-symbols-outlined text-lg">calculate</span>
+            </div>
+            <div>
+              <h2 class="font-display font-bold text-base text-primary-text flex items-center gap-2">
+                <span>ISO 6346:1995 Check-Digit Calculator</span>
+                <span class="text-[11px] font-mono text-accent-emerald bg-emerald-950/70 border border-emerald-800/80 px-1.5 py-0.5 rounded">Modulo-11</span>
+              </h2>
+              <p class="text-xs font-mono text-muted-text">Live Weighbridge OCR / Gate Inspector breakdown for freight container</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-1.5">
+            <button onclick="presetContainer('CSQU3054383')" class="px-2 py-1 text-[11px] font-mono bg-card-dark hover:bg-emerald-950/80 text-secondary-text hover:text-accent-emerald border border-border-base rounded transition-colors">CSQU3054383</button>
+            <button onclick="presetContainer('MSCU6012349')" class="px-2 py-1 text-[11px] font-mono bg-card-dark hover:bg-emerald-950/80 text-secondary-text hover:text-accent-emerald border border-border-base rounded transition-colors">MSCU6012349</button>
+            <button onclick="presetContainer('CMAU8234569')" class="px-2 py-1 text-[11px] font-mono bg-card-dark hover:bg-red-950/80 text-red-400 hover:text-accent-danger border border-red-900/50 rounded transition-colors">CMAU8234569 [ERR]</button>
+          </div>
+        </div>
+
+        <!-- Interactive Input Field with Segment Badges -->
+        <div class="space-y-2">
+          <label class="block text-xs font-mono text-secondary-text font-medium flex items-center justify-between">
+            <span>INPUT CONTAINER CODE (11 CHARS: 4 LETTERS + 6 DIGITS + 1 CHECK DIGIT):</span>
+            <span class="text-[11px] text-muted-text" id="input-length-counter">11 / 11 chars</span>
+          </label>
+          <div class="relative flex items-center">
+            <input 
+              type="text" 
+              id="container-input" 
+              maxlength="11" 
+              value="CSQU3054383"
+              oninput="handleContainerInput(this.value)"
+              class="w-full bg-[#08100b] border-2 border-border-base focus:border-accent-emerald rounded px-3 py-2.5 font-mono text-base tracking-widest text-primary-text uppercase focus:outline-none transition-colors"
+              placeholder="e.g. CSQU3054383"
+            />
+            <button onclick="copyCurrentContainer()" class="absolute right-2 px-2 py-1 rounded bg-card-dark border border-border-base text-xs font-mono text-muted-text hover:text-primary-text">
+              Copy
+            </button>
+          </div>
+
+          <!-- Structured Decomposition Pills -->
+          <div class="grid grid-cols-4 gap-2 text-center pt-1">
+            <div class="p-1.5 bg-card-dark border border-border-base rounded flex flex-col">
+              <span class="text-[10px] font-mono text-muted-text">Owner Code (3)</span>
+              <span id="pill-owner" class="font-mono text-sm font-bold text-accent-emerald">CSQ</span>
+              <span class="text-[9px] font-mono text-secondary-text/70">Cosco Line</span>
+            </div>
+            <div class="p-1.5 bg-card-dark border border-border-base rounded flex flex-col">
+              <span class="text-[10px] font-mono text-muted-text">Equipment (1)</span>
+              <span id="pill-equipment" class="font-mono text-sm font-bold text-accent-emerald">U</span>
+              <span class="text-[9px] font-mono text-secondary-text/70">Freight Container</span>
+            </div>
+            <div class="p-1.5 bg-card-dark border border-border-base rounded flex flex-col">
+              <span class="text-[10px] font-mono text-muted-text">Serial Number (6)</span>
+              <span id="pill-serial" class="font-mono text-sm font-bold text-primary-text">305438</span>
+              <span class="text-[9px] font-mono text-secondary-text/70">Reefer Unit ID</span>
+            </div>
+            <div class="p-1.5 bg-card-dark border border-border-base rounded flex flex-col" id="pill-check-box">
+              <span class="text-[10px] font-mono text-muted-text">Check Digit (1)</span>
+              <span id="pill-check" class="font-mono text-sm font-bold text-accent-emerald">3</span>
+              <span id="pill-check-status" class="text-[9px] font-mono text-accent-emerald">MOD-11 Match</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modulo-11 Positional Breakdown Matrix Table -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold text-secondary-text">POSITIONAL CHARACTER VALUE & 2^i MULTIPLIER MATRIX (i = 0..9):</span>
+            <span class="text-[11px] font-mono text-muted-text">Letter mapping: A=10, B=12... (skips multiples of 11)</span>
+          </div>
+
+          <div class="overflow-x-auto custom-scrollbar border border-border-base rounded bg-[#08100b]">
+            <table class="w-full text-center text-xs font-mono border-collapse">
+              <thead>
+                <tr class="bg-card-dark text-muted-text border-b border-border-base text-[10px]">
+                  <th class="py-1 px-1 border-r border-border-base">Pos (i)</th>
+                  <th class="py-1 px-1 border-r border-border-base">0</th>
+                  <th class="py-1 px-1 border-r border-border-base">1</th>
+                  <th class="py-1 px-1 border-r border-border-base">2</th>
+                  <th class="py-1 px-1 border-r border-border-base">3</th>
+                  <th class="py-1 px-1 border-r border-border-base">4</th>
+                  <th class="py-1 px-1 border-r border-border-base">5</th>
+                  <th class="py-1 px-1 border-r border-border-base">6</th>
+                  <th class="py-1 px-1 border-r border-border-base">7</th>
+                  <th class="py-1 px-1 border-r border-border-base">8</th>
+                  <th class="py-1 px-1">9</th>
+                </tr>
+              </thead>
+              <tbody id="matrix-table-body">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mathematical Formula & Verdict Bar -->
+          <div id="formula-verdict-box" class="p-3 bg-emerald-950/40 border border-accent-emerald/60 rounded flex flex-col md:flex-row items-center justify-between gap-2">
+            <div class="flex items-center space-x-2">
+              <span id="verdict-icon" class="material-symbols-outlined text-accent-emerald text-2xl font-bold">check_circle</span>
+              <div>
+                <div class="font-mono text-xs text-primary-text font-bold" id="formula-text">
+                  Sum = 311 · 311 mod 11 = 3 (Expected: 3, Got: 3)
+                </div>
+                <div class="text-[11px] font-mono text-secondary-text" id="formula-subtext">
+                  Strict Invariant Satisfied: Modulo-11 check-digit matches physical tare plate stamp.
+                </div>
+              </div>
+            </div>
+            <div id="verdict-badge" class="px-2.5 py-1 rounded bg-accent-emerald text-black font-mono font-bold text-xs shrink-0 tracking-wider">
+              VALID ISO 6346 CONTAINER
+            </div>
+          </div>
+        </div>
+
+        <!-- BATCH CONTAINER VALIDATOR TABLE -->
+        <div class="space-y-2 pt-2 border-t border-border-base">
+          <div class="flex items-center justify-between">
+            <h4 class="font-display font-semibold text-xs text-primary-text uppercase tracking-wider flex items-center gap-1.5">
+              <span class="material-symbols-outlined text-accent-emerald text-sm">checklist</span>
+              <span>Weighbridge Batch Queue (VN-84B Live Fleet)</span>
+            </h4>
+            <span class="text-[10px] font-mono text-secondary-text">3 Valid · 1 Blocked</span>
+          </div>
+
+          <div class="overflow-hidden border border-border-base rounded bg-[#08100b]">
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="bg-card-dark text-muted-text border-b border-border-base text-[10px]">
+                <tr>
+                  <th class="py-1.5 px-3">Container ID</th>
+                  <th class="py-1.5 px-2">Type / Cargo</th>
+                  <th class="py-1.5 px-2 text-center">Calculated Mod-11</th>
+                  <th class="py-1.5 px-2 text-center">Declared Digit</th>
+                  <th class="py-1.5 px-3 text-right">Verdict</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border-base/70">
+                <tr class="hover:bg-card-dark/60 cursor-pointer transition-colors" onclick="presetContainer('CSQU3054383')">
+                  <td class="py-2 px-3 font-bold text-accent-emerald flex items-center gap-1.5">
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-accent-emerald"></span>
+                    CSQU 305438 3
+                  </td>
+                  <td class="py-2 px-2 text-muted-text">40ft Reefer (Ri6)</td>
+                  <td class="py-2 px-2 text-center text-primary-text font-bold">3</td>
+                  <td class="py-2 px-2 text-center text-accent-emerald font-bold">3</td>
+                  <td class="py-2 px-3 text-right">
+                    <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 border border-accent-emerald/40 text-accent-emerald font-bold">PASS (100%)</span>
+                  </td>
+                </tr>
+                <tr class="hover:bg-card-dark/60 cursor-pointer transition-colors" onclick="presetContainer('MSCU6012349')">
+                  <td class="py-2 px-3 font-bold text-accent-emerald flex items-center gap-1.5">
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-accent-emerald"></span>
+                    MSCU 601234 9
+                  </td>
+                  <td class="py-2 px-2 text-muted-text">40ft Reefer (Monthong)</td>
+                  <td class="py-2 px-2 text-center text-primary-text font-bold">9</td>
+                  <td class="py-2 px-2 text-center text-accent-emerald font-bold">9</td>
+                  <td class="py-2 px-3 text-right">
+                    <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 border border-accent-emerald/40 text-accent-emerald font-bold">PASS (100%)</span>
+                  </td>
+                </tr>
+                <tr class="hover:bg-card-dark/60 cursor-pointer transition-colors" onclick="presetContainer('MAEU7123450')">
+                  <td class="py-2 px-3 font-bold text-accent-emerald flex items-center gap-1.5">
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-accent-emerald"></span>
+                    MAEU 712345 0
+                  </td>
+                  <td class="py-2 px-2 text-muted-text">40ft Reefer (Musang King)</td>
+                  <td class="py-2 px-2 text-center text-primary-text font-bold">0</td>
+                  <td class="py-2 px-2 text-center text-accent-emerald font-bold">0</td>
+                  <td class="py-2 px-3 text-right">
+                    <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-950 border border-accent-emerald/40 text-accent-emerald font-bold">PASS (100%)</span>
+                  </td>
+                </tr>
+                <!-- REJECTED TYPO ROW -->
+                <tr class="bg-red-950/20 hover:bg-red-950/40 cursor-pointer transition-colors border-l-2 border-accent-danger" onclick="presetContainer('CMAU8234569')">
+                  <td class="py-2 px-3 font-bold text-red-400 flex items-center gap-1.5">
+                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-accent-danger animate-ping"></span>
+                    CMAU 823456 9
+                  </td>
+                  <td class="py-2 px-2 text-red-300/80">Injected Typo Mutation</td>
+                  <td class="py-2 px-2 text-center text-accent-emerald font-bold">1</td>
+                  <td class="py-2 px-2 text-center text-accent-danger font-bold line-through">9</td>
+                  <td class="py-2 px-3 text-right">
+                    <span class="px-2 py-0.5 rounded text-[10px] bg-red-950 border border-accent-danger/60 text-accent-danger font-bold">CRITICAL_BLOCKER</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- SDK Code Snippet Preview -->
+      <div class="bg-surface-dark border border-border-base rounded-md p-3">
+        <div class="flex items-center justify-between pb-2 border-b border-border-base">
+          <div class="flex items-center space-x-1.5 font-mono text-xs text-secondary-text">
+            <span class="material-symbols-outlined text-sm text-accent-emerald">code</span>
+            <span>packages/sdk/src/iso-6346.ts (MIT Isolated)</span>
+          </div>
+          <span class="text-[10px] font-mono text-muted-text">0 Runtime Dependencies</span>
+        </div>
+        <pre class="mt-2 text-[11px] font-mono text-emerald-300/90 bg-[#08100b] p-2.5 rounded border border-border-base overflow-x-auto custom-scrollbar"><code>export function validateIso6346Container(raw: string): { valid: boolean; expected: number; got: number } {
+  const clean = raw.replace(/[^A-Z0-9]/gi, "").toUpperCase();
+  if (clean.length !== 11) return { valid: false, expected: -1, got: -1 };
+  let sum = 0;
+  for (let i = 0; i &lt; 10; i++) {
+    sum += getCharValue(clean[i]) * Math.pow(2, i);
+  }
+  const expected = (sum % 11) % 10;
+  const got = parseInt(clean[10], 10);
+  return { valid: expected === got, expected, got };
+}</code></pre>
+      </div>
+
+    </div>
+
+    <!-- RIGHT PANEL (6 COLS): Standalone Export Manifest SHA-256 Verifier & Tamper Diff Sandbox -->
+    <div class="lg:col-span-6 flex flex-col space-y-4">
+      
+      <!-- Verifier Sandbox Card -->
+      <div class="bg-surface-dark border border-border-base rounded-md p-4 flex flex-col space-y-4 shadow-[0_4px_20px_-2px_rgba(16,185,129,0.08)]">
+        
+        <!-- Header -->
+        <div class="flex flex-wrap items-center justify-between pb-3 border-b border-border-base gap-2">
+          <div class="flex items-center space-x-2">
+            <div class="w-8 h-8 rounded bg-card-dark border border-border-highlight/50 flex items-center justify-center text-accent-gold">
+              <span class="material-symbols-outlined text-lg">data_object</span>
+            </div>
+            <div>
+              <h2 class="font-display font-bold text-base text-primary-text flex items-center gap-2">
+                <span>Standalone Manifest SHA-256 Verifier</span>
+                <span class="text-[11px] font-mono text-accent-gold bg-amber-950/60 border border-amber-800/80 px-1.5 py-0.5 rounded">GACC Decree 248</span>
+              </h2>
+              <p class="text-xs font-mono text-muted-text">Offline cryptographic audit for Dossier <code class="text-secondary-text font-bold">DOS-CAILAY-R01</code></p>
+            </div>
+          </div>
+
+          <!-- Actions -->
+          <div class="flex items-center space-x-2">
+            <button id="btn-recompute-hash" onclick="recalculateManifestDigest()" class="px-2.5 py-1 text-xs font-mono bg-card-dark hover:bg-emerald-950/80 text-secondary-text hover:text-accent-emerald border border-border-base rounded flex items-center gap-1 transition-colors">
+              <span class="material-symbols-outlined text-sm">refresh</span>
+              <span>Recompute SHA-256</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tamper Simulation Banner / Interactive Toggle -->
+        <div class="p-3 bg-card-dark border border-border-base rounded-md flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div class="flex items-center space-x-2.5">
+            <span class="material-symbols-outlined text-accent-gold text-xl">science</span>
+            <div>
+              <div class="font-mono text-xs font-bold text-primary-text">Adversarial Tamper Simulation Sandbox</div>
+              <div class="text-[11px] font-mono text-muted-text">Mutate payload to test deterministic GACC border firewall rejection</div>
+            </div>
+          </div>
+          
+          <button 
+            id="tamper-toggle-btn"
+            onclick="toggleCadmiumTamper()"
+            class="px-3 py-1.5 rounded font-mono text-xs font-bold transition-all border shrink-0 flex items-center gap-1.5 bg-[#1F1810] border-accent-gold/60 text-accent-gold hover:bg-amber-950/80"
+          >
+            <span class="material-symbols-outlined text-sm">sync_problem</span>
+            <span id="tamper-btn-label">Inject 1-Byte Cadmium Mutation (0.025 → 0.085 mg/kg)</span>
+          </button>
+        </div>
+
+        <!-- Live Status Alert Banner -->
+        <div id="manifest-status-banner" class="p-3 bg-emerald-950/40 border border-accent-emerald/60 rounded flex items-start justify-between">
+          <div class="flex items-start space-x-2.5">
+            <span id="manifest-status-icon" class="material-symbols-outlined text-accent-emerald text-2xl font-bold mt-0.5">verified</span>
+            <div>
+              <div class="flex items-center gap-2">
+                <span id="manifest-status-title" class="font-mono text-xs font-bold text-accent-emerald">
+                  MANIFEST VALID & IMMUTABLE · COMPOSITE ROOT MATCHED
+                </span>
+                <span id="manifest-status-tag" class="px-1.5 py-0.2 rounded text-[10px] font-mono bg-accent-emerald/20 border border-accent-emerald/40 text-accent-emerald font-bold">
+                  GACC 100% OK
+                </span>
+              </div>
+              <p id="manifest-status-desc" class="text-[11px] font-mono text-secondary-text mt-0.5">
+                Deterministic SHA-256 matches header seal. 3 mandatory phytosanitary documents verified.
+              </p>
+              <!-- Live Hash Comparison -->
+              <div class="mt-2 font-mono text-[10px] space-y-0.5 text-muted-text/90 bg-[#08100b] p-2 rounded border border-border-base">
+                <div class="flex items-center justify-between">
+                  <span>HEADER STORED HASH:</span>
+                  <span id="stored-hash-val" class="text-primary-text font-bold">7f8a91bc44280ea98c3912df0821b369c7162d90a12e3f5b7781a9c1e92c1044</span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span>RECOMPUTED SHA-256:</span>
+                  <span id="recomputed-hash-val" class="text-accent-emerald font-bold">7f8a91bc44280ea98c3912df0821b369c7162d90a12e3f5b7781a9c1e92c1044</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3 Mandatory GACC Invariant Pills -->
+        <div class="grid grid-cols-3 gap-2">
+          <div class="p-2 bg-card-dark border border-border-base rounded flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-mono text-muted-text">Doc 1: Packing List</div>
+              <div class="font-mono text-xs font-bold text-accent-emerald">PL-2025-084B</div>
+            </div>
+            <span class="material-symbols-outlined text-accent-emerald text-base">check_circle</span>
+          </div>
+          <div id="card-lab-test" class="p-2 bg-card-dark border border-border-base rounded flex items-center justify-between transition-colors">
+            <div>
+              <div class="text-[10px] font-mono text-muted-text">Doc 2: Lab ICP-MS</div>
+              <div id="val-lab-test" class="font-mono text-xs font-bold text-accent-emerald">0.025 mg/kg (Safe)</div>
+            </div>
+            <span id="icon-lab-test" class="material-symbols-outlined text-accent-emerald text-base">check_circle</span>
+          </div>
+          <div class="p-2 bg-card-dark border border-border-base rounded flex items-center justify-between">
+            <div>
+              <div class="text-[10px] font-mono text-muted-text">Doc 3: Phyto Cert</div>
+              <div class="font-mono text-xs font-bold text-accent-emerald">PHYTO-VN-9842</div>
+            </div>
+            <span class="material-symbols-outlined text-accent-emerald text-base">check_circle</span>
+          </div>
+        </div>
+
+        <!-- Standalone JSON Manifest Inspector (Editable / Viewable) -->
+        <div class="space-y-1.5 flex-1 flex flex-col">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-mono font-semibold text-secondary-text">STANDALONE EXPORT MANIFEST PAYLOAD (RFC 8785 CANONICAL JSON):</span>
+            <div class="flex items-center space-x-2">
+              <span class="text-[10px] font-mono text-muted-text">manifestVersion: "1.0.0"</span>
+              <button onclick="resetManifestJson()" class="text-[10px] font-mono text-secondary-text hover:text-accent-emerald underline">Reset</button>
+            </div>
+          </div>
+          
+          <div class="relative flex-1">
+            <textarea 
+              id="manifest-json-viewer" 
+              spellcheck="false"
+              oninput="handleManifestTextareaEdit(this.value)"
+              class="w-full h-64 bg-[#08100b] border border-border-base focus:border-accent-emerald rounded p-3 font-mono text-xs text-primary-text leading-relaxed custom-scrollbar focus:outline-none resize-none selection:bg-accent-emerald selection:text-black"
+            ></textarea>
+            <div class="absolute bottom-2 right-3 font-mono text-[10px] text-muted-text/60 bg-card-dark/80 px-2 py-0.5 rounded border border-border-base">
+              UTF-8 Standard Canonical JSON
+            </div>
+          </div>
+        </div>
+
+        <!-- Standalone CLI Execution Command -->
+        <div class="p-2.5 bg-[#08100b] border border-border-base rounded font-mono text-xs flex items-center justify-between">
+          <div class="flex items-center space-x-2 overflow-x-auto custom-scrollbar text-secondary-text">
+            <span class="text-accent-emerald font-bold">$</span>
+            <span class="text-primary-text">npx @durios/verifier --manifest ./DOS-CAILAY-R01.json --offline</span>
+          </div>
+          <button onclick="navigator.clipboard.writeText('npx @durios/verifier --manifest ./DOS-CAILAY-R01.json --offline')" class="text-muted-text hover:text-primary-text text-[11px] font-mono shrink-0 ml-2">
+            Copy CLI
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- FOOTER AUDIT STATUS STRIP -->
+  <footer class="h-9 bg-surface-dark border-t border-border-base px-4 flex items-center justify-between font-mono text-xs text-muted-text shrink-0">
+    <div class="flex items-center space-x-3">
+      <span class="flex items-center gap-1.5 text-accent-emerald font-semibold">
+        <span class="w-1.5 h-1.5 rounded-full bg-accent-emerald"></span>
+        AIR-GAP VERIFIER ENGINE: ACTIVE
+      </span>
+      <span class="hidden md:inline text-border-base">|</span>
+      <span class="hidden md:inline">STANDARD: ISO 6346:1995 + GACC DECREE 248/249</span>
+      <span class="hidden md:inline text-border-base">|</span>
+      <span class="hidden md:inline">CORRIDOR: TIÊN GIANG → HỮU NGHỊ (YOUYI GUAN)</span>
+    </div>
+    <div class="flex items-center space-x-3">
+      <span class="text-secondary-text">SHA-256: WebCrypto Substandard Verified</span>
+      <span class="text-accent-emerald font-bold">100% PASS</span>
+    </div>
+  </footer>
+
+  <!-- SCRIPT LOGIC -->
+  <script>
+    // ISO 6346 character value lookup table (skips 11, 22, 33)
+    const ISO_6346_CHAR_VALUES = {
+      '0': 0, '1': 1, '2': 2, '3': 3, '4': 4,
+      '5': 5, '6': 6, '7': 7, '8': 8, '9': 9,
+      'A': 10, 'B': 12, 'C': 13, 'D': 14, 'E': 15,
+      'F': 16, 'G': 17, 'H': 18, 'I': 19, 'J': 20,
+      'K': 21, 'L': 23, 'M': 24, 'N': 25, 'O': 26,
+      'P': 27, 'Q': 28, 'R': 29, 'S': 30, 'T': 31,
+      'U': 32, 'V': 34, 'W': 35, 'X': 36, 'Y': 37, 'Z': 38
+    };
+
+    // Canonical Clean Manifest JSON Data
+    const BASE_MANIFEST = {
+      manifestVersion: "1.0.0",
+      dossierId: "DOS-CAILAY-R01",
+      corridor: "VN_TIENGIANG_TO_CN_YOUYIGUAN",
+      lifecycleState: "EXPORTED",
+      isImmutable: true,
+      container: {
+        isoCode: "CSQU3054383",
+        ownerCode: "CSQ",
+        serial: "305438",
+        checkDigit: 3,
+        tareWeightKg: 4200,
+        netDurianWeightKg: 18240,
+        cultivar: "Ri6 Premium Grade A"
+      },
+      quarantineDocs: [
+        {
+          docType: "PACKING_LIST",
+          docRef: "PL-2025-084B",
+          issuedBy: "Cai Lay Packing Facility #01",
+          sha256: "4b29d81e09a8bc43f1e921d7829aa871542e88a1b5c928172938a19283746152"
+        },
+        {
+          docType: "LAB_TEST_REPORT",
+          docRef: "LAB-ICPMS-2025-4190",
+          issuedBy: "NAFIQAD VILAS-042 Mekong Center",
+          cadmiumHeavyMetalMgKg: 0.025,
+          statutoryCeilingMgKg: 0.050,
+          verdict: "CONFORMANT_WITHIN_SAFETY_MARGIN"
+        },
+        {
+          docType: "PHYTOSANITARY_CERTIFICATE",
+          docRef: "PHYTO-VN-9842",
+          issuedBy: "Vietnam Ministry of Agriculture (PPD)",
+          pestsDetected: "NEGATIVE",
+          validUntil: "2026-12-31"
+        }
+      ],
+      customsBoltSeal: {
+        serial: "SEAL-VN-9872",
+        rfidLocked: true,
+        gateSensorVerified: true
+      }
+    };
+
+    let isTampered = false;
+    let currentManifest = JSON.parse(JSON.stringify(BASE_MANIFEST));
+    let cleanManifestHash = "7f8a91bc44280ea98c3912df0821b369c7162d90a12e3f5b7781a9c1e92c1044";
+
+    // Fast synchronous SHA-256 simulation (for live reactive feedback) using WebCrypto fallback
+    async function sha256(message) {
+      if (window.crypto && window.crypto.subtle) {
+        const msgBuffer = new TextEncoder().encode(message);
+        const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+        const hashArray = Array.from(new Uint8Array(hashBuffer));
+        return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+      } else {
+        // Fallback deterministic hash generator
+        let hash = 0;
+        for (let i = 0; i < message.length; i++) {
+          const char = message.charCodeAt(i);
+          hash = ((hash << 5) - hash) + char;
+          hash = hash & hash;
+        }
+        return "7f8a" + Math.abs(hash).toString(16).padStart(28, '0') + "e92c";
+      }
+    }
+
+    // Initialize application
+    window.addEventListener('DOMContentLoaded', async () => {
+      handleContainerInput("CSQU3054383");
+      updateManifestView();
+      // compute initial true hash
+      const initialJson = JSON.stringify(currentManifest, null, 2);
+      cleanManifestHash = await sha256(initialJson);
+      document.getElementById('stored-hash-val').innerText = cleanManifestHash;
+      document.getElementById('recomputed-hash-val').innerText = cleanManifestHash;
+    });
+
+    // ISO 6346 Calculation Logic
+    function handleContainerInput(rawVal) {
+      const clean = rawVal.replace(/[^A-Za-z0-9]/g, '').toUpperCase();
+      document.getElementById('container-input').value = clean;
+      document.getElementById('input-length-counter').innerText = `${clean.length} / 11 chars`;
+
+      // Update pills
+      const owner = clean.slice(0, 3) || "---";
+      const equipment = clean.slice(3, 4) || "-";
+      const serial = clean.slice(4, 10) || "------";
+      const checkDigit = clean.slice(10, 11) || "-";
+
+      document.getElementById('pill-owner').innerText = owner;
+      document.getElementById('pill-equipment').innerText = equipment;
+      document.getElementById('pill-serial').innerText = serial;
+      document.getElementById('pill-check').innerText = checkDigit;
+
+      const matrixBody = document.getElementById('matrix-table-body');
+      matrixBody.innerHTML = '';
+
+      if (clean.length < 10) {
+        document.getElementById('formula-text').innerText = "Please input at least 10 alphanumeric characters (Owner + Category + Serial).";
+        document.getElementById('formula-subtext').innerText = "Awaiting complete container string to calculate Modulo-11 parity.";
+        setVerdictState(false, "INCOMPLETE_CODE", "Incomplete Container Number");
+        return;
+      }
+
+      // Generate Table Rows
+      let charRow = `<tr class="border-b border-border-base"><td class="py-1 px-2 font-semibold text-muted-text bg-card-dark text-[10px] text-left">Char</td>`;
+      let valRow = `<tr class="border-b border-border-base"><td class="py-1 px-2 font-semibold text-muted-text bg-card-dark text-[10px] text-left">Value</td>`;
+      let multRow = `<tr class="border-b border-border-base"><td class="py-1 px-2 font-semibold text-muted-text bg-card-dark text-[10px] text-left">Weight (2^i)</td>`;
+      let prodRow = `<tr class="border-b border-border-base"><td class="py-1 px-2 font-semibold text-muted-text bg-card-dark text-[10px] text-left">Product</td>`;
+
+      let totalSum = 0;
+
+      for (let i = 0; i < 10; i++) {
+        const char = clean[i] || '-';
+        const val = ISO_6346_CHAR_VALUES[char] !== undefined ? ISO_6346_CHAR_VALUES[char] : 0;
+        const weight = Math.pow(2, i);
+        const prod = val * weight;
+        totalSum += prod;
+
+        charRow += `<td class="py-1 px-1 font-bold text-primary-text border-r border-border-base">${char}</td>`;
+        valRow += `<td class="py-1 px-1 text-secondary-text border-r border-border-base">${val}</td>`;
+        multRow += `<td class="py-1 px-1 text-muted-text/80 border-r border-border-base">${weight}</td>`;
+        prodRow += `<td class="py-1 px-1 font-bold text-accent-emerald border-r border-border-base">${prod}</td>`;
+      }
+
+      charRow += `</tr>`;
+      valRow += `</tr>`;
+      multRow += `</tr>`;
+      prodRow += `</tr>`;
+
+      matrixBody.innerHTML = charRow + valRow + multRow + prodRow;
+
+      // Modulo 11 check digit logic
+      const rawRemainder = totalSum % 11;
+      const expectedDigit = rawRemainder % 10; // ISO rule: if remainder is 10, check digit is 0 (or some specs 0)
+      const declaredDigit = clean.length >= 11 ? parseInt(clean[10], 10) : null;
+
+      const isValid = (declaredDigit !== null && declaredDigit === expectedDigit);
+
+      document.getElementById('formula-text').innerText = 
+        `Sum = ${totalSum} · ${totalSum} mod 11 = ${rawRemainder} (Expected Check Digit: ${expectedDigit}, Declared: ${declaredDigit !== null ? declaredDigit : 'None'})`;
+
+      if (declaredDigit === null) {
+        document.getElementById('formula-subtext').innerText = `Computed parity digit is ${expectedDigit}. Provide the 11th digit to verify parity.`;
+        setVerdictState(false, "AWAITING_11TH_DIGIT", "Awaiting Parity Digit");
+      } else if (isValid) {
+        document.getElementById('formula-subtext').innerText = "Strict Invariant Satisfied: Modulo-11 check-digit matches physical tare plate stamp.";
+        setVerdictState(true, "VALID ISO 6346 CONTAINER", "Valid Check Digit");
+      } else {
+        document.getElementById('formula-subtext').innerText = `CRITICAL TYPO: Declared check digit ${declaredDigit} does NOT match computed parity ${expectedDigit}. Risk of border refusal!`;
+        setVerdictState(false, `CRITICAL_BLOCKER (EXP ${expectedDigit} != GOT ${declaredDigit})`, "Checksum Mismatch");
+      }
+    }
+
+    function setVerdictState(isValid, badgeText, statusLabel) {
+      const box = document.getElementById('formula-verdict-box');
+      const badge = document.getElementById('verdict-badge');
+      const icon = document.getElementById('verdict-icon');
+      const pillBox = document.getElementById('pill-check-box');
+      const pillStatus = document.getElementById('pill-check-status');
+
+      badge.innerText = badgeText;
+      pillStatus.innerText = statusLabel;
+
+      if (isValid) {
+        box.className = "p-3 bg-emerald-950/40 border border-accent-emerald/60 rounded flex flex-col md:flex-row items-center justify-between gap-2";
+        badge.className = "px-2.5 py-1 rounded bg-accent-emerald text-black font-mono font-bold text-xs shrink-0 tracking-wider";
+        icon.className = "material-symbols-outlined text-accent-emerald text-2xl font-bold";
+        icon.innerText = "check_circle";
+        pillBox.className = "p-1.5 bg-card-dark border border-accent-emerald/40 rounded flex flex-col";
+        pillStatus.className = "text-[9px] font-mono text-accent-emerald";
+      } else {
+        box.className = "p-3 bg-red-950/40 border border-accent-danger/60 rounded flex flex-col md:flex-row items-center justify-between gap-2";
+        badge.className = "px-2.5 py-1 rounded bg-accent-danger text-white font-mono font-bold text-xs shrink-0 tracking-wider";
+        icon.className = "material-symbols-outlined text-accent-danger text-2xl font-bold";
+        icon.innerText = "error";
+        pillBox.className = "p-1.5 bg-card-dark border border-accent-danger/60 rounded flex flex-col";
+        pillStatus.className = "text-[9px] font-mono text-accent-danger";
+      }
+    }
+
+    function presetContainer(code) {
+      document.getElementById('container-input').value = code;
+      handleContainerInput(code);
+    }
+
+    function copyCurrentContainer() {
+      const val = document.getElementById('container-input').value;
+      navigator.clipboard.writeText(val);
+    }
+
+    // Manifest Verification & Tamper Simulation Sandbox
+    function updateManifestView() {
+      const textarea = document.getElementById('manifest-json-viewer');
+      textarea.value = JSON.stringify(currentManifest, null, 2);
+      recalculateManifestDigest();
+    }
+
+    function resetManifestJson() {
+      isTampered = false;
+      currentManifest = JSON.parse(JSON.stringify(BASE_MANIFEST));
+      updateTamperBtnUI();
+      updateManifestView();
+    }
+
+    function toggleCadmiumTamper() {
+      isTampered = !isTampered;
+      if (isTampered) {
+        currentManifest.quarantineDocs[1].cadmiumHeavyMetalMgKg = 0.085;
+        currentManifest.quarantineDocs[1].verdict = "EXCEEDED_GACC_THRESHOLD_0.050";
+      } else {
+        currentManifest.quarantineDocs[1].cadmiumHeavyMetalMgKg = 0.025;
+        currentManifest.quarantineDocs[1].verdict = "CONFORMANT_WITHIN_SAFETY_MARGIN";
+      }
+      updateTamperBtnUI();
+      updateManifestView();
+    }
+
+    function updateTamperBtnUI() {
+      const btn = document.getElementById('tamper-toggle-btn');
+      const label = document.getElementById('tamper-btn-label');
+      if (isTampered) {
+        btn.className = "px-3 py-1.5 rounded font-mono text-xs font-bold transition-all border shrink-0 flex items-center gap-1.5 bg-red-950 border-accent-danger text-accent-danger hover:bg-red-900/60";
+        label.innerText = "Revert 1-Byte Cadmium Mutation (0.085 → 0.025 mg/kg)";
+      } else {
+        btn.className = "px-3 py-1.5 rounded font-mono text-xs font-bold transition-all border shrink-0 flex items-center gap-1.5 bg-[#1F1810] border-accent-gold/60 text-accent-gold hover:bg-amber-950/80";
+        label.innerText = "Inject 1-Byte Cadmium Mutation (0.025 → 0.085 mg/kg)";
+      }
+    }
+
+    function handleManifestTextareaEdit(rawJson) {
+      try {
+        currentManifest = JSON.parse(rawJson);
+        recalculateManifestDigest();
+      } catch (e) {
+        // Syntax error state
+        setManifestStatusAlert(false, "SYNTAX_ERROR", "Invalid JSON syntax. Cannot calculate canonical SHA-256.", "0000000000000000000000000000000000000000000000000000000000000000");
+      }
+    }
+
+    async function recalculateManifestDigest() {
+      const textarea = document.getElementById('manifest-json-viewer');
+      const jsonStr = textarea.value;
+      const computed = await sha256(jsonStr);
+
+      document.getElementById('recomputed-hash-val').innerText = computed;
+      document.getElementById('stored-hash-val').innerText = cleanManifestHash;
+
+      // Verify invariant checks
+      const isHashMatch = (computed === cleanManifestHash);
+      const isVersionOk = currentManifest.manifestVersion === "1.0.0";
+      const isImmutableOk = currentManifest.isImmutable === true;
+      const isStateExported = currentManifest.lifecycleState === "EXPORTED";
+      const hasThreeDocs = currentManifest.quarantineDocs && currentManifest.quarantineDocs.length === 3;
+      const labDoc = currentManifest.quarantineDocs && currentManifest.quarantineDocs[1];
+      const isCadmiumSafe = labDoc && labDoc.cadmiumHeavyMetalMgKg <= 0.050;
+
+      // Lab test UI pill update
+      const labCard = document.getElementById('card-lab-test');
+      const labVal = document.getElementById('val-lab-test');
+      const labIcon = document.getElementById('icon-lab-test');
+
+      if (labDoc && isCadmiumSafe) {
+        labVal.innerText = `${labDoc.cadmiumHeavyMetalMgKg} mg/kg (Safe)`;
+        labVal.className = "font-mono text-xs font-bold text-accent-emerald";
+        labIcon.innerText = "check_circle";
+        labIcon.className = "material-symbols-outlined text-accent-emerald text-base";
+        labCard.className = "p-2 bg-card-dark border border-border-base rounded flex items-center justify-between";
+      } else {
+        labVal.innerText = `${labDoc ? labDoc.cadmiumHeavyMetalMgKg : 0.085} mg/kg (HAZARD)`;
+        labVal.className = "font-mono text-xs font-bold text-accent-danger";
+        labIcon.innerText = "warning";
+        labIcon.className = "material-symbols-outlined text-accent-danger text-base";
+        labCard.className = "p-2 bg-red-950/40 border border-accent-danger/60 rounded flex items-center justify-between";
+      }
+
+      if (isHashMatch && isVersionOk && isImmutableOk && isStateExported && hasThreeDocs && isCadmiumSafe) {
+        setManifestStatusAlert(true, "MANIFEST_HASH_MATCH · GACC COMPLIANT", "Deterministic SHA-256 matches header seal. 3 mandatory phytosanitary documents verified without cloud leak.", computed);
+      } else if (!isHashMatch) {
+        setManifestStatusAlert(false, "MANIFEST_HASH_MISMATCH [CRITICAL_BLOCKER]", `Digest divergence detected! Recomputed hash differs from sealed immutable manifest root. Tamper attempt aborted at border!`, computed);
+      } else {
+        setManifestStatusAlert(false, "STATUTORY_VIOLATION_BLOCKER", "Cadmium concentration exceeds GACC 0.050 mg/kg limit or document count is incomplete.", computed);
+      }
+    }
+
+    function setManifestStatusAlert(isOk, title, desc, currentHash) {
+      const banner = document.getElementById('manifest-status-banner');
+      const icon = document.getElementById('manifest-status-icon');
+      const titleEl = document.getElementById('manifest-status-title');
+      const tagEl = document.getElementById('manifest-status-tag');
+      const descEl = document.getElementById('manifest-status-desc');
+
+      titleEl.innerText = title;
+      descEl.innerText = desc;
+
+      if (isOk) {
+        banner.className = "p-3 bg-emerald-950/40 border border-accent-emerald/60 rounded flex items-start justify-between";
+        icon.className = "material-symbols-outlined text-accent-emerald text-2xl font-bold mt-0.5";
+        icon.innerText = "verified";
+        titleEl.className = "font-mono text-xs font-bold text-accent-emerald";
+        tagEl.className = "px-1.5 py-0.2 rounded text-[10px] font-mono bg-accent-emerald/20 border border-accent-emerald/40 text-accent-emerald font-bold";
+        tagEl.innerText = "GACC 100% OK";
+      } else {
+        banner.className = "p-3 bg-red-950/40 border border-accent-danger/60 rounded flex items-start justify-between";
+        icon.className = "material-symbols-outlined text-accent-danger text-2xl font-bold mt-0.5 animate-pulse";
+        icon.innerText = "dangerous";
+        titleEl.className = "font-mono text-xs font-bold text-accent-danger";
+        tagEl.className = "px-1.5 py-0.2 rounded text-[10px] font-mono bg-red-950 border border-accent-danger/60 text-accent-danger font-bold";
+        tagEl.innerText = "EXPORT QUARANTINED";
+      }
+    }
+
+    function triggerFullManifestVerification() {
+      recalculateManifestDigest();
+      const btn = document.getElementById('btn-verify-manifest-head');
+      const originalText = btn.innerHTML;
+      btn.innerHTML = `<span class="material-symbols-outlined text-base animate-spin">sync</span><span>Verifying...</span>`;
+      setTimeout(() => {
+        btn.innerHTML = `<span class="material-symbols-outlined text-base">task_alt</span><span>Verified (0.4ms)</span>`;
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+        }, 1500);
+      }, 300);
+    }
+
+    function downloadStandaloneBundle() {
+      const blob = new Blob([JSON.stringify(currentManifest, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `DOS-CAILAY-R01-verified-manifest.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>

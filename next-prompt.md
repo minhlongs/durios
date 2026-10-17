@@ -1,5 +1,5 @@
 ---
-page: index
+page: cloud-ocr-vault
 ---
 
 **DESIGN SYSTEM (REQUIRED):**
@@ -25,4 +25,5 @@ page: index
 ```
 
 **Page request:**
-All 15 screens are 100% generated from Google Stitch AI and served under `/stitch/*`. Baton cycle is complete and standing by for next user directive.
+Build Screen 24 (`cloud-ocr-vault.html`): **Cloud Vision OCR Draft Extractor & E2EE AES-256-GCM Backup Vault Console** for DuriOS (DESKTOP).
+- **[Context]:** Next iteration from the `SITE.md` Creative Freedom backlog, visualizing `CloudOcrExtractorAdapter` (`src/saas/cloud-ocr-extractor-adapter.ts`) and `CloudVaultBackupConnector` (`src/saas/cloud-vault-backup-connector.ts`) with scrypt key derivation and mandatory HITL verification.

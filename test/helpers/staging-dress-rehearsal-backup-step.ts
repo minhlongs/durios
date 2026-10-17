@@ -4,15 +4,12 @@ import { join } from "node:path";
 import type { OtpProviderAdapter } from "../../src/auth/otp-provider.js";
 import { runPilotOpsCliArgs } from "../../src/auth/pilot-ops-cli.js";
 import {
-  createSiteBackup,
-  restoreSiteBackup,
-  verifySiteBackup,
+  createSiteBackup, restoreSiteBackup, verifySiteBackup,
 } from "../../src/auth/site-backup-manager.js";
 import { DURIOS_ORGANIC_DISCLAIMER } from "../../src/domain/pilot-types.js";
 import { createWorkspaceApp } from "../../src/server/server.js";
 import type {
-  StagingDossierView,
-  WorkspaceAppInstance,
+  StagingDossierView, WorkspaceAppInstance,
 } from "./staging-dress-rehearsal-auth-step.js";
 
 interface StagingBackupManifestResult {
@@ -45,17 +42,8 @@ export async function runStagingBackupTamperAndRestoreDrill(
   params: StagingBackupDrillParams
 ): Promise<void> {
   const {
-    siteA,
-    siteADb,
-    siteAUploads,
-    backupDir,
-    tamperedBackupDir,
-    restoredDb,
-    restoredUploads,
-    localGatewayOtp,
-    liveDossierId,
-    mgrCookie,
-    buyerRawToken,
+    siteA, siteADb, siteAUploads, backupDir, tamperedBackupDir,
+    restoredDb, restoredUploads, localGatewayOtp, liveDossierId, mgrCookie, buyerRawToken,
   } = params;
 
   const backupManifest = runPilotOpsCliArgs(
@@ -68,8 +56,7 @@ export async function runStagingBackupTamperAndRestoreDrill(
   expect(backupManifest.blobs.length).toBe(7);
 
   const verifyGood = runPilotOpsCliArgs(
-    ["verify-backup", "--backup-dir", backupDir],
-    siteA.authService
+    ["verify-backup", "--backup-dir", backupDir], siteA.authService
   ) as unknown as StagingBackupVerificationResult;
   expect(verifyGood.valid).toBe(true);
   expect(verifyGood.errors).toEqual([]);
@@ -88,23 +75,13 @@ export async function runStagingBackupTamperAndRestoreDrill(
   siteA.sqliteClient.close();
 
   const restoreResult = runPilotOpsCliArgs(
-    [
-      "restore-site",
-      "--backup-dir",
-      backupDir,
-      "--target-db",
-      restoredDb,
-      "--target-data-dir",
-      restoredUploads,
-    ],
+    ["restore-site", "--backup-dir", backupDir, "--target-db", restoredDb, "--target-data-dir", restoredUploads],
     siteA.authService
   ) as unknown as StagingBackupVerificationResult;
   expect(restoreResult.valid).toBe(true);
 
   const restoredApp = createWorkspaceApp({
-    dbPath: restoredDb,
-    dataDir: restoredUploads,
-    otpProvider: localGatewayOtp,
+    dbPath: restoredDb, dataDir: restoredUploads, otpProvider: localGatewayOtp,
   });
 
   try {
@@ -155,13 +132,11 @@ export async function runStagingBackupTamperAndRestoreDrill(
 
     const mutateRestoredRes = await restoredApp.handler(
       new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/validate`, {
-        method: "POST",
-        headers: { Cookie: mgrCookie },
+        method: "POST", headers: { Cookie: mgrCookie },
       })
     );
     expect(mutateRestoredRes.status).toBe(409);
-    const mutateErr = (await mutateRestoredRes.json()) as { errorCode: string };
-    expect(mutateErr.errorCode).toBe("DOSSIER_IMMUTABLE");
+    expect(((await mutateRestoredRes.json()) as { errorCode: string }).errorCode).toBe("DOSSIER_IMMUTABLE");
   } finally {
     restoredApp.sqliteClient.close();
   }

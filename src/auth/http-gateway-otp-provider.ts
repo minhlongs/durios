@@ -38,15 +38,12 @@ export class HttpGatewayOtpProvider implements OtpProviderAdapter {
     const providerName = config.providerName.trim();
     const apiUrl = config.apiUrl.trim();
     const apiKey = config.apiKey.trim();
-
     if (!providerName || !apiUrl || !apiKey) {
       throw new Error("HttpGatewayOtpProvider requires non-empty providerName, apiUrl, and apiKey.");
     }
     const parsedUrl = new URL(apiUrl);
     const isLocalhost =
-      parsedUrl.hostname === "127.0.0.1" ||
-      parsedUrl.hostname === "localhost" ||
-      parsedUrl.hostname === "::1";
+      parsedUrl.hostname === "127.0.0.1" || parsedUrl.hostname === "localhost" || parsedUrl.hostname === "::1";
     if (parsedUrl.protocol !== "https:" && !(isLocalhost && parsedUrl.protocol === "http:")) {
       throw new Error("OTP gateway URL must use https:// (or http:// on loopback for local staging).");
     }
@@ -75,20 +72,13 @@ export class HttpGatewayOtpProvider implements OtpProviderAdapter {
     }
 
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      "X-Api-Key": this.apiKey,
+      "Content-Type": "application/json", Accept: "application/json", "X-Api-Key": this.apiKey,
+      ...(this.secretKey ? { "X-Secret-Key": this.secretKey } : {}),
     };
-    if (this.secretKey) {
-      headers["X-Secret-Key"] = this.secretKey;
-    }
 
     const payload = {
-      challengeId: request.challengeId,
-      phoneNumber: request.phoneNumber,
-      channel: request.channel,
-      otpCode: request.otpCode,
-      expiresAt: request.expiresAt,
+      challengeId: request.challengeId, phoneNumber: request.phoneNumber,
+      channel: request.channel, otpCode: request.otpCode, expiresAt: request.expiresAt,
       zaloOaId: request.channel === "ZALO" ? this.zaloOaId : undefined,
       zaloTemplateId: request.channel === "ZALO" ? this.zaloTemplateId : undefined,
       smsBrandname: request.channel === "SMS" ? this.smsBrandname : undefined,
@@ -97,51 +87,30 @@ export class HttpGatewayOtpProvider implements OtpProviderAdapter {
     let response: Response;
     try {
       response = await this.fetchImpl(this.apiUrl, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(payload),
-        signal: AbortSignal.timeout(this.timeoutMs),
+        method: "POST", headers, body: JSON.stringify(payload), signal: AbortSignal.timeout(this.timeoutMs),
       });
     } catch {
-      throw new OtpProviderDispatchError(
-        `Network or timeout error while connecting to OTP gateway '${this.providerName}'.`
-      );
+      throw new OtpProviderDispatchError(`Network or timeout error while connecting to OTP gateway '${this.providerName}'.`);
     }
-
     if (!response.ok) {
-      throw new OtpProviderDispatchError(
-        `OTP gateway '${this.providerName}' rejected dispatch with HTTP ${response.status}.`
-      );
+      throw new OtpProviderDispatchError(`OTP gateway '${this.providerName}' rejected dispatch with HTTP ${response.status}.`);
     }
 
     let body: Record<string, unknown> = {};
     try {
       body = (await response.json()) as Record<string, unknown>;
     } catch {
-      throw new OtpProviderDispatchError(
-        `OTP gateway '${this.providerName}' returned malformed JSON.`
-      );
+      throw new OtpProviderDispatchError(`OTP gateway '${this.providerName}' returned malformed JSON.`);
     }
 
     const codeResult = body["CodeResult"] !== undefined ? String(body["CodeResult"]) : undefined;
-    const isFailure =
-      body["delivered"] === false ||
-      body["success"] === false ||
-      (codeResult !== undefined && codeResult !== "100" && codeResult !== "0");
-    if (isFailure) {
-      throw new OtpProviderDispatchError(
-        `OTP gateway '${this.providerName}' reported delivery failure.`
-      );
+    if (body["delivered"] === false || body["success"] === false || (codeResult !== undefined && codeResult !== "100" && codeResult !== "0")) {
+      throw new OtpProviderDispatchError(`OTP gateway '${this.providerName}' reported delivery failure.`);
     }
 
     const providerReference = String(
-      body["providerReference"] ??
-        body["SMSID"] ??
-        body["messageId"] ??
-        body["msgId"] ??
-        `${this.providerName}-${request.challengeId}`
+      body["providerReference"] ?? body["SMSID"] ?? body["messageId"] ?? body["msgId"] ?? `${this.providerName}-${request.challengeId}`
     );
-
     return { delivered: true, providerReference };
   }
 }
@@ -156,20 +125,18 @@ export function createOtpProviderFromEnv(
   }
   const apiUrl = env["DURIOS_OTP_API_URL"]?.trim();
   const apiKey = env["DURIOS_OTP_API_KEY"]?.trim();
-  if (!apiUrl || !apiKey) {
-    return new UnconfiguredOtpProvider();
-  }
+  if (!apiUrl || !apiKey) return new UnconfiguredOtpProvider();
   const timeoutRaw = env["DURIOS_OTP_TIMEOUT_MS"] ? Number(env["DURIOS_OTP_TIMEOUT_MS"]) : 8000;
   const timeoutMs = Number.isFinite(timeoutRaw) && timeoutRaw > 0 ? timeoutRaw : 8000;
 
-    try {
-      return new HttpGatewayOtpProvider({
-        providerName: providerType, apiUrl, apiKey,
-        secretKey: env["DURIOS_OTP_SECRET_KEY"], zaloOaId: env["DURIOS_OTP_ZALO_OA_ID"],
-        zaloTemplateId: env["DURIOS_OTP_ZALO_TEMPLATE_ID"], smsBrandname: env["DURIOS_OTP_SMS_BRANDNAME"],
-        timeoutMs, fetchImpl,
-      });
-    } catch {
-      return new UnconfiguredOtpProvider();
-    }
+  try {
+    return new HttpGatewayOtpProvider({
+      providerName: providerType, apiUrl, apiKey,
+      secretKey: env["DURIOS_OTP_SECRET_KEY"], zaloOaId: env["DURIOS_OTP_ZALO_OA_ID"],
+      zaloTemplateId: env["DURIOS_OTP_ZALO_TEMPLATE_ID"], smsBrandname: env["DURIOS_OTP_SMS_BRANDNAME"],
+      timeoutMs, fetchImpl,
+    });
+  } catch {
+    return new UnconfiguredOtpProvider();
+  }
 }
