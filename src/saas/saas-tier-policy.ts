@@ -1,19 +1,12 @@
 import { generateKeyPairSync, sign, verify } from "node:crypto";
 
-export type DuriosProductEdition =
-  | "COMMUNITY_OPEN_CORE"
-  | "PACKHOUSE_PRO_SAAS"
-  | "EXPORTER_ENTERPRISE";
+export type DuriosProductEdition = "COMMUNITY_OPEN_CORE" | "PACKHOUSE_PRO_SAAS" | "EXPORTER_ENTERPRISE";
 
 export interface SaasFeatureEntitlements {
-  readonly localDeterministicCompliance: true;
-  readonly localSqliteAndManifestVerifier: true;
-  readonly localDataAccessGuaranteed: true;
-  readonly cloudVisionOcr: boolean;
-  readonly managedZaloZnsRelay: boolean;
-  readonly cloudE2eeBackupVault: boolean;
-  readonly gaccLiveRegistryWatch: boolean;
-  readonly crossBorderBuyerPortal: boolean;
+  readonly localDeterministicCompliance: true; readonly localSqliteAndManifestVerifier: true;
+  readonly localDataAccessGuaranteed: true; readonly cloudVisionOcr: boolean;
+  readonly managedZaloZnsRelay: boolean; readonly cloudE2eeBackupVault: boolean;
+  readonly gaccLiveRegistryWatch: boolean; readonly crossBorderBuyerPortal: boolean;
   readonly multiSiteEnterpriseSync: boolean;
 }
 
@@ -80,9 +73,7 @@ export function createSignedSaasLicenseKey(
   if (!signingPrivateKeyPem || !signingPrivateKeyPem.includes("PRIVATE KEY")) {
     throw new Error("Ed25519 PKCS#8 signingPrivateKeyPem is required to sign a SaaS license key.");
   }
-  if (!payload.tenantId.trim() || payload.tenantId.includes("|")) {
-    throw new Error("Invalid license tenantId.");
-  }
+  if (!payload.tenantId.trim() || payload.tenantId.includes("|")) throw new Error("Invalid license tenantId.");
   const body = `${payload.edition}|${payload.tenantId}|${payload.expiresAt}`;
   const encoded = Buffer.from(body, "utf-8").toString("base64url");
   const sig = sign(null, Buffer.from(encoded, "utf-8"), signingPrivateKeyPem).toString("base64url");
@@ -119,8 +110,7 @@ export function resolveSaasSubscriptionStatus(
     return downgradeToCommunity("CORRUPTED_LICENSE_PAYLOAD_GRACEFUL_DOWNGRADE", upgradePortalUrl);
   }
   const [editionRaw, tenantId, expiresAt] = decodedParts;
-  const parsedExpiry = expiresAt ? Date.parse(expiresAt) : Number.NaN;
-  const parsedNow = Date.parse(nowIso);
+  const [parsedExpiry, parsedNow] = [expiresAt ? Date.parse(expiresAt) : Number.NaN, Date.parse(nowIso)];
 
   if (
     (editionRaw !== "PACKHOUSE_PRO_SAAS" && editionRaw !== "EXPORTER_ENTERPRISE") ||

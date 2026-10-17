@@ -3,10 +3,7 @@ import type { AuthenticatedActor } from "../domain/types.js";
 import { assertCanCreateContainerDossier, assertValidActor } from "../auth/rbac-policy.js";
 import { redactDossierForActor, redactDossierListForActor } from "../sharing/dossier-redactor.js";
 import {
-  errorResponse,
-  jsonResponse,
-  mapDomainErrorToResponse,
-  type CreateDossierRequestBody,
+  errorResponse, jsonResponse, mapDomainErrorToResponse, type CreateDossierRequestBody,
 } from "./server-types.js";
 
 export async function handleListDossiers(
@@ -15,8 +12,7 @@ export async function handleListDossiers(
 ): Promise<Response> {
   try {
     assertValidActor(actor);
-    const dossiers = workspace.listDossiers(actor);
-    const safeDossiers = redactDossierListForActor(dossiers, actor, workspace.shareManager);
+    const safeDossiers = redactDossierListForActor(workspace.listDossiers(actor), actor, workspace.shareManager);
     return jsonResponse({ success: true, count: safeDossiers.length, data: safeDossiers });
   } catch (err) {
     return mapDomainErrorToResponse(err, "Failed to list dossiers");
@@ -73,11 +69,8 @@ export function handleGetDossier(
   try {
     assertValidActor(actor);
     const dossier = workspace.getDossier(dossierId, actor);
-    if (!dossier) {
-      return errorResponse(`Dossier '${dossierId}' not found`, 404);
-    }
-    const safeDossier = redactDossierForActor(dossier, actor, workspace.shareManager);
-    return jsonResponse({ success: true, data: safeDossier });
+    if (!dossier) return errorResponse(`Dossier '${dossierId}' not found`, 404);
+    return jsonResponse({ success: true, data: redactDossierForActor(dossier, actor, workspace.shareManager) });
   } catch (err) {
     return mapDomainErrorToResponse(err, "Failed to retrieve dossier");
   }
@@ -89,11 +82,8 @@ export function handleRunValidation(
   dossierId: string
 ): Response {
   try {
-    if (!workspace.getRawDossier(dossierId)) {
-      return errorResponse(`Dossier '${dossierId}' not found`, 404);
-    }
-    const result = workspace.runValidation(dossierId, actor);
-    return jsonResponse({ success: true, data: result });
+    if (!workspace.getRawDossier(dossierId)) return errorResponse(`Dossier '${dossierId}' not found`, 404);
+    return jsonResponse({ success: true, data: workspace.runValidation(dossierId, actor) });
   } catch (err) {
     return mapDomainErrorToResponse(err, "Validation run failed");
   }
@@ -105,11 +95,8 @@ export function handleApproveForExport(
   dossierId: string
 ): Response {
   try {
-    if (!workspace.getRawDossier(dossierId)) {
-      return errorResponse(`Dossier '${dossierId}' not found`, 404);
-    }
-    const dossier = workspace.approveForExport(dossierId, actor);
-    return jsonResponse({ success: true, data: dossier });
+    if (!workspace.getRawDossier(dossierId)) return errorResponse(`Dossier '${dossierId}' not found`, 404);
+    return jsonResponse({ success: true, data: workspace.approveForExport(dossierId, actor) });
   } catch (err) {
     return mapDomainErrorToResponse(err, "Export approval rejected");
   }
@@ -121,11 +108,8 @@ export function handleExportDossier(
   dossierId: string
 ): Response {
   try {
-    if (!workspace.getRawDossier(dossierId)) {
-      return errorResponse(`Dossier '${dossierId}' not found`, 404);
-    }
-    const manifest = workspace.exportDossier(dossierId, actor);
-    return jsonResponse({ success: true, data: manifest });
+    if (!workspace.getRawDossier(dossierId)) return errorResponse(`Dossier '${dossierId}' not found`, 404);
+    return jsonResponse({ success: true, data: workspace.exportDossier(dossierId, actor) });
   } catch (err) {
     return mapDomainErrorToResponse(err, "Export compilation failed");
   }
@@ -139,9 +123,7 @@ export function handleGetExportManifest(
   try {
     assertValidActor(actor);
     const manifest = workspace.getExportManifest(dossierId, actor);
-    if (!manifest) {
-      return errorResponse(`No sealed export manifest found for dossier '${dossierId}'`, 404);
-    }
+    if (!manifest) return errorResponse(`No sealed export manifest found for dossier '${dossierId}'`, 404);
     return jsonResponse({ success: true, data: manifest });
   } catch (err) {
     return mapDomainErrorToResponse(err, "Failed to retrieve export manifest");

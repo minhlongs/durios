@@ -3,20 +3,11 @@ import { routeHttpRequest } from "../../src/server/http-router.js";
 import type { ContainerDossierWorkspace } from "../../src/workspace/container-dossier-workspace.js";
 import { seedTestPilotActor } from "./auth-test-helper.js";
 
-export interface ActorHeaderPair {
-  apiHeaders: Record<string, string>;
-  v1Headers: Record<string, string>;
-}
-
+export interface ActorHeaderPair { apiHeaders: Record<string, string>; v1Headers: Record<string, string> }
 export interface EquivalenceActors {
-  ownerAdmin: ActorHeaderPair;
-  ownerClerk: ActorHeaderPair;
-  ownerViewer: ActorHeaderPair;
-  sharedCustomsClerk: ActorHeaderPair;
-  sharedCustomsViewer: ActorHeaderPair;
-  sharedLogisticsViewer: ActorHeaderPair;
-  intruderAdmin: ActorHeaderPair;
-  unauthenticated: ActorHeaderPair;
+  ownerAdmin: ActorHeaderPair; ownerClerk: ActorHeaderPair; ownerViewer: ActorHeaderPair;
+  sharedCustomsClerk: ActorHeaderPair; sharedCustomsViewer: ActorHeaderPair;
+  sharedLogisticsViewer: ActorHeaderPair; intruderAdmin: ActorHeaderPair; unauthenticated: ActorHeaderPair;
 }
 
 export type CompareCallFn = <T = Record<string, unknown>>(
@@ -46,8 +37,7 @@ export function createEquivalenceHarness(
     persona: "PACKHOUSE_CLERK" | "PACKHOUSE_MANAGER" | "BUYER_VIEWER" | "SYSTEM_AUDITOR"
   ): ActorHeaderPair => {
     const opts = { id, username, actorName: `Actor ${id}`, tenantId, tenantType, role, persona };
-    const a1 = seedTestPilotActor(wsApi.authService, opts);
-    const a2 = seedTestPilotActor(wsV1.authService, opts);
+    const [a1, a2] = [seedTestPilotActor(wsApi.authService, opts), seedTestPilotActor(wsV1.authService, opts)];
     return {
       apiHeaders: { Authorization: `Bearer ${a1.sessionToken}`, "content-type": "application/json" },
       v1Headers: { Authorization: `Bearer ${a2.sessionToken}`, "content-type": "application/json" },

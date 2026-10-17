@@ -4,23 +4,12 @@ import {
 import type { CompareCallFn, EquivalenceActors } from "./api-v1-equivalence-5a5-normalizer.js";
 
 export interface EquivalencePhase1State {
-  dosApiId: string;
-  dosV1Id: string;
-  docsApi: DossierDocumentPayload[];
-  docsV1: DossierDocumentPayload[];
-  docPayloads: Array<Record<string, unknown>>;
-  grantCustomsApiId: string;
-  grantCustomsV1Id: string;
+  dosApiId: string; dosV1Id: string; docsApi: DossierDocumentPayload[]; docsV1: DossierDocumentPayload[];
+  docPayloads: Array<Record<string, unknown>>; grantCustomsApiId: string; grantCustomsV1Id: string;
 }
 
-export async function runEquivalenceGroups1And2And6(
-  actors: EquivalenceActors,
-  compareCall: CompareCallFn
-): Promise<EquivalencePhase1State> {
-  const {
-    ownerAdmin, ownerClerk, ownerViewer, sharedCustomsClerk,
-    sharedCustomsViewer, sharedLogisticsViewer, intruderAdmin, unauthenticated,
-  } = actors;
+export async function runEquivalenceGroups1And2And6(actors: EquivalenceActors, compareCall: CompareCallFn): Promise<EquivalencePhase1State> {
+  const { ownerAdmin, ownerClerk, ownerViewer, sharedCustomsClerk, sharedCustomsViewer, sharedLogisticsViewer, intruderAdmin, unauthenticated } = actors;
 
   await compareCall("/dossiers", "/dossiers", "GET", unauthenticated, undefined, 401);
   await compareCall(
@@ -38,8 +27,7 @@ export async function runEquivalenceGroups1And2And6(
     },
     201
   );
-  const dosApiId = createdPair.bodyApi.data.id;
-  const dosV1Id = createdPair.bodyV1.data.id;
+  const [dosApiId, dosV1Id] = [createdPair.bodyApi.data.id, createdPair.bodyV1.data.id];
 
   await compareCall("/dossiers", "/dossiers", "GET", ownerAdmin, undefined, 200);
   await compareCall(`/dossiers/${dosApiId}`, `/dossiers/${dosV1Id}`, "GET", ownerAdmin, undefined, 200);
@@ -83,8 +71,7 @@ export async function runEquivalenceGroups1And2And6(
   const detailAfterUpload = await compareCall<DossierDetailResponse>(
     `/dossiers/${dosApiId}`, `/dossiers/${dosV1Id}`, "GET", ownerAdmin, undefined, 200
   );
-  const docsApi = detailAfterUpload.bodyApi.data.documents;
-  const docsV1 = detailAfterUpload.bodyV1.data.documents;
+  const [docsApi, docsV1] = [detailAfterUpload.bodyApi.data.documents, detailAfterUpload.bodyV1.data.documents];
 
   const firstVerifyApi = `/dossiers/${dosApiId}/documents/${docsApi[0]!.id}/fields/${docsApi[0]!.extractedFields[0]!.id}/verify`;
   const firstVerifyV1 = `/dossiers/${dosV1Id}/documents/${docsV1[0]!.id}/fields/${docsV1[0]!.extractedFields[0]!.id}/verify`;
@@ -112,8 +99,7 @@ export async function runEquivalenceGroups1And2And6(
     `/dossiers/${dosApiId}/shares`, `/dossiers/${dosV1Id}/shares`, "POST", ownerAdmin,
     { granteeTenantId: "TENANT-EQ-CUSTOMS", purpose: "CUSTOMS_INSPECTION", scope: "READ_AND_VERIFY", expiresAt: fixedExpiresAt }, 201
   );
-  const grantCustomsApiId = grantCustomsPair.bodyApi.grant.id;
-  const grantCustomsV1Id = grantCustomsPair.bodyV1.grant.id;
+  const [grantCustomsApiId, grantCustomsV1Id] = [grantCustomsPair.bodyApi.grant.id, grantCustomsPair.bodyV1.grant.id];
 
   await Bun.sleep(5);
 
@@ -140,6 +126,5 @@ export async function runEquivalenceGroups1And2And6(
       "POST", sharedCustomsClerk, { confirmedValue: fieldsDoc2Api[fIdx]!.rawValue }, 200
     );
   }
-
   return { dosApiId, dosV1Id, docsApi, docsV1, docPayloads, grantCustomsApiId, grantCustomsV1Id };
 }

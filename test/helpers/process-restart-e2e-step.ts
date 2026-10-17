@@ -23,10 +23,7 @@ export async function runEndToEndProcessRestartScenario(
     const seedAuth = new SqliteAuthService(seedClient);
     const clerkActor = seedTestPilotActor(seedAuth, { role: "CLERK", tenantId: "TENANT-LOCAL-001" });
     seedClient.close();
-    const authHeaders = {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${clerkActor.sessionToken}`,
-    };
+    const authHeaders = { "Content-Type": "application/json", Authorization: `Bearer ${clerkActor.sessionToken}` };
 
     runningProc = await startServerProcess();
     const pid1 = runningProc.pid;
@@ -77,13 +74,11 @@ export async function runEndToEndProcessRestartScenario(
 
     const auditRes1 = await fetch(`${baseUrl}/api/dossiers/${dossierId}/audit`, { headers: authHeaders });
     const auditData1 = (await auditRes1.json()) as {
-      success: boolean;
-      data: { count: number; isChainValid: boolean; events: Array<{ eventType: string }> };
+      success: boolean; data: { count: number; isChainValid: boolean; events: Array<{ eventType: string }> };
     };
     expect(auditData1.success).toBe(true);
     expect(auditData1.data.events.length).toBeGreaterThanOrEqual(3);
-    expect(existsSync(dbPath)).toBe(true);
-    expect(existsSync(dataDir)).toBe(true);
+    expect(existsSync(dbPath) && existsSync(dataDir)).toBe(true);
     expect(readdirSync(dataDir).length).toBeGreaterThan(0);
 
     await terminateProcess(runningProc);

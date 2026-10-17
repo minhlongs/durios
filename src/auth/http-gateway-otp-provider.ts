@@ -35,9 +35,7 @@ export class HttpGatewayOtpProvider implements OtpProviderAdapter {
   private readonly fetchImpl: typeof fetch;
 
   constructor(config: HttpGatewayOtpProviderConfig) {
-    const providerName = config.providerName.trim();
-    const apiUrl = config.apiUrl.trim();
-    const apiKey = config.apiKey.trim();
+    const [providerName, apiUrl, apiKey] = [config.providerName.trim(), config.apiUrl.trim(), config.apiKey.trim()];
     if (!providerName || !apiUrl || !apiKey) {
       throw new Error("HttpGatewayOtpProvider requires non-empty providerName, apiUrl, and apiKey.");
     }
@@ -123,8 +121,7 @@ export function createOtpProviderFromEnv(
   if (!providerType || providerType === "UNCONFIGURED" || providerType === "NONE") {
     return new UnconfiguredOtpProvider();
   }
-  const apiUrl = env["DURIOS_OTP_API_URL"]?.trim();
-  const apiKey = env["DURIOS_OTP_API_KEY"]?.trim();
+  const [apiUrl, apiKey] = [env["DURIOS_OTP_API_URL"]?.trim(), env["DURIOS_OTP_API_KEY"]?.trim()];
   if (!apiUrl || !apiKey) return new UnconfiguredOtpProvider();
   const timeoutRaw = env["DURIOS_OTP_TIMEOUT_MS"] ? Number(env["DURIOS_OTP_TIMEOUT_MS"]) : 8000;
   const timeoutMs = Number.isFinite(timeoutRaw) && timeoutRaw > 0 ? timeoutRaw : 8000;

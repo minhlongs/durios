@@ -10,20 +10,14 @@ import { assertLoopbackHostname, createWorkspaceApp } from "../server/server.js"
 
 export interface GateCheckStatus {
   readonly gateId: "GATE-01" | "GATE-02" | "GATE-03" | "GATE-04" | "GATE-05";
-  readonly title: string;
-  readonly passed: boolean;
-  readonly statusLabel: string;
-  readonly detail: string;
+  readonly title: string; readonly passed: boolean;
+  readonly statusLabel: string; readonly detail: string;
 }
 
 export interface SingleSiteLaunchGateReport {
-  readonly evaluatedAt: string;
-  readonly goForLiveCustomerData: boolean;
-  readonly passedCount: number;
-  readonly totalGates: 5;
-  readonly gates: readonly [
-    GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus
-  ];
+  readonly evaluatedAt: string; readonly goForLiveCustomerData: boolean;
+  readonly passedCount: number; readonly totalGates: 5;
+  readonly gates: readonly [GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus];
   readonly kpiSummary: Gate05KpiEvaluationReport;
 }
 

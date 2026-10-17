@@ -42,13 +42,10 @@ interface EdgeSyncRow {
 
 function mapRow(row: EdgeSyncRow): QueuedEdgeSyncItem {
   return {
-    queueItemId: row.queue_item_id,
-    tenantId: row.tenant_id,
-    dossierId: row.dossier_id,
-    dossierCode: row.dossier_code,
+    queueItemId: row.queue_item_id, tenantId: row.tenant_id,
+    dossierId: row.dossier_id, dossierCode: row.dossier_code,
     compositeManifestSha256: row.composite_manifest_sha256,
-    queuedAt: row.queued_at,
-    status: row.status,
+    queuedAt: row.queued_at, status: row.status,
     ...(row.cloud_synced_at ? { cloudSyncedAt: row.cloud_synced_at } : {}),
     ...(row.cloud_ack_receipt_hash ? { cloudAckReceiptHash: row.cloud_ack_receipt_hash } : {}),
   };
@@ -80,30 +77,23 @@ export class HybridEdgeSyncQueue {
     if (existing) return mapRow(existing);
 
     const item: QueuedEdgeSyncItem = {
-      queueItemId: `SYNC-${manifest.dossierCode}`,
-      tenantId: manifest.tenantId,
-      dossierId: manifest.dossierId,
-      dossierCode: manifest.dossierCode,
+      queueItemId: `SYNC-${manifest.dossierCode}`, tenantId: manifest.tenantId,
+      dossierId: manifest.dossierId, dossierCode: manifest.dossierCode,
       compositeManifestSha256: manifest.compositeManifestSha256,
-      queuedAt,
-      status: "PENDING_OFFLINE",
+      queuedAt, status: "PENDING_OFFLINE",
     };
 
     this.sqliteClient.db
-      .query(
-        "INSERT INTO edge_sync_queue (queue_item_id, tenant_id, dossier_id, dossier_code, composite_manifest_sha256, status, queued_at) VALUES (?, ?, ?, ?, ?, ?, ?)"
-      )
+      .query("INSERT INTO edge_sync_queue (queue_item_id, tenant_id, dossier_id, dossier_code, composite_manifest_sha256, status, queued_at) VALUES (?, ?, ?, ?, ?, ?, ?)")
       .run(item.queueItemId, item.tenantId, item.dossierId, item.dossierCode, item.compositeManifestSha256, item.status, item.queuedAt);
     return item;
   }
 
   public listPendingItems(tenantId: string): readonly QueuedEdgeSyncItem[] {
-    const rows = this.sqliteClient.db
-      .query<EdgeSyncRow, [string]>(
-        "SELECT * FROM edge_sync_queue WHERE tenant_id = ? AND status = 'PENDING_OFFLINE' ORDER BY queued_at ASC"
-      )
-      .all(tenantId);
-    return rows.map(mapRow);
+    return this.sqliteClient.db
+      .query<EdgeSyncRow, [string]>("SELECT * FROM edge_sync_queue WHERE tenant_id = ? AND status = 'PENDING_OFFLINE' ORDER BY queued_at ASC")
+      .all(tenantId)
+      .map(mapRow);
   }
 
   public flushPendingToCloud(
@@ -119,9 +109,7 @@ export class HybridEdgeSyncQueue {
       );
     }
     const transport = transportOverride ?? this.transport;
-    if (!transport) {
-      throw new Error("Edge sync transport is not configured; items remain in PENDING_OFFLINE.");
-    }
+    if (!transport) throw new Error("Edge sync transport is not configured; items remain in PENDING_OFFLINE.");
 
     const pending = this.listPendingItems(tenantId);
     const synced: QueuedEdgeSyncItem[] = [];

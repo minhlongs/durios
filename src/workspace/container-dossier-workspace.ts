@@ -39,16 +39,13 @@ export class ContainerDossierWorkspace {
     this.hitlService = new HitlVerificationService(this.auditLedger);
     this.ruleEngine = new DeterministicRuleEngine(STATUTORY_COMPLIANCE_RULES);
     this.fileStorage = fileStorage;
-
     const repoClient = this.repo instanceof SqliteDossierRepository ? this.repo.client : (this.repo as { client?: unknown }).client;
     const resolvedSqlite = sqliteClient ?? (repoClient instanceof SqliteClient ? repoClient : new SqliteClient({ dbPath: ":memory:", inMemory: true }));
-
     this.sqliteClient = resolvedSqlite;
     this.shareManager = new ShareAccessManager(resolvedSqlite);
     this.organicEvidenceManager = new OrganicEvidenceManager(resolvedSqlite);
     this.authService = authService ?? new SqliteAuthService(resolvedSqlite);
     this.repo.setAccessChecker?.((dId, oTId, aTId) => this.shareManager.checkAccess(dId, oTId, aTId).hasAccess);
-
     if (this.fileStorage && this.repo instanceof SqliteDossierRepository) {
       this.legacyBlobReconciliationReport = this.fileStorage.reconcileLegacyDocumentBlobs(this.repo.client.db);
     }
@@ -85,14 +82,12 @@ export class ContainerDossierWorkspace {
     let { updatedDossier, document } = handleDocumentUpload(
       dossier, fileBytes, fileName, documentType, actor, this.auditLedger, fixtureExtractedFields
     );
-
     let storedBlob: StoredBlobResult | undefined;
     if (this.fileStorage && !dossier.documents.some((d) => d.id === document.id && !d.isSuperseded)) {
       storedBlob = this.fileStorage.storeFile(fileBytes, fileName, document.id);
       document = { ...document, storagePath: storedBlob.storagePath };
       updatedDossier = { ...updatedDossier, documents: updatedDossier.documents.map((d) => (d.id === document.id ? document : d)) };
     }
-
     try {
       this.repo.save(updatedDossier);
     } catch (saveError) {

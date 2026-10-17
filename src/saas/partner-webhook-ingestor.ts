@@ -48,9 +48,7 @@ export function signPartnerWebhookPayload(
   partnerSharedSecret: string
 ): string {
   const secret = partnerSharedSecret.trim();
-  if (secret.length < 16) {
-    throw new Error("Partner webhook shared secret must be at least 16 characters.");
-  }
+  if (secret.length < 16) throw new Error("Partner webhook shared secret must be at least 16 characters.");
   const canonical = buildCanonicalPartnerWebhookPayload(payload);
   return createHmac("sha256", secret).update(canonical, "utf-8").digest("hex");
 }
@@ -78,30 +76,22 @@ export class PartnerLabWebhookIngestor {
     }
 
     const secret = partnerSharedSecret.trim();
-    if (secret.length < 16) {
-      throw new Error("Partner webhook shared secret must be at least 16 characters.");
-    }
+    if (secret.length < 16) throw new Error("Partner webhook shared secret must be at least 16 characters.");
 
     const canonical = buildCanonicalPartnerWebhookPayload(payload);
     const expectedSig = createHmac("sha256", secret).update(canonical, "utf-8").digest("hex");
     const expectedBuf = Buffer.from(expectedSig, "utf-8");
     const providedBuf = Buffer.from(payload.signatureSha256 ?? "", "utf-8");
     if (expectedBuf.length !== providedBuf.length || !timingSafeEqual(expectedBuf, providedBuf)) {
-      throw new Error(
-        `Partner webhook signature verification failed for partner '${payload.partnerCode}'.`
-      );
+      throw new Error(`Partner webhook signature verification failed for partner '${payload.partnerCode}'.`);
     }
 
-    const payloadDigest = createHmac("sha256", "canonical-digest")
-      .update(canonical, "utf-8")
-      .digest("hex");
+    const payloadDigest = createHmac("sha256", "canonical-digest").update(canonical, "utf-8").digest("hex");
     const scopedKey = `${payload.tenantId}:${payload.idempotencyKey}`;
     const existing = this.processedKeys.get(scopedKey);
     if (existing) {
       if (existing.payloadDigest !== payloadDigest) {
-        throw new Error(
-          `Conflicting webhook payload for idempotencyKey '${payload.idempotencyKey}'.`
-        );
+        throw new Error(`Conflicting webhook payload for idempotencyKey '${payload.idempotencyKey}'.`);
       }
       return { ...existing.result, duplicateIgnored: true };
     }
@@ -116,10 +106,7 @@ export class PartnerLabWebhookIngestor {
         id: `${payload.documentId}-partner-${index}`,
         documentId: payload.documentId,
         fieldKey: key,
-        label: key
-          .split("_")
-          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-          .join(" "),
+        label: key.split("_").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
         rawValue: strVal,
         normalizedValue: !Number.isNaN(numVal) && strVal !== "" ? numVal : strVal,
         confidenceScore: 0.99,

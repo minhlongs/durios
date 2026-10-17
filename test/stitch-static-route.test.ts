@@ -4,6 +4,7 @@ import { routeHttpRequest } from "../src/server/http-router.js";
 
 describe("Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite", () => {
   const workspace = new ContainerDossierWorkspace();
+
   const pages = [
     "gallery.html", "index.html", "dossiers.html", "auditor.html", "buyer.html",
     "cluster.html", "portability.html", "upgrade.html", "styleguide.html", "paper-canvas.html",
@@ -11,6 +12,7 @@ describe("Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite", 
     "corridors.html", "blueprint.html", "security-vault.html", "organic-escrow-guard.html", "webhook-sync-queue.html",
     "socratic-introspector.html", "rehearsal-command.html", "mit-verifier-lab.html", "cloud-ocr-vault.html", "ed25519-downgrade-simulator.html",
   ];
+
 
   test("serves all 25 Stitch HTML pages and PNG previews under /stitch/*", async () => {
     expect(pages).toHaveLength(25);
@@ -33,8 +35,20 @@ describe("Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite", 
     const jsRes = await routeHttpRequest(workspace, new Request("http://localhost:3000/stitch/durios-live-bridge.js"));
     expect(jsRes.status).toBe(200);
     expect(jsRes.headers.get("Content-Type")).toContain("application/javascript");
-    expect(await jsRes.text()).toContain("/api/v1/open-core/ecosystem-telemetry");
+    const jsText = await jsRes.text();
+    expect(jsText).toContain("/api/v1/open-core/ecosystem-telemetry");
+    expect(jsText).toContain("durios_theme");
+    expect(jsText).toContain("1. Packhouse Ops");
+    expect(jsText).toContain("4. SaaS & Corridors");
+
+    const cssRes = await routeHttpRequest(workspace, new Request("http://localhost:3000/stitch/durios-design-system.css"));
+    expect(cssRes.status).toBe(200);
+    expect(cssRes.headers.get("Content-Type")).toContain("text/css");
+    const cssText = await cssRes.text();
+    expect(cssText).toContain("--durios-shell-height: 44px");
+    expect(cssText).toContain("daylight-theme");
   });
+
 
   test("preserves fail-closed 2/5 gates without fullGates and unlocks 5/5 gates when fullGates=true", async () => {
     const bootDefault = await routeHttpRequest(workspace, new Request("http://127.0.0.1:3000/api/auth/pilot-rehearsal-bootstrap", { method: "POST" }));

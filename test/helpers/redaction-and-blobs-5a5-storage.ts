@@ -8,9 +8,7 @@ import { SqliteClient } from "../../src/storage/sqlite-client.js";
 import { SqliteDossierRepository } from "../../src/storage/sqlite-dossier-repository.js";
 import { ContainerDossierWorkspace } from "../../src/workspace/container-dossier-workspace.js";
 import {
-  createPdfBytes,
-  seedAndMakeActor,
-  type Redaction5A5Context,
+  createPdfBytes, seedAndMakeActor, type Redaction5A5Context,
 } from "./redaction-and-blobs-5a5-fixtures.js";
 
 export function runContentAddressedBlobStorageScenario(ctx: Redaction5A5Context): void {
@@ -38,16 +36,13 @@ export function runContentAddressedBlobStorageScenario(ctx: Redaction5A5Context)
   expect(document.sha256Hash).toBe(expectedSha);
   expect(document.storagePath).toBe(expectedRelativePath);
   expect(existsSync(expectedPhysicalPath)).toBe(true);
-
-  const diskBytes = new Uint8Array(readFileSync(expectedPhysicalPath));
-  expect(calculateSha256(diskBytes)).toBe(expectedSha);
+  expect(calculateSha256(new Uint8Array(readFileSync(expectedPhysicalPath)))).toBe(expectedSha);
 
   const dbRow = client.db
     .query<{ storage_path: string; sha256_hash: string }, [string]>(
       "SELECT storage_path, sha256_hash FROM documents WHERE id = ?"
     )
     .get(document.id);
-  expect(dbRow).toBeDefined();
   expect(dbRow?.storage_path).toBe(expectedRelativePath);
   expect(dbRow?.sha256_hash).toBe(expectedSha);
 
@@ -63,7 +58,6 @@ export function runContentAddressedBlobStorageScenario(ctx: Redaction5A5Context)
   workspace = new ContainerDossierWorkspace(repo, ledger, fileStorage);
 
   const reloaded = workspace.getDossier(dossier.id, clerk.actor);
-  expect(reloaded).toBeDefined();
   expect(reloaded?.documents[0]?.storagePath).toBe(expectedRelativePath);
   expect(existsSync(expectedPhysicalPath)).toBe(true);
 
@@ -108,10 +102,9 @@ export function runBlobDeduplicationAndRollbackScenario(ctx: Redaction5A5Context
   };
   const failingWs = new ContainerDossierWorkspace(failingRepo, ledger, fileStorage);
 
-  expect(() =>
-    failingWs.uploadDocument(d2.id, sharedPdf, "packing_2.pdf", "PACKING_LIST", clerk.actor)
-  ).toThrow("Simulated DB failure on second dossier");
-
+  expect(() => failingWs.uploadDocument(d2.id, sharedPdf, "packing_2.pdf", "PACKING_LIST", clerk.actor)).toThrow(
+    "Simulated DB failure on second dossier"
+  );
   expect(existsSync(expectedPhysicalPath)).toBe(true);
   expect(calculateSha256(new Uint8Array(readFileSync(expectedPhysicalPath)))).toBe(expectedSha);
 
@@ -119,9 +112,9 @@ export function runBlobDeduplicationAndRollbackScenario(ctx: Redaction5A5Context
   const uniqueSha = calculateSha256(uniquePdf);
   const uniquePhysicalPath = join(dataDir, "storage", "blobs", `${uniqueSha}.bin`);
 
-  expect(() =>
-    failingWs.uploadDocument(d2.id, uniquePdf, "unique_fail.pdf", "PACKING_LIST", clerk.actor)
-  ).toThrow("Simulated DB failure on second dossier");
+  expect(() => failingWs.uploadDocument(d2.id, uniquePdf, "unique_fail.pdf", "PACKING_LIST", clerk.actor)).toThrow(
+    "Simulated DB failure on second dossier"
+  );
   expect(existsSync(uniquePhysicalPath)).toBe(false);
 
   const tamperPdf = createPdfBytes("tamper-target-content");
@@ -129,9 +122,7 @@ export function runBlobDeduplicationAndRollbackScenario(ctx: Redaction5A5Context
   const tamperPhysicalPath = join(dataDir, "storage", "blobs", `${tamperSha}.bin`);
   writeFileSync(tamperPhysicalPath, "corrupted bytes not matching sha256");
 
-  expect(() => fileStorage.storeFile(tamperPdf, "tamper.pdf", "DOC-TAMPER")).toThrow(
-    /Integrity violation/
-  );
+  expect(() => fileStorage.storeFile(tamperPdf, "tamper.pdf", "DOC-TAMPER")).toThrow(/Integrity violation/);
   expect(readFileSync(tamperPhysicalPath, "utf8")).toBe("corrupted bytes not matching sha256");
 }
 

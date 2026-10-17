@@ -1,0 +1,599 @@
+/**
+ * DuriOS 2027 Global Enterprise Design System
+ * Inspired by Linear, Stripe, Flexport, and Palantir Foundry.
+ * Adaptive Theming: 🌙 Emerald Ops (Default Dark) vs ☀️ Daylight Field (High-Contrast Outdoor)
+ */
+
+:root {
+  /* Typography Scale */
+  --durios-font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --durios-font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --durios-font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  
+  --durios-radius-xs: 4px;
+  --durios-radius-sm: 6px;
+  --durios-radius-md: 8px;
+  --durios-radius-lg: 12px;
+  --durios-radius-pill: 9999px;
+
+  /* Tabular numbers for all financial, container, and telemetry figures */
+  --durios-num-tabular: tabular-nums;
+  font-variant-numeric: tabular-nums;
+
+  /* App Shell Geometry */
+  --durios-shell-height: 44px;
+}
+
+/* =========================================================================
+   THEME 1: 🌙 Emerald Ops Mode (Default Dark Palantir / Linear Aesthetic)
+   ========================================================================= */
+:root,
+html.dark,
+body.dark,
+[data-durios-theme="dark"] {
+  --durios-bg-base: #060B08;
+  --durios-bg-surface: #09140E;
+  --durios-bg-surface-elevated: #101E16;
+  --durios-bg-surface-sunken: #040705;
+  --durios-bg-glass: rgba(9, 20, 14, 0.85);
+
+  --durios-border-subtle: #1F3327;
+  --durios-border-strong: #2D4C39;
+  --durios-border-focus: #10B981;
+
+  --durios-text-primary: #ECFDF5;
+  --durios-text-secondary: #A7F3D0;
+  --durios-text-muted: #6EE7B7;
+  --durios-text-dim: #4B6B56;
+
+  --durios-accent: #10B981;
+  --durios-accent-hover: #059669;
+  --durios-accent-soft: rgba(16, 185, 129, 0.15);
+
+  --durios-warning: #F59E0B;
+  --durios-warning-soft: rgba(245, 158, 11, 0.15);
+  --durios-danger: #EF4444;
+  --durios-danger-soft: rgba(239, 68, 68, 0.15);
+  --durios-info: #0284C7;
+  --durios-info-soft: rgba(2, 132, 199, 0.15);
+
+  --durios-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --durios-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.45);
+  --durios-shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.65);
+}
+
+/* =========================================================================
+   THEME 2: ☀️ Daylight Field Mode (High-Contrast Outdoor Weighbridge)
+   ========================================================================= */
+html.daylight-theme,
+body.daylight-theme,
+[data-durios-theme="daylight"] {
+  --durios-bg-base: #F8FAFC;
+  --durios-bg-surface: #FFFFFF;
+  --durios-bg-surface-elevated: #FFFFFF;
+  --durios-bg-surface-sunken: #F1F5F9;
+  --durios-bg-glass: rgba(255, 255, 255, 0.92);
+
+  --durios-border-subtle: #CBD5E1;
+  --durios-border-strong: #94A3B8;
+  --durios-border-focus: #047857;
+
+  --durios-text-primary: #0F172A;
+  --durios-text-secondary: #1E293B;
+  --durios-text-muted: #475569;
+  --durios-text-dim: #64748B;
+
+  --durios-accent: #047857;
+  --durios-accent-hover: #065F46;
+  --durios-accent-soft: rgba(4, 120, 87, 0.12);
+
+  --durios-warning: #B45309;
+  --durios-warning-soft: rgba(180, 83, 9, 0.12);
+  --durios-danger: #DC2626;
+  --durios-danger-soft: rgba(220, 38, 38, 0.12);
+  --durios-info: #0369A1;
+  --durios-info-soft: rgba(3, 105, 161, 0.12);
+
+  --durios-shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --durios-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+  --durios-shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.12);
+}
+
+/* Daylight overrides for native elements across Stitch screens */
+html.daylight-theme body {
+  background-color: var(--durios-bg-base) !important;
+  color: var(--durios-text-primary) !important;
+}
+
+html.daylight-theme .bg-background,
+html.daylight-theme .bg-surface,
+html.daylight-theme .bg-surface-dim {
+  background-color: var(--durios-bg-base) !important;
+}
+
+html.daylight-theme .bg-surface-container,
+html.daylight-theme .bg-surface-container-high,
+html.daylight-theme .bg-surface-container-highest {
+  background-color: var(--durios-bg-surface) !important;
+  border-color: var(--durios-border-subtle) !important;
+}
+
+html.daylight-theme .bg-surface-container-low,
+html.daylight-theme .bg-surface-container-lowest {
+  background-color: var(--durios-bg-surface-sunken) !important;
+}
+
+html.daylight-theme .text-on-surface,
+html.daylight-theme .text-on-background {
+  color: var(--durios-text-primary) !important;
+}
+
+html.daylight-theme .text-on-surface-variant,
+html.daylight-theme .text-outline {
+  color: var(--durios-text-muted) !important;
+}
+
+html.daylight-theme .border-outline,
+html.daylight-theme .border-outline-variant {
+  border-color: var(--durios-border-subtle) !important;
+}
+
+/* Tabular Numbers Utility */
+.tabular-nums,
+[data-tabular="true"] {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* =========================================================================
+   2027 SINGLE-LINE TOP COMMAND BAR (44px, Linear/Stripe App Shell)
+   ========================================================================= */
+#durios-unified-top-nav,
+.durios-top-command-bar {
+  background: var(--durios-bg-surface) !important;
+  border-bottom: 1px solid var(--durios-border-subtle) !important;
+  height: 44px !important;
+  max-height: 44px !important;
+  padding: 0 14px !important;
+  font-family: var(--durios-font-sans) !important;
+  font-size: 11px !important;
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 99999 !important;
+  box-sizing: border-box !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  overflow: visible !important;
+  box-shadow: var(--durios-shadow-sm);
+  backdrop-filter: blur(8px);
+}
+
+.durios-bar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.durios-brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  font-family: var(--durios-font-display);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--durios-accent) !important;
+  padding: 2px 6px;
+  border-radius: var(--durios-radius-xs);
+  transition: opacity 0.15s ease;
+}
+
+.durios-brand-badge:hover {
+  opacity: 0.85;
+}
+
+.durios-breadcrumb-sep {
+  color: var(--durios-text-dim);
+  font-weight: 400;
+}
+
+.durios-breadcrumb-active {
+  color: var(--durios-text-primary);
+  font-weight: 600;
+  font-size: 11px;
+  white-space: nowrap;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.durios-nav-dropdowns {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex: 1;
+  margin: 0 12px;
+  overflow: hidden;
+}
+
+.durios-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.durios-dropdown-trigger {
+  background: transparent;
+  color: var(--durios-text-secondary);
+  border: 1px solid transparent;
+  border-radius: var(--durios-radius-xs);
+  padding: 4px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.durios-dropdown-trigger:hover,
+.durios-dropdown.active .durios-dropdown-trigger {
+  background: var(--durios-accent-soft);
+  color: var(--durios-accent);
+  border-color: var(--durios-border-strong);
+}
+
+.durios-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 240px;
+  background: var(--durios-bg-surface-elevated);
+  border: 1px solid var(--durios-border-strong);
+  border-radius: var(--durios-radius-md);
+  box-shadow: var(--durios-shadow-lg);
+  padding: 6px;
+  z-index: 100000;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.durios-dropdown.active .durios-dropdown-menu {
+  display: flex;
+}
+
+.durios-dropdown-menu a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 10px;
+  color: var(--durios-text-primary) !important;
+  text-decoration: none;
+  border-radius: var(--durios-radius-xs);
+  font-size: 11px;
+  transition: background 0.12s ease;
+  white-space: nowrap;
+}
+
+.durios-dropdown-menu a:hover {
+  background: var(--durios-accent-soft);
+  color: var(--durios-accent) !important;
+}
+
+.durios-dropdown-menu a.active {
+  background: var(--durios-accent);
+  color: #06110B !important;
+  font-weight: 600;
+}
+
+.durios-bar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.durios-cmdk-trigger {
+  background: var(--durios-bg-surface-sunken);
+  border: 1px solid var(--durios-border-subtle);
+  color: var(--durios-text-muted);
+  border-radius: var(--durios-radius-xs);
+  padding: 4px 8px;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.durios-cmdk-trigger:hover {
+  border-color: var(--durios-accent);
+  color: var(--durios-text-primary);
+}
+
+.durios-cmdk-trigger kbd {
+  background: var(--durios-bg-surface);
+  border: 1px solid var(--durios-border-strong);
+  border-radius: 3px;
+  padding: 1px 4px;
+  font-size: 9px;
+  font-family: var(--durios-font-mono);
+  color: var(--durios-text-secondary);
+}
+
+.durios-theme-btn,
+.durios-icon-btn {
+  background: var(--durios-bg-surface-sunken);
+  border: 1px solid var(--durios-border-subtle);
+  color: var(--durios-text-primary);
+  border-radius: var(--durios-radius-xs);
+  height: 28px;
+  padding: 0 8px;
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.durios-theme-btn:hover,
+.durios-icon-btn:hover {
+  border-color: var(--durios-accent);
+  background: var(--durios-accent-soft);
+}
+
+.durios-nav-badge {
+  font-family: var(--durios-font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  padding: 2px 6px;
+  border-radius: var(--durios-radius-xs);
+  background: var(--durios-accent-soft);
+  color: var(--durios-accent);
+  border: 1px solid var(--durios-border-strong);
+}
+
+/* =========================================================================
+   LINEAR-STYLE CATEGORIZED SIDEBAR DRAWER (Press `[` or click icon)
+   ========================================================================= */
+.durios-sidebar-drawer-overlay {
+  position: fixed;
+  top: 44px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.45);
+  backdrop-filter: blur(4px);
+  z-index: 99997;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.durios-sidebar-drawer-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.durios-sidebar-drawer {
+  position: fixed;
+  top: 44px;
+  left: 0;
+  bottom: 0;
+  width: 320px;
+  background: var(--durios-bg-surface);
+  border-right: 1px solid var(--durios-border-strong);
+  box-shadow: var(--durios-shadow-lg);
+  z-index: 99998;
+  transform: translateX(-100%);
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.durios-sidebar-drawer.active {
+  transform: translateX(0);
+}
+
+.durios-drawer-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--durios-border-subtle);
+  margin-bottom: 12px;
+}
+
+.durios-drawer-section-title {
+  font-family: var(--durios-font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--durios-accent);
+  font-weight: 700;
+  margin: 12px 0 6px 4px;
+}
+
+.durios-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  border-radius: var(--durios-radius-xs);
+  color: var(--durios-text-primary) !important;
+  text-decoration: none;
+  font-size: 12px;
+  transition: background 0.12s ease;
+}
+
+.durios-drawer-link:hover {
+  background: var(--durios-accent-soft);
+  color: var(--durios-accent) !important;
+}
+
+/* =========================================================================
+   ⌘K COMMAND PALETTE MODAL
+   ========================================================================= */
+.durios-cmdk-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(6px);
+  z-index: 100010;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 14vh;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.durios-cmdk-modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.durios-cmdk-card {
+  width: 100%;
+  max-width: 580px;
+  background: var(--durios-bg-surface-elevated);
+  border: 1px solid var(--durios-border-strong);
+  border-radius: var(--durios-radius-lg);
+  box-shadow: var(--durios-shadow-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.durios-cmdk-input-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--durios-border-subtle);
+}
+
+.durios-cmdk-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--durios-text-primary);
+  font-family: var(--durios-font-sans);
+  font-size: 14px;
+  outline: none;
+}
+
+.durios-cmdk-list {
+  max-height: 360px;
+  overflow-y: auto;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.durios-cmdk-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 10px;
+  border-radius: var(--durios-radius-xs);
+  color: var(--durios-text-primary);
+  text-decoration: none;
+  font-size: 12px;
+  cursor: pointer;
+  transition: background 0.1s ease;
+}
+
+.durios-cmdk-item:hover,
+.durios-cmdk-item.selected {
+  background: var(--durios-accent-soft);
+  color: var(--durios-accent);
+}
+
+/* =========================================================================
+   COMPACT FLOATING LIVE DOCK (Bottom-Right Floating Pill + Popover)
+   ========================================================================= */
+.durios-floating-dock-pill {
+  position: fixed !important;
+  bottom: 16px !important;
+  right: 16px !important;
+  z-index: 99998 !important;
+  background: var(--durios-bg-surface) !important;
+  border: 1px solid var(--durios-border-strong) !important;
+  border-radius: var(--durios-radius-pill) !important;
+  padding: 6px 14px !important;
+  font-family: var(--durios-font-mono) !important;
+  font-size: 11px !important;
+  color: var(--durios-text-primary) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  box-shadow: var(--durios-shadow-lg) !important;
+  cursor: pointer !important;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  user-select: none !important;
+}
+
+.durios-floating-dock-pill:hover {
+  transform: translateY(-2px);
+  border-color: var(--durios-accent) !important;
+  background: var(--durios-bg-surface-elevated) !important;
+}
+
+.durios-floating-dock-popover {
+  position: fixed !important;
+  bottom: 60px !important;
+  right: 16px !important;
+  width: 440px !important;
+  max-width: calc(100vw - 32px) !important;
+  max-height: 520px !important;
+  background: var(--durios-bg-surface-elevated) !important;
+  border: 1px solid var(--durios-border-strong) !important;
+  border-radius: var(--durios-radius-lg) !important;
+  box-shadow: var(--durios-shadow-lg) !important;
+  z-index: 99998 !important;
+  overflow: hidden !important;
+  display: flex !important;
+  flex-direction: column !important;
+  font-family: var(--durios-font-sans) !important;
+  font-size: 11px !important;
+  backdrop-filter: blur(12px) !important;
+}
+
+.durios-dock-header {
+  padding: 10px 14px;
+  background: var(--durios-bg-surface);
+  border-bottom: 1px solid var(--durios-border-subtle);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.durios-dock-body {
+  padding: 12px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Deduplicate Competing Sticky Headers across Stitch Screens */
+header.sticky,
+.sticky:not(#durios-unified-top-nav) {
+  top: 44px !important;
+}

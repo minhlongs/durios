@@ -3,22 +3,13 @@ import { existsSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { calculateSha256 } from "../../src/ingestion/document-hasher.js";
 import {
-  createPdfBytes,
-  seedAndMakeActor,
-  type Redaction5A5Context,
+  createPdfBytes, seedAndMakeActor, type Redaction5A5Context,
 } from "./redaction-and-blobs-5a5-fixtures.js";
 
 function insertLegacyDocRow(
   db: Redaction5A5Context["client"]["db"],
-  id: string,
-  dossierId: string,
-  tenantId: string,
-  docType: string,
-  fileName: string,
-  sizeBytes: number,
-  sha256: string,
-  storagePath: string,
-  uploadedAt: string
+  id: string, dossierId: string, tenantId: string, docType: string,
+  fileName: string, sizeBytes: number, sha256: string, storagePath: string, uploadedAt: string
 ): void {
   db.run(
     `INSERT INTO documents (
@@ -34,14 +25,9 @@ export function runLegacyBlobReconciliationScenario(ctx: Redaction5A5Context): v
   const clerk = seedAndMakeActor(workspace, "TENANT-LEGACY-01", "CLERK");
   const dossier = workspace.createDossier(
     {
-      dossierCode: "DOS-LEGACY-001",
-      containerNumber: "MSKU1234565",
-      sealNumber: "SEAL-LEG-01",
-      targetMarket: "CN",
-      borderGate: "Huu Nghi",
-      targetTemperatureC: 13.5,
-      declaredNetWeightKg: 18000,
-      declaredBoxCount: 900,
+      dossierCode: "DOS-LEGACY-001", containerNumber: "MSKU1234565", sealNumber: "SEAL-LEG-01",
+      targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
+      declaredNetWeightKg: 18000, declaredBoxCount: 900,
     },
     clerk.actor
   );
@@ -51,34 +37,17 @@ export function runLegacyBlobReconciliationScenario(ctx: Redaction5A5Context): v
   // Case 1: Deterministic legacy file with matching hash -> migrated
   const validBytes = createPdfBytes("legacy-valid-doc");
   const validSha = calculateSha256(validBytes);
-  const legacyValidFile = join(dataDir, "doc_DOC-LEG-VALID_1700000001.pdf");
-  writeFileSync(legacyValidFile, validBytes);
+  writeFileSync(join(dataDir, "doc_DOC-LEG-VALID_1700000001.pdf"), validBytes);
   insertLegacyDocRow(
-    client.db,
-    "DOC-LEG-VALID",
-    dossier.id,
-    dossier.tenantId,
-    "PACKING_LIST",
-    "legacy_valid.pdf",
-    validBytes.byteLength,
-    validSha,
-    "data/uploads/DOC-LEG-VALID.bin",
-    now
+    client.db, "DOC-LEG-VALID", dossier.id, dossier.tenantId,
+    "PACKING_LIST", "legacy_valid.pdf", validBytes.byteLength, validSha, "data/uploads/DOC-LEG-VALID.bin", now
   );
 
   // Case 2: Legacy file missing on disk -> unmigrated (MISSING_LEGACY_FILE)
   const missingSha = calculateSha256(createPdfBytes("legacy-missing-doc"));
   insertLegacyDocRow(
-    client.db,
-    "DOC-LEG-MISSING",
-    dossier.id,
-    dossier.tenantId,
-    "BILL_OF_LADING",
-    "legacy_missing.pdf",
-    128,
-    missingSha,
-    "data/uploads/DOC-LEG-MISSING.bin",
-    now
+    client.db, "DOC-LEG-MISSING", dossier.id, dossier.tenantId,
+    "BILL_OF_LADING", "legacy_missing.pdf", 128, missingSha, "data/uploads/DOC-LEG-MISSING.bin", now
   );
 
   // Case 3: Legacy file with mismatched hash -> unmigrated (SHA256_MISMATCH), file not deleted
@@ -87,16 +56,8 @@ export function runLegacyBlobReconciliationScenario(ctx: Redaction5A5Context): v
   const legacyMismatchFile = join(dataDir, "doc_DOC-LEG-MISMATCH_1700000002.pdf");
   writeFileSync(legacyMismatchFile, wrongDiskBytes);
   insertLegacyDocRow(
-    client.db,
-    "DOC-LEG-MISMATCH",
-    dossier.id,
-    dossier.tenantId,
-    "COMMERCIAL_INVOICE",
-    "legacy_mismatch.pdf",
-    wrongDiskBytes.byteLength,
-    mismatchRecordedSha,
-    "data/uploads/DOC-LEG-MISMATCH.bin",
-    now
+    client.db, "DOC-LEG-MISMATCH", dossier.id, dossier.tenantId,
+    "COMMERCIAL_INVOICE", "legacy_mismatch.pdf", wrongDiskBytes.byteLength, mismatchRecordedSha, "data/uploads/DOC-LEG-MISMATCH.bin", now
   );
 
   // Case 4: Multiple ambiguous files matching doc_<id>_* -> unmigrated (AMBIGUOUS_LEGACY_FILES)
@@ -105,16 +66,8 @@ export function runLegacyBlobReconciliationScenario(ctx: Redaction5A5Context): v
   writeFileSync(join(dataDir, "doc_DOC-LEG-AMBIG_100.pdf"), ambigBytes);
   writeFileSync(join(dataDir, "doc_DOC-LEG-AMBIG_200.pdf"), ambigBytes);
   insertLegacyDocRow(
-    client.db,
-    "DOC-LEG-AMBIG",
-    dossier.id,
-    dossier.tenantId,
-    "CUSTOMS_DECLARATION",
-    "legacy_ambig.pdf",
-    ambigBytes.byteLength,
-    ambigSha,
-    "data/uploads/DOC-LEG-AMBIG.bin",
-    now
+    client.db, "DOC-LEG-AMBIG", dossier.id, dossier.tenantId,
+    "CUSTOMS_DECLARATION", "legacy_ambig.pdf", ambigBytes.byteLength, ambigSha, "data/uploads/DOC-LEG-AMBIG.bin", now
   );
 
   const report = fileStorage.reconcileLegacyDocumentBlobs(client.db);
@@ -130,15 +83,9 @@ export function runLegacyBlobReconciliationScenario(ctx: Redaction5A5Context): v
   expect(validRow?.storage_path).toBe(`storage/blobs/${validSha}.bin`);
 
   expect(report.unmigrated.length).toBe(3);
-  expect(report.unmigrated.find((u) => u.documentId === "DOC-LEG-MISSING")?.reason).toBe(
-    "MISSING_LEGACY_FILE"
-  );
-  expect(report.unmigrated.find((u) => u.documentId === "DOC-LEG-MISMATCH")?.reason).toBe(
-    "SHA256_MISMATCH"
-  );
-  expect(report.unmigrated.find((u) => u.documentId === "DOC-LEG-AMBIG")?.reason).toBe(
-    "AMBIGUOUS_LEGACY_FILES"
-  );
+  expect(report.unmigrated.find((u) => u.documentId === "DOC-LEG-MISSING")?.reason).toBe("MISSING_LEGACY_FILE");
+  expect(report.unmigrated.find((u) => u.documentId === "DOC-LEG-MISMATCH")?.reason).toBe("SHA256_MISMATCH");
+  expect(report.unmigrated.find((u) => u.documentId === "DOC-LEG-AMBIG")?.reason).toBe("AMBIGUOUS_LEGACY_FILES");
 
   expect(existsSync(legacyMismatchFile)).toBe(true);
   const mismatchRow = client.db

@@ -13,7 +13,6 @@ const V4_SCHEMA_SQL = `
   INSERT INTO schema_migrations (version, applied_at) VALUES
     (1, '2026-10-14T00:00:00.000Z'), (2, '2026-10-14T00:00:01.000Z'),
     (3, '2026-10-14T00:00:02.000Z'), (4, '2026-10-14T00:00:03.000Z');
-
   CREATE TABLE container_dossiers (
     id TEXT PRIMARY KEY, tenant_id TEXT NOT NULL, dossier_code TEXT NOT NULL UNIQUE,
     container_number TEXT NOT NULL, seal_number TEXT NOT NULL, target_market TEXT NOT NULL,
@@ -101,23 +100,14 @@ export function runV4ToV5MigrationScenario(): void {
     rawDb.run(V4_SCHEMA_SQL);
 
     const now = "2026-10-14T08:00:00.000Z";
+    rawDb.run(`INSERT INTO container_dossiers VALUES ('DOS-V4-01', 'TEN-A', 'CODE-V4-01', 'MSKU1234565', 'SEAL-V4', 'CN', 'Huu Nghi', 14.0, 18000, 900, 'DRAFT', 0, NULL, NULL, ?, ?)`, [now, now]);
     rawDb.run(
-      `INSERT INTO container_dossiers VALUES ('DOS-V4-01', 'TEN-A', 'CODE-V4-01', 'MSKU1234565', 'SEAL-V4', 'CN', 'Huu Nghi', 14.0, 18000, 900, 'DRAFT', 0, NULL, NULL, ?, ?)`,
-      [now, now]
-    );
-    rawDb.run(
-      `INSERT INTO organic_evidence VALUES (
-        'ORG-V4-LEGACY', 'DOS-V4-01', 'TEN-A', 'Demo Bio-Certifier (Synthetic)', 'DEMO-ACC-01',
-        'SYNTH-CERT-2026-01', 'TCVN_11041', 'Vietnamese Organic Standard', 'Durian Orchard Block A',
-        '2026-01-01T00:00:00.000Z', '2027-06-30T23:59:59.000Z', '2026-01-01', 'IN_CONVERSION',
-        'DOC-SCAN-99', 'https://synthetic-cert.example/01', ?, ?, 'ACT-CLERK-V4'
-      )`,
+      `INSERT INTO organic_evidence VALUES ('ORG-V4-LEGACY', 'DOS-V4-01', 'TEN-A', 'Demo Bio-Certifier (Synthetic)', 'DEMO-ACC-01', 'SYNTH-CERT-2026-01', 'TCVN_11041', 'Vietnamese Organic Standard', 'Durian Orchard Block A', '2026-01-01T00:00:00.000Z', '2027-06-30T23:59:59.000Z', '2026-01-01', 'IN_CONVERSION', 'DOC-SCAN-99', 'https://synthetic-cert.example/01', ?, ?, 'ACT-CLERK-V4')`,
       [DURIOS_ORGANIC_DISCLAIMER, now]
     );
     rawDb.close();
 
     app = createWorkspaceApp({ dbPath: v4DbPath, dataDir: v4Uploads });
-
     expect(app.sqliteClient.db.query<{ v: number }, []>("SELECT MAX(version) as v FROM schema_migrations").get()?.v).toBe(5);
 
     const cols = app.sqliteClient.db.query<{ name: string }, []>("PRAGMA table_info(organic_evidence)").all().map((c) => c.name);

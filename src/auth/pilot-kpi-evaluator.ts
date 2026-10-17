@@ -1,8 +1,7 @@
 import { createWorkspaceApp } from "../server/server.js";
 import type { ContainerDossier } from "../domain/types.js";
 import {
-  evaluateFirstContainerValueMetrics,
-  type FirstContainerValueMetrics,
+  evaluateFirstContainerValueMetrics, type FirstContainerValueMetrics,
 } from "./pilot-kpi-extended-types.js";
 
 export interface ContainerKpiMetric {
@@ -73,17 +72,11 @@ export function computeGate05KpiFromDossiers(dossiers: readonly ContainerDossier
     const blocked = blindFault ? isApprovalBlockedForFault(d) : false;
 
     return {
-      dossierId: d.id,
-      dossierCode: d.dossierCode,
-      containerNumber: d.containerNumber,
-      lifecycleState: d.lifecycleState,
-      tStartIso: d.createdAt,
-      tEndIso,
-      deltaSeconds,
+      dossierId: d.id, dossierCode: d.dossierCode, containerNumber: d.containerNumber,
+      lifecycleState: d.lifecycleState, tStartIso: d.createdAt, tEndIso, deltaSeconds,
       underFiveMinutes: deltaSeconds !== null && deltaSeconds < 300,
       underThreeMinutes: deltaSeconds !== null && deltaSeconds < 180,
-      isBlindFault: blindFault,
-      blindFaultBlocked: blocked,
+      isBlindFault: blindFault, blindFaultBlocked: blocked,
     };
   });
 
@@ -99,22 +92,15 @@ export function computeGate05KpiFromDossiers(dossiers: readonly ContainerDossier
   const underFiveMinuteGate = validDeltas.length >= 5 && meanDeltaSeconds < 300;
   const underThreeMinuteTarget = validDeltas.length >= 5 && meanDeltaSeconds < 180;
 
-  const firstContainerMetrics =
-    dossiers.length > 0 ? evaluateFirstContainerValueMetrics(dossiers[0]!) : undefined;
+  const firstContainerMetrics = dossiers.length > 0 ? evaluateFirstContainerValueMetrics(dossiers[0]!) : undefined;
 
   return {
     evaluatedAt: new Date().toISOString(),
-    totalContainers: metrics.length,
-    reconciledCount: validDeltas.length,
-    meanDeltaSeconds,
-    underFiveMinuteGate,
-    underThreeMinuteTarget,
-    blindFaultCount: blindFaultMetrics.length,
-    blindFaultsCaught,
-    zeroMissGate,
+    totalContainers: metrics.length, reconciledCount: validDeltas.length,
+    meanDeltaSeconds, underFiveMinuteGate, underThreeMinuteTarget,
+    blindFaultCount: blindFaultMetrics.length, blindFaultsCaught, zeroMissGate,
     gate05Passed: metrics.length >= 5 && underFiveMinuteGate && zeroMissGate,
-    containerMetrics: metrics,
-    firstContainerMetrics,
+    containerMetrics: metrics, firstContainerMetrics,
   };
 }
 
@@ -137,6 +123,5 @@ export function evaluateGate05PilotKpi(options: { dbPath?: string; dataDir?: str
 }
 
 if (import.meta.main) {
-  const report = evaluateGate05PilotKpi();
-  process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
+  process.stdout.write(`${JSON.stringify(evaluateGate05PilotKpi(), null, 2)}\n`);
 }

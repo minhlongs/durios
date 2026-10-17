@@ -12,8 +12,7 @@ export async function runStagingLiveDossierKpiStep(
   const kpiStartMs = Date.now();
   const createRes = await siteA.handler(
     new Request("https://durios-pilot.local/api/v1/dossiers", {
-      method: "POST",
-      headers: { Cookie: clerkOtpCookie, "Content-Type": "application/json" },
+      method: "POST", headers: { Cookie: clerkOtpCookie, "Content-Type": "application/json" },
       body: JSON.stringify({
         dossierCode: "DOS-CAILAY-LIVE-01", containerNumber: "MSKU1234565", sealNumber: "SEAL-CAILAY-888",
         targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
@@ -112,19 +111,12 @@ export async function runStagingLiveDossierKpiStep(
   );
   expect(orgRes.status).toBe(201);
 
-  const appRes = await siteA.handler(
-    new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/approve`, {
-      method: "POST", headers: { Cookie: mgrCookie },
-    })
-  );
-  expect(appRes.status).toBe(200);
-
-  const expRes = await siteA.handler(
-    new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/export`, {
-      method: "POST", headers: { Cookie: mgrCookie },
-    })
-  );
-  expect(expRes.status).toBe(200);
+  expect(
+    (await siteA.handler(new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/approve`, { method: "POST", headers: { Cookie: mgrCookie } }))).status
+  ).toBe(200);
+  expect(
+    (await siteA.handler(new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/export`, { method: "POST", headers: { Cookie: mgrCookie } }))).status
+  ).toBe(200);
 
   const shareRes = await siteA.handler(
     new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/shares`, {

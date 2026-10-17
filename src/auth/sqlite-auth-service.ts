@@ -23,19 +23,14 @@ interface AccountRow {
 
 const rowToActor = (r: AccountRow): AuthenticatedActor => {
   assertValidIdentityTuple(r.persona, r.tenant_type, r.role);
-  return {
-    id: r.id, name: r.actor_name, tenantId: r.tenant_id,
-    tenantType: r.tenant_type, role: r.role, persona: r.persona,
-  };
+  return { id: r.id, name: r.actor_name, tenantId: r.tenant_id, tenantType: r.tenant_type, role: r.role, persona: r.persona };
 };
 
 export class SqliteAuthService {
   private otpProvider: OtpProviderAdapter;
-
   constructor(private readonly client: SqliteClient, otpProvider?: OtpProviderAdapter) {
     this.otpProvider = otpProvider ?? new UnconfiguredOtpProvider();
   }
-
   public setOtpProvider(provider: OtpProviderAdapter): void { this.otpProvider = provider; }
   public getOtpProvider(): OtpProviderAdapter { return this.otpProvider; }
 
@@ -45,12 +40,8 @@ export class SqliteAuthService {
       throw new Error("username, password, actorName, and tenantId are required.");
     }
     assertValidIdentityTuple(input.persona, input.tenantType, input.role);
-
     const id = input.id?.trim() || `ACT-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
-    const now = new Date().toISOString();
-    const salt = generateSaltHex();
-    const phone = input.phoneNumber?.trim() || null;
-
+    const [now, salt, phone] = [new Date().toISOString(), generateSaltHex(), input.phoneNumber?.trim() || null];
     this.client.db.run(
       `INSERT INTO pilot_accounts (id, username, phone_number, password_hash, password_salt, actor_name, tenant_id, tenant_type, role, persona, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`,
       [id, username, phone, hashSecretWithSalt(input.password, salt), salt, actorName, tenantId, input.tenantType, input.role, input.persona, now, now]
@@ -63,14 +54,12 @@ export class SqliteAuthService {
     const bucketKey = `pw_login:${normalizedUser.toLowerCase()}`;
     const lockMsg = "Too many failed password login attempts. Account login is temporarily locked.";
     assertRateLimitAllowed(this.client, bucketKey, lockMsg);
-
     const row = this.client.db.query<AccountRow, [string]>("SELECT * FROM pilot_accounts WHERE username = ?").get(normalizedUser);
     if (!row || !verifySecretWithSalt(password, row.password_salt, row.password_hash)) {
       recordRateLimitAttempt(this.client, bucketKey, PASSWORD_LOGIN_LIMIT_POLICY, lockMsg);
       throw new AuthenticationError("Invalid username or password.", "INVALID_CREDENTIALS");
     }
     if (!row.is_active) throw new AuthenticationError("Pilot account is disabled.", "ACCOUNT_DISABLED");
-
     clearRateLimitBucket(this.client, bucketKey);
     return this.createSession(row, "PASSWORD_SESSION", ttlMs);
   }
@@ -112,7 +101,6 @@ export class SqliteAuthService {
     const res = this.client.db.run("UPDATE managed_pilot_tokens SET revoked_at = ?, revocation_reason = ? WHERE id = ?", [new Date().toISOString(), reason.trim(), tokenId.trim()]);
     if (res.changes === 0) throw new Error(`Managed pilot token '${tokenId}' not found.`);
   }
-
   public revokeSession(sessionId: string, reason = "Logged out"): void {
     const res = this.client.db.run("UPDATE auth_sessions SET revoked_at = ?, revocation_reason = ? WHERE id = ?", [new Date().toISOString(), reason.trim(), sessionId.trim()]);
     if (res.changes === 0) throw new Error(`Session '${sessionId}' not found.`);

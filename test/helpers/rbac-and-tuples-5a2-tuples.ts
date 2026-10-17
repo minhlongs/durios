@@ -69,8 +69,7 @@ export async function runIdentityTupleValidationScenario(
   for (const [persona, tenantType, role] of validTuples) {
     expect(() => assertValidIdentityTuple(persona, tenantType, role)).not.toThrow();
     const seeded = seedTestPilotActor(app.authService, { persona, tenantType, role, tenantId: "TEN-VALID" });
-    const meRes = await app.handler(new Request("http://127.0.0.1/api/auth/me", { headers: { Cookie: seeded.sessionCookie } }));
-    expect(meRes.status).toBe(200);
+    expect((await app.handler(new Request("http://127.0.0.1/api/auth/me", { headers: { Cookie: seeded.sessionCookie } }))).status).toBe(200);
   }
 
   const invalidTuples: Array<[unknown, unknown, unknown]> = [
@@ -96,8 +95,7 @@ export async function runIdentityTupleValidationScenario(
   }
 
   const salt = generateSaltHex();
-  const pwHash = hashSecretWithSalt("LegacyPass#1", salt);
-  const now = new Date().toISOString();
+  const [pwHash, now] = [hashSecretWithSalt("LegacyPass#1", salt), new Date().toISOString()];
   app.sqliteClient.db.run(
     `INSERT INTO pilot_accounts VALUES ('ACT-LEGACY-BAD', 'legacy.bad', '+84911000999', ?, ?, 'Legacy Bad', 'TEN-BAD', 'BUYER_IMPORTER', 'MANAGER', 'BUYER_VIEWER', 1, ?, ?)`,
     [pwHash, salt, now, now]
@@ -135,12 +133,7 @@ export async function runIdentityTupleValidationScenario(
   );
   expect(otpVerBad.status).toBe(403);
   expect(otpVerBad.headers.get("set-cookie")).toBeNull();
+  expect((app.sqliteClient.db.query<{ c: number }, []>("SELECT COUNT(*) as c FROM auth_sessions").get())!.c).toBe(sessionsBefore);
 
-  const sessionsAfter = (app.sqliteClient.db.query<{ c: number }, []>("SELECT COUNT(*) as c FROM auth_sessions").get())!.c;
-  expect(sessionsAfter).toBe(sessionsBefore);
-
-  const mptBadRes = await app.handler(
-    new Request("http://127.0.0.1/api/dossiers", { headers: { "x-pilot-token": "dpt_legacy_bad_token" } })
-  );
-  expect(mptBadRes.status).toBe(403);
+  expect((await app.handler(new Request("http://127.0.0.1/api/dossiers", { headers: { "x-pilot-token": "dpt_legacy_bad_token" } }))).status).toBe(403);
 }

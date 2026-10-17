@@ -12,30 +12,13 @@ import type {
   StagingDossierView, WorkspaceAppInstance,
 } from "./staging-dress-rehearsal-auth-step.js";
 
-interface StagingBackupManifestResult {
-  auditChainValid: boolean;
-  dossierCount: number;
-  documentCount: number;
-  blobs: Array<{ relativePath: string }>;
-}
-
-interface StagingBackupVerificationResult {
-  valid: boolean;
-  errors: string[];
-}
+interface StagingBackupManifestResult { auditChainValid: boolean; dossierCount: number; documentCount: number; blobs: Array<{ relativePath: string }> }
+interface StagingBackupVerificationResult { valid: boolean; errors: string[] }
 
 export interface StagingBackupDrillParams {
-  siteA: WorkspaceAppInstance;
-  siteADb: string;
-  siteAUploads: string;
-  backupDir: string;
-  tamperedBackupDir: string;
-  restoredDb: string;
-  restoredUploads: string;
-  localGatewayOtp: OtpProviderAdapter;
-  liveDossierId: string;
-  mgrCookie: string;
-  buyerRawToken: string;
+  siteA: WorkspaceAppInstance; siteADb: string; siteAUploads: string;
+  backupDir: string; tamperedBackupDir: string; restoredDb: string; restoredUploads: string;
+  localGatewayOtp: OtpProviderAdapter; liveDossierId: string; mgrCookie: string; buyerRawToken: string;
 }
 
 export async function runStagingBackupTamperAndRestoreDrill(
@@ -62,8 +45,7 @@ export async function runStagingBackupTamperAndRestoreDrill(
   expect(verifyGood.errors).toEqual([]);
 
   createSiteBackup(siteADb, siteAUploads, tamperedBackupDir);
-  const firstBlobRel = backupManifest.blobs[0]!.relativePath;
-  writeFileSync(join(tamperedBackupDir, "uploads", firstBlobRel), "TAMPERED-BLOB-BYTES");
+  writeFileSync(join(tamperedBackupDir, "uploads", backupManifest.blobs[0]!.relativePath), "TAMPERED-BLOB-BYTES");
 
   const verifyTampered = verifySiteBackup(tamperedBackupDir);
   expect(verifyTampered.valid).toBe(false);
@@ -86,9 +68,7 @@ export async function runStagingBackupTamperAndRestoreDrill(
 
   try {
     const mgrDossierRes = await restoredApp.handler(
-      new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}`, {
-        headers: { Cookie: mgrCookie },
-      })
+      new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}`, { headers: { Cookie: mgrCookie } })
     );
     expect(mgrDossierRes.status).toBe(200);
     const restoredDossier = ((await mgrDossierRes.json()) as { data: StagingDossierView }).data;

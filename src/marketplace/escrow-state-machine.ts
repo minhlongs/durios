@@ -8,23 +8,16 @@ import {
   assertMarketplaceFeatureUnlocked, assertZeroCustodyCompliance, type MarketplaceDualLockContext,
 } from "./marketplace-guard.js";
 
-const STATUTORY_ESCROW_NOTICE =
-  "DuriOS chỉ điều phối trạng thái chứng từ; hợp đồng mua bán thuộc bên mua và bên bán; tiền ký quỹ do ngân hàng được cấp phép nắm giữ theo Nghị định 52/2024/NĐ-CP và Luật TMĐT 122/2025/QH15.";
+const STATUTORY_ESCROW_NOTICE = "DuriOS chỉ điều phối trạng thái chứng từ; hợp đồng mua bán thuộc bên mua và bên bán; tiền ký quỹ do ngân hàng được cấp phép nắm giữ theo Nghị định 52/2024/NĐ-CP và Luật TMĐT 122/2025/QH15.";
 
 export class NonCustodialEscrowCoordinator {
   private readonly listings = new Map<string, DurianMarketplaceListing>();
   private readonly contracts = new Map<string, NonCustodialEscrowContract>();
   private readonly processedIdempotencyKeys = new Map<string, NonCustodialEscrowContract>();
-
   constructor(private lockContext: MarketplaceDualLockContext) {}
+  public updateLockContext(newContext: MarketplaceDualLockContext): void { this.lockContext = newContext; }
 
-  public updateLockContext(newContext: MarketplaceDualLockContext): void {
-    this.lockContext = newContext;
-  }
-
-  public createListing(
-    dossier: ContainerDossier, input: CreateMarketplaceListingInput, actor: AuthenticatedActor
-  ): DurianMarketplaceListing {
+  public createListing(dossier: ContainerDossier, input: CreateMarketplaceListingInput, actor: AuthenticatedActor): DurianMarketplaceListing {
     assertMarketplaceFeatureUnlocked(this.lockContext);
     assertValidActor(actor);
     if (actor.tenantType !== "PACKHOUSE_EXPORTER" || actor.tenantId !== dossier.tenantId) {

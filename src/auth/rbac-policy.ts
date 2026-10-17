@@ -78,22 +78,13 @@ export function isReadOnlyRole(role: UserRole): boolean {
 export function assertCanCreateContainerDossier(actor: AuthenticatedActor): void {
   assertValidActor(actor);
   if (isReadOnlyRole(actor.role)) {
-    throw new AccessControlError(
-      `Role '${actor.role}' is read-only and prohibited from creating container dossiers.`,
-      "INSUFFICIENT_ROLE"
-    );
+    throw new AccessControlError(`Role '${actor.role}' is read-only and prohibited from creating container dossiers.`, "INSUFFICIENT_ROLE");
   }
   if (actor.tenantType !== "PACKHOUSE_EXPORTER") {
-    throw new AccessControlError(
-      `Tenant type '${actor.tenantType}' (${actor.persona}) is not permitted to create packhouse container dossiers.`,
-      "INVALID_TENANT_TYPE"
-    );
+    throw new AccessControlError(`Tenant type '${actor.tenantType}' (${actor.persona}) is not permitted to create packhouse container dossiers.`, "INVALID_TENANT_TYPE");
   }
   if (actor.role !== "CLERK" && actor.role !== "MANAGER" && actor.role !== "ADMIN") {
-    throw new AccessControlError(
-      `Role '${actor.role}' is not permitted to create container dossiers.`,
-      "INSUFFICIENT_ROLE"
-    );
+    throw new AccessControlError(`Role '${actor.role}' is not permitted to create container dossiers.`, "INSUFFICIENT_ROLE");
   }
 }
 
@@ -104,10 +95,7 @@ export function assertOwnerOperationalRole(
 ): void {
   assertValidActor(actor);
   if (isReadOnlyRole(actor.role)) {
-    throw new AccessControlError(
-      `Role '${actor.role}' is read-only and prohibited from '${operationName}'.`,
-      "INSUFFICIENT_ROLE"
-    );
+    throw new AccessControlError(`Role '${actor.role}' is read-only and prohibited from '${operationName}'.`, "INSUFFICIENT_ROLE");
   }
   if (actor.tenantId !== dossierTenantId) {
     throw new AccessControlError(
@@ -116,10 +104,7 @@ export function assertOwnerOperationalRole(
     );
   }
   if (actor.role !== "CLERK" && actor.role !== "MANAGER" && actor.role !== "ADMIN") {
-    throw new AccessControlError(
-      `Role '${actor.role}' is not permitted to execute '${operationName}'.`,
-      "INSUFFICIENT_ROLE"
-    );
+    throw new AccessControlError(`Role '${actor.role}' is not permitted to execute '${operationName}'.`, "INSUFFICIENT_ROLE");
   }
 }
 

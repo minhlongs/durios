@@ -15,10 +15,9 @@ export interface ManifestVerificationResult {
 }
 
 function asObjectRecord(value: unknown): Record<string, unknown> | null {
-  if (value !== null && typeof value === "object" && !Array.isArray(value)) {
-    return value as Record<string, unknown>;
-  }
-  return null;
+  return value !== null && typeof value === "object" && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
 }
 
 export function verifyExportManifest(
@@ -41,8 +40,7 @@ export function verifyExportManifest(
 
   const containerNumber = typeof rec.containerNumber === "string" ? rec.containerNumber : "";
   const sealNumber = typeof rec.sealNumber === "string" ? rec.sealNumber : "";
-  const expectedSha256 =
-    typeof rec.compositeManifestSha256 === "string" ? rec.compositeManifestSha256 : "";
+  const expectedSha256 = typeof rec.compositeManifestSha256 === "string" ? rec.compositeManifestSha256 : "";
 
   const documents = Array.isArray(rec.documents) ? rec.documents : [];
   if (!Array.isArray(rec.documents) || rec.documents.length === 0) {
@@ -58,24 +56,17 @@ export function verifyExportManifest(
   }
 
   const compositeContent = JSON.stringify({
-    dossierId: rec.dossierId,
-    dossierCode: rec.dossierCode,
-    tenantId: rec.tenantId,
-    containerNumber: rec.containerNumber,
-    sealNumber,
-    documents: rec.documents,
+    dossierId: rec.dossierId, dossierCode: rec.dossierCode, tenantId: rec.tenantId,
+    containerNumber: rec.containerNumber, sealNumber, documents: rec.documents,
     verifiedDataSummary: rec.verifiedDataSummary,
   });
 
   const recomputedSha256 = calculateSha256(compositeContent);
   if (!expectedSha256 || recomputedSha256 !== expectedSha256) {
-    errors.push(
-      `Composite SHA-256 mismatch: expected '${expectedSha256}', recomputed '${recomputedSha256}'.`
-    );
+    errors.push(`Composite SHA-256 mismatch: expected '${expectedSha256}', recomputed '${recomputedSha256}'.`);
   }
 
-  const iso6346ContainerValid =
-    containerNumber.length > 0 && validateIso6346Container(containerNumber).isValid;
+  const iso6346ContainerValid = containerNumber.length > 0 && validateIso6346Container(containerNumber).isValid;
   if (!iso6346ContainerValid) {
     errors.push(`Container number '${containerNumber}' failed ISO 6346 check-digit validation.`);
   }
@@ -84,11 +75,7 @@ export function verifyExportManifest(
     documents.length > 0 &&
     documents.every((d) => {
       const docObj = asObjectRecord(d);
-      return (
-        docObj !== null &&
-        typeof docObj.sha256Hash === "string" &&
-        /^[a-f0-9]{64}$/i.test(docObj.sha256Hash)
-      );
+      return docObj !== null && typeof docObj.sha256Hash === "string" && /^[a-f0-9]{64}$/i.test(docObj.sha256Hash);
     });
   if (!allDocumentsHaveSha256) {
     errors.push("One or more manifest documents are missing a valid 64-hex SHA-256 digest.");
@@ -96,9 +83,7 @@ export function verifyExportManifest(
 
   const findingsObj = asObjectRecord(rec.complianceFindingsCount);
   const criticalBlockers =
-    findingsObj && typeof findingsObj.criticalBlockers === "number"
-      ? findingsObj.criticalBlockers
-      : -1;
+    findingsObj && typeof findingsObj.criticalBlockers === "number" ? findingsObj.criticalBlockers : -1;
   const zeroCriticalBlockers = criticalBlockers === 0;
   if (!zeroCriticalBlockers) {
     errors.push(
@@ -117,12 +102,8 @@ export function verifyExportManifest(
     : undefined;
 
   return {
-    valid,
-    recomputedSha256,
-    expectedSha256,
-    iso6346ContainerValid,
-    allDocumentsHaveSha256,
-    zeroCriticalBlockers,
+    valid, recomputedSha256, expectedSha256, iso6346ContainerValid,
+    allDocumentsHaveSha256, zeroCriticalBlockers,
     verificationSealBadge: valid
       ? "DuriOS Local Manifest Hash Check Passed (MIT Verifier)"
       : "UNVERIFIED_OR_TAMPERED_MANIFEST",
@@ -137,8 +118,7 @@ if (import.meta.main) {
     process.stderr.write("Usage: bun run src/export/standalone-manifest-verifier.ts <manifest.json>\n");
     process.exit(1);
   }
-  const parsed: unknown = JSON.parse(readFileSync(filePath, "utf-8"));
-  const result = verifyExportManifest(parsed);
+  const result = verifyExportManifest(JSON.parse(readFileSync(filePath, "utf-8")));
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   process.exit(result.valid ? 0 : 1);
 }

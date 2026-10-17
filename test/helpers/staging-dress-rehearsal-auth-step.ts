@@ -113,14 +113,8 @@ export async function provisionAndVerifyStagingAccounts(
   expect(otpVerifyRes.status).toBe(200);
   const clerkOtpCookie = extractSessionCookiePair(otpVerifyRes.headers.get("set-cookie"));
 
-  for (const hdr of [
-    { Cookie: clerkPwCookie },
-    { Cookie: clerkOtpCookie },
-    { Authorization: `Bearer ${clerkManagedToken.rawToken}` },
-  ]) {
-    const meRes = await siteA.handler(
-      new Request("https://durios-pilot.local/api/auth/me", { headers: hdr })
-    );
+  for (const hdr of [{ Cookie: clerkPwCookie }, { Cookie: clerkOtpCookie }, { Authorization: `Bearer ${clerkManagedToken.rawToken}` }]) {
+    const meRes = await siteA.handler(new Request("https://durios-pilot.local/api/auth/me", { headers: hdr }));
     expect(meRes.status).toBe(200);
     expect(((await meRes.json()) as { data: { actor: Record<string, unknown> } }).data.actor).toEqual({
       id: "ACT-CAILAY-CLERK-01", name: "Nguyen Van Clerk (Cai Lay)", tenantId: "TENANT-CAILAY-01",

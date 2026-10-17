@@ -39,16 +39,11 @@ export function runOrganicEvidenceWorkspaceScenario(): void {
   const evidence = ws.organicEvidenceManager.recordEvidence(
     dossier,
     {
-      certifierName: "Demo Bio-Inspect Vietnam (Synthetic)",
-      certifierAccreditationNumber: "DEMO-ACC-998",
-      certificateNumber: "DEMO-ORG-892147-2026",
-      standardCode: "USDA_NOP_EQUIVALENT",
-      standardDescription: "USDA National Organic Program Equivalent",
-      certifiedScope: "Fresh Organic Durian Ri6 & Monthong",
-      validFrom: "2026-03-01T00:00:00.000Z",
-      validTo: "2027-02-28T23:59:59.000Z",
-      issuingDate: "2026-03-01",
-      issuerClaimedStatus: "CERTIFIED",
+      certifierName: "Demo Bio-Inspect Vietnam (Synthetic)", certifierAccreditationNumber: "DEMO-ACC-998",
+      certificateNumber: "DEMO-ORG-892147-2026", standardCode: "USDA_NOP_EQUIVALENT",
+      standardDescription: "USDA National Organic Program Equivalent", certifiedScope: "Fresh Organic Durian Ri6 & Monthong",
+      validFrom: "2026-03-01T00:00:00.000Z", validTo: "2027-02-28T23:59:59.000Z",
+      issuingDate: "2026-03-01", issuerClaimedStatus: "CERTIFIED",
     },
     manager,
     ws.auditLedger
@@ -97,14 +92,9 @@ export async function runMultiTenantHttpRouterScenario(): Promise<void> {
   const grantData = (await grantRes.json()) as GrantCreatedPayload;
   expect(grantData.grant.granteeTenantId).toBe("TENANT-CUSTOMS");
 
-  const getSharesRes = await routeHttpRequest(
-    ws,
-    new Request(`http://localhost:3000/api/dossiers/${dossier.id}/shares`, {
-      method: "GET",
-      headers: { Authorization: `Bearer ${adminSeeded.sessionToken}` },
-    })
-  );
-  expect(getSharesRes.status).toBe(200);
+  expect(
+    (await routeHttpRequest(ws, new Request(`http://localhost:3000/api/dossiers/${dossier.id}/shares`, { headers: { Authorization: `Bearer ${adminSeeded.sessionToken}` } }))).status
+  ).toBe(200);
 
   const revokeRes = await routeHttpRequest(
     ws,
@@ -138,11 +128,9 @@ export async function runMultiTenantHttpRouterScenario(): Promise<void> {
   const getOrgRes = await routeHttpRequest(
     ws,
     new Request(`http://localhost:3000/api/dossiers/${dossier.id}/organic-evidence`, {
-      method: "GET",
       headers: { Authorization: `Bearer ${viewerSeeded.sessionToken}` },
     })
   );
   expect(getOrgRes.status).toBe(200);
-  const getOrgData = (await getOrgRes.json()) as OrganicListPayload;
-  expect(getOrgData.evidence.length).toBe(1);
+  expect(((await getOrgRes.json()) as OrganicListPayload).evidence.length).toBe(1);
 }

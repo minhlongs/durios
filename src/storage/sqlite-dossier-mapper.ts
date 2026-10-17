@@ -5,51 +5,28 @@ import type {
 } from "../domain/types.js";
 
 export interface DossierRow {
-  readonly id: string;
-  readonly tenant_id: string;
-  readonly dossier_code: string;
-  readonly container_number: string;
-  readonly seal_number: string;
-  readonly target_market: string;
-  readonly border_gate: string;
-  readonly target_temperature_c: number;
-  readonly declared_net_weight_kg: number | null;
-  readonly declared_box_count: number | null;
-  readonly lifecycle_state: string;
-  readonly is_immutable: number;
-  readonly export_sealed_at: string | null;
-  readonly latest_validation_result: string | null;
-  readonly created_at: string;
-  readonly updated_at: string;
+  readonly id: string; readonly tenant_id: string; readonly dossier_code: string;
+  readonly container_number: string; readonly seal_number: string; readonly target_market: string;
+  readonly border_gate: string; readonly target_temperature_c: number;
+  readonly declared_net_weight_kg: number | null; readonly declared_box_count: number | null;
+  readonly lifecycle_state: string; readonly is_immutable: number;
+  readonly export_sealed_at: string | null; readonly latest_validation_result: string | null;
+  readonly created_at: string; readonly updated_at: string;
 }
 
 export interface DocumentRow {
-  readonly id: string;
-  readonly dossier_id: string;
-  readonly tenant_id: string;
-  readonly document_type: string;
-  readonly file_name: string;
-  readonly file_size_bytes: number;
-  readonly mime_type: string;
-  readonly sha256_hash: string;
-  readonly storage_path: string;
-  readonly uploaded_at: string;
-  readonly is_superseded: number;
+  readonly id: string; readonly dossier_id: string; readonly tenant_id: string;
+  readonly document_type: string; readonly file_name: string; readonly file_size_bytes: number;
+  readonly mime_type: string; readonly sha256_hash: string; readonly storage_path: string;
+  readonly uploaded_at: string; readonly is_superseded: number;
 }
 
 export interface FieldRow {
-  readonly id: string;
-  readonly document_id: string;
-  readonly dossier_id: string;
-  readonly tenant_id: string;
-  readonly field_key: string;
-  readonly raw_value: string;
-  readonly confirmed_value: string | null;
-  readonly confidence: number;
-  readonly bounding_box: string | null;
-  readonly verification_status: string;
-  readonly verified_by_actor_id: string | null;
-  readonly verified_at: string | null;
+  readonly id: string; readonly document_id: string; readonly dossier_id: string;
+  readonly tenant_id: string; readonly field_key: string; readonly raw_value: string;
+  readonly confirmed_value: string | null; readonly confidence: number;
+  readonly bounding_box: string | null; readonly verification_status: string;
+  readonly verified_by_actor_id: string | null; readonly verified_at: string | null;
 }
 
 function formatLabel(key: string): string {

@@ -290,9 +290,78 @@
        4. LAYOUT
        ========================================================== */
     .app-header {
-      position: sticky; top: 0; z-index: 30; min-height: var(--header-h);
-      display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3);
-      padding: var(--space-2) var(--space-6); background: var(--color-surface); border-bottom: 1px solid var(--color-border);
+      position: sticky; top: 0; z-index: 30; min-height: 52px; height: 52px;
+      display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
+      padding: 0 var(--space-5); background: var(--color-surface); border-bottom: 1px solid var(--color-border);
+      box-shadow: var(--shadow-sm);
+    }
+    .workspace-zones-wrapper {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 390px;
+      gap: var(--space-5);
+      align-items: start;
+    }
+    .workspace-center-canvas {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-5);
+      min-width: 0;
+    }
+    .workspace-context-panel {
+      position: sticky;
+      top: calc(52px + var(--space-4));
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-3);
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg);
+      padding: var(--space-3);
+      box-shadow: var(--shadow-sm);
+      max-height: calc(100vh - 52px - var(--space-6));
+      overflow-y: auto;
+    }
+    .context-panel-nav {
+      display: flex;
+      gap: var(--space-1);
+      padding: 3px;
+      background: var(--color-surface-muted);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+    }
+    .context-tab-btn {
+      flex: 1;
+      padding: var(--space-2) var(--space-2);
+      font-size: var(--text-xs);
+      font-weight: 600;
+      border: none;
+      background: transparent;
+      color: var(--color-text-muted);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 120ms ease;
+      white-space: nowrap;
+      text-align: center;
+    }
+    .context-tab-btn.active {
+      background: var(--color-surface);
+      color: var(--color-primary);
+      box-shadow: var(--shadow-sm);
+    }
+    .context-tab-pane {
+      display: none;
+    }
+    .context-tab-pane.active {
+      display: block;
+    }
+    @media (max-width: 1200px) {
+      .workspace-zones-wrapper {
+        grid-template-columns: 1fr;
+      }
+      .workspace-context-panel {
+        position: static;
+        max-height: none;
+      }
     }
     .brand { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
     .brand__mark {
@@ -544,31 +613,33 @@
     <div class="brand">
       <div class="brand__mark" aria-hidden="true">Du</div>
       <div>
-        <h1 class="brand__title">DuriOS <span class="badge badge--neutral">Bản thử nghiệm cục bộ</span></h1>
-        <p class="brand__subtitle">Workspace chuẩn bị hồ sơ container sầu riêng xuất khẩu sang Trung Quốc</p>
+        <h1 class="brand__title">DuriOS <span class="badge badge--neutral">Cai Lậy Pilot // v0.4</span></h1>
       </div>
     </div>
     <div class="header-tools">
       <span class="server-status" id="system-status" data-state="checking" role="status">
         <span class="server-status__dot" aria-hidden="true"></span>
-        <span id="system-status-text">Đang kiểm tra máy chủ…</span>
+        <span id="system-status-text">Máy chủ: Sẵn sàng</span>
       </span>
       <div class="role-picker">
-        <label for="actor-role">Vai trò mô phỏng</label>
+        <label for="actor-role">Vai trò</label>
         <select id="actor-role" class="select" onchange="reloadWorkspace()" aria-describedby="actor-role-hint">
-          <option value="CLERK">Nhân viên nghiệp vụ (CLERK)</option>
-          <option value="MANAGER">Quản lý phê duyệt (MANAGER)</option>
+          <option value="CLERK">Nhân viên (CLERK)</option>
+          <option value="MANAGER">Quản lý (MANAGER)</option>
         </select>
         <span id="actor-role-hint" class="visually-hidden">Vai trò chỉ mô phỏng cục bộ, không phải đăng nhập thật.</span>
       </div>
       <button type="button" class="btn btn--primary btn--sm" id="btn-pilot-rehearsal-seed" onclick="runPilotRehearsalBootstrap()">
-        <span>🚀 Diễn tập Cai Lậy (5 Cont + Blind-Fault)</span>
+        <span>🚀 Diễn tập Cai Lậy (5 Cont)</span>
       </button>
-      <button type="button" class="btn btn--secondary btn--sm" id="btn-stitch-ecosystem" onclick="openStitchEcosystemDialog()">
-        <span>🎨 25 Màn hình Stitch &amp; Kiểm toán 25 bước</span>
+      <button type="button" class="btn btn--secondary btn--sm" id="btn-stitch-gallery" onclick="openStitchGalleryModal()">
+        <span>🎨 25 Màn hình Stitch</span>
+      </button>
+      <button type="button" class="btn btn--secondary btn--sm" id="btn-stitch-ecosystem" onclick="openStitchEcosystemDialog()" style="display:none;">
+        <span>Kiểm toán 25 bước</span>
       </button>
       <a class="btn btn--secondary btn--sm" href="/stitch/gallery.html" target="_blank" rel="noopener">
-        <span>Mở Stitch Master Hub ↗</span>
+        <span>Master Hub ↗</span>
       </a>
       <button type="button" class="btn btn--secondary btn--sm" id="btn-auth-session" onclick="openAuthDialog()">
         <span id="auth-session-label">Đăng nhập Pilot</span>
@@ -1785,24 +1856,110 @@
       if (target) target.focus({ preventScroll: !p.scroll });
     }
 
+    function switchContextTab(tabKey) {
+      ui.activeContextTab = tabKey;
+      const panes = {
+        audit: document.getElementById("audit-chain-panel"),
+        organic: document.getElementById("organic-evidence-panel"),
+        shares: document.getElementById("share-grants-panel"),
+      };
+      for (const k in panes) {
+        if (panes[k]) panes[k].style.display = k === tabKey ? "block" : "none";
+      }
+      document.querySelectorAll(".context-tab-btn").forEach((btn) => {
+        const isMatch = btn.getAttribute("onclick") && btn.getAttribute("onclick").includes(tabKey);
+        btn.classList.toggle("active", isMatch);
+        btn.setAttribute("aria-selected", isMatch ? "true" : "false");
+      });
+    }
+
+    function openStitchGalleryModal() {
+      const dlg = document.getElementById("stitch-gallery-modal");
+      if (!dlg) return;
+      renderStitchGalleryModalGrid();
+      dlg.showModal();
+    }
+
+    function closeStitchGalleryModal() {
+      const dlg = document.getElementById("stitch-gallery-modal");
+      if (dlg && dlg.open) dlg.close();
+    }
+
+    function renderStitchGalleryModalGrid() {
+      const grid = document.getElementById("stitch-gallery-modal-grid");
+      if (!grid) return;
+      grid.innerHTML = STITCH_20_SCREENS.map((s) => `
+        <div style="border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: 10px 12px; background: var(--color-surface); display: flex; flex-direction: column; justify-content: space-between; gap: 6px;">
+          <div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 11px; color: var(--color-text-muted);">
+              <span class="mono" style="font-weight: 700; color: var(--color-primary);">#${escapeHtml(s.id)} · ${escapeHtml(s.group)}</span>
+              <code class="mono">${escapeHtml(s.file)}</code>
+            </div>
+            <div style="font-weight: 650; margin-top: 4px; font-size: 13px;">${escapeHtml(s.title)}</div>
+          </div>
+          <div style="display: flex; gap: 6px; margin-top: 4px;">
+            <a class="btn btn--secondary btn--sm" style="flex: 1;" href="/stitch/${encodeURIComponent(s.file)}" target="_blank" rel="noopener">Mở giao diện ↗</a>
+            <a class="btn btn--ghost btn--sm" href="/stitch/${encodeURIComponent(s.file.replace('.html', '.png'))}" target="_blank" rel="noopener">PNG</a>
+          </div>
+        </div>
+      `).join("");
+    }
+
     function paintWorkspace() {
       const d = ui.dossier;
       const ctx = buildContext(d, ui.audit, currentRole());
       if (!ctx.canExport) ui.confirmExport = false;
       const saved = ui.dossierPaintedId === d.id ? collectUnsavedInputs() : {};
-      document.getElementById("workspace-main").innerHTML = [
-        renderChainBanner(ctx),
-        renderDossierHeader(d, ctx),
-        renderStepper(ctx),
-        renderDocumentsSection(d, ctx),
-        renderFieldsSection(d, ctx),
-        renderValidationSection(d, ctx),
-        renderAuditSection(ctx),
-        renderExportSection(d, ctx),
-        renderOrganicSection(d, ctx),
-        renderSharingSection(d, ctx),
-        renderPilotKpiSection(),
-      ].join("");
+      const activeTab = ui.activeContextTab || "audit";
+
+      document.getElementById("workspace-main").innerHTML = `
+        <div class="workspace-zones-wrapper">
+          <!-- Zone 2: Center Canvas (Focused 3-Step Container Workflow) -->
+          <div class="workspace-center-canvas">
+            ${renderChainBanner(ctx)}
+            ${renderDossierHeader(d, ctx)}
+            ${renderStepper(ctx)}
+            <div class="workflow-card-group" id="workflow-steps-group">
+              <!-- Step 1: Document Ingestion & Sample Pack -->
+              ${renderDocumentsSection(d, ctx)}
+              <!-- Step 2: Deterministic Rules & HITL Verification -->
+              ${renderFieldsSection(d, ctx)}
+              ${renderValidationSection(d, ctx)}
+              <!-- Step 3: Cryptographic Manifest & Export Seal -->
+              ${renderExportSection(d, ctx)}
+            </div>
+          </div>
+
+          <!-- Zone 3: Right Context Panel (Audit Ledger, Organic Evidence, Share Grants) -->
+          <aside class="workspace-context-panel" id="workspace-context-panel">
+            <div class="context-panel-nav" role="tablist" aria-label="Bảng phụ trợ và nhật ký kiểm toán">
+              <button type="button" class="context-tab-btn ${activeTab === 'audit' ? 'active' : ''}" onclick="switchContextTab('audit')" role="tab" aria-selected="${activeTab === 'audit'}">
+                📋 Nhật ký &amp; Chuỗi băm
+              </button>
+              <button type="button" class="context-tab-btn ${activeTab === 'organic' ? 'active' : ''}" onclick="switchContextTab('organic')" role="tab" aria-selected="${activeTab === 'organic'}">
+                🌿 Chứng cứ
+              </button>
+              <button type="button" class="context-tab-btn ${activeTab === 'shares' ? 'active' : ''}" onclick="switchContextTab('shares')" role="tab" aria-selected="${activeTab === 'shares'}">
+                🔗 Chia sẻ
+              </button>
+            </div>
+            <div class="context-panel-body">
+              <div id="audit-chain-panel" class="context-tab-pane ${activeTab === 'audit' ? 'active' : ''}" style="${activeTab === 'audit' ? 'display:block;' : 'display:none;'}">
+                ${renderAuditSection(ctx)}
+              </div>
+              <div id="organic-evidence-panel" class="context-tab-pane ${activeTab === 'organic' ? 'active' : ''}" style="${activeTab === 'organic' ? 'display:block;' : 'display:none;'}">
+                ${renderOrganicSection(d, ctx)}
+              </div>
+              <div id="share-grants-panel" class="context-tab-pane ${activeTab === 'shares' ? 'active' : ''}" style="${activeTab === 'shares' ? 'display:block;' : 'display:none;'}">
+                ${renderSharingSection(d, ctx)}
+              </div>
+            </div>
+            <div class="context-panel-kpi" style="margin-top:var(--space-2);">
+              ${renderPilotKpiSection()}
+            </div>
+          </aside>
+        </div>
+      `;
       ui.dossierPaintedId = d.id;
       restoreUnsavedInputs(saved);
       applyPendingFocus();
@@ -2483,5 +2640,25 @@
     window.setInterval(checkHealth, 30000);
     checkAuthSession().finally(() => loadDossierList());
   </script>
+
+  <!-- 25-SCREEN ARCHITECTURE DIRECTORY MODAL -->
+  <dialog class="modal" id="stitch-gallery-modal" aria-labelledby="stitch-gallery-title" style="max-width: 980px; width: 95vw;">
+    <div class="modal__header">
+      <div>
+        <h2 class="modal__title" id="stitch-gallery-title">DuriOS 25-Screen Architecture Directory</h2>
+        <p class="panel__desc">Khám phá 25 màn hình chuẩn hóa doanh nghiệp 2027 (Linear/Palantir UI) cho chuỗi xuất khẩu sầu riêng</p>
+      </div>
+      <button type="button" class="icon-btn" onclick="closeStitchGalleryModal()" aria-label="Đóng hộp thoại">✕</button>
+    </div>
+    <div class="modal__body" style="max-height: 65vh; overflow-y: auto;">
+      <div id="stitch-gallery-modal-grid" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+      </div>
+    </div>
+    <div class="modal__footer" style="display:flex; justify-content:space-between; align-items:center;">
+      <a href="/stitch/gallery.html" target="_blank" class="btn btn--primary btn--sm">Mở Master Hub toàn màn hình ↗</a>
+      <button type="button" class="btn btn--secondary btn--sm" onclick="closeStitchGalleryModal()">Đóng</button>
+    </div>
+  </dialog>
+
 </body>
 </html>

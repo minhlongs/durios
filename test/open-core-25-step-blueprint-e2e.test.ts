@@ -10,15 +10,11 @@ import type { SignedWorkspacePortabilityBundle } from "../src/saas/workspace-por
 
 interface PortabilityApiResponse {
   readonly success: boolean;
-  readonly data: {
-    readonly bundle: SignedWorkspacePortabilityBundle;
-    readonly subscription: { readonly edition: string };
-  };
+  readonly data: { readonly bundle: SignedWorkspacePortabilityBundle; readonly subscription: { readonly edition: string } };
 }
 
 describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
   const tempDirs: string[] = [];
-
   afterEach(() => {
     for (const dir of tempDirs.splice(0)) rmSync(dir, { recursive: true, force: true });
   });
@@ -39,9 +35,7 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
       const creds = seedTestPilotActor(app.authService, { role: "MANAGER" });
       const res = await routeHttpRequest(
         app.workspace,
-        new Request("http://127.0.0.1:3000/api/v1/open-core/edition-manifest", {
-          headers: { Authorization: `Bearer ${creds.sessionToken}` },
-        })
+        new Request("http://127.0.0.1:3000/api/v1/open-core/edition-manifest", { headers: { Authorization: `Bearer ${creds.sessionToken}` } })
       );
       expect(res.status).toBe(200);
       const body = (await res.json()) as { success: boolean; data: { manifest: typeof manifest } };
@@ -90,10 +84,7 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
       expect(verifyRes.status).toBe(200);
       expect(((await verifyRes.json()) as { data: { valid: boolean } }).data.valid).toBe(true);
 
-      const tamperedBundle = {
-        ...exportJson.data.bundle,
-        payload: { ...exportJson.data.bundle.payload, totalDossiersCount: 999 },
-      };
+      const tamperedBundle = { ...exportJson.data.bundle, payload: { ...exportJson.data.bundle.payload, totalDossiersCount: 999 } };
       const tamperRes = await routeHttpRequest(
         app.workspace,
         new Request("http://127.0.0.1:3000/api/v1/open-core/portability/verify", {

@@ -151,39 +151,83 @@
       animation: scanline 4s linear infinite;
     }
   </style>
+<link rel="stylesheet" href="/stitch/durios-design-system.css">
 </head>
 <body class="h-full flex flex-col font-body-md text-on-surface bg-surface select-none overflow-x-hidden">
-<div id="durios-unified-top-nav" style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 7px 14px; font-family: 'Inter', sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
-  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 6px;">
-    <span style="font-weight: 800; color: #10B981; font-size: 12px; letter-spacing: 0.05em;">DURIOS 25-SCREEN NAV</span>
-    <span style="color: #1F3327;">|</span>
-    <a href="gallery.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">⭐️ Master Hub</a>
-    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">1. Workspace</a>
-    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">2. Dossiers</a>
-    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">3. Auditor (5 Gates)</a>
-    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">4. Buyer Portal</a>
-    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">5. Cluster Ops</a>
-    <a href="portability.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">6. Portability</a>
-    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">7. Pro SaaS</a>
-    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 7px; border-radius: 4px;">8. Style Guide</a>
+<!-- DURIOS 2027 ADAPTIVE 3-MODE APP SHELL TOP COMMAND BAR (44px) -->
+<div id="durios-unified-top-nav" class="durios-top-command-bar" style="background:#09140E;border-bottom:1px solid #1F3327;height:44px;max-height:44px;padding:0 14px;font-family:'Inter',sans-serif;font-size:11px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99999;box-sizing:border-box;overflow:visible;">
+  <div class="durios-bar-left" style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+    <button type="button" id="durios-btn-sidebar" class="durios-icon-btn" title="Toggle Sidebar ([)" aria-label="Toggle Navigation" style="background:#132018;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;cursor:pointer;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+    </button>
+    <a href="gallery.html" class="durios-brand-badge" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;font-size:12px;color:#10B981;">
+      <span>🌿</span>
+      <span class="durios-brand-text">DURIOS // v0.4</span>
+    </a>
+    <span class="durios-breadcrumb-sep" style="color:#4B6B56;">/</span>
+    <span class="durios-breadcrumb-active" style="color:#ECFDF5;font-weight:600;font-size:11px;">13. Field POS Proven</span>
   </div>
-  <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 5px;">
-    <a href="corridors.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">🌏 9. Corridors</a>
-    <a href="blueprint.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px;">🧭 10. Blueprint 25</a>
-    <a href="security-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px;">🛡️ 11. Security Vault</a>
-    <a href="organic-escrow-guard.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">⚖️ 12. Escrow Guard</a>
-    <a href="webhook-sync-queue.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px;">🔄 13. Lab Webhooks</a>
-    <a href="socratic-introspector.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px;">🧠 14. Socratic 5-Turn</a>
-    <a href="rehearsal-command.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">🎯 15. Rehearsal Cmd</a>
-    <a href="mit-verifier-lab.html" style="color: #34D399; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #34D399; border-radius: 4px;">🔬 16. MIT Verifier Lab</a>
-    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px;">📝 Bút Dạ Quang</a>
-    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">📊 Excel Grid</a>
-    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px;">💬 Zalo Bot</a>
-    <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">📱 Mobile</a>
-    <a href="field-proven.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px;">☀️ Field POS</a>
-    <a href="foundry.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">🔐 Foundry</a>
-    <a href="cloud-ocr-vault.html" style="color: #6EE7B7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #6EE7B7; border-radius: 4px;">☁️ 24. Cloud OCR & Vault</a>
-    <a href="ed25519-downgrade-simulator.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px;">🔑 25. Ed25519 Downgrade</a>
+
+  <div class="durios-nav-dropdowns" style="display:flex;align-items:center;gap:4px;flex:1;margin:0 12px;overflow:hidden;">
+    <div class="durios-dropdown" style="position:relative;">
+      <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">1. Packhouse Ops [7] ▾</button>
+      <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
+        <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏭 01. Packhouse Workspace</span><span style="font-size:9px;color:#4B6B56;">01</span></a>
+        <a href="dossiers.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 02. Dossiers Registry</span><span style="font-size:9px;color:#4B6B56;">02</span></a>
+        <a href="paper-canvas.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📝 09. Bút Dạ Quang Canvas</span><span style="font-size:9px;color:#4B6B56;">09</span></a>
+        <a href="excel-grid.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📊 10. Excel Speed Grid</span><span style="font-size:9px;color:#4B6B56;">10</span></a>
+        <a href="zalo-bot.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>💬 11. Zalo Ops Bot</span><span style="font-size:9px;color:#4B6B56;">11</span></a>
+        <a href="mobile-weighbridge.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📱 12. Mobile Weighbridge</span><span style="font-size:9px;color:#4B6B56;">12</span></a>
+        <a href="field-proven.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☀️ 13. Field POS Proven</span><span style="font-size:9px;color:#4B6B56;">13</span></a>
+      </div>
+    </div>
+
+    <div class="durios-dropdown" style="position:relative;">
+      <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">2. Compliance &amp; Gates [6] ▾</button>
+      <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
+        <a href="auditor.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🛡️ 03. Field Auditor (5 Gates)</span><span style="font-size:9px;color:#4B6B56;">03</span></a>
+        <a href="buyer.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🤝 04. Buyer Portal</span><span style="font-size:9px;color:#4B6B56;">04</span></a>
+        <a href="cluster.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌐 05. Cluster Ops Room</span><span style="font-size:9px;color:#4B6B56;">05</span></a>
+        <a href="socratic-introspector.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧠 14. Socratic 5-Turn</span><span style="font-size:9px;color:#4B6B56;">14</span></a>
+        <a href="rehearsal-command.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎯 15. Rehearsal Command</span><span style="font-size:9px;color:#4B6B56;">15</span></a>
+        <a href="styleguide.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎨 08. Style Guide &amp; Tokens</span><span style="font-size:9px;color:#4B6B56;">08</span></a>
+      </div>
+    </div>
+
+    <div class="durios-dropdown" style="position:relative;">
+      <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">3. Security &amp; MIT SDK [6] ▾</button>
+      <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
+        <a href="foundry.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔐 17. Foundry Security</span><span style="font-size:9px;color:#4B6B56;">17</span></a>
+        <a href="security-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏛️ 18. Security Vault</span><span style="font-size:9px;color:#4B6B56;">18</span></a>
+        <a href="organic-escrow-guard.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⚖️ 19. Organic Escrow Guard</span><span style="font-size:9px;color:#4B6B56;">19</span></a>
+        <a href="mit-verifier-lab.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔬 16. MIT Verifier Lab</span><span style="font-size:9px;color:#4B6B56;">16</span></a>
+        <a href="cloud-ocr-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☁️ 24. Cloud OCR &amp; Vault</span><span style="font-size:9px;color:#4B6B56;">24</span></a>
+        <a href="ed25519-downgrade-simulator.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔑 25. Ed25519 Downgrade</span><span style="font-size:9px;color:#4B6B56;">25</span></a>
+      </div>
+    </div>
+
+    <div class="durios-dropdown" style="position:relative;">
+      <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">4. SaaS &amp; Corridors [6] ▾</button>
+      <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
+        <a href="gallery.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⭐️ Master Hub Directory</span><span style="font-size:9px;color:#4B6B56;">★</span></a>
+        <a href="portability.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 06. Data Portability Hub</span><span style="font-size:9px;color:#4B6B56;">06</span></a>
+        <a href="upgrade.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🚀 07. Pro SaaS Upgrade</span><span style="font-size:9px;color:#4B6B56;">07</span></a>
+        <a href="corridors.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌏 22. ASEAN Corridors</span><span style="font-size:9px;color:#4B6B56;">22</span></a>
+        <a href="blueprint.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧭 23. 25-Step Blueprint</span><span style="font-size:9px;color:#4B6B56;">23</span></a>
+        <a href="webhook-sync-queue.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔄 20. Partner Webhooks</span><span style="font-size:9px;color:#4B6B56;">20</span></a>
+      </div>
+    </div>
+  </div>
+
+  <div class="durios-bar-right" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <button type="button" id="durios-btn-cmd-palette" class="durios-cmdk-trigger" title="Quick Switcher (⌘K)" style="background:#040705;border:1px solid #1F3327;color:#6EE7B7;border-radius:4px;padding:4px 8px;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;">
+      <span>Search screens…</span>
+      <kbd style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:1px 4px;background:#09140E;border:1px solid #2D4C39;border-radius:3px;">⌘K</kbd>
+    </button>
+    <button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops" style="background:#040705;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;font-size:11px;cursor:pointer;">
+      <span class="theme-icon">☀️</span> <span style="font-size:10px;font-weight:600;">Field</span>
+    </button>
+    <span class="durios-nav-badge" style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.15);color:#10B981;border:1px solid #2D4C39;">DURIOS 25-SCREEN NAV</span>
   </div>
 </div>
 <!-- =========================================================================

@@ -21,7 +21,6 @@ const MANAGER: AuthenticatedActor = {
 describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
   const tempDirs: string[] = [];
   const { publicKeyPem, privateKeyPem } = generateEphemeralSaasLicenseKeyPair();
-
   afterEach(() => {
     for (const dir of tempDirs.splice(0)) rmSync(dir, { recursive: true, force: true });
   });
@@ -72,10 +71,7 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
       { tenantId: "ten-cailay-001", edition: "PACKHOUSE_PRO_SAAS", expiresAt: "2027-06-01T00:00:00.000Z" },
       privateKeyPem
     );
-    const ocrFixture = {
-      cadmium_mg_kg: { raw: "0.012", confidence: 0.99 },
-      sample_code: { raw: "LAB-VISION-99", confidence: 0.97 },
-    };
+    const ocrFixture = { cadmium_mg_kg: { raw: "0.012", confidence: 0.99 }, sample_code: { raw: "LAB-VISION-99", confidence: 0.97 } };
 
     const communityAdapter = new CloudVisionOcrExtractorAdapter({
       env: {}, simulatedCloudResponse: ocrFixture, ocrTransport: () => ocrFixture,
@@ -87,10 +83,8 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
       expectedTenantId: "ten-cailay-001", simulatedCloudResponse: ocrFixture, ocrTransport: () => ocrFixture,
     } as ConstructorParameters<typeof CloudVisionOcrExtractorAdapter>[0]);
     expect(proAdapter.isAvailable).toBe(true);
-
     const extracted = proAdapter.extractFields(new Uint8Array([1, 2, 3]), {
-      documentId: "DOC-CLOUD-01", documentType: "LAB_TEST_REPORT",
-      fileName: "ZaloScan.jpg", mimeType: "image/jpeg", sha256Hash: "a".repeat(64),
+      documentId: "DOC-CLOUD-01", documentType: "LAB_TEST_REPORT", fileName: "ZaloScan.jpg", mimeType: "image/jpeg", sha256Hash: "a".repeat(64),
     });
     expect(extracted).toHaveLength(2);
     expect(extracted.every((f) => f.verificationStatus === "DRAFT")).toBe(true);
@@ -98,15 +92,7 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
 
   it("computes non-binding 0 VND estimate when 0 sealed containers exist and scopes GET /api/v1/saas/status to actor.tenantId", async () => {
     const ws = new ContainerDossierWorkspace();
-    ws.createDossier(
-      {
-        dossierCode: "DOS-SAAS-001", containerNumber: "MSKU1234565", sealNumber: "SL-998822",
-        targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 14,
-        declaredNetWeightKg: 18240, declaredBoxCount: 960,
-      },
-      MANAGER
-    );
-
+    ws.createDossier({ dossierCode: "DOS-SAAS-001", containerNumber: "MSKU1234565", sealNumber: "SL-998822", targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 14, declaredNetWeightKg: 18240, declaredBoxCount: 960 }, MANAGER);
     const report = computeTenantUsageAndRoiReport(MANAGER.tenantId, ws.listDossiers(MANAGER), "PACKHOUSE_PRO_SAAS");
     expect(report.totalDossiersCreated).toBe(1);
     expect(report.sealedExportedContainers).toBe(0);

@@ -1,14 +1,11 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  evaluateBlueprint25Steps,
-  type Blueprint25StepAuditReport,
+  evaluateBlueprint25Steps, type Blueprint25StepAuditReport,
 } from "./blueprint-25-step-auditor.js";
 import { getOpenCoreEditionManifest } from "./open-core-edition-manifest.js";
 import {
-  createSignedSaasLicenseKey,
-  generateEphemeralSaasLicenseKeyPair,
-  resolveSaasSubscriptionStatus,
+  createSignedSaasLicenseKey, generateEphemeralSaasLicenseKeyPair, resolveSaasSubscriptionStatus,
 } from "./saas-tier-policy.js";
 
 export interface SocraticTurnEvaluation {
@@ -48,21 +45,12 @@ const MIT_BOUNDARY_FILES: readonly string[] = [
 ];
 
 const PUBLIC_GITHUB_GOVERNANCE_FILES: readonly string[] = [
-  "LICENSE",
-  "LICENSE-MIT",
-  "COMMERCIAL-LICENSE.md",
-  "TRADEMARK-POLICY.md",
-  "CONTRIBUTING.md",
-  "SECURITY.md",
-  "README.md",
+  "LICENSE", "LICENSE-MIT", "COMMERCIAL-LICENSE.md",
+  "TRADEMARK-POLICY.md", "CONTRIBUTING.md", "SECURITY.md", "README.md",
 ];
 
 const FORBIDDEN_MIT_IMPORT_SEGMENTS: readonly string[] = [
-  "/auth/",
-  "/storage/",
-  "/saas/",
-  "/server/",
-  "/marketplace/",
+  "/auth/", "/storage/", "/saas/", "/server/", "/marketplace/",
 ];
 
 export function evaluateOpenCoreDeepBrainstorm(
@@ -101,10 +89,8 @@ export function evaluateOpenCoreDeepBrainstorm(
   const activePro = resolveSaasSubscriptionStatus(envPair, "2026-10-17T00:00:00.000Z", "TEN-CAILAY-DEEP");
   const expired = resolveSaasSubscriptionStatus(envPair, "2028-01-02T00:00:00.000Z", "TEN-CAILAY-DEEP");
   const turn3Passed =
-    activePro.edition === "PACKHOUSE_PRO_SAAS" &&
-    activePro.licenseValid &&
-    expired.edition === "COMMUNITY_OPEN_CORE" &&
-    expired.entitlements.localDataAccessGuaranteed;
+    activePro.edition === "PACKHOUSE_PRO_SAAS" && activePro.licenseValid &&
+    expired.edition === "COMMUNITY_OPEN_CORE" && expired.entitlements.localDataAccessGuaranteed;
 
   const containerPriceVnd = 150_000 as const;
   const estimatedVariableCogsVnd = 8_000 as const;
@@ -137,9 +123,7 @@ export function evaluateOpenCoreDeepBrainstorm(
     blueprintAudit,
     editionModuleCounts: { communityOpenCore, packhouseProSaas, exporterEnterprise },
     unitEconomicsVerification: {
-      containerPriceVnd,
-      estimatedVariableCogsVnd,
-      containerGrossMarginPct,
+      containerPriceVnd, estimatedVariableCogsVnd, containerGrossMarginPct,
       pureVietnamSaasCeilingUsd: manifest.economicTruth.pureVietnamSaasCeilingUsd,
       targetArrUsd: manifest.economicTruth.targetArrUsd,
       multiRevenueStackMandatory: manifest.economicTruth.multiRevenueStackRequired,
