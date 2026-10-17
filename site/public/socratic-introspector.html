@@ -68,70 +68,72 @@
       50% { opacity: 0.65; filter: drop-shadow(0 0 1px rgba(16, 185, 129, 0.1)); }
     }
   </style>
-<link rel="stylesheet" href="/stitch/durios-design-system.css">
+  <link rel="stylesheet" href="/stitch/durios-design-system.css">
 </head>
-<body class="min-h-screen flex flex-col bg-[#0B130E] text-[#ECFDF5] selection:bg-[#10B981] selection:text-[#0B130E]">
-<!-- DURIOS 2027 ADAPTIVE 3-MODE APP SHELL TOP COMMAND BAR (44px) -->
+<body class="min-min-h-screen flex flex-col bg-[#0B130E] text-[#ECFDF5] selection:bg-[#10B981] selection:text-[#0B130E]">
+<!-- DURIOS-TOP-NAV-START -->
 <div id="durios-unified-top-nav" class="durios-top-command-bar" style="background:#09140E;border-bottom:1px solid #1F3327;height:44px;max-height:44px;padding:0 14px;font-family:'Inter',sans-serif;font-size:11px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99999;box-sizing:border-box;overflow:visible;">
-  <div class="durios-bar-left" style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-    <button type="button" id="durios-btn-sidebar" class="durios-icon-btn" title="Toggle Sidebar ([)" aria-label="Toggle Navigation" style="background:#132018;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;cursor:pointer;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  <div class="durios-bar-left" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <button type="button" id="durios-btn-sidebar" class="durios-icon-btn" title="Toggle Navigation Drawer ([)" aria-label="Toggle Navigation" style="background:#132018;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;cursor:pointer;display:inline-flex;align-items:center;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
     <a href="gallery.html" class="durios-brand-badge" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;font-size:12px;color:#10B981;">
       <span>🌿</span>
       <span class="durios-brand-text">DURIOS // v0.4</span>
     </a>
     <span class="durios-breadcrumb-sep" style="color:#4B6B56;">/</span>
+    <span style="color:#6EE7B7;font-size:10px;font-weight:500;">2. Compliance & Gates</span>
+    <span class="durios-breadcrumb-sep" style="color:#4B6B56;">/</span>
     <span class="durios-breadcrumb-active" style="color:#ECFDF5;font-weight:600;font-size:11px;">14. Socratic 5-Turn</span>
   </div>
 
-  <div class="durios-nav-dropdowns" style="display:flex;align-items:center;gap:4px;flex:1;margin:0 12px;overflow:hidden;">
+  <div class="durios-nav-dropdowns" style="display:flex;align-items:center;gap:4px;flex:1;margin:0 12px;overflow:visible;">
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">1. Packhouse Ops [7] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏭 01. Packhouse Workspace</span><span style="font-size:9px;color:#4B6B56;">01</span></a>
-        <a href="dossiers.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 02. Dossiers Registry</span><span style="font-size:9px;color:#4B6B56;">02</span></a>
-        <a href="paper-canvas.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📝 09. Bút Dạ Quang Canvas</span><span style="font-size:9px;color:#4B6B56;">09</span></a>
-        <a href="excel-grid.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📊 10. Excel Speed Grid</span><span style="font-size:9px;color:#4B6B56;">10</span></a>
-        <a href="zalo-bot.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>💬 11. Zalo Ops Bot</span><span style="font-size:9px;color:#4B6B56;">11</span></a>
-        <a href="mobile-weighbridge.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📱 12. Mobile Weighbridge</span><span style="font-size:9px;color:#4B6B56;">12</span></a>
-        <a href="field-proven.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☀️ 13. Field POS Proven</span><span style="font-size:9px;color:#4B6B56;">13</span></a>
+        <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏭 01. Packhouse Workspace</span><span style="font-size:9px;color:#6EE7B7;">01</span></a>
+        <a href="dossiers.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 02. Dossiers Registry</span><span style="font-size:9px;color:#6EE7B7;">02</span></a>
+        <a href="paper-canvas.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📝 09. Bút Dạ Quang Canvas</span><span style="font-size:9px;color:#6EE7B7;">09</span></a>
+        <a href="excel-grid.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📊 10. Excel Speed Grid</span><span style="font-size:9px;color:#6EE7B7;">10</span></a>
+        <a href="zalo-bot.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>💬 11. Zalo Ops Bot</span><span style="font-size:9px;color:#6EE7B7;">11</span></a>
+        <a href="mobile-weighbridge.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📱 12. Mobile Weighbridge</span><span style="font-size:9px;color:#6EE7B7;">12</span></a>
+        <a href="field-proven.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☀️ 13. Field POS Proven</span><span style="font-size:9px;color:#6EE7B7;">13</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">2. Compliance &amp; Gates [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="auditor.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🛡️ 03. Field Auditor (5 Gates)</span><span style="font-size:9px;color:#4B6B56;">03</span></a>
-        <a href="buyer.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🤝 04. Buyer Portal</span><span style="font-size:9px;color:#4B6B56;">04</span></a>
-        <a href="cluster.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌐 05. Cluster Ops Room</span><span style="font-size:9px;color:#4B6B56;">05</span></a>
-        <a href="socratic-introspector.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧠 14. Socratic 5-Turn</span><span style="font-size:9px;color:#4B6B56;">14</span></a>
-        <a href="rehearsal-command.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎯 15. Rehearsal Command</span><span style="font-size:9px;color:#4B6B56;">15</span></a>
-        <a href="styleguide.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎨 08. Style Guide &amp; Tokens</span><span style="font-size:9px;color:#4B6B56;">08</span></a>
+        <a href="auditor.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🛡️ 03. Field Auditor (5 Gates)</span><span style="font-size:9px;color:#6EE7B7;">03</span></a>
+        <a href="buyer.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🤝 04. Buyer Portal</span><span style="font-size:9px;color:#6EE7B7;">04</span></a>
+        <a href="cluster.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌐 05. Cluster Ops Room</span><span style="font-size:9px;color:#6EE7B7;">05</span></a>
+        <a href="socratic-introspector.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#10B981;background:rgba(16,185,129,0.14);font-weight:700;text-decoration:none;border-radius:4px;"><span>🧠 14. Socratic 5-Turn</span><span style="font-size:9px;color:#6EE7B7;">14</span></a>
+        <a href="rehearsal-command.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎯 15. Rehearsal Command</span><span style="font-size:9px;color:#6EE7B7;">15</span></a>
+        <a href="styleguide.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎨 08. Style Guide &amp; Tokens</span><span style="font-size:9px;color:#6EE7B7;">08</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">3. Security &amp; MIT SDK [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="foundry.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔐 17. Foundry Security</span><span style="font-size:9px;color:#4B6B56;">17</span></a>
-        <a href="security-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏛️ 18. Security Vault</span><span style="font-size:9px;color:#4B6B56;">18</span></a>
-        <a href="organic-escrow-guard.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⚖️ 19. Organic Escrow Guard</span><span style="font-size:9px;color:#4B6B56;">19</span></a>
-        <a href="mit-verifier-lab.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔬 16. MIT Verifier Lab</span><span style="font-size:9px;color:#4B6B56;">16</span></a>
-        <a href="cloud-ocr-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☁️ 24. Cloud OCR &amp; Vault</span><span style="font-size:9px;color:#4B6B56;">24</span></a>
-        <a href="ed25519-downgrade-simulator.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔑 25. Ed25519 Downgrade</span><span style="font-size:9px;color:#4B6B56;">25</span></a>
+        <a href="foundry.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔐 17. Foundry Security</span><span style="font-size:9px;color:#6EE7B7;">17</span></a>
+        <a href="security-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏛️ 18. Security Vault</span><span style="font-size:9px;color:#6EE7B7;">18</span></a>
+        <a href="organic-escrow-guard.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⚖️ 19. Organic Escrow Guard</span><span style="font-size:9px;color:#6EE7B7;">19</span></a>
+        <a href="mit-verifier-lab.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔬 16. MIT Verifier Lab</span><span style="font-size:9px;color:#6EE7B7;">16</span></a>
+        <a href="cloud-ocr-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☁️ 24. Cloud OCR &amp; Vault</span><span style="font-size:9px;color:#6EE7B7;">24</span></a>
+        <a href="ed25519-downgrade-simulator.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔑 25. Ed25519 Downgrade</span><span style="font-size:9px;color:#6EE7B7;">25</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">4. SaaS &amp; Corridors [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="gallery.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⭐️ Master Hub Directory</span><span style="font-size:9px;color:#4B6B56;">★</span></a>
-        <a href="portability.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 06. Data Portability Hub</span><span style="font-size:9px;color:#4B6B56;">06</span></a>
-        <a href="upgrade.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🚀 07. Pro SaaS Upgrade</span><span style="font-size:9px;color:#4B6B56;">07</span></a>
-        <a href="corridors.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌏 22. ASEAN Corridors</span><span style="font-size:9px;color:#4B6B56;">22</span></a>
-        <a href="blueprint.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧭 23. 25-Step Blueprint</span><span style="font-size:9px;color:#4B6B56;">23</span></a>
-        <a href="webhook-sync-queue.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔄 20. Partner Webhooks</span><span style="font-size:9px;color:#4B6B56;">20</span></a>
+        <a href="gallery.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⭐️ Master Hub Directory</span><span style="font-size:9px;color:#6EE7B7;">★</span></a>
+        <a href="portability.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 06. Data Portability Hub</span><span style="font-size:9px;color:#6EE7B7;">06</span></a>
+        <a href="upgrade.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🚀 07. Pro SaaS Upgrade</span><span style="font-size:9px;color:#6EE7B7;">07</span></a>
+        <a href="corridors.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌏 22. ASEAN Corridors</span><span style="font-size:9px;color:#6EE7B7;">22</span></a>
+        <a href="blueprint.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧭 23. 25-Step Blueprint</span><span style="font-size:9px;color:#6EE7B7;">23</span></a>
+        <a href="webhook-sync-queue.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔄 20. Partner Webhooks</span><span style="font-size:9px;color:#6EE7B7;">20</span></a>
       </div>
     </div>
   </div>
@@ -141,12 +143,206 @@
       <span>Search screens…</span>
       <kbd style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:1px 4px;background:#09140E;border:1px solid #2D4C39;border-radius:3px;">⌘K</kbd>
     </button>
-    <button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops" style="background:#040705;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;font-size:11px;cursor:pointer;">
+    <button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops" style="background:#040705;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
       <span class="theme-icon">☀️</span> <span style="font-size:10px;font-weight:600;">Field</span>
     </button>
-    <span class="durios-nav-badge" style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.15);color:#10B981;border:1px solid #2D4C39;">DURIOS 25-SCREEN NAV</span>
+    <a href="/" title="Open Live SQLite Packhouse SPA" style="background:rgba(16,185,129,0.15);color:#10B981;border:1px solid #2D4C39;border-radius:4px;padding:3px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;text-decoration:none;">⚡ LIVE SPA</a>
+    <span class="durios-nav-badge" style="display:none;">DURIOS 25-SCREEN NAV</span>
   </div>
 </div>
+<!-- DURIOS-TOP-NAV-END -->
+
+  <!-- Top Operational Command Bar (56px) -->
+  <header class="h-14 border-b border-[#1F3327] bg-[#0B130E] sticky top-0 z-50 px-4 flex items-center justify-between">
+    <!-- Left branding & status -->
+    <div class="flex items-center gap-3">
+      <div class="flex items-center gap-2">
+        <span class="material-symbols-outlined text-[#10B981] text-xl">psychology</span>
+        <span class="font-display font-bold text-sm tracking-wide text-[#ECFDF5]">
+          DURIOS <span class="text-[#10B981] font-mono font-normal text-xs">// 5-TURN SOCRATIC OPEN-CORE &amp; UNIT ECONOMICS INTROSPECTOR v2.5</span>
+        </span>
+      </div>
+      <div class="h-4 w-px bg-[#1F3327]"></div>
+      <div class="flex items-center gap-1.5 px-2.5 py-0.5 rounded bg-[#132018] border border-[#10B981]/40 text-[#10B981] font-mono text-[11px] font-semibold">
+        <span class="w-1.5 h-1.5 rounded-full bg-[#10B981] pulse-emerald"></span>
+        VERDICT: GO_OPEN_CORE_SAAS · 5/5 SOCRATIC TURNS PASSED
+      </div>
+      <div class="hidden lg:flex items-center gap-1 px-2 py-0.5 rounded bg-[#18281F] text-[#6EE7B7] font-mono text-[10px] border border-[#1F3327]">
+        <span class="text-neutral-400">HASH:</span> 0x8f2c0194...e92a
+      </div>
+    </div>
+
+    <!-- Right Actions & System Signals -->
+    <div class="flex items-center gap-2.5">
+      <div class="hidden sm:flex items-center gap-2 font-mono text-[11px] text-[#6EE7B7] mr-1">
+        <span class="text-neutral-500">AIR-GAP EVAL:</span>
+        <span class="text-[#10B981] font-semibold">TRUE</span>
+        <span class="text-neutral-600">|</span>
+        <span class="text-neutral-500">TIEN GIANG #VN-84B</span>
+      </div>
+
+      <!-- Live Simulator Toggle -->
+      <button onclick="toggleSocraticDeepAudit()" id="deepAuditBtn" class="flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#10B981] hover:bg-[#059669] text-[#0B130E] font-mono text-xs font-bold transition-all shadow-[0_0_12px_rgba(16,185,129,0.25)] active:scale-95">
+        <span class="material-symbols-outlined text-sm font-bold">bolt</span>
+        <span>Run Deep Socratic Audit (?deep=true)</span>
+      </button>
+
+      <a href="javascript:void(0)" onclick="alert('Exporting Socratic Audit Dossier (.json)...')" class="p-1.5 rounded text-[#6EE7B7] hover:text-[#ECFDF5] hover:bg-[#18281F] border border-[#1F3327] transition" title="Export Socratic Proof">
+        <span class="material-symbols-outlined text-base">download</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Top 4-Card Economic Truth & Boundary Ribbon -->
+  <section class="border-b border-[#1F3327] bg-[#132018]/60 px-4 py-3">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      
+      <!-- Card 1: Per-Container Gross Margin -->
+      <div class="bg-[#18281F] border border-[#1F3327] rounded-[6px] p-2.5 flex flex-col justify-between hover:border-[#10B981]/60 transition">
+        <div class="flex items-center justify-between text-xs text-neutral-400 font-mono mb-1">
+          <span class="flex items-center gap-1 text-[#6EE7B7]">
+            <span class="material-symbols-outlined text-xs">finance</span>
+            1. Per-Container Gross Margin
+          </span>
+          <span class="px-1.5 py-0.2 rounded text-[10px] bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-bold">PASS &gt;=80%</span>
+        </div>
+        <div class="flex items-baseline justify-between mt-0.5">
+          <span class="font-display text-xl font-bold text-[#10B981] tracking-tight">94.67%</span>
+          <span class="font-mono text-xs text-neutral-300">150,000 / 8,000 VND</span>
+        </div>
+        <div class="mt-2 text-[11px] font-mono text-neutral-400 flex items-center justify-between border-t border-[#1F3327] pt-1">
+          <span>COGS: ZNS 3k + OCR 5k</span>
+          <span class="text-[#10B981] font-semibold">18.75x Multiple</span>
+        </div>
+      </div>
+
+      <!-- Card 2: Pure-SaaS Ceiling vs ARR Target -->
+      <div class="bg-[#18281F] border border-[#1F3327] rounded-[6px] p-2.5 flex flex-col justify-between hover:border-[#F59E0B]/60 transition">
+        <div class="flex items-center justify-between text-xs text-neutral-400 font-mono mb-1">
+          <span class="flex items-center gap-1 text-[#F59E0B]">
+            <span class="material-symbols-outlined text-xs">warning</span>
+            2. VN Pure-SaaS Ceiling vs $1M ARR
+          </span>
+          <span class="px-1.5 py-0.2 rounded text-[10px] bg-[#F59E0B]/20 text-[#F59E0B] border border-[#F59E0B]/40 font-bold">STACK MANDATORY</span>
+        </div>
+        <div class="flex items-baseline justify-between mt-0.5">
+          <span class="font-display text-xl font-bold text-[#F59E0B] tracking-tight">$657,643</span>
+          <span class="font-mono text-xs text-neutral-400">Target: $1,000,000</span>
+        </div>
+        <div class="mt-2 text-[11px] font-mono text-neutral-400 flex items-center justify-between border-t border-[#1F3327] pt-1">
+          <span>281 Packhouses @ 60M/yr</span>
+          <span class="text-[#F59E0B] font-semibold">Shortfall: $342k</span>
+        </div>
+      </div>
+
+      <!-- Card 3: MIT Verifier SDK Boundary -->
+      <div class="bg-[#18281F] border border-[#1F3327] rounded-[6px] p-2.5 flex flex-col justify-between hover:border-[#10B981]/60 transition">
+        <div class="flex items-center justify-between text-xs text-neutral-400 font-mono mb-1">
+          <span class="flex items-center gap-1 text-[#6EE7B7]">
+            <span class="material-symbols-outlined text-xs">shield</span>
+            3. MIT Verifier SDK Boundary
+          </span>
+          <span class="px-1.5 py-0.2 rounded text-[10px] bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-bold">100% ISOLATED</span>
+        </div>
+        <div class="flex items-baseline justify-between mt-0.5">
+          <span class="font-display text-xl font-bold text-[#ECFDF5] tracking-tight">4 / 4 Modules</span>
+          <span class="font-mono text-xs text-[#10B981]">0 AGPL Leakage</span>
+        </div>
+        <div class="mt-2 text-[11px] font-mono text-neutral-400 flex items-center justify-between border-t border-[#1F3327] pt-1">
+          <span>iso-6346, doc-hasher, manifest</span>
+          <span class="text-[#6EE7B7]">MIT License</span>
+        </div>
+      </div>
+
+      <!-- Card 4: Tri-Edition Module Distribution -->
+      <div class="bg-[#18281F] border border-[#1F3327] rounded-[6px] p-2.5 flex flex-col justify-between hover:border-[#10B981]/60 transition">
+        <div class="flex items-center justify-between text-xs text-neutral-400 font-mono mb-1">
+          <span class="flex items-center gap-1 text-[#6EE7B7]">
+            <span class="material-symbols-outlined text-xs">layers</span>
+            4. Tri-Edition Synchronized
+          </span>
+          <span class="px-1.5 py-0.2 rounded text-[10px] bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-bold">25 STEPS SYNC</span>
+        </div>
+        <div class="flex items-baseline justify-between mt-0.5">
+          <span class="font-display text-xl font-bold text-[#ECFDF5] tracking-tight">12 Modules</span>
+          <span class="font-mono text-xs text-[#6EE7B7]">Open-Core Model</span>
+        </div>
+        <div class="mt-2 text-[11px] font-mono text-neutral-400 flex items-center justify-between border-t border-[#1F3327] pt-1">
+          <span>6 Community · 4 Pro · 2 Ent</span>
+          <span class="text-[#10B981]">Ed25519 Binds</span>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Main 2-Column Split Workbench (7 Cols Left / 5 Cols Right) -->
+  <main class="flex-1 px-4 py-4 grid grid-cols-1 lg:grid-cols-12 gap-4 max-w-[1920px] mx-auto w-full">
+    
+    <!-- LEFT PANEL: 5-Turn Socratic Deep Verification Matrix (7 Cols) -->
+    <div class="lg:col-span-7 flex flex-col gap-3">
+      
+      <div class="flex items-center justify-between border-b border-[#1F3327] pb-2">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-[#10B981] text-lg">fact_check</span>
+          <h2 class="font-display font-bold text-sm tracking-wider uppercase text-[#ECFDF5]">
+            5-Turn Socratic Deep Verification Matrix <span class="text-xs font-mono text-[#6EE7B7] font-normal">(evaluateOpenCoreDeepBrainstorm)</span>
+          </h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <span class="text-[11px] font-mono text-neutral-400">Strict Evaluation:</span>
+          <span class="px-2 py-0.5 rounded bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/30 font-mono text-xs font-bold">
+            5 / 5 VERIFIED
+          </span>
+        </div>
+      </div>
+
+      <!-- Turn 1 Card -->
+      <div class="bg-[#132018] border border-[#1F3327] hover:border-[#10B981]/60 rounded-[6px] p-3.5 transition group">
+        <div class="flex items-start justify-between gap-3">
+          <div class="flex items-center gap-2">
+            <span class="w-6 h-6 rounded flex items-center justify-center bg-[#18281F] border border-[#1F3327] font-mono text-xs font-bold text-[#10B981]">01</span>
+            <h3 class="font-display font-semibold text-sm text-[#ECFDF5]">
+              Turn 1 — MIT Verifier SDK Boundary Isolation
+            </h3>
+          </div>
+          <span class="px-2 py-0.5 rounded bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/40 font-mono text-[11px] font-bold flex items-center gap-1">
+            <span class="material-symbols-outlined text-xs">verified</span> PASSED
+          </span>
+        </div>
+
+        <div class="mt-2.5 bg-[#0B130E] border border-[#1F3327] rounded p-2.5 font-mono text-xs">
+          <p class="text-[#F59E0B] italic text-[11.5px] mb-1">
+            Q: "Are the 4 MIT verifier modules 100% isolated from AGPL and Commercial SaaS imports?"
+          </p>
+          <div class="text-[#6EE7B7] flex items-start gap-1.5 mt-1 text-[11px]">
+            <span class="material-symbols-outlined text-sm text-[#10B981] shrink-0">check_circle</span>
+            <span>
+              <strong>Cryptographic Proof:</strong> 4/4 MIT modules cleanly audited. Zero forbidden imports from <code class="text-neutral-300">/auth/</code>, <code class="text-neutral-300">/storage/</code>, <code class="text-neutral-300">/saas/</code>, <code class="text-neutral-300">/server/</code>, or <code class="text-neutral-300">/marketplace/</code>.
+            </span>
+          </div>
+        </div>
+
+        <!-- Verification Proof Breakdown -->
+        <div class="mt-2.5 grid grid-cols-2 sm:grid-cols-4 gap-2 font-mono text-[10.5px]">
+          <div class="p-1.5 rounded bg-[#18281F] border border-[#1F3327] flex flex-col">
+            <span class="text-neutral-400">iso-6346.ts</span>
+            <span class="text-[#10B981] font-semibold">100% Zero Leak</span>
+          </div>
+          <div class="p-1.5 rounded bg-[#18281F] border border-[#1F3327] flex flex-col">
+            <span class="text-neutral-400">document-hasher.ts</span>
+            <span class="text-[#10B981] font-semibold">SHA-256 WebCrypto</span>
+          </div>
+          <div class="p-1.5 rounded bg-[#18281F] border border-[#1F3327] flex flex-col">
+            <span class="text-neutral-400">manifest-compiler.ts</span>
+            <span class="text-[#10B981] font-semibold">Deterministic JSON</span>
+          </div>
+          <div class="p-1.5 rounded bg-[#18281F] border border-[#1F3327] flex flex-col">
+            <span class="text-neutral-400">standalone-manifest.ts</span>
+            <span class="text-[#10B981] font-semibold">Independent CLI</span>
+          </div>
+        </div>
+      </div>
 
       <!-- Turn 2 Card -->
       <div class="bg-[#132018] border border-[#1F3327] hover:border-[#10B981]/60 rounded-[6px] p-3.5 transition group">

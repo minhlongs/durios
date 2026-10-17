@@ -145,70 +145,72 @@
       animation: pulse-emerald 2s infinite ease-in-out;
     }
   </style>
-<link rel="stylesheet" href="/stitch/durios-design-system.css">
+  <link rel="stylesheet" href="/stitch/durios-design-system.css">
 </head>
-<body class="bg-background text-on-surface antialiased font-body-md select-none min-h-screen flex flex-col custom-scroll overflow-x-hidden">
-<!-- DURIOS 2027 ADAPTIVE 3-MODE APP SHELL TOP COMMAND BAR (44px) -->
+<body class="bg-background text-on-surface antialiased font-body-md select-none min-min-h-screen flex flex-col custom-scroll overflow-x-hidden">
+<!-- DURIOS-TOP-NAV-START -->
 <div id="durios-unified-top-nav" class="durios-top-command-bar" style="background:#09140E;border-bottom:1px solid #1F3327;height:44px;max-height:44px;padding:0 14px;font-family:'Inter',sans-serif;font-size:11px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99999;box-sizing:border-box;overflow:visible;">
-  <div class="durios-bar-left" style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-    <button type="button" id="durios-btn-sidebar" class="durios-icon-btn" title="Toggle Sidebar ([)" aria-label="Toggle Navigation" style="background:#132018;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;cursor:pointer;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  <div class="durios-bar-left" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <button type="button" id="durios-btn-sidebar" class="durios-icon-btn" title="Toggle Navigation Drawer ([)" aria-label="Toggle Navigation" style="background:#132018;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;cursor:pointer;display:inline-flex;align-items:center;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
     <a href="gallery.html" class="durios-brand-badge" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;font-size:12px;color:#10B981;">
       <span>🌿</span>
       <span class="durios-brand-text">DURIOS // v0.4</span>
     </a>
     <span class="durios-breadcrumb-sep" style="color:#4B6B56;">/</span>
+    <span style="color:#6EE7B7;font-size:10px;font-weight:500;">4. SaaS & Corridors</span>
+    <span class="durios-breadcrumb-sep" style="color:#4B6B56;">/</span>
     <span class="durios-breadcrumb-active" style="color:#ECFDF5;font-weight:600;font-size:11px;">23. 25-Step Blueprint</span>
   </div>
 
-  <div class="durios-nav-dropdowns" style="display:flex;align-items:center;gap:4px;flex:1;margin:0 12px;overflow:hidden;">
+  <div class="durios-nav-dropdowns" style="display:flex;align-items:center;gap:4px;flex:1;margin:0 12px;overflow:visible;">
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">1. Packhouse Ops [7] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏭 01. Packhouse Workspace</span><span style="font-size:9px;color:#4B6B56;">01</span></a>
-        <a href="dossiers.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 02. Dossiers Registry</span><span style="font-size:9px;color:#4B6B56;">02</span></a>
-        <a href="paper-canvas.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📝 09. Bút Dạ Quang Canvas</span><span style="font-size:9px;color:#4B6B56;">09</span></a>
-        <a href="excel-grid.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📊 10. Excel Speed Grid</span><span style="font-size:9px;color:#4B6B56;">10</span></a>
-        <a href="zalo-bot.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>💬 11. Zalo Ops Bot</span><span style="font-size:9px;color:#4B6B56;">11</span></a>
-        <a href="mobile-weighbridge.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📱 12. Mobile Weighbridge</span><span style="font-size:9px;color:#4B6B56;">12</span></a>
-        <a href="field-proven.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☀️ 13. Field POS Proven</span><span style="font-size:9px;color:#4B6B56;">13</span></a>
+        <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏭 01. Packhouse Workspace</span><span style="font-size:9px;color:#6EE7B7;">01</span></a>
+        <a href="dossiers.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 02. Dossiers Registry</span><span style="font-size:9px;color:#6EE7B7;">02</span></a>
+        <a href="paper-canvas.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📝 09. Bút Dạ Quang Canvas</span><span style="font-size:9px;color:#6EE7B7;">09</span></a>
+        <a href="excel-grid.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📊 10. Excel Speed Grid</span><span style="font-size:9px;color:#6EE7B7;">10</span></a>
+        <a href="zalo-bot.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>💬 11. Zalo Ops Bot</span><span style="font-size:9px;color:#6EE7B7;">11</span></a>
+        <a href="mobile-weighbridge.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📱 12. Mobile Weighbridge</span><span style="font-size:9px;color:#6EE7B7;">12</span></a>
+        <a href="field-proven.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☀️ 13. Field POS Proven</span><span style="font-size:9px;color:#6EE7B7;">13</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">2. Compliance &amp; Gates [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="auditor.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🛡️ 03. Field Auditor (5 Gates)</span><span style="font-size:9px;color:#4B6B56;">03</span></a>
-        <a href="buyer.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🤝 04. Buyer Portal</span><span style="font-size:9px;color:#4B6B56;">04</span></a>
-        <a href="cluster.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌐 05. Cluster Ops Room</span><span style="font-size:9px;color:#4B6B56;">05</span></a>
-        <a href="socratic-introspector.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧠 14. Socratic 5-Turn</span><span style="font-size:9px;color:#4B6B56;">14</span></a>
-        <a href="rehearsal-command.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎯 15. Rehearsal Command</span><span style="font-size:9px;color:#4B6B56;">15</span></a>
-        <a href="styleguide.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎨 08. Style Guide &amp; Tokens</span><span style="font-size:9px;color:#4B6B56;">08</span></a>
+        <a href="auditor.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🛡️ 03. Field Auditor (5 Gates)</span><span style="font-size:9px;color:#6EE7B7;">03</span></a>
+        <a href="buyer.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🤝 04. Buyer Portal</span><span style="font-size:9px;color:#6EE7B7;">04</span></a>
+        <a href="cluster.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌐 05. Cluster Ops Room</span><span style="font-size:9px;color:#6EE7B7;">05</span></a>
+        <a href="socratic-introspector.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧠 14. Socratic 5-Turn</span><span style="font-size:9px;color:#6EE7B7;">14</span></a>
+        <a href="rehearsal-command.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎯 15. Rehearsal Command</span><span style="font-size:9px;color:#6EE7B7;">15</span></a>
+        <a href="styleguide.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎨 08. Style Guide &amp; Tokens</span><span style="font-size:9px;color:#6EE7B7;">08</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">3. Security &amp; MIT SDK [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="foundry.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔐 17. Foundry Security</span><span style="font-size:9px;color:#4B6B56;">17</span></a>
-        <a href="security-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏛️ 18. Security Vault</span><span style="font-size:9px;color:#4B6B56;">18</span></a>
-        <a href="organic-escrow-guard.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⚖️ 19. Organic Escrow Guard</span><span style="font-size:9px;color:#4B6B56;">19</span></a>
-        <a href="mit-verifier-lab.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔬 16. MIT Verifier Lab</span><span style="font-size:9px;color:#4B6B56;">16</span></a>
-        <a href="cloud-ocr-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☁️ 24. Cloud OCR &amp; Vault</span><span style="font-size:9px;color:#4B6B56;">24</span></a>
-        <a href="ed25519-downgrade-simulator.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔑 25. Ed25519 Downgrade</span><span style="font-size:9px;color:#4B6B56;">25</span></a>
+        <a href="foundry.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔐 17. Foundry Security</span><span style="font-size:9px;color:#6EE7B7;">17</span></a>
+        <a href="security-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏛️ 18. Security Vault</span><span style="font-size:9px;color:#6EE7B7;">18</span></a>
+        <a href="organic-escrow-guard.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⚖️ 19. Organic Escrow Guard</span><span style="font-size:9px;color:#6EE7B7;">19</span></a>
+        <a href="mit-verifier-lab.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔬 16. MIT Verifier Lab</span><span style="font-size:9px;color:#6EE7B7;">16</span></a>
+        <a href="cloud-ocr-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☁️ 24. Cloud OCR &amp; Vault</span><span style="font-size:9px;color:#6EE7B7;">24</span></a>
+        <a href="ed25519-downgrade-simulator.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔑 25. Ed25519 Downgrade</span><span style="font-size:9px;color:#6EE7B7;">25</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">4. SaaS &amp; Corridors [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="gallery.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⭐️ Master Hub Directory</span><span style="font-size:9px;color:#4B6B56;">★</span></a>
-        <a href="portability.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 06. Data Portability Hub</span><span style="font-size:9px;color:#4B6B56;">06</span></a>
-        <a href="upgrade.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🚀 07. Pro SaaS Upgrade</span><span style="font-size:9px;color:#4B6B56;">07</span></a>
-        <a href="corridors.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌏 22. ASEAN Corridors</span><span style="font-size:9px;color:#4B6B56;">22</span></a>
-        <a href="blueprint.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧭 23. 25-Step Blueprint</span><span style="font-size:9px;color:#4B6B56;">23</span></a>
-        <a href="webhook-sync-queue.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔄 20. Partner Webhooks</span><span style="font-size:9px;color:#4B6B56;">20</span></a>
+        <a href="gallery.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⭐️ Master Hub Directory</span><span style="font-size:9px;color:#6EE7B7;">★</span></a>
+        <a href="portability.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 06. Data Portability Hub</span><span style="font-size:9px;color:#6EE7B7;">06</span></a>
+        <a href="upgrade.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🚀 07. Pro SaaS Upgrade</span><span style="font-size:9px;color:#6EE7B7;">07</span></a>
+        <a href="corridors.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌏 22. ASEAN Corridors</span><span style="font-size:9px;color:#6EE7B7;">22</span></a>
+        <a href="blueprint.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#10B981;background:rgba(16,185,129,0.14);font-weight:700;text-decoration:none;border-radius:4px;"><span>🧭 23. 25-Step Blueprint</span><span style="font-size:9px;color:#6EE7B7;">23</span></a>
+        <a href="webhook-sync-queue.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔄 20. Partner Webhooks</span><span style="font-size:9px;color:#6EE7B7;">20</span></a>
       </div>
     </div>
   </div>
@@ -218,11 +220,546 @@
       <span>Search screens…</span>
       <kbd style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:1px 4px;background:#09140E;border:1px solid #2D4C39;border-radius:3px;">⌘K</kbd>
     </button>
-    <button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops" style="background:#040705;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;font-size:11px;cursor:pointer;">
+    <button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops" style="background:#040705;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
       <span class="theme-icon">☀️</span> <span style="font-size:10px;font-weight:600;">Field</span>
     </button>
-    <span class="durios-nav-badge" style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.15);color:#10B981;border:1px solid #2D4C39;">DURIOS 25-SCREEN NAV</span>
+    <a href="/" title="Open Live SQLite Packhouse SPA" style="background:rgba(16,185,129,0.15);color:#10B981;border:1px solid #2D4C39;border-radius:4px;padding:3px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;text-decoration:none;">⚡ LIVE SPA</a>
+    <span class="durios-nav-badge" style="display:none;">DURIOS 25-SCREEN NAV</span>
   </div>
+</div>
+<!-- DURIOS-TOP-NAV-END -->
+<!-- TOP OPERATIONAL COMMAND BAR -->
+<header class="flex justify-between items-center w-full px-margin h-14 bg-surface-container border-b border-outline-variant shrink-0 sticky top-0 z-50">
+<!-- Brand / Node Anchor -->
+<div class="flex items-center space-x-space-md">
+<div class="relative flex items-center justify-center">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse-emerald"></span>
+<span class="absolute w-4 h-4 rounded-full border border-primary opacity-30"></span>
+</div>
+<div class="flex items-baseline space-x-space-sm">
+<span class="font-space font-bold tracking-wider text-primary text-headline-sm uppercase">DURIOS</span>
+<span class="text-outline text-label-sm font-label-sm">//</span>
+<span class="text-on-surface font-space font-semibold text-label-md tracking-wider">25-STEP OPEN-CORE BLUEPRINT &amp; STRATEGIC GUARDRAILS</span>
+</div>
+<span class="bg-surface-container-high text-primary border border-outline-variant px-2 py-0.5 font-code-sm text-code-sm rounded">
+        GOVERNANCE v2.4-VERIFIED
+      </span>
+</div>
+<!-- Center Status Pill & Gate Zero -->
+<div class="hidden lg:flex items-center space-x-space-md">
+<div class="flex items-center space-x-space-xs bg-surface-container-lowest border border-outline-variant px-3 py-1 rounded">
+<span class="material-symbols-outlined text-primary text-sm" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span class="font-code-sm text-code-sm text-primary font-semibold tracking-wide">25 / 25 STEPS VERIFIED</span>
+<span class="text-outline text-code-sm">·</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">ALL REPO ARTIFACTS PRESENT</span>
+</div>
+<div class="flex items-center space-x-1.5 bg-surface-container-low border border-primary px-2.5 py-1 rounded">
+<span class="w-1.5 h-1.5 bg-tertiary rounded-full"></span>
+<span class="font-code-sm text-code-sm text-tertiary font-bold tracking-widest uppercase">STAGE ZERO // AIR-GAPPED EVAL</span>
+</div>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center space-x-space-sm">
+<button class="flex items-center space-x-1.5 bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface px-3 py-1.5 rounded font-code-sm text-code-sm hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-sm">shield</span>
+<span>[Verify Composite SHA-256]</span>
+</button>
+<button class="flex items-center space-x-1.5 bg-primary text-on-primary-container px-3.5 py-1.5 rounded font-code-sm text-code-sm font-semibold hover:bg-primary-fixed transition-colors">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">file_download</span>
+<span>EXPORT AUDIT ATTESTATION (.JSON)</span>
+</button>
+<div class="h-4 w-px bg-outline-variant mx-1"></div>
+<span class="material-symbols-outlined text-on-surface-variant hover:text-primary cursor-pointer p-1" title="Terminal Interface">terminal</span>
+</div>
+</header>
+<!-- WORKSPACE WRAPPER (WITH INTEGRATED SIDENAVBAR) -->
+<div class="flex flex-1 overflow-hidden">
+<!-- Docked Side Rail (SideNavBar Shared Component Specification) -->
+<aside class="flex flex-col justify-between h-[calc(100vh-3.5rem)] w-64 border-r border-outline-variant bg-surface-container-lowest p-space-md shrink-0 hidden md:flex">
+<div class="flex flex-col space-y-space-md">
+<!-- Station Header -->
+<div class="flex items-center space-x-space-sm pb-space-md border-b border-outline-variant">
+<div class="w-8 h-8 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-base">domain</span>
+</div>
+<div>
+<div class="font-label-md text-label-md text-primary font-bold tracking-widest uppercase">FACILITY #VN-84B</div>
+<div class="text-outline font-code-sm text-code-sm">TIEN GIANG STATION</div>
+</div>
+</div>
+<!-- Rail Tabs -->
+<nav class="flex flex-col space-y-1">
+<!-- Active Tab: Verify Ops -->
+<a class="bg-surface-container-high text-primary border-l-2 border-primary px-space-md py-space-sm font-code-sm flex items-center space-x-2.5 rounded-r" href="#">
+<span class="material-symbols-outlined text-base" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span>Verify Ops</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors px-space-md py-space-sm font-code-sm flex items-center space-x-2.5 rounded" href="#">
+<span class="material-symbols-outlined text-base">biotech</span>
+<span>Cadmium Lab</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors px-space-md py-space-sm font-code-sm flex items-center space-x-2.5 rounded" href="#">
+<span class="material-symbols-outlined text-base">ac_unit</span>
+<span>Cold Chain</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors px-space-md py-space-sm font-code-sm flex items-center space-x-2.5 rounded" href="#">
+<span class="material-symbols-outlined text-base">lock</span>
+<span>Seal Chain</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors px-space-md py-space-sm font-code-sm flex items-center space-x-2.5 rounded" href="#">
+<span class="material-symbols-outlined text-base">receipt_long</span>
+<span>Audit Trail</span>
+</a>
+</nav>
+</div>
+<!-- Rail Footer Section & CTA -->
+<div class="flex flex-col space-y-space-md pt-space-md border-t border-outline-variant">
+<button class="w-full bg-surface-container-high border border-primary text-primary hover:bg-primary hover:text-on-primary-container px-3 py-2 rounded font-code-sm text-code-sm font-semibold transition-colors flex items-center justify-center space-x-2">
+<span class="material-symbols-outlined text-sm">enhanced_encryption</span>
+<span>Lock Container Seal</span>
+</button>
+<div class="flex flex-col space-y-1">
+<a class="text-on-surface-variant hover:text-primary px-space-md py-1 font-code-sm text-code-sm flex items-center space-x-2" href="#">
+<span class="material-symbols-outlined text-sm">sync</span>
+<span>Telemetry Sync</span>
+</a>
+<a class="text-on-surface-variant hover:text-primary px-space-md py-1 font-code-sm text-code-sm flex items-center space-x-2" href="#">
+<span class="material-symbols-outlined text-sm">settings</span>
+<span>System Specs</span>
+</a>
+</div>
+<div class="text-[10px] text-outline font-code-sm uppercase tracking-wider px-space-md">
+          GACC Node VN-084 // AIR-GAP
+        </div>
+</div>
+</aside>
+<!-- MAIN EXECUTIVE CANVASS -->
+<main class="flex-1 overflow-y-auto custom-scroll p-margin flex flex-col space-y-margin">
+<!-- TOP 4-CARD CRYPTOGRAPHIC & STRATEGIC REALIGNMENT RIBBON -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
+<!-- CARD 1: Blueprint Composite SHA-256 -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md flex flex-col justify-between rounded relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary"></div>
+<div>
+<div class="flex items-center justify-between text-outline text-label-sm font-label-sm uppercase mb-1">
+<span>Cryptographic State</span>
+<span class="text-primary font-bold">MERKLE: L5</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-space-sm flex items-center justify-between">
+<span>Composite SHA-256</span>
+<span class="text-primary font-code-md text-code-md font-bold">25 / 25 PASSED</span>
+</div>
+<div class="space-y-1 font-code-sm text-code-sm">
+<div class="flex justify-between bg-surface-container-lowest px-2 py-1 rounded border border-outline-variant">
+<span class="text-on-surface-variant">company.json</span>
+<span class="text-primary font-mono">8f2c...49a1</span>
+</div>
+<div class="flex justify-between bg-surface-container-lowest px-2 py-1 rounded border border-outline-variant">
+<span class="text-on-surface-variant">plan.md</span>
+<span class="text-primary font-mono">3a7b...8210</span>
+</div>
+<div class="flex justify-between bg-surface-container-lowest px-2 py-1 rounded border border-outline-variant">
+<span class="text-on-surface-variant">tasks.md</span>
+<span class="text-primary font-mono">e9a8...3bf2</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs border-t border-outline-variant flex items-center justify-between text-outline font-code-sm text-[10px]">
+<span>ZERO TREE DRIFT</span>
+<span class="text-primary">VALIDATED 0.4s AGO</span>
+</div>
+</div>
+<!-- CARD 2: Operational Baseline Guard -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md flex flex-col justify-between rounded relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-tertiary"></div>
+<div>
+<div class="flex items-center justify-between text-outline text-label-sm font-label-sm uppercase mb-1">
+<span>Deployment Scope</span>
+<span class="text-tertiary font-bold">STRICT ISOLATION</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-space-sm flex items-center justify-between">
+<span>Baseline Guard</span>
+<span class="text-tertiary font-code-md text-code-md font-bold">STAGE ZERO</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-space-sm leading-tight">
+              Single-site on-premise Cai Lậy packhouse <span class="text-primary font-code-sm">#VN-84B</span> active. Multi-site and cross-border SaaS disabled.
+            </p>
+<div class="bg-surface-container-lowest p-2 rounded border border-outline-variant flex items-center justify-between">
+<span class="font-code-sm text-code-sm text-outline">V2 Expansion Specs</span>
+<span class="bg-surface-variant text-tertiary font-code-sm text-[10px] px-1.5 py-0.5 rounded uppercase font-semibold">
+                DRAFT_FOR_FOUNDER_REVIEW
+              </span>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs border-t border-outline-variant flex items-center justify-between text-outline font-code-sm text-[10px]">
+<span>AIR-GAP LOCK: ENFORCED</span>
+<span class="text-on-surface-variant">NO PUBLIC INGRESS</span>
+</div>
+</div>
+<!-- CARD 3: Dual-Lock B2B Marketplace Guard -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md flex flex-col justify-between rounded relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-error"></div>
+<div>
+<div class="flex items-center justify-between text-outline text-label-sm font-label-sm uppercase mb-1">
+<span>Custody Architecture</span>
+<span class="text-error font-bold">DECREE 52/2024</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-space-sm flex items-center justify-between">
+<span>Dual-Lock B2B Guard</span>
+<span class="text-error font-code-md text-code-md font-bold">FAIL-CLOSED</span>
+</div>
+<div class="space-y-1.5 font-body-sm text-body-sm text-on-surface-variant">
+<div class="flex items-center justify-between font-code-sm text-code-sm">
+<span>Hardware Gate 01..05:</span>
+<span class="text-primary font-bold">PASS REQUIRED</span>
+</div>
+<div class="flex items-center justify-between font-code-sm text-code-sm">
+<span>Feature Flag Status:</span>
+<span class="text-error font-mono bg-surface-container-lowest px-1 py-0.5 border border-outline-variant rounded">FF_MARKETPLACE=0</span>
+</div>
+<p class="text-[11px] text-outline leading-tight mt-1">
+                Zero custody escrow. Only non-custodial bank webhooks with Mekong signature verification.
+              </p>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs border-t border-outline-variant flex items-center justify-between text-outline font-code-sm text-[10px]">
+<span>PAYMENT VAULT: NONE</span>
+<span class="text-primary">NON-CUSTODIAL</span>
+</div>
+</div>
+<!-- CARD 4: 2026 Economic Truth Meter -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md flex flex-col justify-between rounded relative overflow-hidden">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary"></div>
+<div>
+<div class="flex items-center justify-between text-outline text-label-sm font-label-sm uppercase mb-1">
+<span>Target Model Saturation</span>
+<span class="text-primary font-bold">65.8%</span>
+</div>
+<div class="font-headline-sm text-headline-sm text-on-surface font-semibold mb-1 flex items-center justify-between">
+<span>Economic Truth</span>
+<span class="text-primary font-code-md text-code-md font-bold">281 / 427</span>
+</div>
+<div class="text-[11px] text-outline font-code-sm mb-2">
+              Packhouses Verified for $1.0M ARR Target
+            </div>
+<!-- Saturation Progress Track -->
+<div class="w-full bg-surface-container-lowest h-2 rounded border border-outline-variant overflow-hidden mb-2">
+<div class="bg-primary h-full w-[65.8%] transition-all"></div>
+</div>
+<!-- Multi-revenue breakdown tags -->
+<div class="grid grid-cols-3 gap-1 text-[9px] font-code-sm">
+<div class="bg-surface-container-lowest p-1 rounded border border-outline-variant text-center">
+<span class="text-outline block">PRO SAAS</span>
+<span class="text-on-surface font-bold">$2.4k/yr</span>
+</div>
+<div class="bg-surface-container-lowest p-1 rounded border border-outline-variant text-center">
+<span class="text-outline block">TRADE ROOM</span>
+<span class="text-on-surface font-bold">$120/dos</span>
+</div>
+<div class="bg-surface-container-lowest p-1 rounded border border-outline-variant text-center">
+<span class="text-outline block">ASEAN PACK</span>
+<span class="text-on-surface font-bold">$1.8k/yr</span>
+</div>
+</div>
+</div>
+<div class="mt-space-md pt-space-xs border-t border-outline-variant flex items-center justify-between text-outline font-code-sm text-[10px]">
+<span>CORRIDOR RUNTIME</span>
+<span class="text-primary">MEKONG-CN GACC</span>
+</div>
+</div>
+</section>
+<!-- MAIN LAYOUT SPLIT: 8-COLS TABLE / 4-COLS SIDEBAR -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- LEFT 8-COLS: 25-STEP BLUEPRINT VERIFICATION MATRIX -->
+<section class="lg:col-span-8 flex flex-col space-y-space-sm bg-surface-container-low border border-outline-variant rounded">
+<!-- Matrix Header & Tab Filters -->
+<div class="p-space-md border-b border-outline-variant flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm">
+<div>
+<div class="flex items-center space-x-2">
+<span class="font-space font-bold text-headline-sm text-on-surface">25-Step Blueprint Verification Matrix</span>
+<span class="text-primary font-code-sm text-code-sm bg-surface-container-highest px-2 py-0.5 rounded border border-outline-variant">evaluateBlueprint25Steps()</span>
+</div>
+<div class="text-outline font-code-sm text-code-sm mt-0.5">Continuous deterministic compilation across repository artifacts &amp; security bounds</div>
+</div>
+<!-- Tab Filters -->
+<div class="flex items-center space-x-1 bg-surface-container-lowest p-1 rounded border border-outline-variant overflow-x-auto text-code-sm">
+<button class="bg-surface-container-high text-primary px-2.5 py-1 rounded font-semibold border-b border-primary">ALL (25)</button>
+<button class="text-on-surface-variant hover:text-on-surface px-2 py-1 transition-colors">FOUNDATIONS (1-6)</button>
+<button class="text-on-surface-variant hover:text-on-surface px-2 py-1 transition-colors">AIR-GAP OPS (7-13)</button>
+<button class="text-on-surface-variant hover:text-on-surface px-2 py-1 transition-colors">COMMERCIAL (14-20)</button>
+<button class="text-on-surface-variant hover:text-on-surface px-2 py-1 transition-colors">GOVERNANCE (21-25)</button>
+</div>
+</div>
+<!-- Table Container -->
+<div class="overflow-x-auto custom-scroll">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-container-lowest font-code-sm text-[10px] text-outline uppercase tracking-wider">
+<th class="py-2.5 px-3">STEP</th>
+<th class="py-2.5 px-3">SPEC &amp; TITLE</th>
+<th class="py-2.5 px-3">TASKS.MD</th>
+<th class="py-2.5 px-3">PLAN.MD</th>
+<th class="py-2.5 px-3">REPO ARTIFACT PATH</th>
+<th class="py-2.5 px-3">ENGINE</th>
+<th class="py-2.5 px-3 text-right">LATENCY</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-code-sm text-code-sm">
+<!-- Step 01 -->
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="py-2.5 px-3 font-bold text-primary">01</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Open-Core Master Framework</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 1.1</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/saas/open-core-edition-manifest.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.4ms</td>
+</tr>
+<!-- Step 02 -->
+<tr class="hover:bg-surface-container-high transition-colors group bg-surface-container-lowest/40">
+<td class="py-2.5 px-3 font-bold text-primary">02</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Zero-Leakage Architecture</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 1.2</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/crypto/pedersen-commitments.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.2ms</td>
+</tr>
+<!-- Step 03 -->
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="py-2.5 px-3 font-bold text-primary">03</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Agentic OS &amp; HITL Governance</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 1.3</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/verification/hitl-service.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.5ms</td>
+</tr>
+<!-- Step 04 -->
+<tr class="hover:bg-surface-container-high transition-colors group bg-surface-container-lowest/40">
+<td class="py-2.5 px-3 font-bold text-primary">04</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Pilot Readiness &amp; Audit Evidence</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 1.4</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/export/field-auditor-cli.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.3ms</td>
+</tr>
+<!-- Step 07 -->
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="py-2.5 px-3 font-bold text-primary">07</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Cai Lậy Packhouse Baseline Ops</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 2.1</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/hardware/weighbridge-serial-reader.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.1ms</td>
+</tr>
+<!-- Step 09 -->
+<tr class="hover:bg-surface-container-high transition-colors group bg-surface-container-lowest/40">
+<td class="py-2.5 px-3 font-bold text-primary">09</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Bilingual Open-Source Docs &amp; MIT Verifier</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 2.3</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/export/standalone-manifest-verifier.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.2ms</td>
+</tr>
+<!-- Step 11 -->
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="py-2.5 px-3 font-bold text-primary">11</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Field-First Demo &amp; Blind-Fault Testing</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 2.5</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/auth/pilot-rehearsal-seeder.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.6ms</td>
+</tr>
+<!-- Step 14 -->
+<tr class="hover:bg-surface-container-high transition-colors group bg-surface-container-lowest/40">
+<td class="py-2.5 px-3 font-bold text-primary">14</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Signed Workspace Portability Funnel</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 3.1</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/saas/workspace-portability-bundle.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.4ms</td>
+</tr>
+<!-- Step 15 -->
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="py-2.5 px-3 font-bold text-primary">15</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Dense Cluster GTM Playbook</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 3.2</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/sharing/dense-cluster-readiness.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.3ms</td>
+</tr>
+<!-- Step 18 -->
+<tr class="hover:bg-surface-container-high transition-colors group bg-surface-container-lowest/40">
+<td class="py-2.5 px-3 font-bold text-primary">18</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">GACC Decree 248/249 Customs Parser</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 3.5</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/rules/gacc-phytosanitary-rules.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.5ms</td>
+</tr>
+<!-- Step 20 -->
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="py-2.5 px-3 font-bold text-primary">20</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Competitive &amp; Regional Benchmarks</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 3.7</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/rules/asean-corridor-adapters.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.3ms</td>
+</tr>
+<!-- Step 21 -->
+<tr class="hover:bg-surface-container-high transition-colors group bg-surface-container-lowest/40">
+<td class="py-2.5 px-3 font-bold text-primary">21</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Evidence-Backed Audit Data Room</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 4.1</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/storage/sqlite-audit-ledger.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.2ms</td>
+</tr>
+<!-- Step 23 -->
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="py-2.5 px-3 font-bold text-primary">23</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Dual-Lock Marketplace &amp; Zero-Custody</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 4.3</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/marketplace/marketplace-guard.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.4ms</td>
+</tr>
+<!-- Step 24 -->
+<tr class="hover:bg-surface-container-high transition-colors group bg-surface-container-lowest/40">
+<td class="py-2.5 px-3 font-bold text-primary">24</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">Cadmium ICP-MS Heavy Metal Tolerances</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 4.4</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">src/sensors/spectrometry-parser.ts</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.2ms</td>
+</tr>
+<!-- Step 25 -->
+<tr class="hover:bg-surface-container-high transition-colors group">
+<td class="py-2.5 px-3 font-bold text-primary">25</td>
+<td class="py-2.5 px-3 font-body-sm text-on-surface">9 Hard Kill Criteria &amp; Incident Playbook</td>
+<td class="py-2.5 px-3 text-primary"><span class="bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant font-mono">[x]</span></td>
+<td class="py-2.5 px-3 text-on-surface-variant">## 4.5</td>
+<td class="py-2.5 px-3 text-on-surface-variant group-hover:text-primary transition-colors">docs/product-direction/STRATEGY-V2-BACKLOG.md</td>
+<td class="py-2.5 px-3"><span class="text-primary font-bold">VERIFIED</span></td>
+<td class="py-2.5 px-3 text-right text-outline">0.1ms</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Footer Summary Bar -->
+<div class="p-space-md bg-surface-container-lowest border-t border-outline-variant flex flex-col sm:flex-row items-center justify-between text-code-sm font-code-sm text-outline gap-2">
+<div class="flex items-center space-x-2">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-on-surface font-semibold">25 of 25 Steps Compiled</span>
+<span>·</span>
+<span class="text-primary">0 Drift Detected</span>
+</div>
+<div class="flex items-center space-x-2">
+<span>Merkle Root:</span>
+<span class="text-primary font-mono bg-surface-container px-2 py-0.5 rounded border border-outline-variant">SHA-256: 0x8f2c0194b92c49a1</span>
+</div>
+</div>
+</section>
+<!-- RIGHT 4-COLS: STRATEGIC & RUNTIME GOVERNANCE SIDEBAR -->
+<aside class="lg:col-span-4 flex flex-col space-y-gutter">
+<!-- SECTION A: 9 HARD KILL CRITERIA & SAFETY BOUNDARY LOCKS -->
+<div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col space-y-space-md">
+<div class="flex items-center justify-between border-b border-outline-variant pb-space-sm">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-error text-base">emergency_home</span>
+<span class="font-space font-bold text-headline-sm text-on-surface">9 Hard Kill Criteria</span>
+</div>
+<span class="text-error font-code-sm text-code-sm font-bold bg-surface-container px-2 py-0.5 rounded border border-error">STRICT LOCK</span>
+</div>
+<p class="text-outline font-body-sm text-body-sm leading-tight">
+              Absolute architectural boundaries. Tripping any rule immediately halts automated export pipeline sign-off.
+            </p>
+<div class="space-y-2 font-code-sm text-[11px]">
+<!-- Rule 1 -->
+<div class="p-2 bg-surface-container-lowest border border-outline-variant rounded flex items-start justify-between">
+<div>
+<div class="text-on-surface font-semibold">1. AI Autonomous Sign-off</div>
+<div class="text-outline text-[10px]">Officer Ed25519 physical key mandatory</div>
+</div>
+<span class="text-error font-bold ml-2 shrink-0">HARD BLOCKED</span>
+</div>
+<!-- Rule 2 -->
+<div class="p-2 bg-surface-container-lowest border border-outline-variant rounded flex items-start justify-between">
+<div>
+<div class="text-on-surface font-semibold">2. Customer Cloud Sync pre-Gate 05</div>
+<div class="text-outline text-[10px]">Air-gapped SQLite container only</div>
+</div>
+<span class="text-error font-bold ml-2 shrink-0">STRICT DENIED</span>
+</div>
+<!-- Rule 3 -->
+<div class="p-2 bg-surface-container-lowest border border-outline-variant rounded flex items-start justify-between">
+<div>
+<div class="text-on-surface font-semibold">3. Direct Payment Custody</div>
+<div class="text-outline text-[10px]">Decree 52/2024 compliance enforced</div>
+</div>
+<span class="text-primary font-bold ml-2 shrink-0">ZERO-CUSTODY</span>
+</div>
+<!-- Rule 4 -->
+<div class="p-2 bg-surface-container-lowest border border-outline-variant rounded flex items-start justify-between">
+<div>
+<div class="text-on-surface font-semibold">4. Cadmium Exceedance &gt;0.050 mg/kg</div>
+<div class="text-outline text-[10px]">ICP-MS spectrometry limit tripped</div>
+</div>
+<span class="text-error font-bold ml-2 shrink-0">AUTO-LOCK REEFER</span>
+</div>
+<!-- Rule 5 -->
+<div class="p-2 bg-surface-container-lowest border border-outline-variant rounded flex items-start justify-between">
+<div>
+<div class="text-on-surface font-semibold">5. Unregistered PUC / PHC Code</div>
+<div class="text-outline text-[10px]">Missing GACC orchard authorization</div>
+</div>
+<span class="text-error font-bold ml-2 shrink-0">GATE REFUSAL</span>
+</div>
+<!-- Rule 6 -->
+<div class="p-2 bg-surface-container-lowest border border-outline-variant rounded flex items-start justify-between">
+<div>
+<div class="text-on-surface font-semibold">6. Telemetry Drift &gt;60 Seconds</div>
+<div class="text-outline text-[10px]">GPS / reefer clock desynchronization</div>
+</div>
+<span class="text-tertiary font-bold ml-2 shrink-0">TIME-LOCK</span>
+</div>
+<!-- Rule 7 -->
+<div class="p-2 bg-surface-container-lowest border border-outline-variant rounded flex items-start justify-between">
+<div>
+<div class="text-on-surface font-semibold">7. Proprietary Format Lock-in</div>
+<div class="text-outline text-[10px]">RFC-6962 verifiable tar.gz bundles</div>
+</div>
+<span class="text-primary font-bold ml-2 shrink-0">ZERO LOCK-IN</span>
+</div>
+<!-- Rule 8 -->
+<div class="p-2 bg-surface-container-lowest border border-outline-variant rounded flex items-start justify-between">
+<div>
+<div class="text-on-surface font-semibold">8. Unverified Bilateral Drift</div>
+<div class="text-outline text-[10px]">ASEAN Corridor schema desync</div>
+</div>
+<span class="text-tertiary font-bold ml-2 shrink-0">SUSPEND PROTOCOL</span>
+</div>
+<!-- Rule 9 -->
+<div class="p-2 bg-surface-container-lowest border border-outline-variant rounded flex items-start justify-between">
+<div>
+<div class="text-on-surface font-semibold">9. Cloud Single Point Failure</div>
+<div class="text-outline text-[10px]">100% offline edge execution verified</div>
+</div>
+<span class="text-primary font-bold ml-2 shrink-0">OFFLINE CERTIFIED</span>
+</div>
+</div>
 </div>
 <!-- SECTION B: NON-CUSTODIAL ESCROW STATE MACHINE PREVIEW -->
 <div class="bg-surface-container-low border border-outline-variant p-space-md rounded flex flex-col space-y-space-md">

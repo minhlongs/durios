@@ -155,72 +155,72 @@
       background: #10b981;
     }
   </style>
-<link rel="stylesheet" href="/stitch/durios-design-system.css">
+  <link rel="stylesheet" href="/stitch/durios-design-system.css">
 </head>
 <body class="bg-background text-on-surface font-body-md antialiased overflow-x-hidden selection:bg-primary selection:text-on-primary">
-
-<!-- DURIOS UNIFIED TOP NAV BAR -->
-<!-- DURIOS 2027 ADAPTIVE 3-MODE APP SHELL TOP COMMAND BAR (44px) -->
+<!-- DURIOS-TOP-NAV-START -->
 <div id="durios-unified-top-nav" class="durios-top-command-bar" style="background:#09140E;border-bottom:1px solid #1F3327;height:44px;max-height:44px;padding:0 14px;font-family:'Inter',sans-serif;font-size:11px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99999;box-sizing:border-box;overflow:visible;">
-  <div class="durios-bar-left" style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-    <button type="button" id="durios-btn-sidebar" class="durios-icon-btn" title="Toggle Sidebar ([)" aria-label="Toggle Navigation" style="background:#132018;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;cursor:pointer;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  <div class="durios-bar-left" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <button type="button" id="durios-btn-sidebar" class="durios-icon-btn" title="Toggle Navigation Drawer ([)" aria-label="Toggle Navigation" style="background:#132018;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;cursor:pointer;display:inline-flex;align-items:center;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
     <a href="gallery.html" class="durios-brand-badge" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;font-size:12px;color:#10B981;">
       <span>🌿</span>
       <span class="durios-brand-text">DURIOS // v0.4</span>
     </a>
     <span class="durios-breadcrumb-sep" style="color:#4B6B56;">/</span>
+    <span style="color:#6EE7B7;font-size:10px;font-weight:500;">2. Compliance & Gates</span>
+    <span class="durios-breadcrumb-sep" style="color:#4B6B56;">/</span>
     <span class="durios-breadcrumb-active" style="color:#ECFDF5;font-weight:600;font-size:11px;">05. Cluster Ops Room</span>
   </div>
 
-  <div class="durios-nav-dropdowns" style="display:flex;align-items:center;gap:4px;flex:1;margin:0 12px;overflow:hidden;">
+  <div class="durios-nav-dropdowns" style="display:flex;align-items:center;gap:4px;flex:1;margin:0 12px;overflow:visible;">
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">1. Packhouse Ops [7] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏭 01. Packhouse Workspace</span><span style="font-size:9px;color:#4B6B56;">01</span></a>
-        <a href="dossiers.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 02. Dossiers Registry</span><span style="font-size:9px;color:#4B6B56;">02</span></a>
-        <a href="paper-canvas.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📝 09. Bút Dạ Quang Canvas</span><span style="font-size:9px;color:#4B6B56;">09</span></a>
-        <a href="excel-grid.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📊 10. Excel Speed Grid</span><span style="font-size:9px;color:#4B6B56;">10</span></a>
-        <a href="zalo-bot.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>💬 11. Zalo Ops Bot</span><span style="font-size:9px;color:#4B6B56;">11</span></a>
-        <a href="mobile-weighbridge.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📱 12. Mobile Weighbridge</span><span style="font-size:9px;color:#4B6B56;">12</span></a>
-        <a href="field-proven.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☀️ 13. Field POS Proven</span><span style="font-size:9px;color:#4B6B56;">13</span></a>
+        <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏭 01. Packhouse Workspace</span><span style="font-size:9px;color:#6EE7B7;">01</span></a>
+        <a href="dossiers.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 02. Dossiers Registry</span><span style="font-size:9px;color:#6EE7B7;">02</span></a>
+        <a href="paper-canvas.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📝 09. Bút Dạ Quang Canvas</span><span style="font-size:9px;color:#6EE7B7;">09</span></a>
+        <a href="excel-grid.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📊 10. Excel Speed Grid</span><span style="font-size:9px;color:#6EE7B7;">10</span></a>
+        <a href="zalo-bot.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>💬 11. Zalo Ops Bot</span><span style="font-size:9px;color:#6EE7B7;">11</span></a>
+        <a href="mobile-weighbridge.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📱 12. Mobile Weighbridge</span><span style="font-size:9px;color:#6EE7B7;">12</span></a>
+        <a href="field-proven.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☀️ 13. Field POS Proven</span><span style="font-size:9px;color:#6EE7B7;">13</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">2. Compliance &amp; Gates [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="auditor.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🛡️ 03. Field Auditor (5 Gates)</span><span style="font-size:9px;color:#4B6B56;">03</span></a>
-        <a href="buyer.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🤝 04. Buyer Portal</span><span style="font-size:9px;color:#4B6B56;">04</span></a>
-        <a href="cluster.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌐 05. Cluster Ops Room</span><span style="font-size:9px;color:#4B6B56;">05</span></a>
-        <a href="socratic-introspector.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧠 14. Socratic 5-Turn</span><span style="font-size:9px;color:#4B6B56;">14</span></a>
-        <a href="rehearsal-command.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎯 15. Rehearsal Command</span><span style="font-size:9px;color:#4B6B56;">15</span></a>
-        <a href="styleguide.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎨 08. Style Guide &amp; Tokens</span><span style="font-size:9px;color:#4B6B56;">08</span></a>
+        <a href="auditor.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🛡️ 03. Field Auditor (5 Gates)</span><span style="font-size:9px;color:#6EE7B7;">03</span></a>
+        <a href="buyer.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🤝 04. Buyer Portal</span><span style="font-size:9px;color:#6EE7B7;">04</span></a>
+        <a href="cluster.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#10B981;background:rgba(16,185,129,0.14);font-weight:700;text-decoration:none;border-radius:4px;"><span>🌐 05. Cluster Ops Room</span><span style="font-size:9px;color:#6EE7B7;">05</span></a>
+        <a href="socratic-introspector.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧠 14. Socratic 5-Turn</span><span style="font-size:9px;color:#6EE7B7;">14</span></a>
+        <a href="rehearsal-command.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎯 15. Rehearsal Command</span><span style="font-size:9px;color:#6EE7B7;">15</span></a>
+        <a href="styleguide.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎨 08. Style Guide &amp; Tokens</span><span style="font-size:9px;color:#6EE7B7;">08</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">3. Security &amp; MIT SDK [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="foundry.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔐 17. Foundry Security</span><span style="font-size:9px;color:#4B6B56;">17</span></a>
-        <a href="security-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏛️ 18. Security Vault</span><span style="font-size:9px;color:#4B6B56;">18</span></a>
-        <a href="organic-escrow-guard.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⚖️ 19. Organic Escrow Guard</span><span style="font-size:9px;color:#4B6B56;">19</span></a>
-        <a href="mit-verifier-lab.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔬 16. MIT Verifier Lab</span><span style="font-size:9px;color:#4B6B56;">16</span></a>
-        <a href="cloud-ocr-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☁️ 24. Cloud OCR &amp; Vault</span><span style="font-size:9px;color:#4B6B56;">24</span></a>
-        <a href="ed25519-downgrade-simulator.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔑 25. Ed25519 Downgrade</span><span style="font-size:9px;color:#4B6B56;">25</span></a>
+        <a href="foundry.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔐 17. Foundry Security</span><span style="font-size:9px;color:#6EE7B7;">17</span></a>
+        <a href="security-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏛️ 18. Security Vault</span><span style="font-size:9px;color:#6EE7B7;">18</span></a>
+        <a href="organic-escrow-guard.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⚖️ 19. Organic Escrow Guard</span><span style="font-size:9px;color:#6EE7B7;">19</span></a>
+        <a href="mit-verifier-lab.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔬 16. MIT Verifier Lab</span><span style="font-size:9px;color:#6EE7B7;">16</span></a>
+        <a href="cloud-ocr-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☁️ 24. Cloud OCR &amp; Vault</span><span style="font-size:9px;color:#6EE7B7;">24</span></a>
+        <a href="ed25519-downgrade-simulator.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔑 25. Ed25519 Downgrade</span><span style="font-size:9px;color:#6EE7B7;">25</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">4. SaaS &amp; Corridors [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="gallery.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⭐️ Master Hub Directory</span><span style="font-size:9px;color:#4B6B56;">★</span></a>
-        <a href="portability.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 06. Data Portability Hub</span><span style="font-size:9px;color:#4B6B56;">06</span></a>
-        <a href="upgrade.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🚀 07. Pro SaaS Upgrade</span><span style="font-size:9px;color:#4B6B56;">07</span></a>
-        <a href="corridors.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌏 22. ASEAN Corridors</span><span style="font-size:9px;color:#4B6B56;">22</span></a>
-        <a href="blueprint.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧭 23. 25-Step Blueprint</span><span style="font-size:9px;color:#4B6B56;">23</span></a>
-        <a href="webhook-sync-queue.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔄 20. Partner Webhooks</span><span style="font-size:9px;color:#4B6B56;">20</span></a>
+        <a href="gallery.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⭐️ Master Hub Directory</span><span style="font-size:9px;color:#6EE7B7;">★</span></a>
+        <a href="portability.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 06. Data Portability Hub</span><span style="font-size:9px;color:#6EE7B7;">06</span></a>
+        <a href="upgrade.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🚀 07. Pro SaaS Upgrade</span><span style="font-size:9px;color:#6EE7B7;">07</span></a>
+        <a href="corridors.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌏 22. ASEAN Corridors</span><span style="font-size:9px;color:#6EE7B7;">22</span></a>
+        <a href="blueprint.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧭 23. 25-Step Blueprint</span><span style="font-size:9px;color:#6EE7B7;">23</span></a>
+        <a href="webhook-sync-queue.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔄 20. Partner Webhooks</span><span style="font-size:9px;color:#6EE7B7;">20</span></a>
       </div>
     </div>
   </div>
@@ -230,11 +230,578 @@
       <span>Search screens…</span>
       <kbd style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:1px 4px;background:#09140E;border:1px solid #2D4C39;border-radius:3px;">⌘K</kbd>
     </button>
-    <button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops" style="background:#040705;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;font-size:11px;cursor:pointer;">
+    <button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops" style="background:#040705;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
       <span class="theme-icon">☀️</span> <span style="font-size:10px;font-weight:600;">Field</span>
     </button>
-    <span class="durios-nav-badge" style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.15);color:#10B981;border:1px solid #2D4C39;">DURIOS 25-SCREEN NAV</span>
+    <a href="/" title="Open Live SQLite Packhouse SPA" style="background:rgba(16,185,129,0.15);color:#10B981;border:1px solid #2D4C39;border-radius:4px;padding:3px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;text-decoration:none;">⚡ LIVE SPA</a>
+    <span class="durios-nav-badge" style="display:none;">DURIOS 25-SCREEN NAV</span>
   </div>
+</div>
+<!-- DURIOS-TOP-NAV-END -->
+
+
+
+<!-- TOP APP BAR -->
+<header class="flex justify-between items-center w-full px-margin h-14 bg-surface-container border-b border-outline-variant z-40 sticky top-0">
+<div class="flex items-center space-x-space-md">
+<div class="flex items-center space-x-2">
+<span class="w-2.5 h-2.5 rounded-full bg-primary animate-ping"></span>
+<span class="w-2 h-2 rounded-full bg-primary -ml-3.5"></span>
+<span class="text-headline-sm font-headline-sm uppercase tracking-wider text-primary font-bold">MEKONG CLEAR // GACC DUR-EXP-OPS</span>
+</div>
+<div class="hidden xl:flex items-center bg-surface-container-lowest border border-outline-variant px-space-sm py-0.5 rounded">
+<span class="material-symbols-outlined text-outline text-sm mr-1.5" data-icon="search">search</span>
+<input class="bg-transparent text-code-sm font-code-sm text-on-surface placeholder:text-outline focus:outline-none w-56 border-none p-0" placeholder="FILTER CLUSTER ASSETS &amp; ORACLES..." type="text"/>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="hidden md:flex items-center space-x-space-lg">
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="index.html">Manifest Queue</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="dossiers.html">Phytosanitary Log</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="auditor.html">Cold-Chain Telemetry</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="buyer.html">Customs Gateway</a>
+<a class="text-primary border-b-2 border-primary font-code-md text-code-md py-1" href="cluster.html">Cluster Ops / Map</a>
+</nav>
+<!-- Header Actions -->
+<div class="flex items-center space-x-space-sm">
+<div class="hidden sm:flex items-center space-x-1 text-on-surface-variant mr-1">
+<button class="p-1.5 hover:bg-surface-variant hover:text-on-surface rounded transition-colors duration-150 relative" title="Active Sensors">
+<span class="material-symbols-outlined text-sm" data-icon="sensors">sensors</span>
+<span class="absolute top-1 right-1 w-1.5 h-1.5 bg-primary rounded-full"></span>
+</button>
+<button class="p-1.5 hover:bg-surface-variant hover:text-on-surface rounded transition-colors duration-150" title="Telemetry Alerts">
+<span class="material-symbols-outlined text-sm" data-icon="notifications">notifications</span>
+</button>
+<button class="p-1.5 hover:bg-surface-variant hover:text-on-surface rounded transition-colors duration-150" title="CLI Terminal">
+<span class="material-symbols-outlined text-sm" data-icon="terminal">terminal</span>
+</button>
+</div>
+<button class="hidden lg:flex items-center bg-surface-container-high border border-outline-variant px-space-sm py-1.5 rounded text-code-sm font-code-sm text-on-surface hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-xs mr-1 text-tertiary" data-icon="gavel">gavel</span>
+        Hold Quarantine
+      </button>
+<button class="flex items-center bg-primary text-on-primary-container px-space-md py-1.5 rounded font-headline-sm text-headline-sm font-semibold hover:bg-primary-fixed transition-colors active:scale-[0.99]">
+<span class="material-symbols-outlined text-sm mr-1 font-bold" data-icon="verified">verified</span>
+        Clear Consignment
+      </button>
+<div class="h-8 w-8 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center ml-2" title="Chief Customs Verification Officer Badge">
+<span class="text-label-sm font-label-sm font-bold text-primary">VN84</span>
+</div>
+</div>
+</header>
+<!-- LIVE METRIC TELEMETRY RIBBON -->
+<div class="w-full bg-surface-container-lowest border-b border-outline-variant px-margin py-1.5 flex flex-wrap items-center justify-between gap-y-2">
+<div class="flex items-center space-x-space-md text-code-sm font-code-sm">
+<div class="flex items-center space-x-1.5 bg-surface-container px-2 py-0.5 rounded border border-outline-variant">
+<span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="text-label-sm font-label-sm text-outline font-semibold">NODE:</span>
+<span class="text-primary font-bold">ACTIVE</span>
+</div>
+<div class="text-on-surface-variant">
+<span class="text-outline">FACILITY:</span> <span class="text-on-surface font-semibold">TIEN GIANG #VN-84B (CAI LẬY)</span>
+</div>
+<div class="hidden sm:inline-block text-outline">|</div>
+<div class="hidden sm:flex items-center space-x-1">
+<span class="text-outline">LATENCY:</span>
+<span class="text-primary font-bold">16ms</span>
+<span class="text-outline text-[9px]">(JITTER ±1.2ms)</span>
+</div>
+<div class="hidden md:inline-block text-outline">|</div>
+<div class="hidden md:flex items-center space-x-1">
+<span class="text-outline">CONSENSUS:</span>
+<span class="text-primary font-bold">100% HEALTHY</span>
+</div>
+<div class="hidden xl:inline-block text-outline">|</div>
+<div class="hidden xl:flex items-center space-x-1">
+<span class="text-outline">COMPLIANCE:</span>
+<span class="text-secondary-fixed font-bold">GACC DECREE 248/249</span>
+</div>
+</div>
+<div class="flex items-center space-x-space-sm">
+<button class="flex items-center bg-surface-container-low border border-outline-variant hover:border-primary px-space-sm py-1 rounded text-label-sm font-label-sm text-on-surface transition-colors">
+<span class="material-symbols-outlined text-xs mr-1 text-primary animate-spin" data-icon="sync">sync</span>
+        Synchronize Cluster Nodes
+      </button>
+<button class="flex items-center bg-surface-container-low border border-outline-variant hover:border-primary px-space-sm py-1 rounded text-label-sm font-label-sm text-on-surface-variant hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-xs mr-1" data-icon="download">download</span>
+        Export Network Topology (.JSON)
+      </button>
+</div>
+</div>
+<div class="flex flex-col lg:flex-row min-h-[calc(100vh-84px)]">
+<!-- VERTICAL RAIL -->
+<aside class="flex flex-col justify-between w-full lg:w-64 border-r border-outline-variant bg-surface-container-lowest p-space-md shrink-0 border-b lg:border-b-0">
+<div>
+<!-- Rail Header -->
+<div class="pb-space-md border-b border-outline-variant mb-space-md">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="shield">shield</span>
+<div>
+<div class="text-label-md font-label-md text-primary font-bold tracking-widest uppercase">FACILITY #VN-84B</div>
+<div class="text-label-sm font-label-sm text-outline">TIEN GIANG STATION</div>
+</div>
+</div>
+<div class="mt-2 text-[10px] font-code-sm text-outline bg-surface-container px-1.5 py-0.5 rounded border border-outline-variant">
+            LOC: CAI LẬY // LAT: 10.415°N, 106.121°E
+          </div>
+</div>
+<!-- Rail Navigation List -->
+<nav class="space-y-1">
+<a class="flex items-center space-x-2 text-on-surface-variant px-space-md py-space-sm font-code-sm hover:bg-surface-container-high hover:text-on-surface rounded transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="verified">verified</span>
+<span>Verify Ops</span>
+</a>
+<a class="flex items-center space-x-2 text-on-surface-variant px-space-md py-space-sm font-code-sm hover:bg-surface-container-high hover:text-on-surface rounded transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="biotech">biotech</span>
+<span>Cadmium Lab</span>
+</a>
+<a class="flex items-center space-x-2 text-on-surface-variant px-space-md py-space-sm font-code-sm hover:bg-surface-container-high hover:text-on-surface rounded transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="ac_unit">ac_unit</span>
+<span>Cold Chain</span>
+</a>
+<a class="flex items-center space-x-2 text-on-surface-variant px-space-md py-space-sm font-code-sm hover:bg-surface-container-high hover:text-on-surface rounded transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="lock">lock</span>
+<span>Seal Chain</span>
+</a>
+<a class="flex items-center space-x-2 bg-surface-container-high text-primary border-l-2 border-primary px-space-md py-space-sm font-code-sm rounded-r" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="receipt_long">receipt_long</span>
+<span>Audit Trail</span>
+</a>
+</nav>
+<!-- Primary CTA in Rail -->
+<div class="mt-space-lg">
+<button class="w-full flex items-center justify-center space-x-1.5 bg-primary-container text-on-primary-container font-headline-sm text-headline-sm py-2 px-space-sm rounded font-semibold hover:bg-primary transition-all shadow-sm">
+<span class="material-symbols-outlined text-sm font-bold" data-icon="lock">lock</span>
+<span>Lock Container Seal</span>
+</button>
+</div>
+</div>
+<!-- Rail Footer Tabs -->
+<div class="pt-space-md border-t border-outline-variant space-y-1">
+<a class="flex items-center space-x-2 text-on-surface-variant px-space-md py-space-sm font-code-sm hover:bg-surface-container-high rounded transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="sync">sync</span>
+<span>Telemetry Sync</span>
+</a>
+<a class="flex items-center space-x-2 text-on-surface-variant px-space-md py-space-sm font-code-sm hover:bg-surface-container-high rounded transition-colors" href="#">
+<span class="material-symbols-outlined text-sm" data-icon="settings">settings</span>
+<span>System Specs</span>
+</a>
+<div class="mt-2 text-center text-[9px] font-code-sm text-outline">
+          FIRMWARE BUILD v4.9.2-REL
+        </div>
+</div>
+</aside>
+<!-- MAIN OPERATIONAL VIEWPORT -->
+<main class="flex-1 flex flex-col min-w-0 bg-background">
+<!-- TOP CLUSTER METRICS BAR -->
+<section class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 border-b border-outline-variant bg-surface-container divide-x divide-y md:divide-y-0 divide-outline-variant">
+<!-- Metric 1: Network Density -->
+<div class="p-space-sm bg-surface-container">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>NETWORK DENSITY</span>
+<span class="material-symbols-outlined text-xs text-primary" data-icon="hub">hub</span>
+</div>
+<div class="mt-1 flex items-baseline space-x-1.5">
+<span class="text-headline-md font-headline-md text-on-surface font-bold">0.742</span>
+<span class="text-label-sm font-label-sm text-outline">/ 1.000</span>
+</div>
+<div class="mt-1 flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-primary font-medium">Resilience Mesh</span>
+<span class="text-secondary text-[9px]">&gt;0.700 OK</span>
+</div>
+</div>
+<!-- Metric 2: Packhouse Nodes -->
+<div class="p-space-sm bg-surface-container">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>PACKHOUSE NODES</span>
+<span class="material-symbols-outlined text-xs text-primary" data-icon="warehouse">warehouse</span>
+</div>
+<div class="mt-1 flex items-baseline space-x-1.5">
+<span class="text-headline-md font-headline-md text-primary font-bold">8 / 8</span>
+<span class="text-label-sm font-label-sm text-secondary-container">100%</span>
+</div>
+<div class="mt-1 flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-on-surface-variant font-medium">Active &amp; Sealed</span>
+<span class="text-primary">Online</span>
+</div>
+</div>
+<!-- Metric 3: Exporters Verified -->
+<div class="p-space-sm bg-surface-container">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>EXPORTERS ACCREDITED</span>
+<span class="material-symbols-outlined text-xs text-primary" data-icon="domain_verification">domain_verification</span>
+</div>
+<div class="mt-1 flex items-baseline space-x-1.5">
+<span class="text-headline-md font-headline-md text-on-surface font-bold">3 / 3</span>
+<span class="text-label-sm font-label-sm text-primary">Valid</span>
+</div>
+<div class="mt-1 truncate text-label-sm font-label-sm text-outline" title="Mekong Fruit, Cai Lậy, VinaDurian">
+            Mekong, Cai Lậy, VinaDurian
+          </div>
+</div>
+<!-- Metric 4: Cadmium Labs -->
+<div class="p-space-sm bg-surface-container">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>ICP-MS TESTING LABS</span>
+<span class="material-symbols-outlined text-xs text-primary" data-icon="science">science</span>
+</div>
+<div class="mt-1 flex items-baseline space-x-1.5">
+<span class="text-headline-md font-headline-md text-on-surface font-bold">2 / 2</span>
+<span class="text-label-sm font-label-sm text-secondary">VILAS</span>
+</div>
+<div class="mt-1 truncate text-label-sm font-label-sm text-outline" title="NAFIQAD 042 &amp; Quatest 3">
+            NAFIQAD-042 / QUATEST 3
+          </div>
+</div>
+<!-- Metric 5: Cold-Chain Reefer Fleets -->
+<div class="p-space-sm bg-surface-container">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>COLD REEFER FLEETS</span>
+<span class="material-symbols-outlined text-xs text-primary" data-icon="ac_unit">ac_unit</span>
+</div>
+<div class="mt-1 flex items-baseline space-x-1.5">
+<span class="text-headline-md font-headline-md text-on-surface font-bold">42</span>
+<span class="text-label-sm font-label-sm text-primary">Sensors</span>
+</div>
+<div class="mt-1 flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-on-surface-variant">3/3 Fleets</span>
+<span class="text-primary font-bold">13.5°C avg</span>
+</div>
+</div>
+<!-- Metric 6: GACC Importer Gateways -->
+<div class="p-space-sm bg-surface-container">
+<div class="flex items-center justify-between text-label-sm font-label-sm text-outline">
+<span>GACC GATEWAYS</span>
+<span class="material-symbols-outlined text-xs text-primary" data-icon="lan">lan</span>
+</div>
+<div class="mt-1 flex items-baseline space-x-1.5">
+<span class="text-headline-md font-headline-md text-primary font-bold">5 / 5</span>
+<span class="text-label-sm font-label-sm text-outline">Corridors</span>
+</div>
+<div class="mt-1 flex items-center justify-between text-label-sm font-label-sm">
+<span class="text-on-surface-variant truncate">Youyi Guan +4</span>
+<span class="text-secondary text-[9px]">LIVE SYNC</span>
+</div>
+</div>
+</section>
+<!-- MAIN WORKSPACE: MAP CANVAS + OPERATIONS STACK -->
+<div class="flex-1 grid grid-cols-1 xl:grid-cols-12 min-h-0">
+<!-- LEFT/CENTER CANVAS: INTERACTIVE TOPOLOGY GRAPH (8 COLS) -->
+<div class="xl:col-span-8 flex flex-col border-b xl:border-b-0 xl:border-r border-outline-variant bg-surface-container-lowest relative overflow-hidden">
+<!-- Map Canvas Control HUD -->
+<div class="flex flex-wrap items-center justify-between p-space-sm bg-surface-container-low border-b border-outline-variant z-10 gap-2">
+<div class="flex items-center space-x-2">
+<span class="text-label-sm font-label-sm text-outline uppercase">Filter Topology:</span>
+<div class="inline-flex rounded border border-outline-variant p-0.5 bg-surface-container-lowest text-label-sm font-label-sm">
+<button class="px-2 py-0.5 rounded bg-surface-container-high text-primary font-semibold">All Nodes</button>
+<button class="px-2 py-0.5 text-on-surface-variant hover:text-on-surface">Labs</button>
+<button class="px-2 py-0.5 text-on-surface-variant hover:text-on-surface">Reefers</button>
+<button class="px-2 py-0.5 text-on-surface-variant hover:text-on-surface">Customs</button>
+<button class="px-2 py-0.5 text-on-surface-variant hover:text-on-surface">Gateways</button>
+</div>
+</div>
+<div class="flex items-center space-x-space-sm text-label-sm font-label-sm">
+<label class="flex items-center space-x-1 cursor-pointer text-on-surface-variant hover:text-on-surface">
+<input checked="" class="rounded-none border-outline-variant bg-surface-container text-primary focus:ring-0 w-3 h-3" type="checkbox"/>
+<span>Latency Overlay</span>
+</label>
+<button class="flex items-center space-x-1 bg-surface-container border border-outline-variant hover:border-primary px-2 py-0.5 rounded text-on-surface">
+<span class="material-symbols-outlined text-xs text-primary" data-icon="tune">tune</span>
+<span>Recalibrate Mesh</span>
+</button>
+<div class="flex items-center space-x-0.5 border border-outline-variant rounded bg-surface-container px-1 py-0.5">
+<button class="text-outline hover:text-on-surface px-1 font-bold">+</button>
+<span class="text-[10px] text-outline">100%</span>
+<button class="text-outline hover:text-on-surface px-1 font-bold">-</button>
+</div>
+</div>
+</div>
+<!-- Network Visualizer SVG Area -->
+<div class="relative flex-1 min-h-[460px] lg:min-h-[580px] w-full bg-[#08100B] overflow-hidden flex items-center justify-center select-none">
+<!-- Grid Lines Background Pattern -->
+<div class="absolute inset-0 opacity-15 pointer-events-none" style="background-image: linear-gradient(#1f3b2c 1px, transparent 1px), linear-gradient(90deg, #1f3b2c 1px, transparent 1px); background-size: 32px 32px;"></div>
+<!-- SVG TOPOLOGY MESH GRAPH -->
+<svg class="w-full h-full min-w-[760px] min-h-[540px]" fill="none" viewbox="0 0 860 580" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<!-- Radar Gradient -->
+<radialgradient cx="50%" cy="50%" id="radarGrad" r="50%">
+<stop offset="0%" stop-color="#10B981" stop-opacity="0.25"></stop>
+<stop offset="70%" stop-color="#10B981" stop-opacity="0.05"></stop>
+<stop offset="100%" stop-color="#10B981" stop-opacity="0"></stop>
+</radialgradient>
+<lineargradient id="edgeGradEmerald" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#10b981" stop-opacity="0.8"></stop>
+<stop offset="100%" stop-color="#34d399" stop-opacity="0.3"></stop>
+</lineargradient>
+<lineargradient id="edgeGradAmber" x1="0%" x2="100%" y1="0%" y2="100%">
+<stop offset="0%" stop-color="#10b981" stop-opacity="0.7"></stop>
+<stop offset="100%" stop-color="#f59e0b" stop-opacity="0.6"></stop>
+</lineargradient>
+</defs>
+<!-- Radar concentric range circles -->
+<circle cx="430" cy="290" r="80" stroke="#1F3B2C" stroke-dasharray="2 4" stroke-width="1"></circle>
+<circle cx="430" cy="290" r="160" stroke="#1F3B2C" stroke-dasharray="3 5" stroke-width="1"></circle>
+<circle cx="430" cy="290" opacity="0.6" r="240" stroke="#1F3B2C" stroke-dasharray="2 6" stroke-width="1"></circle>
+<circle cx="430" cy="290" opacity="0.3" r="285" stroke="#1F3B2C" stroke-width="1"></circle>
+<!-- Sweeping Radar Sector -->
+<g class="radar-beam pointer-events-none opacity-40">
+<path d="M430 290 L430 50 A240 240 0 0 1 590 120 Z" fill="url(#radarGrad)"></path>
+</g>
+<!-- MESH EDGES & ACTIVE PACKET PULSES -->
+<!-- Core to ICP-MS Lab 1 -->
+<line stroke="#1F3B2C" stroke-width="1.5" x1="430" x2="200" y1="290" y2="140"></line>
+<line class="flow-line" stroke="#10B981" stroke-width="1.5" x1="430" x2="200" y1="290" y2="140"></line>
+<!-- Core to Quatest 3 Lab 2 -->
+<line stroke="#1F3B2C" stroke-width="1.5" x1="430" x2="170" y1="290" y2="280"></line>
+<line class="flow-line" stroke="#10B981" stroke-width="1.5" x1="430" x2="170" y1="290" y2="280"></line>
+<!-- Core to Reefer Telemetry Mesh -->
+<line stroke="#1F3B2C" stroke-width="1.5" x1="430" x2="230" y1="290" y2="430"></line>
+<line class="flow-line" stroke="#10B981" stroke-width="1.5" x1="430" x2="230" y1="290" y2="430"></line>
+<!-- Core to Smart Scale Weighbridge -->
+<line stroke="#1F3B2C" stroke-width="1.5" x1="430" x2="430" y1="290" y2="470"></line>
+<line class="flow-line" stroke="#10B981" stroke-width="1.5" x1="430" x2="430" y1="290" y2="470"></line>
+<!-- Core to RFID Bolt Validator -->
+<line stroke="#1F3B2C" stroke-width="1.5" x1="430" x2="610" y1="290" y2="420"></line>
+<line class="flow-line" stroke="#10B981" stroke-width="1.5" x1="430" x2="610" y1="290" y2="420"></line>
+<!-- Core to Youyi Guan Customs Gate (amber pulsing) -->
+<line stroke="#1F3B2C" stroke-width="1.5" x1="430" x2="670" y1="290" y2="270"></line>
+<line class="flow-line" stroke="#F59E0B" stroke-width="1.5" x1="430" x2="670" y1="290" y2="270"></line>
+<!-- Core to Mohan Border Port -->
+<line stroke="#1F3B2C" stroke-width="1.5" x1="430" x2="620" y1="290" y2="130"></line>
+<line class="flow-line" stroke="#10B981" stroke-width="1.5" x1="430" x2="620" y1="290" y2="130"></line>
+<!-- Cross Mesh Interconnects -->
+<line stroke="#1F3B2C" stroke-dasharray="2 3" stroke-width="1" x1="200" x2="170" y1="140" y2="280"></line>
+<line stroke="#1F3B2C" stroke-dasharray="2 3" stroke-width="1" x1="230" x2="430" y1="430" y2="470"></line>
+<line stroke="#1F3B2C" stroke-dasharray="2 3" stroke-width="1" x1="610" x2="670" y1="420" y2="270"></line>
+<line stroke="#1F3B2C" stroke-dasharray="2 3" stroke-width="1" x1="670" x2="770" y1="270" y2="170"></line>
+<!-- Border to Importer Endpoints -->
+<line class="flow-line" stroke="#10B981" stroke-width="1.2" x1="670" x2="770" y1="270" y2="170"></line>
+<line class="flow-line" stroke="#10B981" stroke-width="1.2" x1="670" x2="780" y1="270" y2="380"></line>
+<!-- LATENCY BADGES ON EDGES -->
+<rect fill="#08100B" height="15" rx="2" stroke="#1F3B2C" width="46" x="290" y="200"></rect>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="313" y="211">14ms</text>
+<rect fill="#08100B" height="15" rx="2" stroke="#1F3B2C" width="46" x="268" y="340"></rect>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="291" y="351">22ms</text>
+<rect fill="#08100B" height="15" rx="2" stroke="#F59E0B" width="46" x="525" y="268"></rect>
+<text fill="#F59E0B" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="548" y="279">45ms</text>
+<rect fill="#08100B" height="15" rx="2" stroke="#1F3B2C" width="46" x="500" y="195"></rect>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="9" text-anchor="middle" x="523" y="206">52ms</text>
+<!-- NODE 1: CENTRAL CORE HUB -->
+<g transform="translate(430, 290)">
+<circle fill="#132219" r="36" stroke="#10B981" stroke-width="2"></circle>
+<circle fill="none" opacity="0.6" r="44" stroke="#10B981" stroke-dasharray="4 3" stroke-width="1"></circle>
+<circle fill="#10B981" opacity="0.3" r="12"></circle>
+<circle fill="#10B981" r="6"></circle>
+<text fill="#ECFDF5" font-family="Inter" font-size="12" font-weight="700" text-anchor="middle" y="-50">DuriOS Core Hub // Cai Lậy #VN-84B</text>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="9" text-anchor="middle" y="-38">0x7F...C84 [LATENCY: 1.2ms // 100% HEALTH]</text>
+</g>
+<!-- NODE 2: ICP-MS Lab Unit Alpha (NAFIQAD 042) -->
+<g transform="translate(200, 140)">
+<rect fill="#132219" height="36" rx="4" stroke="#10B981" stroke-width="1.5" width="36" x="-18" y="-18"></rect>
+<circle fill="#10B981" r="4"></circle>
+<text fill="#ECFDF5" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" y="30">ICP-MS Lab Alpha</text>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="8.5" text-anchor="middle" y="42">NAFIQAD 042 // 14ms</text>
+</g>
+<!-- NODE 3: Quatest 3 Lab Proxy -->
+<g transform="translate(170, 280)">
+<rect fill="#132219" height="32" rx="4" stroke="#10B981" stroke-width="1.5" width="32" x="-16" y="-16"></rect>
+<circle fill="#10B981" r="4"></circle>
+<text fill="#ECFDF5" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" y="28">Quatest 3 Proxy</text>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="8.5" text-anchor="middle" y="40">VILAS CERT // 18ms</text>
+</g>
+<!-- NODE 4: Cold Reefer Telemetry Mesh -->
+<g transform="translate(230, 430)">
+<circle fill="#132219" r="18" stroke="#10B981" stroke-width="1.5"></circle>
+<circle fill="#10B981" r="4"></circle>
+<text fill="#ECFDF5" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" y="30">Reefer IoT Mesh</text>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="8.5" text-anchor="middle" y="42">42 Sensors // 22ms</text>
+</g>
+<!-- NODE 5: Smart Scale Bay 1-4 Weighbridge -->
+<g transform="translate(430, 470)">
+<polygon fill="#132219" points="0,-16 16,12 -16,12" stroke="#10B981" stroke-width="1.5"></polygon>
+<circle cy="2" fill="#10B981" r="3"></circle>
+<text fill="#ECFDF5" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" y="28">Weighbridge Bay 1-4</text>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="8.5" text-anchor="middle" y="40">Tare Lock // 4ms</text>
+</g>
+<!-- NODE 6: RFID Bolt Cryptographic Seal Validator -->
+<g transform="translate(610, 420)">
+<circle fill="#132219" r="18" stroke="#10B981" stroke-width="1.5"></circle>
+<circle fill="#10B981" r="4"></circle>
+<text fill="#ECFDF5" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" y="30">RFID Bolt Chain</text>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="8.5" text-anchor="middle" y="42">Zero Tamper // 8ms</text>
+</g>
+<!-- NODE 7: GACC Customs Gateway - Youyi Guan -->
+<g transform="translate(670, 270)">
+<rect fill="#132219" height="40" rx="4" stroke="#F59E0B" stroke-width="1.5" width="40" x="-20" y="-20"></rect>
+<circle fill="#F59E0B" r="5"></circle>
+<text fill="#ECFDF5" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" y="32">Youyi Guan Gate</text>
+<text fill="#FBBF24" font-family="JetBrains Mono" font-size="8.5" text-anchor="middle" y="44">Queue: 14 Reefers // 45ms</text>
+</g>
+<!-- NODE 8: Mohan Border Port Node -->
+<g transform="translate(620, 130)">
+<rect fill="#132219" height="32" rx="4" stroke="#10B981" stroke-width="1.5" width="32" x="-16" y="-16"></rect>
+<circle fill="#10B981" r="4"></circle>
+<text fill="#ECFDF5" font-family="Inter" font-size="10" font-weight="600" text-anchor="middle" y="28">Mohan Port Node</text>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="8.5" text-anchor="middle" y="40">Standby // 52ms</text>
+</g>
+<!-- NODE 9: Guangzhou Jiangnan Wholesale Terminal -->
+<g transform="translate(770, 170)">
+<circle fill="#132219" r="14" stroke="#10B981" stroke-width="1.2"></circle>
+<circle fill="#10B981" r="3"></circle>
+<text fill="#ECFDF5" font-family="Inter" font-size="9" font-weight="500" text-anchor="middle" y="26">Guangzhou Jiangnan</text>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="8" text-anchor="middle" y="36">Connected // 68ms</text>
+</g>
+<!-- NODE 10: Shenzhen Bay Port Gateway -->
+<g transform="translate(780, 380)">
+<circle fill="#132219" r="14" stroke="#10B981" stroke-width="1.2"></circle>
+<circle fill="#10B981" r="3"></circle>
+<text fill="#ECFDF5" font-family="Inter" font-size="9" font-weight="500" text-anchor="middle" y="26">Shenzhen Bay Port</text>
+<text fill="#4edea3" font-family="JetBrains Mono" font-size="8" text-anchor="middle" y="36">Clearance OK // 72ms</text>
+</g>
+</svg>
+<!-- Bottom Floating Telemetry Mini-Legend HUD -->
+<div class="absolute bottom-3 left-3 bg-surface-container/90 backdrop-blur-md border border-outline-variant p-2 rounded text-code-sm font-code-sm flex items-center space-x-4">
+<div class="flex items-center space-x-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-on-surface-variant">Optimal Consensus (&lt;30ms)</span>
+</div>
+<div class="flex items-center space-x-1.5">
+<span class="w-2 h-2 rounded-full bg-tertiary"></span>
+<span class="text-on-surface-variant">Border Buffer Gate (30-60ms)</span>
+</div>
+<div class="flex items-center space-x-1.5">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+<span class="text-on-surface-variant">Deviation / Alert</span>
+</div>
+</div>
+<!-- Top Right Map HUD Status -->
+<div class="absolute top-3 right-3 bg-surface-container-lowest/80 backdrop-blur-sm border border-outline-variant px-2.5 py-1.5 rounded text-right">
+<div class="text-[9px] font-code-sm text-outline">CLUSTER MESH ENGINE</div>
+<div class="text-label-sm font-label-sm text-primary font-bold">12 / 12 NODES SYNCHRONIZED</div>
+<div class="text-[9px] font-code-sm text-on-surface-variant">BANDWIDTH: 1.24 MB/s CRX</div>
+</div>
+</div>
+<!-- Bottom Summary Strip on Map Panel -->
+<div class="p-space-sm bg-surface-container border-t border-outline-variant flex flex-wrap items-center justify-between text-code-sm font-code-sm gap-2">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="lock_clock">lock_clock</span>
+<span class="text-outline">CRYPTOGRAPHIC BLOCK:</span>
+<span class="text-on-surface font-semibold">#18,492,015</span>
+<span class="text-outline">(16/16 GACC Oracles Validated)</span>
+</div>
+<div class="text-primary font-mono text-[10px]">
+              EPOCH: 0x88921B...99F | NEXT RE-SEED IN 00:04:18
+            </div>
+</div>
+</div>
+<!-- RIGHT COLUMN: DUAL-PANEL OPERATIONS STACK (4 COLS) -->
+<div class="xl:col-span-4 flex flex-col bg-surface-container-low min-w-0">
+<!-- PANEL A: LIVE NETWORK EVENT STREAM (REAL-TIME AUDIT LOG) -->
+<div class="flex-1 flex flex-col border-b border-outline-variant min-h-[300px]">
+<!-- Terminal Header -->
+<div class="p-space-sm bg-surface-container flex items-center justify-between border-b border-outline-variant">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm text-primary" data-icon="terminal">terminal</span>
+<span class="text-headline-sm font-headline-sm text-on-surface font-semibold">Live Audit &amp; Event Stream</span>
+</div>
+<div class="flex items-center space-x-1">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-primary animate-ping"></span>
+<span class="text-label-sm font-label-sm text-primary uppercase">STREAMING</span>
+</div>
+</div>
+<!-- Terminal Controls & Filter -->
+<div class="px-space-sm py-1.5 bg-surface-container-lowest border-b border-outline-variant flex items-center justify-between text-label-sm font-label-sm">
+<div class="flex items-center space-x-1">
+<button class="px-1.5 py-0.5 rounded bg-surface-container-high text-primary">ALL</button>
+<button class="px-1.5 py-0.5 text-outline hover:text-on-surface">AUDIT</button>
+<button class="px-1.5 py-0.5 text-outline hover:text-on-surface">TELEMETRY</button>
+<button class="px-1.5 py-0.5 text-outline hover:text-on-surface">WARNING</button>
+</div>
+<div class="flex items-center space-x-1.5 text-outline">
+<button class="hover:text-on-surface" title="Pause Stream"><span class="material-symbols-outlined text-xs" data-icon="pause">pause</span></button>
+<button class="hover:text-on-surface" title="Clear Buffer"><span class="material-symbols-outlined text-xs" data-icon="delete_sweep">delete_sweep</span></button>
+</div>
+</div>
+<!-- Streaming Monospace Feed Container -->
+<div class="flex-1 p-space-sm font-code-sm text-code-sm bg-surface-container-lowest overflow-y-auto space-y-2.5 custom-scroll max-h-[360px]">
+<!-- Log Entry 1 -->
+<div class="p-1.5 rounded bg-surface-container border border-outline-variant hover:border-primary transition-colors">
+<div class="flex items-center justify-between text-[10px] text-outline mb-0.5">
+<span class="text-primary font-semibold">[08:34:12 UTC+7]</span>
+<span class="bg-primary-container text-on-primary-container px-1 rounded text-[9px] font-bold">SEAL_AFFIXED</span>
+</div>
+<div class="text-on-surface leading-tight text-[11px]">
+                  Container <span class="text-secondary font-bold">MSKU1234565</span> sealed by Cai Lậy Hub #VN-84B (Bolt RFID: <span class="text-on-surface-variant font-mono">SEAL-VN-9872</span>)
+                </div>
+<div class="mt-1 text-[9px] text-outline font-mono truncate">
+                  SHA256: 3a7b9e1c4df82103ba84... [Verified]
+                </div>
+</div>
+<!-- Log Entry 2 -->
+<div class="p-1.5 rounded bg-surface-container border border-outline-variant hover:border-primary transition-colors">
+<div class="flex items-center justify-between text-[10px] text-outline mb-0.5">
+<span class="text-primary font-semibold">[08:33:55 UTC+7]</span>
+<span class="bg-surface-variant text-primary px-1 rounded text-[9px] font-bold">LAB_ICPMS_OK</span>
+</div>
+<div class="text-on-surface leading-tight text-[11px]">
+                  Cadmium lab report verified: <span class="text-secondary font-semibold">0.024 mg/kg</span> &lt;= 0.050 mg/kg statutory ceiling.
+                </div>
+<div class="mt-1 text-[9px] text-outline font-mono truncate">
+                  Cert: NAFIQAD-LAB-2025-4190.PDF (Node NAFIQAD-042)
+                </div>
+</div>
+<!-- Log Entry 3 -->
+<div class="p-1.5 rounded bg-surface-container border border-outline-variant hover:border-primary transition-colors">
+<div class="flex items-center justify-between text-[10px] text-outline mb-0.5">
+<span class="text-primary font-semibold">[08:32:40 UTC+7]</span>
+<span class="bg-surface-variant text-tertiary px-1 rounded text-[9px] font-bold">CUSTOMS_DISPATCH</span>
+</div>
+<div class="text-on-surface leading-tight text-[11px]">
+                  Export manifest dispatched to Youyi Guan border gate API endpoint (e-Phyto telegram ack received).
+                </div>
+<div class="mt-1 text-[9px] text-outline font-mono">
+                  GACC Gateway Ping: 45ms // Protocol CN-VN-EP2
+                </div>
+</div>
+<!-- Log Entry 4 -->
+<div class="p-1.5 rounded bg-surface-container border border-outline-variant hover:border-primary transition-colors">
+<div class="flex items-center justify-between text-[10px] text-outline mb-0.5">
+<span class="text-primary font-semibold">[08:31:18 UTC+7]</span>
+<span class="bg-surface-variant text-primary px-1 rounded text-[9px] font-bold">REEFER_HEARTBEAT</span>
+</div>
+<div class="text-on-surface leading-tight text-[11px]">
+                  Reefer unit <span class="text-on-surface font-semibold">CMAU 789210-2</span> core temp verified: <span class="text-primary font-bold">+13.5°C</span>, RH 88%, Ethylene 0.09ppm [Optimal].
+                </div>
+<div class="mt-1 text-[9px] text-outline font-mono">
+                  Sensor ID: BLE-SN-0941 // Zero thermal deviations
+                </div>
+</div>
+<!-- Log Entry 5 -->
+<div class="p-1.5 rounded bg-surface-container border border-outline-variant hover:border-primary transition-colors">
+<div class="flex items-center justify-between text-[10px] text-outline mb-0.5">
+<span class="text-primary font-semibold">[08:29:44 UTC+7]</span>
+<span class="bg-primary-container text-on-primary-container px-1 rounded text-[9px] font-bold">GACC_ORACLE</span>
+</div>
+<div class="text-on-surface leading-tight text-[11px]">
+                  Bilateral GACC consensus block #18,492,014 minted across 16/16 validation oracles.
+                </div>
+<div class="mt-1 text-[9px] text-outline font-mono">
+                  Consensus Weight: 100.00% // State Root 0x3d4f19
+                </div>
+</div>
+<!-- Log Entry 6 -->
+<div class="p-1.5 rounded bg-surface-container border border-outline-variant hover:border-primary transition-colors">
+<div class="flex items-center justify-between text-[10px] text-outline mb-0.5">
+<span class="text-primary font-semibold">[08:28:02 UTC+7]</span>
+<span class="bg-surface-variant text-on-surface px-1 rounded text-[9px] font-bold">WEIGHBRIDGE_SYNC</span>
+</div>
+<div class="text-on-surface leading-tight text-[11px]">
+                  Gross weight <span class="text-primary font-bold">24,180 KG</span> verified against tare cert for Reefer #MSKU1234565.
+                </div>
+<div class="mt-1 text-[9px] text-outline font-mono">
+                  WeighBay #3 // Calibration Token: CAL-VN84-2025
+                </div>
+</div>
 </div>
 </div>
 <!-- PANEL B: NODE HEALTH & CONSENSUS DIAGNOSTIC TABLE -->

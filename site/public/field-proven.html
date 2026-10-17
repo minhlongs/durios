@@ -151,72 +151,72 @@
       animation: scanline 4s linear infinite;
     }
   </style>
-<link rel="stylesheet" href="/stitch/durios-design-system.css">
+  <link rel="stylesheet" href="/stitch/durios-design-system.css">
 </head>
 <body class="h-full flex flex-col font-body-md text-on-surface bg-surface select-none overflow-x-hidden">
-
-<!-- DURIOS UNIFIED TOP NAV BAR -->
-<!-- DURIOS 2027 ADAPTIVE 3-MODE APP SHELL TOP COMMAND BAR (44px) -->
+<!-- DURIOS-TOP-NAV-START -->
 <div id="durios-unified-top-nav" class="durios-top-command-bar" style="background:#09140E;border-bottom:1px solid #1F3327;height:44px;max-height:44px;padding:0 14px;font-family:'Inter',sans-serif;font-size:11px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99999;box-sizing:border-box;overflow:visible;">
-  <div class="durios-bar-left" style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-    <button type="button" id="durios-btn-sidebar" class="durios-icon-btn" title="Toggle Sidebar ([)" aria-label="Toggle Navigation" style="background:#132018;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;cursor:pointer;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  <div class="durios-bar-left" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <button type="button" id="durios-btn-sidebar" class="durios-icon-btn" title="Toggle Navigation Drawer ([)" aria-label="Toggle Navigation" style="background:#132018;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;cursor:pointer;display:inline-flex;align-items:center;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
     <a href="gallery.html" class="durios-brand-badge" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;font-size:12px;color:#10B981;">
       <span>🌿</span>
       <span class="durios-brand-text">DURIOS // v0.4</span>
     </a>
     <span class="durios-breadcrumb-sep" style="color:#4B6B56;">/</span>
+    <span style="color:#6EE7B7;font-size:10px;font-weight:500;">1. Packhouse Ops</span>
+    <span class="durios-breadcrumb-sep" style="color:#4B6B56;">/</span>
     <span class="durios-breadcrumb-active" style="color:#ECFDF5;font-weight:600;font-size:11px;">13. Field POS Proven</span>
   </div>
 
-  <div class="durios-nav-dropdowns" style="display:flex;align-items:center;gap:4px;flex:1;margin:0 12px;overflow:hidden;">
+  <div class="durios-nav-dropdowns" style="display:flex;align-items:center;gap:4px;flex:1;margin:0 12px;overflow:visible;">
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">1. Packhouse Ops [7] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏭 01. Packhouse Workspace</span><span style="font-size:9px;color:#4B6B56;">01</span></a>
-        <a href="dossiers.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 02. Dossiers Registry</span><span style="font-size:9px;color:#4B6B56;">02</span></a>
-        <a href="paper-canvas.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📝 09. Bút Dạ Quang Canvas</span><span style="font-size:9px;color:#4B6B56;">09</span></a>
-        <a href="excel-grid.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📊 10. Excel Speed Grid</span><span style="font-size:9px;color:#4B6B56;">10</span></a>
-        <a href="zalo-bot.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>💬 11. Zalo Ops Bot</span><span style="font-size:9px;color:#4B6B56;">11</span></a>
-        <a href="mobile-weighbridge.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📱 12. Mobile Weighbridge</span><span style="font-size:9px;color:#4B6B56;">12</span></a>
-        <a href="field-proven.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☀️ 13. Field POS Proven</span><span style="font-size:9px;color:#4B6B56;">13</span></a>
+        <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏭 01. Packhouse Workspace</span><span style="font-size:9px;color:#6EE7B7;">01</span></a>
+        <a href="dossiers.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 02. Dossiers Registry</span><span style="font-size:9px;color:#6EE7B7;">02</span></a>
+        <a href="paper-canvas.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📝 09. Bút Dạ Quang Canvas</span><span style="font-size:9px;color:#6EE7B7;">09</span></a>
+        <a href="excel-grid.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📊 10. Excel Speed Grid</span><span style="font-size:9px;color:#6EE7B7;">10</span></a>
+        <a href="zalo-bot.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>💬 11. Zalo Ops Bot</span><span style="font-size:9px;color:#6EE7B7;">11</span></a>
+        <a href="mobile-weighbridge.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📱 12. Mobile Weighbridge</span><span style="font-size:9px;color:#6EE7B7;">12</span></a>
+        <a href="field-proven.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#10B981;background:rgba(16,185,129,0.14);font-weight:700;text-decoration:none;border-radius:4px;"><span>☀️ 13. Field POS Proven</span><span style="font-size:9px;color:#6EE7B7;">13</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">2. Compliance &amp; Gates [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="auditor.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🛡️ 03. Field Auditor (5 Gates)</span><span style="font-size:9px;color:#4B6B56;">03</span></a>
-        <a href="buyer.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🤝 04. Buyer Portal</span><span style="font-size:9px;color:#4B6B56;">04</span></a>
-        <a href="cluster.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌐 05. Cluster Ops Room</span><span style="font-size:9px;color:#4B6B56;">05</span></a>
-        <a href="socratic-introspector.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧠 14. Socratic 5-Turn</span><span style="font-size:9px;color:#4B6B56;">14</span></a>
-        <a href="rehearsal-command.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎯 15. Rehearsal Command</span><span style="font-size:9px;color:#4B6B56;">15</span></a>
-        <a href="styleguide.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎨 08. Style Guide &amp; Tokens</span><span style="font-size:9px;color:#4B6B56;">08</span></a>
+        <a href="auditor.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🛡️ 03. Field Auditor (5 Gates)</span><span style="font-size:9px;color:#6EE7B7;">03</span></a>
+        <a href="buyer.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🤝 04. Buyer Portal</span><span style="font-size:9px;color:#6EE7B7;">04</span></a>
+        <a href="cluster.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌐 05. Cluster Ops Room</span><span style="font-size:9px;color:#6EE7B7;">05</span></a>
+        <a href="socratic-introspector.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧠 14. Socratic 5-Turn</span><span style="font-size:9px;color:#6EE7B7;">14</span></a>
+        <a href="rehearsal-command.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎯 15. Rehearsal Command</span><span style="font-size:9px;color:#6EE7B7;">15</span></a>
+        <a href="styleguide.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎨 08. Style Guide &amp; Tokens</span><span style="font-size:9px;color:#6EE7B7;">08</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">3. Security &amp; MIT SDK [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="foundry.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔐 17. Foundry Security</span><span style="font-size:9px;color:#4B6B56;">17</span></a>
-        <a href="security-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏛️ 18. Security Vault</span><span style="font-size:9px;color:#4B6B56;">18</span></a>
-        <a href="organic-escrow-guard.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⚖️ 19. Organic Escrow Guard</span><span style="font-size:9px;color:#4B6B56;">19</span></a>
-        <a href="mit-verifier-lab.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔬 16. MIT Verifier Lab</span><span style="font-size:9px;color:#4B6B56;">16</span></a>
-        <a href="cloud-ocr-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☁️ 24. Cloud OCR &amp; Vault</span><span style="font-size:9px;color:#4B6B56;">24</span></a>
-        <a href="ed25519-downgrade-simulator.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔑 25. Ed25519 Downgrade</span><span style="font-size:9px;color:#4B6B56;">25</span></a>
+        <a href="foundry.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔐 17. Foundry Security</span><span style="font-size:9px;color:#6EE7B7;">17</span></a>
+        <a href="security-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏛️ 18. Security Vault</span><span style="font-size:9px;color:#6EE7B7;">18</span></a>
+        <a href="organic-escrow-guard.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⚖️ 19. Organic Escrow Guard</span><span style="font-size:9px;color:#6EE7B7;">19</span></a>
+        <a href="mit-verifier-lab.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔬 16. MIT Verifier Lab</span><span style="font-size:9px;color:#6EE7B7;">16</span></a>
+        <a href="cloud-ocr-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☁️ 24. Cloud OCR &amp; Vault</span><span style="font-size:9px;color:#6EE7B7;">24</span></a>
+        <a href="ed25519-downgrade-simulator.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔑 25. Ed25519 Downgrade</span><span style="font-size:9px;color:#6EE7B7;">25</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">4. SaaS &amp; Corridors [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="gallery.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⭐️ Master Hub Directory</span><span style="font-size:9px;color:#4B6B56;">★</span></a>
-        <a href="portability.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 06. Data Portability Hub</span><span style="font-size:9px;color:#4B6B56;">06</span></a>
-        <a href="upgrade.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🚀 07. Pro SaaS Upgrade</span><span style="font-size:9px;color:#4B6B56;">07</span></a>
-        <a href="corridors.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌏 22. ASEAN Corridors</span><span style="font-size:9px;color:#4B6B56;">22</span></a>
-        <a href="blueprint.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧭 23. 25-Step Blueprint</span><span style="font-size:9px;color:#4B6B56;">23</span></a>
-        <a href="webhook-sync-queue.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔄 20. Partner Webhooks</span><span style="font-size:9px;color:#4B6B56;">20</span></a>
+        <a href="gallery.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⭐️ Master Hub Directory</span><span style="font-size:9px;color:#6EE7B7;">★</span></a>
+        <a href="portability.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 06. Data Portability Hub</span><span style="font-size:9px;color:#6EE7B7;">06</span></a>
+        <a href="upgrade.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🚀 07. Pro SaaS Upgrade</span><span style="font-size:9px;color:#6EE7B7;">07</span></a>
+        <a href="corridors.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌏 22. ASEAN Corridors</span><span style="font-size:9px;color:#6EE7B7;">22</span></a>
+        <a href="blueprint.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧭 23. 25-Step Blueprint</span><span style="font-size:9px;color:#6EE7B7;">23</span></a>
+        <a href="webhook-sync-queue.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔄 20. Partner Webhooks</span><span style="font-size:9px;color:#6EE7B7;">20</span></a>
       </div>
     </div>
   </div>
@@ -226,11 +226,289 @@
       <span>Search screens…</span>
       <kbd style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:1px 4px;background:#09140E;border:1px solid #2D4C39;border-radius:3px;">⌘K</kbd>
     </button>
-    <button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops" style="background:#040705;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;font-size:11px;cursor:pointer;">
+    <button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops" style="background:#040705;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
       <span class="theme-icon">☀️</span> <span style="font-size:10px;font-weight:600;">Field</span>
     </button>
-    <span class="durios-nav-badge" style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.15);color:#10B981;border:1px solid #2D4C39;">DURIOS 25-SCREEN NAV</span>
+    <a href="/" title="Open Live SQLite Packhouse SPA" style="background:rgba(16,185,129,0.15);color:#10B981;border:1px solid #2D4C39;border-radius:4px;padding:3px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;text-decoration:none;">⚡ LIVE SPA</a>
+    <span class="durios-nav-badge" style="display:none;">DURIOS 25-SCREEN NAV</span>
   </div>
+</div>
+<!-- DURIOS-TOP-NAV-END -->
+
+
+
+<!-- =========================================================================
+       1. TOP INDUSTRIAL STATUS BAR (TopNavBar Anchor Execution)
+       ========================================================================= -->
+<header class="flex justify-between items-center w-full px-4 h-16 border-b-2 border-outline-variant bg-surface-container shrink-0 z-30">
+<!-- Brand / Terminal Identity -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-sm bg-primary text-on-primary px-space-md py-1 border-2 border-outline tactile-stamp-black font-label-telemetry-md text-label-telemetry-md">
+<span class="material-symbols-outlined text-base">terminal</span>
+<span>BAY-08</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-black tracking-tight text-on-surface uppercase">
+          DuriOS EXPORT // TERMINAL-04
+        </h1>
+<p class="font-label-telemetry-sm text-label-telemetry-sm text-on-surface-variant flex items-center gap-2">
+<span>PACKHOUSE COLD CHAIN BAY-08</span>
+<span class="inline-block w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span>
+<span>BATCH: VN-DUR-2025-089A</span>
+</p>
+</div>
+</div>
+<!-- Monospace Live Telemetry Badges Strip -->
+<div class="hidden lg:flex items-center gap-space-sm font-label-telemetry-sm text-label-telemetry-sm">
+<div class="px-space-md py-1.5 bg-surface-container-lowest border-2 border-outline-variant flex items-center gap-2">
+<span class="text-on-surface-variant font-label-caps text-label-caps">DEST:</span>
+<span class="font-bold text-on-surface">CN-SZX (Shenzhen)</span>
+</div>
+<div class="px-space-md py-1.5 bg-tertiary-container/10 border-2 border-tertiary-container text-tertiary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm font-bold" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span>GACC ONLINE</span>
+</div>
+<div class="px-space-md py-1.5 bg-surface-container-lowest border-2 border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary">thermostat</span>
+<span class="font-bold text-on-surface">14.2°C</span>
+</div>
+<div class="px-space-md py-1.5 bg-surface-container-lowest border-2 border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary">water_drop</span>
+<span class="font-bold text-on-surface">RH: 88%</span>
+</div>
+</div>
+<!-- Tactile Quick Actions (Emergency Stop & Secondary) -->
+<div class="flex items-center gap-space-md">
+<button class="h-12 px-space-md bg-surface-container-lowest hover:bg-surface-container-high text-on-surface border-2 border-outline font-label-caps text-label-caps flex items-center gap-2 tactile-stamp-black active:translate-x-[2px] active:translate-y-[2px] transition-transform duration-75" onclick="triggerRescan()">
+<span class="material-symbols-outlined text-lg">sync</span>
+<span>BATCH RE-SCAN</span>
+</button>
+<button class="h-12 px-space-lg bg-secondary-container hover:bg-secondary text-on-secondary border-2 border-on-surface font-label-caps text-label-caps flex items-center gap-2 tactile-stamp-orange active:translate-x-[2px] active:translate-y-[2px] transition-transform duration-75 font-black" onclick="emergencyHalt()">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">report</span>
+<span>EMERGENCY STOP</span>
+</button>
+</div>
+</header>
+<!-- =========================================================================
+       MAIN INDUSTRIAL WORKSPACE: DOCKED SIDEBAR + TWO-COLUMN 50/50 WORKSPACE
+       ========================================================================= -->
+<div class="flex flex-1 overflow-hidden relative">
+<!-- Docked Industrial SideNav (Per Shared Component SideNavBar Spec) -->
+<aside class="flex flex-col justify-between h-full w-64 border-r-2 border-outline-variant py-4 px-2 bg-surface-container-lowest shrink-0 select-none">
+<div class="space-y-space-md">
+<!-- Station Banner -->
+<div class="px-space-sm pb-space-sm border-b-2 border-outline-variant flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container text-on-primary flex items-center justify-center border-2 border-outline font-bold">
+<span class="material-symbols-outlined">warehouse</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface font-bold text-base leading-tight">STATION 04</div>
+<div class="font-label-telemetry-sm text-label-telemetry-sm text-on-surface-variant text-[10px]">Cold Chain Packhouse Hub</div>
+</div>
+</div>
+<!-- Navigation Tabs: Phyto Scan is Active based on Workspace Intent -->
+<nav class="space-y-1">
+<!-- Tab 1: Phyto Scan [ACTIVE] -->
+<button class="flex items-center gap-3 w-full h-14 px-4 bg-primary text-on-primary border-2 border-outline font-bold tactile-stamp-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">document_scanner</span>
+<span class="font-label-caps text-label-caps text-left tracking-wide">Phyto Scan</span>
+</button>
+<!-- Tab 2: Container Verification -->
+<button class="flex items-center gap-3 w-full h-14 px-4 text-on-surface-variant hover:bg-surface-container border-2 border-transparent hover:border-outline-variant font-medium transition-colors">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-caps text-label-caps text-left">Container Verification</span>
+</button>
+<!-- Tab 3: Lab / Cadmium -->
+<button class="flex items-center gap-3 w-full h-14 px-4 text-on-surface-variant hover:bg-surface-container border-2 border-transparent hover:border-outline-variant font-medium transition-colors">
+<span class="material-symbols-outlined">science</span>
+<span class="font-label-caps text-label-caps text-left">Lab / Cadmium</span>
+</button>
+<!-- Tab 4: Seal Manifest -->
+<button class="flex items-center gap-3 w-full h-14 px-4 text-on-surface-variant hover:bg-surface-container border-2 border-transparent hover:border-outline-variant font-medium transition-colors">
+<span class="material-symbols-outlined">qr_code_2</span>
+<span class="font-label-caps text-label-caps text-left">Seal Manifest</span>
+</button>
+<!-- Tab 5: Dispatch Logs -->
+<button class="flex items-center gap-3 w-full h-14 px-4 text-on-surface-variant hover:bg-surface-container border-2 border-transparent hover:border-outline-variant font-medium transition-colors">
+<span class="material-symbols-outlined">local_shipping</span>
+<span class="font-label-caps text-label-caps text-left">Dispatch Logs</span>
+</button>
+</nav>
+</div>
+<!-- Station Footer & Diagnostic Status -->
+<div class="space-y-space-sm pt-space-sm border-t-2 border-outline-variant">
+<button class="w-full h-12 bg-surface-container-high hover:bg-surface-container text-secondary font-label-caps text-label-caps border-2 border-outline font-bold flex items-center justify-center gap-2 tactile-stamp-black">
+<span class="material-symbols-outlined text-sm">security_update_warning</span>
+<span>BATCH OVERRIDE</span>
+</button>
+<div class="flex gap-1">
+<button class="flex-1 h-10 flex items-center justify-center gap-1.5 text-on-surface-variant font-label-caps text-label-caps text-xs border border-outline-variant hover:bg-surface-container">
+<span class="material-symbols-outlined text-sm">build</span>
+<span>Diagnostics</span>
+</button>
+<button class="flex-1 h-10 flex items-center justify-center gap-1.5 text-on-surface-variant font-label-caps text-label-caps text-xs border border-outline-variant hover:bg-surface-container">
+<span class="material-symbols-outlined text-sm">help</span>
+<span>Help</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- =======================================================================
+         TWO-COLUMN 50/50 RUGGED WORKSPACE
+         ======================================================================= -->
+<main class="flex-1 grid grid-cols-1 xl:grid-cols-2 overflow-y-auto bg-surface-container-low p-space-md gap-space-md">
+<!-- =====================================================================
+           LEFT 50% - HIGH-CONTRAST DOCUMENT SCAN VIEWER
+           ===================================================================== -->
+<section class="flex flex-col bg-surface-container-lowest border-2 border-outline-variant h-full min-h-[640px] shadow-sm relative">
+<!-- Viewer Control Header -->
+<div class="flex items-center justify-between px-space-md py-space-sm bg-surface-container border-b-2 border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary font-bold">document_scanner</span>
+<div>
+<div class="font-label-caps text-label-caps text-on-surface font-extrabold tracking-tight">
+                PHYTOSANITARY &amp; GACC EXPORT BILL OF LADING [SCAN-REV-3]
+              </div>
+<div class="font-label-telemetry-sm text-label-telemetry-sm text-on-surface-variant">
+                SOURCE: HIGH-RESOLUTION COLD-LINE FLATBED RIG 08
+              </div>
+</div>
+</div>
+<!-- Touch Zoom/Pan Manipulation Cluster (Min 48px tactile buttons) -->
+<div class="flex items-center gap-1 bg-surface-container-lowest border-2 border-outline-variant p-0.5">
+<button class="w-12 h-12 flex items-center justify-center hover:bg-surface-container active:bg-surface-container-high border border-outline-variant text-on-surface font-bold tactile-stamp-black" onclick="handleZoom(-10)" title="Zoom Out">
+<span class="material-symbols-outlined">zoom_out</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center hover:bg-surface-container active:bg-surface-container-high border border-outline-variant text-on-surface font-bold tactile-stamp-black" onclick="handleZoom(10)" title="Zoom In">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center hover:bg-surface-container active:bg-surface-container-high border border-outline-variant text-on-surface font-bold tactile-stamp-black" onclick="resetZoom()" title="Reset Perspective">
+<span class="material-symbols-outlined">filter_center_focus</span>
+</button>
+<button class="h-12 px-space-md flex items-center gap-1.5 bg-surface-container-high text-on-surface font-label-caps text-label-caps border border-outline font-bold tactile-stamp-black" id="invertToggleBtn" onclick="toggleInvert()" title="Invert Optical Filter">
+<span class="material-symbols-outlined text-sm">invert_colors</span>
+<span class="hidden sm:inline">INVERT</span>
+</button>
+</div>
+</div>
+<!-- High-Contrast Document Viewport Area -->
+<div class="flex-1 bg-surface-dim relative overflow-hidden flex items-center justify-center p-space-md select-none transition-colors duration-200" id="documentViewport">
+<!-- Moving Industrial Scan Line Simulation -->
+<div class="absolute inset-x-0 h-1 bg-primary shadow-[0_0_12px_#007bb9] z-20 pointer-events-none animate-scanline"></div>
+<!-- Visual Scale & Grid Marks -->
+<div class="absolute top-2 left-2 font-label-telemetry-sm text-label-telemetry-sm text-outline font-bold">R-GRID // X:412 Y:890</div>
+<div class="absolute bottom-2 right-2 font-label-telemetry-sm text-label-telemetry-sm text-outline font-bold">OPTICAL RES: 600 DPI 24-BIT</div>
+<!-- Digitized Document Container Canvas -->
+<div class="w-full max-w-xl bg-surface-container-lowest border-2 border-outline-variant shadow-md p-6 relative font-label-telemetry-sm transition-transform duration-150" id="phytocertSheet">
+<!-- Document Official Header -->
+<div class="border-b-2 border-outline pb-3 mb-4 flex justify-between items-start">
+<div>
+<div class="font-headline-md text-headline-md text-on-surface font-extrabold uppercase tracking-tighter">
+                  SOCIALIST REPUBLIC OF VIETNAM
+                </div>
+<div class="text-xs font-bold text-on-surface-variant tracking-wider">
+                  MINISTRY OF AGRICULTURE AND RURAL DEVELOPMENT - PLANT PROTECTION DEPT
+                </div>
+<div class="text-sm font-black text-primary tracking-widest mt-1">
+                  PHYTOSANITARY CERTIFICATE // GACC APPROVED EXPORT
+                </div>
+</div>
+<div class="w-14 h-14 border-2 border-outline bg-surface-container flex items-center justify-center p-1 text-center font-bold text-[9px] uppercase leading-tight">
+                OFFICIAL SEAL VN-PP
+              </div>
+</div>
+<!-- Inverted Bounding Boxes With Tactile OCR Callouts -->
+<div class="space-y-4">
+<!-- Box 1: Container ID -->
+<div class="relative group cursor-pointer border-2 border-primary bg-primary-fixed/30 p-2.5 transition-all hover:bg-primary-fixed/50">
+<div class="absolute -top-3 right-2 bg-primary text-on-primary px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[10px]">check_circle</span>
+<span>CONFIDENCE 99.8%</span>
+</div>
+<div class="text-[10px] uppercase text-on-surface-variant font-bold">FIELD 01: SHIPPING UNIT CARRIER IDENTIFIER</div>
+<div class="text-lg font-bold font-label-telemetry-md text-on-surface tracking-wider">
+                  CONTAINER ID: <span class="bg-primary/20 px-1.5 py-0.5 border border-primary text-primary font-black">MSKU1234565</span>
+</div>
+</div>
+<!-- Box 2: Customs Seal -->
+<div class="relative group cursor-pointer border-2 border-secondary bg-secondary-fixed/30 p-2.5 transition-all hover:bg-secondary-fixed/50">
+<div class="absolute -top-3 right-2 bg-secondary text-on-secondary px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[10px]">lock</span>
+<span>CONFIDENCE 99.4%</span>
+</div>
+<div class="text-[10px] uppercase text-on-surface-variant font-bold">FIELD 02: HIGH-SECURITY MECHANICAL SEAL DIGITS</div>
+<div class="text-lg font-bold font-label-telemetry-md text-on-surface tracking-wider">
+                  CUSTOMS SEAL NO: <span class="bg-secondary-fixed-dim/40 px-1.5 py-0.5 border border-secondary text-on-surface font-black">SEAL-VN-9872</span>
+</div>
+</div>
+<!-- Box 3: Cadmium Test -->
+<div class="relative group cursor-pointer border-2 border-tertiary-container bg-tertiary-fixed/30 p-2.5 transition-all hover:bg-tertiary-fixed/50">
+<div class="absolute -top-3 right-2 bg-tertiary-container text-on-tertiary px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[10px]">science</span>
+<span>PASS GACC MAX 0.05 mg/kg</span>
+</div>
+<div class="text-[10px] uppercase text-on-surface-variant font-bold">FIELD 03: ICP-MS MASS SPECTROMETRY CADMIUM (Cd)</div>
+<div class="text-lg font-bold font-label-telemetry-md text-tertiary tracking-wider">
+                  CADMIUM (Cd) TEST: <span class="bg-tertiary-fixed-dim/50 px-1.5 py-0.5 border border-tertiary font-black text-on-surface">0.028 mg/kg</span>
+</div>
+</div>
+<!-- Box 4: Farm Code -->
+<div class="relative group cursor-pointer border-2 border-primary bg-primary-fixed/20 p-2.5 transition-all hover:bg-primary-fixed/40">
+<div class="absolute -top-3 right-2 bg-primary-container text-on-primary-container px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[10px]">verified</span>
+<span>VERIFIED PROVENANCE</span>
+</div>
+<div class="text-[10px] uppercase text-on-surface-variant font-bold">FIELD 04: REGISTERED EXPORT ORCHARD PUC / PACKHOUSE ID</div>
+<div class="text-lg font-bold font-label-telemetry-md text-on-surface tracking-wider">
+                  FARM CODE: <span class="bg-surface-container-highest px-1.5 py-0.5 border border-outline font-black text-on-surface">VN-DL-PACK-019</span>
+</div>
+</div>
+</div>
+<!-- Certificate Footer Telemetry -->
+<div class="mt-4 pt-3 border-t-2 border-dashed border-outline-variant flex justify-between items-center text-[10px] text-on-surface-variant">
+<span>AUTHORIZED SIGNATURE: DR. LE VAN THANG</span>
+<span class="font-bold">INSPECTION DATE: 2025-05-18 09:24 UTC+7</span>
+</div>
+</div>
+</div>
+<!-- Live OCR Status Strip -->
+<div class="px-space-md py-space-sm bg-surface-container border-t-2 border-outline-variant flex flex-wrap justify-between items-center text-xs font-label-telemetry-sm text-on-surface">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 bg-tertiary-container rounded-none"></span>
+<span class="font-bold">4/4 FIELDS EXTRACTED</span>
+<span class="text-on-surface-variant">// HARDWARE SENSOR: CAM-BAY-08A CALIBRATED</span>
+</div>
+<div class="text-on-surface-variant font-bold">
+            LATENCY: 42ms // OCR ENGINE v4.2
+          </div>
+</div>
+</section>
+<!-- =====================================================================
+           RIGHT 50% - BIG-BUTTON TACTILE VERIFICATION STATION
+           ===================================================================== -->
+<section class="flex flex-col gap-space-md">
+<!-- Giant Digital Countdown Timer Card (IBM Plex / Space Mono High Contrast) -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant p-space-md tactile-stamp-black">
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div>
+<div class="font-label-caps text-label-caps text-secondary font-extrabold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base">timer</span>
+<span>COLD-CHAIN AUDIT WINDOW</span>
+</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant text-xs">
+                TIME REMAINING BEFORE COLD-CHAIN BREAK PROTOCOL
+              </div>
+</div>
+<!-- Huge Monospace Readout Timer -->
+<div class="flex items-center gap-2 bg-surface-dim px-5 py-2 border-2 border-outline inset-well">
+<span class="font-label-telemetry-lg text-4xl sm:text-5xl font-black text-on-surface tracking-tight" id="countdownTimer">03:42</span>
+<span class="font-label-telemetry-sm text-xs font-bold text-secondary uppercase leading-none">MIN<br/>SEC</span>
+</div>
+</div>
+<!-- Visual Cold Chain Safety Progress Bar -->
+<div class="w-full bg-surface-container-high h-2.5 mt-space-sm border border-outline-variant overflow-hidden">
+<div class="bg-secondary-container h-full w-[65%] transition-all duration-1000"></div>
+</div>
 </div>
 <!-- 4 Chunky Tactile Touch Cards (Min 56px to 64px Hit Height) -->
 <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">

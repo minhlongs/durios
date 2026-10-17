@@ -1,0 +1,45 @@
+# Deep Brainstorm (`--deep`): 100% UI/UX DOM Restoration & 2027 Global Enterprise App Shell Refactor
+
+- **Timestamp:** 2026-10-17T19:10:00+07:00
+- **Workflow:** `/ak-bootstrap` + `/ak-brainstorm --deep`
+- **Target Milestone:** `v0.4.1` (100% Pristine DOM Restoration + Zero-Corruption 2027 App Shell + Automated Tag-Balance Guard)
+
+---
+
+## 1. Brainstorm Contract (4 Mandatory Fields)
+
+| Field | Specification |
+|---|---|
+| **Outcome** | 100% of the 25 Stitch screens (`site/public/*.html` & `queue/*.html`) and primary Packhouse Workspace (`src/server/public/index.html`) have strictly balanced DOM trees (`openDivCount === closeDivCount`, `diff === 0`), zero truncated headers/panels, and a unified 44px 2027 Global Enterprise App Shell (`<!-- DURIOS-TOP-NAV-START --> ... <!-- DURIOS-TOP-NAV-END -->`) with `⌘K` Command Palette, Collapsible `[` Sidebar, `☀️ Daylight Field / 🌙 Emerald Ops` adaptive theming, and Bottom-Right Floating Live Dock. |
+| **Constraints** | Preserve 100% of existing automated test contracts (`142+ pass, 0 fail`), strict file modularity (`<= 145 LOC` across all `.ts` files in `src/` and `test/`), and MIT SDK zero-dependency isolation. |
+| **Non-Goals** | No external frontend framework bundle (React/Vue build step) or breaking URL route changes. |
+| **Acceptance Criteria** | 1. All 25 HTML screens in `site/public/*.html` and `queue/*.html` pass automated `<div` vs `</div>` tag-balance verification (`openDivCount === closeDivCount`).<br>2. All 25 screens contain `<!-- DURIOS-TOP-NAV-START -->`, `<!-- DURIOS-TOP-NAV-END -->`, `DURIOS 25-SCREEN NAV`, `/stitch/durios-design-system.css`, and `/stitch/durios-live-bridge.js`.<br>3. `bun run typecheck` and `bun test --timeout 15000` pass `100%` (`0` errors, `0` failures). |
+
+---
+
+## 2. Five-Turn Deep Socratic Root-Cause Analysis (`--deep`)
+
+### Turn 1: Empirical Diagnosis — Why Did the UI Look Broken & Cluttered?
+- **Evidence Inspected:** Audited `<div` vs `</div>` tag counts across all 25 HTML files in `site/public/*.html`.
+- **Root Cause Identified:**
+  1. Earlier regex-based nav bar replacements matched `<div id="durios-unified-top-nav"[\s\S]*?<\/div>\s*<\/div>\s*<\/div>` across files whose initial nav bar only had **1 outer `<div>`** (or after replacement had **11 nested `<div>`s**).
+  2. Consequently, the regex matched past the nav bar into the main page body, swallowing the first 100–250 lines of content in **20 out of 25 screens** (`diff: -1` to `-6` orphaned `</div>` tags) and breaking CSS Grid/Flexbox containers!
+  3. Additionally, `body.h-screen.overflow-hidden` on native Stitch screens clipped bottom content once the `44px` sticky top command bar was prepended.
+
+### Turn 2: Pristine Source Recovery Strategy
+- **Screens 1–14 (`index.html`, `dossiers.html`, `auditor.html`, `buyer.html`, `cluster.html`, `portability.html`, `upgrade.html`, `styleguide.html`, `paper-canvas.html`, `excel-grid.html`, `zalo-bot.html`, `mobile-weighbridge.html`, `field-proven.html`, `foundry.html`):** Restored directly from commit `94035fd`, where all 14 screens have `diff === 0` (`100%` intact DOM, 410–1,023 lines each).
+- **Screens 16–23 (`corridors.html`, `blueprint.html`, `security-vault.html`, `organic-escrow-guard.html`, `webhook-sync-queue.html`, `socratic-introspector.html`, `rehearsal-command.html`, `mit-verifier-lab.html`):** Re-fetched directly from Google Stitch MCP (`projectId: 4832488622931116638`) via `get_screen` using their canonical `screenId`s.
+- **Screens 15, 24, 25 (`gallery.html`, `cloud-ocr-vault.html`, `ed25519-downgrade-simulator.html`):** Verified `diff === 0` (`openDivCount === closeDivCount`).
+
+### Turn 3: Zero-Corruption Sentinel Injection (`stripBalancedDivAt`)
+- Replaced regex `</div>` matching with a deterministic **depth-counting HTML tag parser (`stripBalancedDivAt`)** that tracks `depth++` on `<div\b` and `depth--` on `</div>` until `depth === 0`.
+- Wrapped the injected 2027 App Shell Top Command Bar in explicit comment sentinels:
+  `<!-- DURIOS-TOP-NAV-START --> ... <!-- DURIOS-TOP-NAV-END -->`
+  so future updates replace between comment sentinels in $O(1)$ without ever touching page body tags.
+
+### Turn 4: Viewport & Sticky Header Ergonomics
+- Automatically transformed `body` classes `h-screen overflow-hidden` $\to$ `min-h-screen overflow-x-hidden overflow-y-auto` across all 25 screens so no panel is ever clipped below the `44px` top command bar.
+- Docked native screen `<header>` elements cleanly below the `44px` command bar via `durios-design-system.css` and `durios-live-bridge.js`.
+
+### Turn 5: Permanent Automated Regression Guard (`test/stitch-static-route.test.ts`)
+- Added an automated assertion in `test/stitch-static-route.test.ts` that counts `<div\b` and `</div>` tags across all 25 `/stitch/*.html` pages and enforces `openDivs === closeDivs` (`diff === 0`) and `<!-- DURIOS-TOP-NAV-START -->` presence on every test run.

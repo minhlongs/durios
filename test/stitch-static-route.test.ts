@@ -23,10 +23,17 @@ describe("Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite", 
       expect(htmlRes.headers.get("X-DuriOS-Stitch-Static")).toBe("true");
       const html = await htmlRes.text();
       expect(html.length).toBeGreaterThan(1000);
+      expect(html).toContain("<!-- DURIOS-TOP-NAV-START -->");
+      expect(html).toContain("<!-- DURIOS-TOP-NAV-END -->");
       expect(html).toContain("DURIOS 25-SCREEN NAV");
       expect(html).toContain("/stitch/durios-live-bridge.js");
+      expect(html).toContain("/stitch/durios-design-system.css");
+      const openDivs = (html.match(/<div\b/gi) ?? []).length;
+      const closeDivs = (html.match(/<\/div>/gi) ?? []).length;
+      expect(openDivs).toBe(closeDivs);
 
       const pngName = page.replace(".html", ".png");
+
       const pngRes = await routeHttpRequest(workspace, new Request(`http://localhost:3000/stitch/${pngName}`));
       expect(pngRes.status).toBe(200);
       expect(pngRes.headers.get("Content-Type")).toBe("image/png");

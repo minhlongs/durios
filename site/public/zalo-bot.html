@@ -145,72 +145,72 @@
       animation: pulse-emerald 2s infinite ease-in-out;
     }
   </style>
-<link rel="stylesheet" href="/stitch/durios-design-system.css">
+  <link rel="stylesheet" href="/stitch/durios-design-system.css">
 </head>
-<body class="bg-surface text-on-surface antialiased overflow-hidden h-screen flex flex-col font-body-md text-body-md select-none">
-
-<!-- DURIOS UNIFIED TOP NAV BAR -->
-<!-- DURIOS 2027 ADAPTIVE 3-MODE APP SHELL TOP COMMAND BAR (44px) -->
+<body class="bg-surface text-on-surface antialiased overflow-x-hidden overflow-y-auto min-h-screen flex flex-col font-body-md text-body-md select-none">
+<!-- DURIOS-TOP-NAV-START -->
 <div id="durios-unified-top-nav" class="durios-top-command-bar" style="background:#09140E;border-bottom:1px solid #1F3327;height:44px;max-height:44px;padding:0 14px;font-family:'Inter',sans-serif;font-size:11px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99999;box-sizing:border-box;overflow:visible;">
-  <div class="durios-bar-left" style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
-    <button type="button" id="durios-btn-sidebar" class="durios-icon-btn" title="Toggle Sidebar ([)" aria-label="Toggle Navigation" style="background:#132018;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;cursor:pointer;">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+  <div class="durios-bar-left" style="display:flex;align-items:center;gap:8px;flex-shrink:0;">
+    <button type="button" id="durios-btn-sidebar" class="durios-icon-btn" title="Toggle Navigation Drawer ([)" aria-label="Toggle Navigation" style="background:#132018;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;cursor:pointer;display:inline-flex;align-items:center;">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
     </button>
     <a href="gallery.html" class="durios-brand-badge" style="display:inline-flex;align-items:center;gap:6px;text-decoration:none;font-weight:700;font-size:12px;color:#10B981;">
       <span>🌿</span>
       <span class="durios-brand-text">DURIOS // v0.4</span>
     </a>
     <span class="durios-breadcrumb-sep" style="color:#4B6B56;">/</span>
+    <span style="color:#6EE7B7;font-size:10px;font-weight:500;">1. Packhouse Ops</span>
+    <span class="durios-breadcrumb-sep" style="color:#4B6B56;">/</span>
     <span class="durios-breadcrumb-active" style="color:#ECFDF5;font-weight:600;font-size:11px;">11. Zalo Ops Bot</span>
   </div>
 
-  <div class="durios-nav-dropdowns" style="display:flex;align-items:center;gap:4px;flex:1;margin:0 12px;overflow:hidden;">
+  <div class="durios-nav-dropdowns" style="display:flex;align-items:center;gap:4px;flex:1;margin:0 12px;overflow:visible;">
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">1. Packhouse Ops [7] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏭 01. Packhouse Workspace</span><span style="font-size:9px;color:#4B6B56;">01</span></a>
-        <a href="dossiers.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 02. Dossiers Registry</span><span style="font-size:9px;color:#4B6B56;">02</span></a>
-        <a href="paper-canvas.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📝 09. Bút Dạ Quang Canvas</span><span style="font-size:9px;color:#4B6B56;">09</span></a>
-        <a href="excel-grid.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📊 10. Excel Speed Grid</span><span style="font-size:9px;color:#4B6B56;">10</span></a>
-        <a href="zalo-bot.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>💬 11. Zalo Ops Bot</span><span style="font-size:9px;color:#4B6B56;">11</span></a>
-        <a href="mobile-weighbridge.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📱 12. Mobile Weighbridge</span><span style="font-size:9px;color:#4B6B56;">12</span></a>
-        <a href="field-proven.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☀️ 13. Field POS Proven</span><span style="font-size:9px;color:#4B6B56;">13</span></a>
+        <a href="index.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏭 01. Packhouse Workspace</span><span style="font-size:9px;color:#6EE7B7;">01</span></a>
+        <a href="dossiers.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 02. Dossiers Registry</span><span style="font-size:9px;color:#6EE7B7;">02</span></a>
+        <a href="paper-canvas.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📝 09. Bút Dạ Quang Canvas</span><span style="font-size:9px;color:#6EE7B7;">09</span></a>
+        <a href="excel-grid.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📊 10. Excel Speed Grid</span><span style="font-size:9px;color:#6EE7B7;">10</span></a>
+        <a href="zalo-bot.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#10B981;background:rgba(16,185,129,0.14);font-weight:700;text-decoration:none;border-radius:4px;"><span>💬 11. Zalo Ops Bot</span><span style="font-size:9px;color:#6EE7B7;">11</span></a>
+        <a href="mobile-weighbridge.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📱 12. Mobile Weighbridge</span><span style="font-size:9px;color:#6EE7B7;">12</span></a>
+        <a href="field-proven.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☀️ 13. Field POS Proven</span><span style="font-size:9px;color:#6EE7B7;">13</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">2. Compliance &amp; Gates [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="auditor.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🛡️ 03. Field Auditor (5 Gates)</span><span style="font-size:9px;color:#4B6B56;">03</span></a>
-        <a href="buyer.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🤝 04. Buyer Portal</span><span style="font-size:9px;color:#4B6B56;">04</span></a>
-        <a href="cluster.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌐 05. Cluster Ops Room</span><span style="font-size:9px;color:#4B6B56;">05</span></a>
-        <a href="socratic-introspector.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧠 14. Socratic 5-Turn</span><span style="font-size:9px;color:#4B6B56;">14</span></a>
-        <a href="rehearsal-command.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎯 15. Rehearsal Command</span><span style="font-size:9px;color:#4B6B56;">15</span></a>
-        <a href="styleguide.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎨 08. Style Guide &amp; Tokens</span><span style="font-size:9px;color:#4B6B56;">08</span></a>
+        <a href="auditor.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🛡️ 03. Field Auditor (5 Gates)</span><span style="font-size:9px;color:#6EE7B7;">03</span></a>
+        <a href="buyer.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🤝 04. Buyer Portal</span><span style="font-size:9px;color:#6EE7B7;">04</span></a>
+        <a href="cluster.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌐 05. Cluster Ops Room</span><span style="font-size:9px;color:#6EE7B7;">05</span></a>
+        <a href="socratic-introspector.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧠 14. Socratic 5-Turn</span><span style="font-size:9px;color:#6EE7B7;">14</span></a>
+        <a href="rehearsal-command.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎯 15. Rehearsal Command</span><span style="font-size:9px;color:#6EE7B7;">15</span></a>
+        <a href="styleguide.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🎨 08. Style Guide &amp; Tokens</span><span style="font-size:9px;color:#6EE7B7;">08</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">3. Security &amp; MIT SDK [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="foundry.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔐 17. Foundry Security</span><span style="font-size:9px;color:#4B6B56;">17</span></a>
-        <a href="security-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏛️ 18. Security Vault</span><span style="font-size:9px;color:#4B6B56;">18</span></a>
-        <a href="organic-escrow-guard.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⚖️ 19. Organic Escrow Guard</span><span style="font-size:9px;color:#4B6B56;">19</span></a>
-        <a href="mit-verifier-lab.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔬 16. MIT Verifier Lab</span><span style="font-size:9px;color:#4B6B56;">16</span></a>
-        <a href="cloud-ocr-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☁️ 24. Cloud OCR &amp; Vault</span><span style="font-size:9px;color:#4B6B56;">24</span></a>
-        <a href="ed25519-downgrade-simulator.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔑 25. Ed25519 Downgrade</span><span style="font-size:9px;color:#4B6B56;">25</span></a>
+        <a href="foundry.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔐 17. Foundry Security</span><span style="font-size:9px;color:#6EE7B7;">17</span></a>
+        <a href="security-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🏛️ 18. Security Vault</span><span style="font-size:9px;color:#6EE7B7;">18</span></a>
+        <a href="organic-escrow-guard.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⚖️ 19. Organic Escrow Guard</span><span style="font-size:9px;color:#6EE7B7;">19</span></a>
+        <a href="mit-verifier-lab.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔬 16. MIT Verifier Lab</span><span style="font-size:9px;color:#6EE7B7;">16</span></a>
+        <a href="cloud-ocr-vault.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>☁️ 24. Cloud OCR &amp; Vault</span><span style="font-size:9px;color:#6EE7B7;">24</span></a>
+        <a href="ed25519-downgrade-simulator.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔑 25. Ed25519 Downgrade</span><span style="font-size:9px;color:#6EE7B7;">25</span></a>
       </div>
     </div>
 
     <div class="durios-dropdown" style="position:relative;">
       <button type="button" class="durios-dropdown-trigger" style="background:transparent;color:#A7F3D0;border:1px solid transparent;border-radius:4px;padding:4px 8px;font-size:11px;font-weight:500;cursor:pointer;white-space:nowrap;">4. SaaS &amp; Corridors [6] ▾</button>
       <div class="durios-dropdown-menu" style="display:none;position:absolute;top:calc(100% + 4px);left:0;min-width:240px;background:#101E16;border:1px solid #2D4C39;border-radius:8px;padding:6px;box-shadow:0 12px 32px rgba(0,0,0,0.65);z-index:100000;flex-direction:column;gap:2px;">
-        <a href="gallery.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⭐️ Master Hub Directory</span><span style="font-size:9px;color:#4B6B56;">★</span></a>
-        <a href="portability.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 06. Data Portability Hub</span><span style="font-size:9px;color:#4B6B56;">06</span></a>
-        <a href="upgrade.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🚀 07. Pro SaaS Upgrade</span><span style="font-size:9px;color:#4B6B56;">07</span></a>
-        <a href="corridors.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌏 22. ASEAN Corridors</span><span style="font-size:9px;color:#4B6B56;">22</span></a>
-        <a href="blueprint.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧭 23. 25-Step Blueprint</span><span style="font-size:9px;color:#4B6B56;">23</span></a>
-        <a href="webhook-sync-queue.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔄 20. Partner Webhooks</span><span style="font-size:9px;color:#4B6B56;">20</span></a>
+        <a href="gallery.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>⭐️ Master Hub Directory</span><span style="font-size:9px;color:#6EE7B7;">★</span></a>
+        <a href="portability.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>📦 06. Data Portability Hub</span><span style="font-size:9px;color:#6EE7B7;">06</span></a>
+        <a href="upgrade.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🚀 07. Pro SaaS Upgrade</span><span style="font-size:9px;color:#6EE7B7;">07</span></a>
+        <a href="corridors.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🌏 22. ASEAN Corridors</span><span style="font-size:9px;color:#6EE7B7;">22</span></a>
+        <a href="blueprint.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🧭 23. 25-Step Blueprint</span><span style="font-size:9px;color:#6EE7B7;">23</span></a>
+        <a href="webhook-sync-queue.html" style="display:flex;align-items:center;justify-content:space-between;padding:6px 10px;color:#ECFDF5;text-decoration:none;border-radius:4px;"><span>🔄 20. Partner Webhooks</span><span style="font-size:9px;color:#6EE7B7;">20</span></a>
       </div>
     </div>
   </div>
@@ -220,11 +220,310 @@
       <span>Search screens…</span>
       <kbd style="font-family:'JetBrains Mono',monospace;font-size:9px;padding:1px 4px;background:#09140E;border:1px solid #2D4C39;border-radius:3px;">⌘K</kbd>
     </button>
-    <button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops" style="background:#040705;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;font-size:11px;cursor:pointer;">
+    <button type="button" id="durios-btn-theme-toggle" class="durios-theme-btn" title="Toggle Daylight Field / Emerald Ops" style="background:#040705;border:1px solid #1F3327;color:#ECFDF5;border-radius:4px;height:28px;padding:0 8px;font-size:11px;cursor:pointer;display:inline-flex;align-items:center;gap:4px;">
       <span class="theme-icon">☀️</span> <span style="font-size:10px;font-weight:600;">Field</span>
     </button>
-    <span class="durios-nav-badge" style="font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:700;letter-spacing:0.05em;padding:2px 6px;border-radius:4px;background:rgba(16,185,129,0.15);color:#10B981;border:1px solid #2D4C39;">DURIOS 25-SCREEN NAV</span>
+    <a href="/" title="Open Live SQLite Packhouse SPA" style="background:rgba(16,185,129,0.15);color:#10B981;border:1px solid #2D4C39;border-radius:4px;padding:3px 8px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;text-decoration:none;">⚡ LIVE SPA</a>
+    <span class="durios-nav-badge" style="display:none;">DURIOS 25-SCREEN NAV</span>
   </div>
+</div>
+<!-- DURIOS-TOP-NAV-END -->
+
+
+
+<!-- ==================== TOP UTILITY & STATUS BAR ==================== -->
+<header class="flex justify-between items-center w-full px-margin h-14 bg-surface-container border-b border-outline-variant shrink-0 z-30">
+<!-- Brand Anchor & Identity -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-headline-md leading-none" data-icon="terminal">terminal</span>
+<span class="text-headline-sm font-headline-sm uppercase tracking-wider text-primary font-bold">MEKONG CLEAR // GACC DUR-EXP-OPS</span>
+</div>
+<div class="h-4 w-[1px] bg-outline-variant mx-1"></div>
+<span class="font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary status-pulse-live inline-block"></span>
+        GATEWAY v2.4: <span class="text-primary font-semibold">CAI LẬY #VN-84B</span>
+</span>
+<span class="font-code-sm text-code-sm px-2 py-0.5 rounded bg-surface-container-high text-on-surface border border-outline-variant">
+        ZNS: 24ms
+      </span>
+</div>
+<!-- Quick Suite Breadcrumb / Navigation Links from JSON Anchor -->
+<nav class="hidden xl:flex items-center gap-space-md">
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors" href="#">Manifest Queue</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors" href="#">Phytosanitary Log</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors" href="#">Cold-Chain Telemetry</a>
+<a class="text-primary border-b-2 border-primary font-code-md text-code-md py-1" href="#">Customs Gateway</a>
+</nav>
+<!-- Trailing Action Cluster -->
+<div class="flex items-center gap-space-sm">
+<div class="hidden md:flex items-center gap-1.5 bg-surface-container-lowest border border-outline-variant px-2.5 py-1 rounded">
+<span class="material-symbols-outlined text-primary text-body-md" data-icon="sensors">sensors</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">SQLite WAL SYNC</span>
+</div>
+<button class="bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface font-code-sm text-code-sm px-space-md py-1.5 rounded transition-all flex items-center gap-1.5 active:scale-95">
+<span class="material-symbols-outlined text-tertiary text-body-md" data-icon="notifications">notifications</span>
+<span>Hold Quarantine</span>
+</button>
+<button class="bg-primary-container text-on-primary-container hover:bg-primary font-label-md text-label-md px-space-md py-1.5 rounded font-semibold transition-all flex items-center gap-1.5 shadow-sm active:scale-95">
+<span class="material-symbols-outlined text-body-md" data-icon="lock" data-weight="fill" style="font-variation-settings: 'FILL' 1;">lock</span>
+<span>Clear Consignment</span>
+</button>
+<div class="h-6 w-[1px] bg-outline-variant mx-1"></div>
+<!-- Chief Verification Officer Avatar -->
+<div class="flex items-center gap-2 pl-1" title="Chief Customs Verification Officer Badge">
+<div class="w-8 h-8 rounded bg-surface-container-highest border border-primary/40 flex items-center justify-center relative">
+<span class="material-symbols-outlined text-primary text-headline-sm" data-icon="verified_user">verified_user</span>
+<span class="absolute -bottom-0.5 -right-0.5 w-2 h-2 rounded-full bg-primary border border-surface-container-lowest"></span>
+</div>
+</div>
+</div>
+</header>
+<!-- ==================== THREE-PANE DESKTOP WORKSPACE ==================== -->
+<div class="flex-1 flex overflow-hidden w-full">
+<!-- PANE A: LEFTMOST APPLICATION MICRO-RAIL (Zalo PC / Terminal Ops) -->
+<aside class="w-16 bg-surface-container-lowest border-r border-outline-variant flex flex-col justify-between items-center py-space-md shrink-0 z-20">
+<!-- Upper Section: Core Module Nav -->
+<div class="flex flex-col items-center gap-space-md w-full">
+<!-- Zalo Bot Chat (Active) -->
+<button class="relative w-11 h-11 rounded flex items-center justify-center bg-surface-container-high text-primary border-l-2 border-primary group transition-colors" title="Conversational Stream (3 Pending)">
+<span class="material-symbols-outlined text-headline-sm" data-icon="chat" data-weight="fill" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="absolute top-1.5 right-1.5 bg-primary text-on-primary-container font-label-sm text-[9px] font-bold w-4 h-4 rounded-full flex items-center justify-center shadow">3</span>
+</button>
+<!-- Driver Directory -->
+<button class="w-11 h-11 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Registered Drivers &amp; Haulers">
+<span class="material-symbols-outlined text-headline-sm" data-icon="contacts">contacts</span>
+</button>
+<!-- Media / Weighbridge Tickets Gallery -->
+<button class="w-11 h-11 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Inspection Scans &amp; Weighbridge Tickets">
+<span class="material-symbols-outlined text-headline-sm" data-icon="receipt_long">receipt_long</span>
+</button>
+<!-- Scheduled Alerts & Queue -->
+<button class="w-11 h-11 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Automated Gate Queue Alarms">
+<span class="material-symbols-outlined text-headline-sm" data-icon="schedule">schedule</span>
+</button>
+<!-- ZNS Webhook Gateway Logs -->
+<button class="w-11 h-11 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="Zalo ZNS Telemetry Link">
+<span class="material-symbols-outlined text-headline-sm" data-icon="sync_alt">sync_alt</span>
+</button>
+</div>
+<!-- Lower Section: Station Specs & Clerk Status -->
+<div class="flex flex-col items-center gap-space-sm w-full">
+<button class="w-11 h-11 rounded flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors" title="System Hardware Specs">
+<span class="material-symbols-outlined text-headline-sm" data-icon="settings">settings</span>
+</button>
+<div class="pt-2 border-t border-outline-variant w-10 flex flex-col items-center">
+<div class="w-8 h-8 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center relative cursor-pointer" title="CLERK #04 (VN-84B)">
+<span class="font-code-sm text-code-sm text-primary font-bold">#04</span>
+<span class="absolute top-0 right-0 w-2 h-2 rounded-full bg-primary"></span>
+</div>
+</div>
+</div>
+</aside>
+<!-- PANE B: THREADS & CONTAINER ROSTER SIDEBAR (320px) -->
+<aside class="w-80 bg-surface-container-low border-r border-outline-variant flex flex-col shrink-0 z-10">
+<!-- Search & Quick Filters -->
+<div class="p-space-md border-b border-outline-variant bg-surface-container-low">
+<div class="relative w-full mb-space-sm">
+<span class="material-symbols-outlined absolute left-2.5 top-2 text-on-surface-variant text-body-md" data-icon="search">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded pl-8 pr-2.5 py-1.5 font-code-sm text-code-sm text-on-surface placeholder-on-surface-variant/50 focus:outline-none focus:border-primary transition-colors" placeholder="Search driver phone, plate, or container ID..." type="text"/>
+</div>
+<!-- Filter Tabs -->
+<div class="grid grid-cols-4 gap-1 text-center font-label-sm text-label-sm">
+<button class="py-1 rounded bg-surface-container-high text-primary font-bold border border-primary/30">All (12)</button>
+<button class="py-1 rounded bg-surface-container-lowest text-tertiary hover:bg-surface-container-high border border-outline-variant">Verify (3)</button>
+<button class="py-1 rounded bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high border border-outline-variant">Clear (8)</button>
+<button class="py-1 rounded bg-surface-container-lowest text-error hover:bg-surface-container-high border border-outline-variant">Hold (1)</button>
+</div>
+</div>
+<!-- Thread List Scroll Container -->
+<div class="flex-1 overflow-y-auto custom-scrollbar divide-y divide-outline-variant/50">
+<!-- ITEM 1: ACTIVE SELECTED THREAD -->
+<div class="p-space-md bg-surface-container-high border-l-2 border-primary cursor-pointer transition-colors relative">
+<div class="flex items-center justify-between mb-1">
+<span class="font-headline-sm text-body-md text-on-surface font-semibold truncate flex items-center gap-1.5">
+<span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
+              Tài xế Nguyễn Văn Hùng
+            </span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">14:22</span>
+</div>
+<div class="font-code-sm text-code-sm text-primary mb-1">
+            Xe 63C-123.45 • MSKU 123456 5
+          </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate mb-2">
+            📸 Phiếu cân xe &amp; Giấy test Cadmium đính kèm...
+          </p>
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-tertiary-container/20 border border-tertiary/40 text-tertiary font-label-sm text-[10px]">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+              Awaiting Seal Approval
+            </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Tiền Giang ➔ Hữu Nghị</span>
+</div>
+</div>
+<!-- ITEM 2: OCR Processing -->
+<div class="p-space-md hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-md text-on-surface font-medium truncate">Tài xế Trần Minh Tâm</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">14:15</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mb-1">
+            Xe 63C-889.12 • CMAU 789210 2
+          </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70 truncate mb-2">
+            Đang cân xe đợt 2 qua trạm điện tử Cai Lậy...
+          </p>
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-label-sm text-[10px]">
+<span class="material-symbols-outlined text-[12px] animate-spin" data-icon="progress_activity">progress_activity</span>
+              OCR Processing (82%)
+            </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Lane #02</span>
+</div>
+</div>
+<!-- ITEM 3: Discrepancy Flagged -->
+<div class="p-space-md hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-md text-on-surface font-medium truncate">Đội Vận Tải Vạn Xuân</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">13:58</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mb-1">
+            Xe 64A-092.31 • OOLU 452910 8
+          </div>
+<p class="font-body-sm text-body-sm text-error/80 truncate mb-2">
+            Cảnh báo: Lệch mã RFID seal hải quan so với tờ khai...
+          </p>
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-error-container/20 border border-error/50 text-error font-label-sm text-[10px]">
+<span class="material-symbols-outlined text-[12px]" data-icon="warning">warning</span>
+              Discrepancy Flagged
+            </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Quarantine Bay</span>
+</div>
+</div>
+<!-- ITEM 4: Cleared & Exported -->
+<div class="p-space-md hover:bg-surface-container transition-colors cursor-pointer">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-md text-on-surface font-medium truncate">Tài xế Lê Hoàng Khang</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">13:10</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mb-1">
+            Xe 63C-554.80 • TGHU 904321 4
+          </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant/70 truncate mb-2">
+            Biên bản bàn giao điện tử đã đối soát Pingxiang...
+          </p>
+<div class="flex items-center justify-between">
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-primary-container/20 border border-primary/40 text-primary font-label-sm text-[10px]">
+<span class="material-symbols-outlined text-[12px]" data-icon="check_circle">check_circle</span>
+              Cleared &amp; Exported
+            </span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">Youyi Guan Passed</span>
+</div>
+</div>
+<!-- ITEM 5: Inactive / Historical -->
+<div class="p-space-md hover:bg-surface-container transition-colors cursor-pointer opacity-75">
+<div class="flex items-center justify-between mb-1">
+<span class="font-body-md text-on-surface font-medium truncate">Tài xế Võ Thành Danh</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">11:45</span>
+</div>
+<div class="font-code-sm text-code-sm text-on-surface-variant mb-1">
+            Xe 63C-432.19 • TEMU 110293 0
+          </div>
+<p class="font-body-sm text-body-sm text-on-surface-variant/60 truncate">
+            Đã hoàn thành cấp mã kiểm định NAFIQAD...
+          </p>
+</div>
+</div>
+<!-- Station Info Footer Block -->
+<div class="p-space-sm bg-surface-container-lowest border-t border-outline-variant flex items-center justify-between text-on-surface-variant font-code-sm text-code-sm">
+<span>PUC: VN-TG-OR-088</span>
+<span class="text-primary font-semibold">GACC 2024-C7 ACTIVE</span>
+</div>
+</aside>
+<!-- PANE C: MAIN CONVERSATION & TELEMETRY STREAM (FLEX-1) -->
+<main class="flex-1 bg-surface flex flex-col justify-between overflow-hidden relative">
+<!-- Thread Header -->
+<div class="h-14 bg-surface-container-low border-b border-outline-variant px-margin flex items-center justify-between shrink-0 z-10">
+<div class="flex items-center gap-space-md">
+<div class="w-9 h-9 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary font-bold font-code-md">
+            HÙNG
+          </div>
+<div>
+<div class="flex items-center gap-2">
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">
+                Tài xế Nguyễn Văn Hùng
+              </h2>
+<span class="font-code-sm text-code-sm text-on-surface-variant">(0918.***.234)</span>
+<span class="px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant font-code-sm text-[10px] text-primary">
+                Đầu kéo: 63C-123.45 / Rơ-moóc: 63R-008.92
+              </span>
+</div>
+<div class="flex items-center gap-2 text-on-surface-variant font-code-sm text-code-sm">
+<span>Cai Lậy Packhouse #01 ➔ Youyi Guan Hub</span>
+<span>•</span>
+<span class="text-secondary font-mono text-[10px]">ED25519-ZNS-AUTH-VERIFIED</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-space-xs">
+<button class="bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface px-2.5 py-1.5 rounded font-label-sm text-label-sm flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-body-md text-primary" data-icon="call">call</span>
+<span>Call Zalo Hotline</span>
+</button>
+<button class="bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface px-2.5 py-1.5 rounded font-label-sm text-label-sm flex items-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-body-md" data-icon="folder_open">folder_open</span>
+<span>Dossier</span>
+</button>
+<button class="bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface p-1.5 rounded transition-colors" title="Pin Thread">
+<span class="material-symbols-outlined text-body-md text-on-surface-variant" data-icon="push_pin">push_pin</span>
+</button>
+</div>
+</div>
+<!-- Chat Feed (Scrollable) -->
+<div class="flex-1 overflow-y-auto p-margin custom-scrollbar space-y-space-md">
+<!-- System Session Connection Banner -->
+<div class="flex justify-center">
+<div class="bg-surface-container-lowest border border-outline-variant/60 rounded px-3 py-1 font-code-sm text-code-sm text-on-surface-variant flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span>Session connected via Zalo Official Account Bot API (Tien Giang Export Gateway) • 14:18 UTC+7</span>
+</div>
+</div>
+<!-- 1. DRIVER MESSAGE BUBBLE (Left side) -->
+<div class="flex items-start gap-space-sm max-w-2xl">
+<div class="w-8 h-8 rounded bg-surface-container-high border border-outline-variant flex items-center justify-center font-code-sm text-on-surface shrink-0">
+            TX
+          </div>
+<div class="space-y-space-xs">
+<div class="flex items-baseline gap-2">
+<span class="font-code-sm text-code-sm font-semibold text-on-surface">Nguyễn Văn Hùng</span>
+<span class="font-code-sm text-[10px] text-on-surface-variant">14:19</span>
+</div>
+<div class="bg-surface-container-high border border-outline-variant p-space-md rounded text-on-surface text-body-md space-y-space-sm">
+<p>
+                Chào trạm cân Cái Bè #VN-84B, xe 63C-123.45 vừa cân xong 1,280 sọt sầu riêng Ri6 và Dona, gửi trạm ảnh phiếu cân điện tử và phiếu test Cadmium của Trung tâm NAFIQAD.
+              </p>
+<!-- Weighbridge & NAFIQAD Media Attachment Simulation -->
+<div class="grid grid-cols-2 gap-space-sm pt-1">
+<!-- Attachment 1: Weighbridge Ticket Preview -->
+<div class="bg-surface-container-lowest border border-outline-variant p-2 rounded flex items-center gap-2.5 hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 bg-surface-container flex items-center justify-center border border-outline-variant rounded shrink-0">
+<span class="material-symbols-outlined text-primary" data-icon="receipt">receipt</span>
+</div>
+<div class="overflow-hidden">
+<div class="font-code-sm text-code-sm text-on-surface font-semibold truncate">PHIEU_CAN_63C12345.PDF</div>
+<div class="font-code-sm text-[10px] text-on-surface-variant">24.18t Gross • 14:12</div>
+</div>
+</div>
+<!-- Attachment 2: Cadmium Lab Report Preview -->
+<div class="bg-surface-container-lowest border border-outline-variant p-2 rounded flex items-center gap-2.5 hover:border-primary transition-colors cursor-pointer">
+<div class="w-10 h-10 bg-surface-container flex items-center justify-center border border-outline-variant rounded shrink-0">
+<span class="material-symbols-outlined text-tertiary" data-icon="biotech">biotech</span>
+</div>
+<div class="overflow-hidden">
+<div class="font-code-sm text-code-sm text-on-surface font-semibold truncate">NAFIQAD_ICPMS_TEST.PDF</div>
+<div class="font-code-sm text-[10px] text-on-surface-variant">Cd: 0.028mg/kg • PASSED</div>
+</div>
 </div>
 </div>
 </div>
