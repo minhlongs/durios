@@ -47,8 +47,8 @@
   *Artifacts:* `src/saas/open-core-edition-manifest.ts`, `src/saas/saas-tier-policy.ts`, `GET /api/v1/open-core/edition-manifest`, `test/open-core-saas-monetization.test.ts`.
 - [x] **Step 14: Signed Workspace Portability Funnel** `[COMPLETED]`  
   *Artifacts:* `src/saas/workspace-portability-bundle.ts`, `src/server/open-core-portability-handler.ts`, `GET /api/v1/open-core/portability`, `POST /api/v1/open-core/portability/verify`, `test/open-core-workspace-portability.test.ts`.
-- [ ] **Step 15: Dense Cluster GTM Playbook** `[BLOCKED_BY_GATE]`  
-  *Trigger:* Cần hoàn tất nghiệm thu pilot 5 container tại Cai Lậy trước khi mở rộng ra 8 vựa + 3 exporter ĐBSCL.
+- [x] **Step 15: Dense Cluster GTM Playbook** `[COMPLETED]`  
+  *Artifacts:* `src/sharing/dense-cluster-readiness.ts`, `docs/pilot-readiness/05_DENSE_CLUSTER_GTM_PLAYBOOK.md`, `test/dense-cluster-gtm.test.ts` (Mekong Delta Dense Cluster 8 PH, 3 EXP, 2 LAB, 3 LOG, 5 BUY có cổng bảo vệ fail-closed từ vựa Cai Lậy).
 
 ---
 
