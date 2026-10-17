@@ -8,7 +8,7 @@
 
 ## Phase 1 — Foundation & Open-Core Architecture (Steps 1–5)
 - [x] **Step 1: Open-Core Master Framework** `[COMPLETED]`  
-  *Artifacts:* `src/saas/saas-tier-policy.ts`, `LICENSE`, `LICENSE-MIT`, `COMMERCIAL-LICENSE.md`.
+  *Artifacts:* `src/saas/open-core-edition-manifest.ts`, `src/saas/saas-tier-policy.ts`, `LICENSE`, `LICENSE-MIT`, `COMMERCIAL-LICENSE.md`.
 - [x] **Step 2: 2026 Truthful Plan Refresh** `[COMPLETED]`  
   *Artifacts:* `docs/product-direction/VALIDATION-AND-ECONOMICS-V2.md` (Số liệu Bộ NN&MT tháng 9/2026: 281 vựa, $658k SaaS ceiling vs $1M ARR).
 - [x] **Step 3: Agentic OS & Human-in-the-Loop Governance** `[COMPLETED]`  
@@ -44,9 +44,9 @@
 
 ## Phase 4 — Revenue & Conversion Engine (Steps 13–15)
 - [x] **Step 13: Community-to-Pro Upgrade Trigger** `[COMPLETED]`  
-  *Artifacts:* `src/saas/saas-tier-policy.ts`, `test/open-core-saas-monetization.test.ts`.
+  *Artifacts:* `src/saas/open-core-edition-manifest.ts`, `src/saas/saas-tier-policy.ts`, `GET /api/v1/open-core/edition-manifest`, `test/open-core-saas-monetization.test.ts`.
 - [x] **Step 14: Signed Workspace Portability Funnel** `[COMPLETED]`  
-  *Artifacts:* `src/saas/workspace-portability-bundle.ts`, `test/open-core-workspace-portability.test.ts`.
+  *Artifacts:* `src/saas/workspace-portability-bundle.ts`, `src/server/open-core-portability-handler.ts`, `GET /api/v1/open-core/portability`, `POST /api/v1/open-core/portability/verify`, `test/open-core-workspace-portability.test.ts`.
 - [ ] **Step 15: Dense Cluster GTM Playbook** `[BLOCKED_BY_GATE]`  
   *Trigger:* Cần hoàn tất nghiệm thu pilot 5 container tại Cai Lậy trước khi mở rộng ra 8 vựa + 3 exporter ĐBSCL.
 

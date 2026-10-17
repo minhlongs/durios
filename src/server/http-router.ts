@@ -33,6 +33,11 @@ import {
 } from "./pilot-handlers.js";
 import { handleGetPilotGoLivePack } from "./pilot-dossier-pack-handler.js";
 import { handleGetSaasStatus } from "./saas-status-handler.js";
+import {
+  handleExportWorkspacePortability,
+  handleGetOpenCoreEditionManifest,
+  handleVerifyWorkspacePortability,
+} from "./open-core-portability-handler.js";
 
 export async function routeHttpRequest(
   workspace: ContainerDossierWorkspace,
@@ -75,7 +80,8 @@ export async function routeHttpRequest(
   const isV1Scope =
     path.startsWith("/api/v1/dossiers") ||
     path.startsWith("/api/v1/pilot/") ||
-    path.startsWith("/api/v1/saas/");
+    path.startsWith("/api/v1/saas/") ||
+    path.startsWith("/api/v1/open-core/");
   const routePath = isV1Scope ? `/api/${path.slice("/api/v1/".length)}` : path;
 
   if (method === "GET" && routePath === "/api/pilot/kpi") {
@@ -89,6 +95,15 @@ export async function routeHttpRequest(
   }
   if (method === "GET" && routePath === "/api/saas/status") {
     return handleGetSaasStatus(workspace, actor);
+  }
+  if (method === "GET" && routePath === "/api/open-core/edition-manifest") {
+    return handleGetOpenCoreEditionManifest(workspace, actor);
+  }
+  if (method === "GET" && routePath === "/api/open-core/portability") {
+    return handleExportWorkspacePortability(workspace, actor);
+  }
+  if (method === "POST" && routePath === "/api/open-core/portability/verify") {
+    return handleVerifyWorkspacePortability(workspace, actor, req);
   }
 
   if (method === "GET" && routePath === "/api/dossiers") return handleListDossiers(workspace, actor);

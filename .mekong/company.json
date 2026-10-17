@@ -7,6 +7,17 @@
     "managed_pro": "PACKHOUSE_PRO_SAAS (60,000,000 VND / site / year — Ed25519 Signed License Key)",
     "enterprise_network": "EXPORTER_ENTERPRISE (Multi-site group contract + Verified Trade Rooms + ASEAN Corridors)"
   },
+  "open_core_manifest_api": {
+    "manifest_source": "src/saas/open-core-edition-manifest.ts",
+    "portability_source": "src/saas/workspace-portability-bundle.ts",
+    "http_handler": "src/server/open-core-portability-handler.ts",
+    "endpoints": [
+      "GET /api/v1/open-core/edition-manifest",
+      "GET /api/v1/open-core/portability",
+      "POST /api/v1/open-core/portability/verify"
+    ],
+    "blueprint_sync_test": "test/open-core-25-step-blueprint-e2e.test.ts"
+  },
   "model": "Open-Core Operating System for Verified Durian Trade: bắt đầu bằng Container Truth Engine cài tại chỗ (Cai Lậy beachhead), tiến hóa qua Verified Organization Profile (Federated Trust) sang Closed Transaction Network và ASEAN Regional Infrastructure",
   "target_arr": "Mục tiêu 1 triệu USD ARR thông qua Multi-Revenue Stack (vì 281 vựa đang hoạt động tại VN x 60M VND = tối đa ~$657,643 ARR nếu chỉ bán SaaS đơn thuần; bắt buộc kết hợp Verification Modules, Enterprise Multi-Site, Closed Trade Network và mở rộng Malaysia/Thái Lan)",
   "north_star_metric": "Verified GMV & Revenue per Verified Container",
@@ -15,8 +26,8 @@
   "agents": {
     "Founder / CEO": "Chịu trách nhiệm về 5 cổng khai trương (GATE-01..05), khảo sát thực địa Cai Lậy, ký DPA, phê duyệt vốn và mọi tuyên bố đối ngoại",
     "Product and Operations": "Ghi nhận quy trình của vựa, cấu hình pilot, lưu bằng chứng chấp thuận, đo 4 chỉ số giá trị thực địa theo từng container và hỗ trợ khách hàng",
-    "Engineering and Security": "Duy trì Local Core (Bun + SQLite WAL), Merklized Audit Ledger, Ed25519 License Verifier, Workspace Portability Bundle và trần <= 179 LOC / 0 any",
-    "Revenue and Customer Discovery": "Triển khai pilot 5 container tại Cai Lậy, kiểm tra thẩm quyền mua và mức giá 60M VND/năm, phụ trách chuyển đổi pilot",
+    "Engineering and Security": "Duy trì Local Core (Bun + SQLite WAL), Merklized Audit Ledger, Ed25519 License Verifier, Workspace Portability Bundle, Open-Core Edition Manifest (/api/v1/open-core/...) và trần <= 179 LOC / 0 any",
+    "Revenue and Customer Discovery": "Triển khai pilot 5 container tại Cai Lậy, kiểm tra thẩm quyền mua và mức giá 60M VND/năm, phụ trách chuyển đổi pilot qua Open-Core Portability Funnel",
     "Governance and Legal": "Rà soát tuân thủ Luật BVDLCN 91/2025/QH15, Luật TMĐT 122/2025/QH15, Nghị định 52/2024/NĐ-CP (Zero-Custody) và 9 Hard Kill Criteria"
   },
   "okrs": [
@@ -30,6 +41,6 @@
     "2. Diễn tập gửi và xác thực OTP thực tế qua Zalo ZNS / SMS Brandname trên môi trường staging (GATE-02).",
     "3. Thiết lập máy chủ Mini PC on-premise chạy Bun + SQLite WAL trên mạng LAN của vựa kèm ổ cứng sao lưu mã hóa (GATE-03 & GATE-04).",
     "4. Chạy đối soát 5 container thực địa với 2 lỗi gài mù, đo Arithmetic Mean < 5 phút và xuất báo cáo niêm phong bằng `bun run pilot:audit-pack` (GATE-05).",
-    "5. Chuyển đổi pilot đạt KPI sang hợp đồng thuê bao năm PACKHOUSE_PRO_SAAS (60 triệu VND/năm) và xuất DuriOS Verified Profile đầu tiên."
+    "5. Chuyển đổi pilot đạt KPI sang hợp đồng thuê bao năm PACKHOUSE_PRO_SAAS (60 triệu VND/năm) và xuất DuriOS Verified Profile đầu tiên qua /api/v1/open-core/portability."
   ]
 }

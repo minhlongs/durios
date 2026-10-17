@@ -13,3 +13,4 @@ data/backups/
 .DS_Store
 dist/
 coverage/
+.orchestrate/

@@ -7,7 +7,7 @@
 ---
 
 ## 1. Open-Core Master Framework (`[Verified]`)
-- **Community Open-Core (`COMMUNITY_OPEN_CORE`):** Miễn phí 100% tính năng đối soát hồ sơ container GACC Trung Quốc (`VN_CN`), xác minh con người (HITL), sổ cái chuỗi băm SHA-256 (`SqliteAuditLedger`), phân quyền Tri-Tuple RBAC và `MIT` Standalone Manifest Verifier.
+- **Community Open-Core (`COMMUNITY_OPEN_CORE`):** Miễn phí 100% tính năng đối soát hồ sơ container GACC Trung Quốc (`VN_CN`), xác minh con người (HITL), sổ cái chuỗi băm SHA-256 (`SqliteAuditLedger`), phân quyền Tri-Tuple RBAC, và `MIT` Standalone Manifest Verifier. Được công bố bằng code qua `src/saas/open-core-edition-manifest.ts` và endpoint `GET /api/v1/open-core/edition-manifest`.
 - **Packhouse Pro SaaS (`PACKHOUSE_PRO_SAAS` — `[Hypothesis]` 60M VND/năm):** Mở khóa qua khóa ký số Ed25519 (`src/saas/saas-tier-policy.ts`) cho Cloud Vision OCR, Managed Zalo ZNS Alert Relay, E2EE Cloud Backup Vault và GACC Registry Watch.
 - **Exporter Enterprise (`EXPORTER_ENTERPRISE`):** Đồng bộ đa cơ sở đóng gói (Multi-Site Sync), cổng thông tin người mua xuyên biên giới và các phòng giao dịch xác minh kín (`Verified Trade Rooms`).
 
@@ -46,10 +46,10 @@
 - Đo lường 4 chỉ số thực tế ngay từ container đầu tiên (`minutesSavedPerContainer`, `humanTouchesPerContainer`, `exceptionsDiscoveredPerContainer`, `expectedLossAvoidedVnd`).
 
 ## 13. Community-to-Pro Upgrade Trigger (`[Verified]`)
-- Khi vựa dùng bản `COMMUNITY_OPEN_CORE` cần gửi cảnh báo Zalo ZNS tự động, sao lưu đám mây mã hóa đầu cuối hoặc đối soát đa thị trường (`JP`, `KR`, `EU`), hệ thống hướng dẫn nâng cấp qua `SaasSubscriptionStatus`.
+- Khi vựa dùng bản `COMMUNITY_OPEN_CORE` cần gửi cảnh báo Zalo ZNS tự động, sao lưu đám mây mã hóa đầu cuối hoặc đối soát đa thị trường (`JP`, `KR`, `EU`), hệ thống hướng dẫn nâng cấp qua `SaasSubscriptionStatus` và `GET /api/v1/open-core/edition-manifest`.
 
 ## 14. Signed Workspace Portability Funnel (`[Verified]`)
-- Vựa xuất gói **Workspace Portability Bundle** (`src/saas/workspace-portability-bundle.ts`) có chữ ký HMAC-SHA256 để chuyển đổi liền mạch lên bản Pro/Enterprise mà không làm rò rỉ khóa bí mật.
+- Vựa xuất gói **Workspace Portability Bundle** (`src/saas/workspace-portability-bundle.ts`) có chữ ký HMAC-SHA256 qua API `GET /api/v1/open-core/portability` và xác minh qua `POST /api/v1/open-core/portability/verify` để chuyển đổi liền mạch lên bản Pro/Enterprise mà không làm rò rỉ khóa bí mật.
 
 ## 15. Dense Cluster GTM Playbook (`[Target]`)
 - Tập trung xây dựng cụm liên kết dày đặc tại Cai Lậy $\rightarrow$ Tiền Giang/ĐBSCL (8 vựa + 3 exporter + 2 phòng lab + 3 đơn vị xe lạnh + 5 nhà nhập khẩu) trước khi mở rộng địa lý.

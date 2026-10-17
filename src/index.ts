@@ -25,6 +25,8 @@ export * from "./domain/marketplace-types.js";
 export * from "./marketplace/marketplace-guard.js";
 export * from "./marketplace/escrow-state-machine.js";
 export * from "./saas/saas-tier-policy.js";
+export * from "./saas/open-core-edition-manifest.js";
+export * from "./saas/workspace-portability-bundle.js";
 export * from "./saas/usage-metering-service.js";
 export * from "./saas/cloud-ocr-extractor-adapter.js";
 export * from "./saas/cloud-vault-backup-connector.js";
