@@ -599,7 +599,8 @@ header.sticky,
 }
 
 /* Streamline redundant native headers & fake nav links inside Stitch screens */
-.durios-redundant-subnav {
+.durios-redundant-subnav,
+.durios-redundant-brand {
   display: none !important;
 }
 
@@ -607,12 +608,14 @@ header.sticky,
   padding-top: 6px !important;
   padding-bottom: 6px !important;
   min-height: 38px !important;
+  height: auto !important;
   border-bottom: 1px solid var(--durios-border-subtle) !important;
 }
 
 /* Focus Canvas Mode (hotkey `f` or button in 44px Top Command Bar) */
 html.durios-focus-canvas .durios-compacted-native-header,
-html.durios-focus-canvas .durios-secondary-banner {
+html.durios-focus-canvas .durios-secondary-banner,
+html.durios-focus-canvas .durios-nav-aside {
   display: none !important;
 }
 
@@ -622,4 +625,49 @@ html.durios-focus-canvas .durios-secondary-banner {
   border-color: var(--durios-accent) !important;
   font-weight: 700 !important;
 }
+
+/* Interactive Hydrated Button States & 2027 Live Toast Notifications */
+.durios-btn-verified-state {
+  border-color: var(--durios-accent) !important;
+  box-shadow: 0 0 0 1px var(--durios-accent) !important;
+}
+
+.durios-live-toast-container {
+  position: fixed !important;
+  top: 56px !important;
+  right: 16px !important;
+  z-index: 100005 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
+  max-width: 380px !important;
+  pointer-events: none !important;
+}
+
+.durios-live-toast {
+  pointer-events: auto !important;
+  background: var(--durios-bg-surface-elevated) !important;
+  border: 1px solid var(--durios-border-strong) !important;
+  border-left: 3px solid var(--durios-accent) !important;
+  border-radius: var(--durios-radius-md) !important;
+  padding: 10px 14px !important;
+  box-shadow: var(--durios-shadow-lg) !important;
+  font-family: var(--durios-font-sans) !important;
+  font-size: 11px !important;
+  color: var(--durios-text-primary) !important;
+  backdrop-filter: blur(10px) !important;
+  animation: duriosToastIn 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes duriosToastIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
 

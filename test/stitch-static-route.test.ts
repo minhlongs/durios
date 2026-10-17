@@ -31,6 +31,7 @@ describe("Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite", 
       const openDivs = (html.match(/<div\b/gi) ?? []).length;
       const closeDivs = (html.match(/<\/div>/gi) ?? []).length;
       expect(openDivs).toBe(closeDivs);
+      expect(html).not.toContain('href="#"');
 
       const pngName = page.replace(".html", ".png");
 
@@ -47,6 +48,7 @@ describe("Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite", 
     expect(jsText).toContain("durios_theme");
     expect(jsText).toContain("1. Packhouse Ops");
     expect(jsText).toContain("4. SaaS & Corridors");
+    expect(jsText).toContain("setupUniversalInteractiveDelegation");
 
     const cssRes = await routeHttpRequest(workspace, new Request("http://localhost:3000/stitch/durios-design-system.css"));
     expect(cssRes.status).toBe(200);

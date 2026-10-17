@@ -58,3 +58,13 @@
 - Upgraded `🚀 Diễn tập 5 Cont & 5/5 Gates` on `/` to invoke `POST /api/auth/pilot-rehearsal-bootstrap?fullGates=true` so 5/5 `GATE-01..05 PASS` unlocks in 1 click.
 - Added **Dark Emerald Ops / Daylight Field Theme Toggle (`🌙 Emerald / ☀️ Field`)** and upgraded `#stitch-gallery-modal` with live search (`#stitch-modal-search`) and 4 domain filter pills across all 25 screens.
 
+### Turn 8: Zero Dead Links (`href="#": 0`), Universal Interactive Button Delegation & Unified Root App Shell (`v0.6.0`)
+- **Problem:**
+  1. Auditing `site/public/*.html` revealed **113 `href="#"` dead anchor links** across 12 Stitch screens and **13 screens with `onclicks: 0`** where static Stitch `<button>` elements produced no feedback when clicked.
+  2. The primary Packhouse Workspace (`src/server/public/index.html` at `/`) did not mount the `44px` Top Command Bar (`#durios-unified-top-nav`), `⌘K` Command Palette, `[` Sidebar Drawer, or Bottom-Right Floating Live Dock (`durios-live-bridge.js`).
+- **Solution (`v0.6.0`):**
+  1. **Zero Dead Links (`href="#": 0`):** Deterministically mapped all 113 `href="#"` links across `site/public/*.html` and `queue/*.html` to their corresponding live `.html` routes (`index.html`, `dossiers.html`, `auditor.html`, `buyer.html`, `rehearsal-command.html`, `mit-verifier-lab.html`, `security-vault.html`, `organic-escrow-guard.html`, `webhook-sync-queue.html`, `socratic-introspector.html`, `cloud-ocr-vault.html`, `ed25519-downgrade-simulator.html`, `corridors.html`, `blueprint.html`, `gallery.html`) and locked this with `expect(html).not.toContain('href="#"')` in `test/stitch-static-route.test.ts`.
+  2. **Universal Interactive Button Delegation & 2027 Live Toasts (`setupUniversalInteractiveDelegation()` + `showLiveToast()`):** Wired event delegation in `durios-live-bridge.js` so clicking any native `<button>` across all 25 Stitch screens executes live backend verification (`POST /api/v1/open-core/verify-iso-and-manifest`, `POST /api/auth/pilot-rehearsal-bootstrap?fullGates=true`, or `downloadGoLivePack()`) and renders a sleek top-right 2027 Enterprise Toast notification with live SHA-256 / GACC telemetry.
+  3. **Unified Root App Shell (`/` + `/stitch/*.html`):** Mounted `/stitch/durios-design-system.css`, `/stitch/durios-live-bridge.js`, and `#durios-unified-top-nav` directly onto `src/server/public/index.html` with route-aware `getScreenHref(file)` resolution so operators enjoy the exact same `44px` Command Bar, `⌘K` Palette, `[` Drawer, `🎯 Focus` Mode (`f` hotkey), and Bottom-Right Live Dock across both `/` and `/stitch/*.html`.
+
+
