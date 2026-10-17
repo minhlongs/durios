@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mekong Clear // Portability &amp; Data Sovereignty Hub</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Inter & JetBrains Mono Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with configuration -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "secondary-fixed": "#68fcbf",
+            "on-primary-fixed-variant": "#005236",
+            "primary-fixed": "#6ffbbe",
+            "surface-container-highest": "#2e3731",
+            "surface-container": "#19211c",
+            "tertiary-fixed-dim": "#ffb95f",
+            "surface-container-low": "#151d18",
+            "on-tertiary-fixed": "#2a1700",
+            "inverse-on-surface": "#2a322c",
+            "on-primary": "#003824",
+            "on-secondary-fixed-variant": "#005137",
+            "on-tertiary": "#472a00",
+            "on-surface-variant": "#bbcabf",
+            "error": "#ffb4ab",
+            "on-secondary-fixed": "#002114",
+            "error-container": "#93000a",
+            "surface-tint": "#4edea3",
+            "on-primary-container": "#00422b",
+            "on-tertiary-container": "#523200",
+            "outline-variant": "#3c4a42",
+            "surface-container-lowest": "#08100b",
+            "on-primary-fixed": "#002113",
+            "on-error": "#690005",
+            "surface-container-high": "#242c26",
+            "secondary-fixed-dim": "#45dfa4",
+            "secondary-container": "#00bd85",
+            "primary": "#4edea3",
+            "on-secondary": "#003825",
+            "outline": "#86948a",
+            "on-secondary-container": "#00452e",
+            "inverse-surface": "#dce5dc",
+            "on-error-container": "#ffdad6",
+            "tertiary-container": "#e29100",
+            "secondary": "#45dfa4",
+            "primary-fixed-dim": "#4edea3",
+            "tertiary-fixed": "#ffddb8",
+            "surface-bright": "#333b35",
+            "on-tertiary-fixed-variant": "#653e00",
+            "on-background": "#dce5dc",
+            "primary-container": "#10b981",
+            "surface-variant": "#2e3731",
+            "tertiary": "#ffb95f",
+            "surface": "#0d1510",
+            "on-surface": "#dce5dc",
+            "background": "#0d1510",
+            "surface-dim": "#0d1510",
+            "inverse-primary": "#006c49"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "gutter-compact": "0.5rem",
+            "space-sm": "0.5rem",
+            "space-md": "0.75rem",
+            "space-lg": "1.25rem",
+            "margin": "1.5rem",
+            "space-xs": "0.25rem",
+            "margin-mobile": "0.75rem",
+            "space-xl": "2rem",
+            "gutter": "1rem"
+          },
+          "fontFamily": {
+            "label-md": ["JetBrains Mono"],
+            "headline-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-xl-mobile": ["Inter"],
+            "headline-lg": ["Inter"],
+            "code-md": ["JetBrains Mono"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-xl": ["Inter"],
+            "code-lg": ["JetBrains Mono"],
+            "headline-md": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "body-sm": ["Inter"]
+          },
+          "fontSize": {
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-xl-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "code-lg": ["15px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+      line-height: 1;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #08100b;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #1f3b2c;
+      border-radius: 2px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #10b981;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.85); }
+    }
+    .radar-pulse {
+      animation: pulse-dot 2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md select-none">
+<!-- ========================================================================= -->
+<!-- 1. TOP COMMAND BAR (Based on Shared Components JSON)                      -->
+<!-- ========================================================================= -->
+<header class="flex justify-between items-center w-full px-margin h-14 bg-surface-container border-b border-outline-variant shrink-0 z-50">
+<!-- Left: Identity & Search/Scope Context -->
+<div class="flex items-center gap-space-lg">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-headline-sm" data-icon="terminal">terminal</span>
+<span class="text-headline-sm font-headline-sm uppercase tracking-wider text-primary font-bold">
+          MEKONG CLEAR // GACC DUR-EXP-OPS
+        </span>
+</div>
+<div class="hidden xl:flex items-center gap-space-sm text-code-sm font-code-sm text-on-surface-variant bg-surface-container-lowest px-space-md py-space-xs border border-outline-variant rounded">
+<span class="text-primary font-code-md">FACILITY:</span>
+<span>TIEN GIANG #VN-84B (CAI LẬY)</span>
+<span class="text-outline">|</span>
+<span class="text-secondary font-code-md">TENANT:</span>
+<span class="text-on-surface">Cai Lậy Hub #01 (VN-TG-PH-001)</span>
+</div>
+</div>
+<!-- Center: Navigation Links (Mapped to ecosystem destinations) -->
+<nav class="hidden md:flex items-center gap-space-lg">
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="index.html">Command Station</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="dossiers.html">Dossiers</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="auditor.html">Field Auditor</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="buyer.html">Buyer Verification</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="cluster.html">Cluster Ops</a>
+<a class="text-primary border-b-2 border-primary font-code-md text-code-md py-1" href="portability.html">Portability Hub</a>
+</nav>
+<!-- Right: Telemetry Health & Node Badges -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs bg-surface-container-low px-space-sm py-1 border border-outline-variant rounded">
+<span class="inline-block w-2 h-2 rounded-full bg-primary-container radar-pulse"></span>
+<span class="text-label-sm font-label-sm text-primary uppercase tracking-wider">LEDGER #942,109</span>
+<span class="text-code-sm font-code-sm text-on-surface-variant ml-1">12ms</span>
+</div>
+<div class="hidden sm:flex items-center gap-space-xs bg-surface-container-high px-space-sm py-1 border border-primary-container/40 rounded">
+<span class="material-symbols-outlined text-primary text-label-md" data-icon="lock_open_right">lock_open_right</span>
+<span class="text-label-sm font-label-sm text-primary tracking-tight">ZERO-LOCKIN AIR-GAP</span>
+</div>
+<!-- Icon actions -->
+<div class="flex items-center gap-1 text-on-surface-variant border-l border-outline-variant pl-space-sm">
+<button class="p-1.5 hover:bg-surface-variant hover:text-on-surface transition-colors duration-150 rounded" title="Sensors Mesh">
+<span class="material-symbols-outlined text-headline-sm" data-icon="sensors">sensors</span>
+</button>
+<button class="p-1.5 hover:bg-surface-variant hover:text-on-surface transition-colors duration-150 rounded" title="Alerts &amp; Audit">
+<span class="material-symbols-outlined text-headline-sm" data-icon="notifications">notifications</span>
+</button>
+</div>
+<div class="w-7 h-7 rounded border border-outline-variant bg-surface-container-high flex items-center justify-center text-primary font-code-md text-code-sm" title="Chief Customs Verification Officer Badge">
+        VN
+      </div>
+</div>
+</header>
+<!-- ========================================================================= -->
+<!-- 2. MAIN APPLICATION CONTENT CANVAS                                       -->
+<!-- ========================================================================= -->
+<main class="flex-1 flex flex-col p-gutter gap-gutter custom-scroll overflow-y-auto">
+<!-- SOVEREIGN CHARTER BANNER -->
+<section class="bg-surface-container-low border border-primary-container/30 rounded p-space-md relative overflow-hidden">
+<div class="absolute -right-10 -bottom-10 w-60 h-60 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="space-y-1">
+<div class="flex flex-wrap items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary text-headline-md" data-icon="verified_user">verified_user</span>
+<h1 class="text-headline-sm font-headline-sm text-on-surface font-bold tracking-tight">
+              100% DATA OWNERSHIP — EXPORT ANYTIME UNDER AGPL-3.0 CORE
+            </h1>
+<span class="px-space-xs py-0.5 rounded bg-primary-container/20 border border-primary text-primary text-label-sm font-label-sm uppercase tracking-wider">
+              Cryptographically Guaranteed
+            </span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant max-w-5xl">
+            You are not locked into any proprietary SaaS vendor. All orchard telemetry, ICP-MS lab certificates, smart bolt RFID timestamps, and GACC customs dossiers are cryptographically sovereign and owned by <span class="text-on-surface font-code-sm text-code-sm">Cai Lậy Hub #01</span>. Full offline execution and self-hosting enabled.
+          </p>
+</div>
+<!-- Badges Grid -->
+<div class="flex flex-wrap items-center gap-space-xs shrink-0">
+<div class="px-space-sm py-1 bg-surface-container-lowest border border-outline-variant rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-label-sm" data-icon="code">code</span>
+<span class="text-label-sm font-label-sm text-on-surface">AGPL-3.0 VERIFIED CORE</span>
+</div>
+<div class="px-space-sm py-1 bg-surface-container-lowest border border-outline-variant rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-label-sm" data-icon="shield">shield</span>
+<span class="text-label-sm font-label-sm text-on-surface">ZERO VENDOR LOCK-IN</span>
+</div>
+<div class="px-space-sm py-1 bg-surface-container-lowest border border-outline-variant rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-tertiary text-label-sm" data-icon="visibility_off">visibility_off</span>
+<span class="text-label-sm font-label-sm text-on-surface">PEDERSEN BLIND PRIVACY</span>
+</div>
+<div class="px-space-sm py-1 bg-surface-container-lowest border border-outline-variant rounded flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-label-sm" data-icon="power_off">power_off</span>
+<span class="text-label-sm font-label-sm text-on-surface">STANDALONE OFFLINE</span>
+</div>
+</div>
+</div>
+</section>
+<!-- CORE WORKSPACE GRID: BUNDLE GENERATOR (LEFT) & VERIFICATION TERMINAL (RIGHT) -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<!-- ===================================================================== -->
+<!-- 3. CRYPTOGRAPHIC BUNDLE GENERATION CARD (7 COLS)                      -->
+<!-- ===================================================================== -->
+<section class="lg:col-span-7 bg-surface-container border border-outline-variant rounded p-space-lg flex flex-col gap-space-lg">
+<!-- Header -->
+<div class="border-b border-outline-variant pb-space-md flex justify-between items-start">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-headline-sm" data-icon="inventory_2">inventory_2</span>
+<h2 class="text-headline-sm font-headline-sm text-on-surface font-semibold">
+                Cryptographic Portability Bundle Generator
+              </h2>
+</div>
+<p class="text-code-sm font-code-sm text-on-surface-variant mt-0.5">
+              Specification: Mekong-GACC v3.4 / RFC 6962 Merkle Tree Export
+            </p>
+</div>
+<div class="text-right">
+<span class="text-label-sm font-label-sm uppercase text-outline">Target Schema</span>
+<div class="text-code-sm font-code-sm text-primary font-bold">MK-SOVEREIGN-JSON // v3.4</div>
+</div>
+</div>
+<!-- Date Range Filter & Quick Selectors -->
+<div class="space-y-space-xs">
+<label class="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant">
+            Export Time Horizon &amp; Block Depth
+          </label>
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-space-xs">
+<button class="py-1 px-space-sm bg-surface-container-low border border-outline-variant hover:border-primary text-code-sm font-code-sm text-on-surface text-center rounded transition-colors">
+              Last 24h (Live)
+            </button>
+<button class="py-1 px-space-sm bg-surface-container-low border border-outline-variant hover:border-primary text-code-sm font-code-sm text-on-surface text-center rounded transition-colors">
+              Last 7 Days
+            </button>
+<button class="py-1 px-space-sm bg-surface-container-low border border-outline-variant hover:border-primary text-code-sm font-code-sm text-on-surface text-center rounded transition-colors">
+              Month-to-Date
+            </button>
+<button class="py-1 px-space-sm bg-surface-container-high border-2 border-primary text-code-sm font-code-sm text-primary text-center rounded font-semibold">
+              Feb 2025 (Full MTD)
+            </button>
+</div>
+<div class="flex items-center gap-2 mt-2 bg-surface-container-lowest p-space-sm border border-outline-variant rounded">
+<span class="material-symbols-outlined text-on-surface-variant text-label-md" data-icon="date_range">date_range</span>
+<span class="text-code-sm font-code-sm text-on-surface">Range Window:</span>
+<input class="bg-transparent border-0 text-code-sm font-code-sm text-primary focus:ring-0 w-full p-0" readonly="" type="text" value="2025-02-01T00:00:00Z  —  2025-02-28T23:59:59Z"/>
+<span class="text-label-sm font-label-sm text-outline uppercase">28 Days Selected</span>
+</div>
+</div>
+<!-- Scope Selection Checkboxes -->
+<div class="space-y-space-xs">
+<label class="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant flex justify-between">
+<span>Cryptographic Payload Scope</span>
+<span class="text-primary">100% Completeness</span>
+</label>
+<div class="space-y-2">
+<!-- Item 1 -->
+<label class="flex items-start gap-space-sm p-space-sm bg-surface-container-low border border-outline-variant rounded hover:border-primary/50 cursor-pointer transition-colors">
+<input checked="" class="mt-0.5 rounded-none text-primary-container focus:ring-0 bg-surface-container-lowest border-outline-variant" type="checkbox"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="text-body-md font-body-md text-on-surface font-medium">All 14 Active Export Dossiers</span>
+<span class="text-label-sm font-label-sm text-primary uppercase">252,000 kg Durian Monthong &amp; Ri6</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Includes batch manifests, phytosanitary certificates, orchard coordinates &amp; GACC clearance tokens.</p>
+</div>
+</label>
+<!-- Item 2 -->
+<label class="flex items-start gap-space-sm p-space-sm bg-surface-container-low border border-outline-variant rounded hover:border-primary/50 cursor-pointer transition-colors">
+<input checked="" class="mt-0.5 rounded-none text-primary-container focus:ring-0 bg-surface-container-lowest border-outline-variant" type="checkbox"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="text-body-md font-body-md text-on-surface font-medium">Immutable Audit Ledger</span>
+<span class="text-label-sm font-label-sm text-secondary uppercase">48 Signed State Transitions</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Raw SHA-256 state hashes, GACC customs officer signatures, quarantine timestamps &amp; cold-chain checks.</p>
+</div>
+</label>
+<!-- Item 3 -->
+<label class="flex items-start gap-space-sm p-space-sm bg-surface-container-low border border-outline-variant rounded hover:border-primary/50 cursor-pointer transition-colors">
+<input checked="" class="mt-0.5 rounded-none text-primary-container focus:ring-0 bg-surface-container-lowest border-outline-variant" type="checkbox"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="text-body-md font-body-md text-on-surface font-medium">Cryptographic Manifests &amp; Bilateral e-Phyto Telegrams</span>
+<span class="text-label-sm font-label-sm text-tertiary uppercase">UN/CEFACT e-Phyto XML</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Official bilateral exchange payloads between Vietnam MARD and General Administration of Customs China.</p>
+</div>
+</label>
+<!-- Item 4 -->
+<label class="flex items-start gap-space-sm p-space-sm bg-surface-container-low border border-outline-variant rounded hover:border-primary/50 cursor-pointer transition-colors">
+<input checked="" class="mt-0.5 rounded-none text-primary-container focus:ring-0 bg-surface-container-lowest border-outline-variant" type="checkbox"/>
+<div class="flex-1">
+<div class="flex items-center justify-between">
+<span class="text-body-md font-body-md text-on-surface font-medium">Raw Cadmium ICP-MS Lab Spectra &amp; Calibration Datasets</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant uppercase">PPM Spectrometry</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Uncompressed Agilent ICP-MS spectral lines, curve regressions &amp; heavy-metal compliance proofs (&lt;0.05 mg/kg).</p>
+</div>
+</label>
+</div>
+</div>
+<!-- Key Signing & Provenance Section -->
+<div class="space-y-space-xs bg-surface-container-lowest p-space-md border border-outline-variant rounded">
+<div class="flex items-center justify-between">
+<label class="text-label-sm font-label-sm uppercase tracking-wider text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-label-md" data-icon="key">key</span>
+              Packhouse Signer ECDSA Key / HMAC Authority
+            </label>
+<span class="text-code-sm font-code-sm text-primary">Valid • Registered at Tien Giang Node</span>
+</div>
+<div class="relative">
+<input class="w-full bg-surface-container-low border border-outline-variant text-code-md font-code-md text-on-surface px-space-md py-1.5 rounded focus:border-primary focus:ring-0" readonly="" type="text" value="ed25519-pk-vn-tg-ph-001-cailay-2025"/>
+<span class="absolute right-3 top-2 material-symbols-outlined text-on-surface-variant text-headline-sm" data-icon="check_circle">check_circle</span>
+</div>
+<div class="flex items-center justify-between text-code-sm font-code-sm pt-1">
+<span class="text-on-surface-variant">Simulated Merkle Root:</span>
+<span class="text-primary font-bold">0x8f2c39d48b11a7e28904df93b82149a15f02bc09312</span>
+</div>
+</div>
+<!-- Action Triggers -->
+<div class="flex flex-col sm:flex-row items-center gap-space-sm pt-space-xs">
+<button class="w-full sm:flex-1 py-2.5 px-space-lg bg-primary-container hover:bg-secondary text-on-primary-container font-headline-sm font-semibold rounded flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.99] shadow-sm">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+<span>Generate &amp; Download Signed Portability Bundle (.json)</span>
+</button>
+<button class="w-full sm:w-auto py-2.5 px-space-md bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface text-code-md font-code-md rounded flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-primary" data-icon="qr_code_2">qr_code_2</span>
+<span>Air-Gapped QR Tarball (.tar.gz)</span>
+</button>
+</div>
+<div class="flex items-center justify-between text-code-sm font-code-sm text-outline border-t border-outline-variant pt-space-xs">
+<span>Est. Payload Size: ~4.8 MB uncompressed</span>
+<span>Integrity Engine: RFC-6962 SHA-256 Merkle Audit</span>
+</div>
+</section>
+<!-- ===================================================================== -->
+<!-- 4. STANDALONE VERIFICATION CLI ENGINE & MIGRATION PIPELINE (5 COLS)  -->
+<!-- ===================================================================== -->
+<section class="lg:col-span-5 bg-surface-container border border-outline-variant rounded p-space-md flex flex-col gap-space-md">
+<!-- Terminal Header with Unix Controls -->
+<div class="flex items-center justify-between border-b border-outline-variant pb-space-xs">
+<div class="flex items-center gap-2">
+<div class="flex items-center gap-1.5">
+<span class="w-3 h-3 rounded-full bg-error-container border border-error/50 inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-tertiary-container border border-tertiary/50 inline-block"></span>
+<span class="w-3 h-3 rounded-full bg-primary-container border border-primary/50 inline-block"></span>
+</div>
+<span class="text-code-sm font-code-sm text-on-surface-variant font-semibold ml-2">
+              mekong-cli // standalone-migrator
+            </span>
+</div>
+<div class="flex items-center gap-1">
+<span class="text-label-sm font-label-sm uppercase bg-surface-container-lowest px-1.5 py-0.5 rounded border border-outline-variant text-primary">
+              BUN / NODE / DOCKER
+            </span>
+</div>
+</div>
+<!-- Description -->
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">
+            Standalone Sovereign Migration &amp; Validation Engine
+          </h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">
+            Zero-cloud dependence. You can run this open-source tool offline in a bunker or local facility server to verify signatures and unpack directly to PostgreSQL or SQLite.
+          </p>
+</div>
+<!-- Interactive Terminal CLI Box -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded p-space-md text-code-sm font-code-sm space-y-3 font-mono leading-relaxed select-text overflow-x-auto custom-scroll">
+<div>
+<div class="text-outline"># 1. Fetch standalone open-core verification tool (zero-dep)</div>
+<div class="text-primary flex items-center gap-1">
+<span class="text-on-surface-variant">$</span> curl -fsSL https://open.mekongclear.vn/install-verifier.sh | sh
+            </div>
+</div>
+<div>
+<div class="text-outline"># 2. Validate signed bundle against local packhouse pubkey &amp; GACC root</div>
+<div class="text-primary flex items-center gap-1">
+<span class="text-on-surface-variant">$</span> bun run src/export/standalone-manifest-verifier.ts bundle-VN-TG-PH-001-20250228.json
+            </div>
+</div>
+<div>
+<div class="text-outline"># 3. Self-host migration / import to PostgreSQL or Local SQLite WAL</div>
+<div class="text-primary flex items-center gap-1">
+<span class="text-on-surface-variant">$</span> bun run src/export/import-sovereign-node.ts --target=localhost:5432/mekong_ops --bundle=bundle.json
+            </div>
+</div>
+<!-- Execution Output Mock -->
+<div class="border-t border-outline-variant/60 pt-2 space-y-1">
+<div class="text-secondary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-label-sm" data-icon="check_circle">check_circle</span>
+<span>[INFO] Merkle Root: 0x8f2c...49a1 (14/14 leaf nodes valid)</span>
+</div>
+<div class="text-secondary flex items-center gap-1.5">
+<span class="material-symbols-outlined text-label-sm" data-icon="lock">lock</span>
+<span>[INFO] Zero leakage: Farmgate prices Pedersen-blinded.</span>
+</div>
+<div class="text-primary font-bold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-label-sm" data-icon="done_all">done_all</span>
+<span>[SUCCESS] 100% Sovereign Portability Audit Passed. Offline DB hydrated.</span>
+</div>
+</div>
+</div>
+<!-- Terminal Actions -->
+<div class="flex items-center gap-space-sm">
+<button class="flex-1 py-2 px-space-md bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface text-code-sm font-code-sm rounded flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-label-md" data-icon="content_copy">content_copy</span>
+<span>Copy CLI Pipeline</span>
+</button>
+<button class="flex-1 py-2 px-space-md bg-surface-container-high border border-outline-variant hover:border-primary text-on-surface text-code-sm font-code-sm rounded flex items-center justify-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-label-md" data-icon="folder_zip">folder_zip</span>
+<span>Download Verifier Binary</span>
+</button>
+</div>
+<!-- Portability Guarantee Specifications -->
+<div class="bg-surface-container-low border border-outline-variant rounded p-space-sm space-y-2">
+<div class="text-label-sm font-label-sm uppercase tracking-wider text-on-surface font-semibold flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-label-sm" data-icon="health_and_safety">health_and_safety</span>
+            Sovereign Guarantees (AGPL-3.0)
+          </div>
+<ul class="text-body-sm font-body-sm text-on-surface-variant space-y-1 pl-4 list-disc marker:text-primary">
+<li>Zero telemetry telemetry retention on central servers post-clearance.</li>
+<li>Cryptographic proof schemas adhere strictly to UN/CEFACT and GACC decree 248/249 standards.</li>
+<li>Database migrations generated with idempotent SQL DDL scripts.</li>
+</ul>
+</div>
+</section>
+</div>
+<!-- ========================================================================= -->
+<!-- 5. VERIFIABLE EXPORT HISTORY & AUDIT LOG TABLE                            -->
+<!-- ========================================================================= -->
+<section class="bg-surface-container border border-outline-variant rounded p-space-lg flex flex-col gap-space-md">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-space-sm border-b border-outline-variant pb-space-sm">
+<div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-headline-sm" data-icon="receipt_long">receipt_long</span>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold">
+              Live Export History &amp; Verifiable Sovereign Records
+            </h3>
+</div>
+<p class="text-code-sm font-code-sm text-on-surface-variant mt-0.5">
+            Immutable log of all generated cryptographic snapshots, operator identities, and bundle checksums
+          </p>
+</div>
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-1 text-label-sm font-label-sm text-on-surface-variant bg-surface-container-lowest px-space-sm py-1 border border-outline-variant rounded">
+<span>TOTAL EXPORTS:</span>
+<span class="text-primary font-bold">12 BUNDLES</span>
+</div>
+<button class="px-space-sm py-1 bg-surface-container-low border border-outline-variant hover:border-primary text-code-sm font-code-sm text-on-surface rounded flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-label-md" data-icon="refresh">refresh</span>
+<span>Sync Ledger</span>
+</button>
+</div>
+</div>
+<!-- Table Container -->
+<div class="overflow-x-auto custom-scroll">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant bg-surface-container-low text-label-sm font-label-sm text-outline uppercase tracking-wider">
+<th class="py-2.5 px-space-md">Bundle ID &amp; Snapshot</th>
+<th class="py-2.5 px-space-md">Timestamp (UTC+7)</th>
+<th class="py-2.5 px-space-md">Scope &amp; Tonnage</th>
+<th class="py-2.5 px-space-md">Merkle SHA-256 Hash</th>
+<th class="py-2.5 px-space-md">Verified Operator</th>
+<th class="py-2.5 px-space-md">AGPL Status</th>
+<th class="py-2.5 px-space-md text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-code-sm text-code-sm">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-2.5 px-space-md font-semibold text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-headline-sm" data-icon="folder_zip">folder_zip</span>
+<span>BUNDLE-20250228-084B</span>
+</td>
+<td class="py-2.5 px-space-md text-on-surface-variant">2025-02-28 14:22:04</td>
+<td class="py-2.5 px-space-md text-on-surface">14 Dossiers (252,000 kg)</td>
+<td class="py-2.5 px-space-md text-on-surface-variant font-mono">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest border border-outline-variant">7a3b9e1c4...84df9</span>
+</td>
+<td class="py-2.5 px-space-md text-on-surface">Officer Nguyen (VN-84B)</td>
+<td class="py-2.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-primary-container/20 text-primary text-label-sm font-label-sm border border-primary/40">
+<span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
+                  DOWNLOADED
+                </span>
+</td>
+<td class="py-2.5 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="px-2 py-1 bg-surface-container-lowest hover:border-primary border border-outline-variant rounded text-on-surface text-code-sm hover:text-primary transition-colors" title="Re-Verify Merkle Proof">
+                    Re-Verify
+                  </button>
+<button class="p-1 hover:text-primary transition-colors" title="Download Bundle">
+<span class="material-symbols-outlined text-headline-sm" data-icon="file_download">file_download</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-2.5 px-space-md font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-headline-sm" data-icon="folder_zip">folder_zip</span>
+<span>BUNDLE-20250221-084A</span>
+</td>
+<td class="py-2.5 px-space-md text-on-surface-variant">2025-02-21 09:15:32</td>
+<td class="py-2.5 px-space-md text-on-surface">11 Dossiers (198,000 kg)</td>
+<td class="py-2.5 px-space-md text-on-surface-variant font-mono">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest border border-outline-variant">3d8a1c90f...44b21</span>
+</td>
+<td class="py-2.5 px-space-md text-on-surface">Inspector Tran (TG-AUDIT)</td>
+<td class="py-2.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-primary-container/20 text-primary text-label-sm font-label-sm border border-primary/40">
+<span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
+                  COMPLETED
+                </span>
+</td>
+<td class="py-2.5 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="px-2 py-1 bg-surface-container-lowest hover:border-primary border border-outline-variant rounded text-on-surface text-code-sm hover:text-primary transition-colors" title="Re-Verify Merkle Proof">
+                    Re-Verify
+                  </button>
+<button class="p-1 hover:text-primary transition-colors" title="Download Bundle">
+<span class="material-symbols-outlined text-headline-sm" data-icon="file_download">file_download</span>
+</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-2.5 px-space-md font-semibold text-on-surface flex items-center gap-2">
+<span class="material-symbols-outlined text-on-surface-variant text-headline-sm" data-icon="folder_zip">folder_zip</span>
+<span>BUNDLE-20250214-083F</span>
+</td>
+<td class="py-2.5 px-space-md text-on-surface-variant">2025-02-14 18:40:11</td>
+<td class="py-2.5 px-space-md text-on-surface">18 Dossiers (324,000 kg)</td>
+<td class="py-2.5 px-space-md text-on-surface-variant font-mono">
+<span class="px-1.5 py-0.5 rounded bg-surface-container-lowest border border-outline-variant">9e4f210aa...112ee</span>
+</td>
+<td class="py-2.5 px-space-md text-on-surface">Lead Auditor Pham (VN-01)</td>
+<td class="py-2.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-primary-container/20 text-primary text-label-sm font-label-sm border border-primary/40">
+<span class="w-1.5 h-1.5 rounded-full bg-primary inline-block"></span>
+                  ARCHIVED
+                </span>
+</td>
+<td class="py-2.5 px-space-md text-right">
+<div class="flex items-center justify-end gap-1">
+<button class="px-2 py-1 bg-surface-container-lowest hover:border-primary border border-outline-variant rounded text-on-surface text-code-sm hover:text-primary transition-colors" title="Re-Verify Merkle Proof">
+                    Re-Verify
+                  </button>
+<button class="p-1 hover:text-primary transition-colors" title="Download Bundle">
+<span class="material-symbols-outlined text-headline-sm" data-icon="file_download">file_download</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<!-- ========================================================================= -->
+<!-- 6. OPERATIONAL STATUS FOOTER                                              -->
+<!-- ========================================================================= -->
+<footer class="h-9 bg-surface-container-lowest border-t border-outline-variant px-margin flex items-center justify-between text-code-sm font-code-sm text-on-surface-variant shrink-0">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-1.5">
+<span class="w-2 h-2 rounded-full bg-primary"></span>
+<span class="text-on-surface font-semibold">GACC Bilateral Portability Bridge: ACTIVE</span>
+</div>
+<span class="text-outline">|</span>
+<span>Merkle Leaf Tree Engine: <span class="text-primary font-mono">RFC-6962 / SHA-256</span></span>
+<span class="text-outline">|</span>
+<span>Cai Lậy Master Node: <span class="text-secondary font-mono">ONLINE</span></span>
+</div>
+<div class="flex items-center gap-space-md">
+<span>Zero Vendor Lock-in Core</span>
+<span class="text-outline">|</span>
+<span class="text-primary font-bold">AGPLv3 Licensed</span>
+</div>
+</footer>
+</body></html>

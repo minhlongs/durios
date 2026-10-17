@@ -1,5 +1,5 @@
 ---
-page: portability
+page: index
 ---
 
 **DESIGN SYSTEM (REQUIRED):**
@@ -25,15 +25,5 @@ page: portability
 ```
 
 **Page request:**
-Screen 6: Open-Core Portability & Self-Service Export Hub (`portability.html`).
-A self-service data ownership and export center proving 100% Zero Vendor Lock-in for Vietnamese packhouse owners:
-- Header: Open-Core Data Sovereignty & Portability Hub: Tenant Cai Lậy Hub #01 (VN-TG-PH-001).
-- Commitment Banner: 100% DATA OWNERSHIP — EXPORT ANYTIME UNDER AGPL-3.0 CORE. You are not locked into any SaaS vendor.
-- Bundle Generation Card:
-  - Form options: Date range picker, Select dossiers to include (All 14 dossiers / 100%), Include Immutable Audit Ledger (48 Events), Include Cryptographic Manifests.
-  - Signing & Verification: Secret Key input for HMAC-SHA256 signature stamping.
-  - Large button: `Generate & Download Signed Portability Bundle (.json)`.
-- Verification Terminal:
-  - Curl and Bun commands showing how to import this bundle into another on-premise server or cloud instance:
-    `bun run src/export/standalone-manifest-verifier.ts bundle.json`
-- Navigation links to `index.html`, `dossiers.html`, `auditor.html`, `buyer.html`, `cluster.html`.
+Iteration cycle completed! All 8 core screens + 3 alternative themes + 3 role-based paradigms (Paper Canvas, Excel Grid, Zalo Bot) are 100% generated from Google Stitch and integrated in `site/public/`.
+Next cycle: Refine interactions or responsive mobile drawer for Screen 1 (`index.html`).
