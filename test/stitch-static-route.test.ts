@@ -5,8 +5,9 @@ import { routeHttpRequest } from "../src/server/http-router.js";
 describe("Stitch Static Gallery HTTP Route (/stitch/*)", () => {
   const workspace = new ContainerDossierWorkspace();
 
-  test("serves all 14 Stitch HTML pages under /stitch/*", async () => {
+  test("serves all 15 Stitch HTML pages under /stitch/*", async () => {
     const pages = [
+      "gallery.html",
       "index.html",
       "dossiers.html",
       "auditor.html",

@@ -1,0 +1,1034 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DuriOS // Master Command Hub & Visual Screen Directory</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=JetBrains+Mono:wght@100..900&display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "tertiary-fixed": "#ffddb8",
+            "on-primary-container": "#00422b",
+            "surface-variant": "#2e3731",
+            "surface": "#0d1510",
+            "on-secondary-container": "#00452e",
+            "error-container": "#93000a",
+            "tertiary-container": "#e29100",
+            "surface-bright": "#333b35",
+            "on-error": "#690005",
+            "outline": "#86948a",
+            "on-surface-variant": "#bbcabf",
+            "surface-dim": "#0d1510",
+            "secondary": "#45dfa4",
+            "primary-container": "#10b981",
+            "on-primary-fixed": "#002113",
+            "on-tertiary-container": "#523200",
+            "inverse-primary": "#006c49",
+            "surface-container-lowest": "#08100b",
+            "on-primary-fixed-variant": "#005236",
+            "on-error-container": "#ffdad6",
+            "surface-container": "#19211c",
+            "surface-container-high": "#242c26",
+            "inverse-surface": "#dce5dc",
+            "error": "#ffb4ab",
+            "surface-tint": "#4edea3",
+            "on-secondary-fixed": "#002114",
+            "inverse-on-surface": "#2a322c",
+            "background": "#0d1510",
+            "surface-container-low": "#151d18",
+            "on-tertiary-fixed": "#2a1700",
+            "primary-fixed": "#6ffbbe",
+            "on-primary": "#003824",
+            "tertiary-fixed-dim": "#ffb95f",
+            "on-secondary-fixed-variant": "#005137",
+            "primary-fixed-dim": "#4edea3",
+            "on-secondary": "#003825",
+            "primary": "#4edea3",
+            "secondary-fixed-dim": "#45dfa4",
+            "tertiary": "#ffb95f",
+            "on-tertiary": "#472a00",
+            "outline-variant": "#3c4a42",
+            "secondary-fixed": "#68fcbf",
+            "surface-container-highest": "#2e3731",
+            "on-tertiary-fixed-variant": "#653e00",
+            "on-surface": "#dce5dc",
+            "on-background": "#dce5dc",
+            "secondary-container": "#00bd85"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "margin": "1.5rem",
+            "space-xs": "0.25rem",
+            "gutter": "1rem",
+            "space-sm": "0.5rem",
+            "space-xl": "2rem",
+            "space-lg": "1.25rem",
+            "margin-mobile": "0.75rem",
+            "space-md": "0.75rem",
+            "gutter-compact": "0.5rem"
+          },
+          "fontFamily": {
+            "code-md": ["JetBrains Mono"],
+            "body-md": ["Inter"],
+            "code-lg": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "headline-xl-mobile": ["Space Grotesk", "Inter"],
+            "body-sm": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "headline-lg": ["Space Grotesk", "Inter"],
+            "headline-sm": ["Space Grotesk", "Inter"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-xl": ["Space Grotesk", "Inter"],
+            "headline-md": ["Space Grotesk", "Inter"],
+            "label-md": ["JetBrains Mono"]
+          },
+          "fontSize": {
+            "code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "code-lg": ["15px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "headline-xl-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-family: 'Material Symbols Outlined';
+      font-weight: normal;
+      font-style: normal;
+      font-size: 18px;
+      line-height: 1;
+      display: inline-block;
+      text-transform: none;
+      letter-spacing: normal;
+      word-wrap: normal;
+      white-space: nowrap;
+      direction: ltr;
+      vertical-align: middle;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #08100b;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1f3b2c;
+      border-radius: 2px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #10b981;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex flex-col font-body-md selection:bg-primary-container selection:text-on-primary-container custom-scrollbar">
+
+<div style="background: #060B08; border-bottom: 1px solid #1F3327; padding: 8px 16px; font-family: sans-serif; font-size: 11px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 99999;">
+  <div style="display: flex; align-items: center; gap: 8px;">
+    <span style="font-weight: 800; color: #10B981; font-size: 13px; letter-spacing: 0.05em;">DURIOS NAV</span>
+    <span style="color: #6EE7B7;">|</span>
+    <a href="gallery.html" style="color: #10B981; font-weight: bold; text-decoration: none; padding: 3px 8px; border-radius: 4px; background: rgba(16,185,129,0.2);">⭐️ Gallery Hub</a>
+    <a href="index.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">1. Workspace</a>
+    <a href="dossiers.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">2. Dossiers</a>
+    <a href="auditor.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">3. Auditor</a>
+    <a href="buyer.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">4. Buyer Portal</a>
+    <a href="cluster.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">5. Cluster Ops</a>
+    <a href="portability.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">6. Portability</a>
+    <a href="upgrade.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">7. Pro SaaS</a>
+    <a href="styleguide.html" style="color: #ECFDF5; text-decoration: none; padding: 3px 8px;">8. Style Guide</a>
+  </div>
+  <div style="display: flex; align-items: center; gap: 6px;">
+    <span style="color: #F59E0B; font-weight: 700;">Thực địa:</span>
+    <a href="paper-canvas.html" style="color: #F59E0B; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #F59E0B; border-radius: 4px;">📝 Bút Dạ Quang</a>
+    <a href="excel-grid.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">📊 Excel Grid</a>
+    <a href="zalo-bot.html" style="color: #0284C7; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #0284C7; border-radius: 4px;">💬 Zalo Bot</a>
+    <a href="mobile-weighbridge.html" style="color: #10B981; text-decoration: none; font-weight: 600; padding: 2px 6px; border: 1px solid #10B981; border-radius: 4px;">📱 Mobile</a>
+  </div>
+</div>
+
+<!-- Top Navigation Header (from Shared Component TopNavBar with Screen 15 Directory context) -->
+<header class="sticky top-0 z-50 flex justify-between items-center w-full px-margin h-14 bg-surface-container border-b border-outline-variant select-none">
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">terminal</span>
+<span class="text-headline-sm font-headline-sm uppercase tracking-wider text-primary font-bold">MEKONG CLEAR // GACC DUR-EXP-OPS</span>
+</div>
+<span class="hidden xl:inline-block text-outline-variant font-code-sm">|</span>
+<div class="hidden xl:flex items-center gap-2 px-2 py-0.5 rounded-sm bg-surface-container-high border border-outline-variant">
+<span class="inline-block w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span class="font-code-sm text-code-sm text-primary uppercase font-bold tracking-tight">ALL SYSTEMS GREEN // 14 SCREENS OPERATIONAL</span>
+</div>
+</div>
+<!-- Middle Telemetry Pills -->
+<div class="hidden lg:flex items-center gap-space-sm font-code-sm text-code-sm">
+<span class="px-2 py-1 rounded bg-surface-container-low border border-outline-variant text-on-surface-variant">BUILD v2.4.9-RELEASE</span>
+<span class="px-2 py-1 rounded bg-surface-container-low border border-outline-variant text-secondary">AGPL-3.0 CORE</span>
+<span class="px-2 py-1 rounded bg-surface-container-low border border-outline-variant text-tertiary">TIEN GIANG HUBS 1-4</span>
+</div>
+<!-- Trailing Actions -->
+<div class="flex items-center gap-space-sm">
+<button class="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded text-code-md font-code-md bg-surface-container-high text-on-surface border border-outline-variant hover:border-primary transition-colors" onclick="downloadRepoAlert()">
+<span class="material-symbols-outlined text-sm">download</span>
+<span>Sovereign Repo (.zip)</span>
+</button>
+<a class="flex items-center gap-1.5 px-3 py-1.5 rounded text-code-md font-code-md bg-primary text-on-primary font-bold hover:bg-secondary-fixed transition-colors shadow-sm" href="index.html">
+<span>Launch Active Suite</span>
+<span class="material-symbols-outlined text-sm">rocket_launch</span>
+</a>
+<div class="flex items-center gap-1 ml-1 text-on-surface-variant">
+<button class="p-1 hover:text-primary transition-colors" title="Telemetry Stream">
+<span class="material-symbols-outlined" data-icon="sensors">sensors</span>
+</button>
+<button class="p-1 hover:text-primary transition-colors relative" title="Quarantine Dispatch Alerts">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-1.5 h-1.5 bg-tertiary rounded-full"></span>
+</button>
+<button class="p-1 hover:text-primary transition-colors" title="Officer Terminal">
+<span class="material-symbols-outlined" data-icon="terminal">terminal</span>
+</button>
+</div>
+</div>
+</header>
+<div class="flex-1 flex overflow-hidden">
+<!-- Side Nav Rail (Shared Components SideNavBar) -->
+<aside class="hidden lg:flex flex-col justify-between h-[calc(100vh-3.5rem)] w-64 border-r border-outline-variant bg-surface-container-lowest p-space-md shrink-0 select-none">
+<div class="space-y-space-md">
+<!-- Node Station Info -->
+<div class="p-2.5 rounded bg-surface-container-low border border-outline-variant">
+<div class="flex items-center justify-between mb-1">
+<span class="text-label-md font-label-md text-primary font-bold tracking-widest uppercase">FACILITY #VN-84B</span>
+<span class="material-symbols-outlined text-primary text-sm" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<p class="font-code-sm text-code-sm text-on-surface-variant">TIEN GIANG STATION</p>
+<div class="mt-2 text-[10px] font-code-sm text-outline flex items-center justify-between">
+<span>OFFICER BADGE: #4491-GACC</span>
+<span class="text-primary">ONLINE</span>
+</div>
+</div>
+<!-- Navigation Links -->
+<nav class="space-y-1">
+<div class="px-2 pb-1 text-label-sm font-label-sm text-outline tracking-wider uppercase">Screen Directory Jump</div>
+<a class="flex items-center gap-2 bg-surface-container-high text-primary border-l-2 border-primary px-space-md py-space-sm font-code-sm rounded-r" href="#core-suite">
+<span class="material-symbols-outlined text-base">apps</span>
+<span>Core 8-Screen Suite</span>
+</a>
+<a class="flex items-center gap-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors px-space-md py-space-sm font-code-sm" href="#field-paradigms">
+<span class="material-symbols-outlined text-base">pin_drop</span>
+<span>Role-Based Paradigms</span>
+</a>
+<a class="flex items-center gap-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors px-space-md py-space-sm font-code-sm" href="#specialized-consoles">
+<span class="material-symbols-outlined text-base">biotech</span>
+<span>Consoles & Theming</span>
+</a>
+<a class="flex items-center gap-2 text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-colors px-space-md py-space-sm font-code-sm" href="#matrix-specs">
+<span class="material-symbols-outlined text-base">tune</span>
+<span>Arch Matrix & Keys</span>
+</a>
+</nav>
+<!-- CTA from SideNavBar -->
+<div class="pt-2">
+<button class="w-full py-2 px-3 bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-primary font-code-sm text-code-sm font-semibold rounded flex items-center justify-center gap-1.5 transition-all" onclick="lockSealsWorkflow()">
+<span class="material-symbols-outlined text-base" data-icon="lock">lock</span>
+<span>Lock Container Seal</span>
+</button>
+</div>
+</div>
+<!-- Footer Rail actions -->
+<div class="border-t border-outline-variant pt-space-md space-y-1 font-code-sm text-code-sm">
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors py-1.5 px-2" href="#telemetry-sync">
+<span class="material-symbols-outlined text-base" data-icon="sync">sync</span>
+<span>Telemetry Sync</span>
+</a>
+<a class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors py-1.5 px-2" href="#system-specs">
+<span class="material-symbols-outlined text-base" data-icon="settings">settings</span>
+<span>System Specs</span>
+</a>
+</div>
+</aside>
+<!-- Main Command Content Canvas -->
+<main class="flex-1 overflow-y-auto p-margin-mobile md:p-margin space-y-space-xl custom-scrollbar">
+<!-- Executive Architecture Hero Banner -->
+<section class="relative overflow-hidden rounded bg-surface-container border border-outline-variant p-space-lg md:p-8">
+<!-- Subtle tactical grid visual accents -->
+<div class="absolute -right-16 -top-16 w-80 h-80 rounded-full bg-primary/5 blur-3xl pointer-events-none"></div>
+<div class="absolute right-4 top-4 hidden md:flex items-center gap-2 text-outline text-label-sm font-label-sm border border-outline-variant/60 bg-surface-container-lowest/80 px-2 py-1 rounded">
+<span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+<span>NODE CLUSTER: VN-MEKONG-ALPHA</span>
+</div>
+<div class="max-w-4xl space-y-3 relative z-10">
+<div class="inline-flex items-center gap-2 px-2.5 py-1 rounded bg-surface-container-high border border-outline-variant text-label-sm font-label-sm text-secondary">
+<span class="material-symbols-outlined text-xs">verified_user</span>
+<span>OFFICIAL GACC DECREE 248/249 COMPLIANT SPECIFICATION</span>
+</div>
+<h1 class="text-headline-lg md:text-headline-xl font-headline-xl text-primary font-bold tracking-tight">
+            DURIOS — THE OPEN-CORE OPERATING SYSTEM FOR VERIFIED DURIAN EXPORT TRADE
+          </h1>
+<p class="text-body-md md:text-body-lg text-on-surface-variant leading-relaxed max-w-3xl">
+            Bilingual phytosanitary arbitration, zero-leakage cryptographic trade sealing, and automated GACC Decree 248/249 compliance along the Vietnam-China agricultural corridor.
+          </p>
+</div>
+<!-- 4-Card Metric Strip -->
+<div class="grid grid-cols-2 lg:grid-cols-4 gap-space-md mt-space-lg">
+<div class="p-3.5 rounded bg-surface-container-low border border-outline-variant">
+<div class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Screen Implementation</div>
+<div class="mt-1 flex items-baseline gap-2">
+<span class="text-headline-md font-headline-md text-primary font-bold">14 / 14</span>
+<span class="text-label-sm font-label-sm text-secondary">100% COMPLETE</span>
+</div>
+<p class="mt-1 text-code-sm font-code-sm text-on-surface-variant">Live templates & operational decks</p>
+</div>
+<div class="p-3.5 rounded bg-surface-container-low border border-outline-variant">
+<div class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Cryptographic Engine</div>
+<div class="mt-1 flex items-baseline gap-2">
+<span class="text-headline-md font-headline-md text-primary font-bold">136 / 136</span>
+<span class="text-label-sm font-label-sm text-primary">PASSING</span>
+</div>
+<p class="mt-1 text-code-sm font-code-sm text-on-surface-variant">E2E Merkle Tree + Ed25519 validation</p>
+</div>
+<div class="p-3.5 rounded bg-surface-container-low border border-outline-variant">
+<div class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Clearance Velocity</div>
+<div class="mt-1 flex items-baseline gap-2">
+<span class="text-headline-md font-headline-md text-tertiary font-bold">< 3.4m</span>
+<span class="text-label-sm font-label-sm text-outline">SLA 5.0m</span>
+</div>
+<p class="mt-1 text-code-sm font-code-sm text-on-surface-variant">Mean container phytosanitary arbitration</p>
+</div>
+<div class="p-3.5 rounded bg-surface-container-low border border-outline-variant">
+<div class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Sovereign Architecture</div>
+<div class="mt-1 flex items-baseline gap-2">
+<span class="text-headline-md font-headline-md text-secondary font-bold">0%</span>
+<span class="text-label-sm font-label-sm text-secondary">LOCK-IN</span>
+</div>
+<p class="mt-1 text-code-sm font-code-sm text-on-surface-variant">Local SQLite WAL + RFC-6962 audit tree</p>
+</div>
+</div>
+</section>
+<!-- Category 1: Core 8-Screen Production Suite -->
+<section class="space-y-space-md" id="core-suite">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant pb-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-primary/20 text-primary border border-primary/40 font-code-sm text-code-sm font-bold">CATEGORY 01</span>
+<h2 class="text-headline-md font-headline-md text-on-surface font-semibold">Core 8-Screen Production Suite</h2>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Primary mission-critical workflow screens for packaging houses, border stations, and trade verification.</p>
+</div>
+<span class="text-label-sm font-label-sm text-outline">8 SCREENS DEPLOYED</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-md">
+<!-- Screen 1: index.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-primary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-bold">#01 // CORE</span>
+<span class="font-code-sm text-code-sm text-outline">index.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">
+                Packhouse Ops Command Station
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">person</span>
+<span>Persona: Chief Verification Officer</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Human-in-the-loop (HITL) arbitration deck, automated 4-file dossier validation, fast GACC encrypted telegram dispatch.
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">HITL Arbitration</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">4-File Dossier</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Telegram Dispatch</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-primary text-on-primary font-code-md text-code-md font-bold hover:bg-secondary-fixed transition-colors" href="index.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Screen 2: dossiers.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-primary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-bold">#02 // REGISTRY</span>
+<span class="font-code-sm text-code-sm text-outline">dossiers.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">
+                Container Dossier Registry
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">inventory</span>
+<span>Persona: Reefer Logistics Controller</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Live monitoring of 14 active reefer containers, ICP-MS cadmium level assays, temperature abuse alerts, and real-time SLA countdowns.
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">14 Active Reefers</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Cadmium Assays</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">SLA Telemetry</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-primary font-code-md text-code-md font-semibold transition-colors" href="dossiers.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Screen 3: auditor.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-primary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-bold">#03 // GATES</span>
+<span class="font-code-sm text-code-sm text-outline">auditor.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">
+                Field Auditor 5-Gate Tool
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">checklist</span>
+<span>Persona: Border Quarantine Inspector</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Standardized 5-gate launch matrix: visual pest check, Brix dry matter, sulfur dioxide residual, consent audit & fault stress rehearsal.
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">5-Gate Launch Matrix</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Consent Audit</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Fault Injection</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-primary font-code-md text-code-md font-semibold transition-colors" href="auditor.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Screen 4: buyer.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-primary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-bold">#04 // VERIFY</span>
+<span class="font-code-sm text-code-sm text-outline">buyer.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">
+                Buyer Cryptographic Verification
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">storefront</span>
+<span>Persona: Import Consignee / Wholesaler</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Zero-knowledge trade validation proofs, blind pricing concealment, QR validation, and direct GACC electronic phytosanitary notary.
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">ZK Trade Proofs</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Blind Pricing</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">GACC QR Check</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-primary font-code-md text-code-md font-semibold transition-colors" href="buyer.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Screen 5: cluster.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-primary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-bold">#05 // CLUSTER</span>
+<span class="font-code-sm text-code-sm text-outline">cluster.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">
+                Mekong Delta Cluster Ops Room
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">hub</span>
+<span>Persona: Regional Director of Agriculture</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Geographic radar topology, 12-packhouse node heartbeat telemetry, 42 active reefer live IoT streams across Tien Giang & Ben Tre.
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Dense Radar Topology</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">12-Node Sync</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">42 Reefer IoT</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-primary font-code-md text-code-md font-semibold transition-colors" href="cluster.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Screen 6: portability.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-primary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-bold">#06 // PORT</span>
+<span class="font-code-sm text-code-sm text-outline">portability.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">
+                Open-Core Data Portability Hub
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">folder_zip</span>
+<span>Persona: DevSecOps & Trade Custodian</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Air-gapped tarball export generator, RFC-6962 Merkle proof tree verification, standalone offline CLI runner binary downloader.
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Sovereign .tar.gz</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Merkle RFC-6962</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Offline CLI Runner</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-primary font-code-md text-code-md font-semibold transition-colors" href="portability.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Screen 7: upgrade.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-primary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-bold">#07 // LICENSE</span>
+<span class="font-code-sm text-code-sm text-outline">upgrade.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">
+                Pro SaaS Upgrade & Ed25519 Keys
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">key</span>
+<span>Persona: Commercial Enterprise Lead</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Offline enterprise license activation, Ed25519 hardware token key binds, three-tier licensing matrix (AGPL Community vs Pro vs Enterprise).
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Offline License Key</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">AGPL vs Enterprise</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Ed25519 Binds</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-primary font-code-md text-code-md font-semibold transition-colors" href="upgrade.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Screen 8: styleguide.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-primary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-bold">#08 // SYSTEM</span>
+<span class="font-code-sm text-code-sm text-outline">styleguide.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">
+                Living Style Guide & Tokens
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">palette</span>
+<span>Persona: Design Systems Engineer</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Full token foundations, atomic interactive button matrices, tactile inspection toggles, and sensory telemetry status badges.
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Design Tokens</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Button Matrix</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Sensory Telemetry</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-primary font-code-md text-code-md font-semibold transition-colors" href="styleguide.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Category 2: Role-Based Field Paradigms & Mobile Workspaces -->
+<section class="space-y-space-md" id="field-paradigms">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant pb-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-secondary/20 text-secondary border border-secondary/40 font-code-sm text-code-sm font-bold">CATEGORY 02</span>
+<h2 class="text-headline-md font-headline-md text-on-surface font-semibold">Role-Based Field Paradigms & Mobile Workspaces</h2>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">Ultra-specialized interfaces designed for actual harsh physical operating environments.</p>
+</div>
+<span class="text-label-sm font-label-sm text-outline">4 WORKSPACES DEPLOYED</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-space-md">
+<!-- Screen 9: paper-canvas.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-secondary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-secondary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-secondary font-bold">#09 // CANVAS</span>
+<span class="font-code-sm text-code-sm text-outline">paper-canvas.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-secondary transition-colors">
+                Paper-as-the-Canvas Highlighter
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">draw</span>
+<span>Persona: Weighbridge Clerks</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Physical Bill of Lading (BOL) interactive markup station. Real-time OCR bounding box snapping, ink signature validation, and paper-digital twin sync.
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Physical BOL Station</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Box Snapping</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Ink Trace</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-secondary font-code-md text-code-md font-semibold transition-colors" href="paper-canvas.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Screen 10: excel-grid.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-secondary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-secondary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-secondary font-bold">#10 // MATRIX</span>
+<span class="font-code-sm text-code-sm text-outline">excel-grid.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-secondary transition-colors">
+                Excel Speed Grid + 300% Loupe
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">table_chart</span>
+<span>Persona: Customs Accountants</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Keyboard-driven bulk entry, numpad macro navigation, instantaneous cross-column formula checks, and an optical 300% loupe for micro-stamp inspection.
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Keyboard-Only Entry</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">300% Optical Loupe</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Numpad Hotkeys</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-secondary font-code-md text-code-md font-semibold transition-colors" href="excel-grid.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Screen 11: zalo-bot.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-secondary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-secondary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-secondary font-bold">#11 // CHAT</span>
+<span class="font-code-sm text-code-sm text-outline">zalo-bot.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-secondary transition-colors">
+                Zalo-First Conversational Bot
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">chat</span>
+<span>Persona: Truck Drivers & Yard Dispatchers</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                ZNS automated driver interaction feed, automated weighbridge ticket ingestion, instant optical scan crop feedback, and bilingual audio readouts.
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">ZNS Bot Stream</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Driver Ticket Ingest</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Instant Crop</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-secondary font-code-md text-code-md font-semibold transition-colors" href="zalo-bot.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Screen 12: mobile-weighbridge.html -->
+<div class="flex flex-col justify-between rounded bg-surface-container border border-outline-variant hover:border-secondary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-secondary rounded-t"></div>
+<div>
+<div class="flex items-center justify-between mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-secondary font-bold">#12 // MOBILE</span>
+<span class="font-code-sm text-code-sm text-outline">mobile-weighbridge.html</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-secondary transition-colors">
+                Mobile Weighbridge One-Handed Touch
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-tertiary">
+<span class="material-symbols-outlined text-xs">touch_app</span>
+<span>Persona: Yard Supervisors</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                High-vibration glove-friendly UI with thumb-range action clusters, camera ISO 17712 bolt seal validator, and giant physical clearance buttons.
+              </p>
+<div class="mt-3 pt-2 border-t border-outline-variant/60 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Glove-Friendly Touch</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">ISO 17712 Camera Lock</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Giant Triggers</span>
+</div>
+</div>
+<div class="mt-4 pt-3 border-t border-outline-variant">
+<a class="w-full flex items-center justify-center gap-1.5 py-2 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-secondary font-code-md text-code-md font-semibold transition-colors" href="mobile-weighbridge.html">
+<span>Launch Screen</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Category 3: Alternative Visual Themes & Specialized Operational Consoles -->
+<section class="space-y-space-md" id="specialized-consoles">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-outline-variant pb-2">
+<div>
+<div class="flex items-center gap-2">
+<span class="px-2 py-0.5 rounded bg-tertiary/20 text-tertiary border border-tertiary/40 font-code-sm text-code-sm font-bold">CATEGORY 03</span>
+<h2 class="text-headline-md font-headline-md text-on-surface font-semibold">Specialized Consoles & Alternative Visual Themes</h2>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-0.5">High-contrast outdoor variants and cryptographic ward operational nodes.</p>
+</div>
+<span class="text-label-sm font-label-sm text-outline">2 THEMATIC SUITES</span>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-md">
+<!-- Screen 13: field-proven.html -->
+<div class="flex flex-col md:flex-row justify-between rounded bg-surface-container border border-outline-variant hover:border-tertiary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-tertiary rounded-t"></div>
+<div class="flex-1 pr-0 md:pr-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-tertiary font-bold">#13 // SUNLIGHT</span>
+<span class="font-code-sm text-code-sm text-outline">field-proven.html</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-tertiary/10 text-tertiary border border-tertiary/30">MONOCHROME + GOLD</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-tertiary transition-colors">
+                Field-Proven High Contrast POS
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-xs">wb_sunny</span>
+<span>Persona: Outdoor Loading Bay Operators (Tien Giang Riverbanks)</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Engineered specifically for harsh direct Mekong tropical sunlight (100,000+ lux). Stark monochrome high-luma palette with intense amber alerts, zero delicate low-contrast grays, oversized 18pt typography.
+              </p>
+<div class="mt-3 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Direct Sunlight Legibility</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Tactical Stark Gold</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Heavy Glare Proofing</span>
+</div>
+</div>
+<div class="mt-4 md:mt-0 flex flex-col justify-end min-w-[160px] border-t md:border-t-0 md:border-l border-outline-variant pt-3 md:pt-0 md:pl-4">
+<a class="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded bg-tertiary text-on-tertiary font-code-md text-code-md font-bold hover:bg-tertiary-fixed transition-colors" href="field-proven.html">
+<span>Launch POS</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+<!-- Screen 14: foundry.html -->
+<div class="flex flex-col md:flex-row justify-between rounded bg-surface-container border border-outline-variant hover:border-primary transition-all p-space-md relative group">
+<div class="absolute top-0 left-0 right-0 h-0.5 bg-primary rounded-t"></div>
+<div class="flex-1 pr-0 md:pr-4">
+<div class="flex items-center gap-2 mb-2">
+<span class="font-code-sm text-code-sm px-1.5 py-0.5 rounded bg-surface-container-high border border-outline-variant text-primary font-bold">#14 // CRYPTO</span>
+<span class="font-code-sm text-code-sm text-outline">foundry.html</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-primary/10 text-primary border border-primary/30">TERMINAL HUD</span>
+</div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface font-semibold group-hover:text-primary transition-colors">
+                Foundry Cryptographic Command
+              </h3>
+<div class="mt-1 flex items-center gap-1.5 text-label-sm font-label-sm text-outline">
+<span class="material-symbols-outlined text-xs">shield</span>
+<span>Persona: Cryptographic Key Wardens & GACC Gate Master Nodes</span>
+</div>
+<p class="mt-2 text-body-sm font-body-sm text-on-surface-variant">
+                Low-level terminal interface for raw payload signing, Merkle leaf commitment inspect, hardware HSM key validation, and GACC customs cross-border cryptographic link state inspection.
+              </p>
+<div class="mt-3 flex flex-wrap gap-1">
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Ed25519 HSM Bridge</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">Merkle Audit Tree</span>
+<span class="text-[10px] font-code-sm px-1.5 py-0.5 rounded bg-surface-container-lowest text-outline">GACC Border Node</span>
+</div>
+</div>
+<div class="mt-4 md:mt-0 flex flex-col justify-end min-w-[160px] border-t md:border-t-0 md:border-l border-outline-variant pt-3 md:pt-0 md:pl-4">
+<a class="w-full flex items-center justify-center gap-1.5 py-2.5 px-3 rounded bg-surface-container-high hover:bg-surface-variant border border-outline-variant text-on-surface hover:text-primary font-code-md text-code-md font-semibold transition-colors" href="foundry.html">
+<span>Launch Terminal</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</div>
+</div>
+</section>
+<!-- Section: Visual Screen Matrix Table & Quick Hotkeys -->
+<section class="space-y-space-md" id="matrix-specs">
+<div class="flex items-center justify-between border-b border-outline-variant pb-2">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">keyboard</span>
+<h2 class="text-headline-sm font-headline-sm text-on-surface font-semibold">Architectural Directory Matrix & Quick Hotkeys</h2>
+</div>
+<span class="font-code-sm text-code-sm text-outline">PRESS [G] + [NUM] TO NAVIGATE INSTANTLY</span>
+</div>
+<div class="overflow-x-auto rounded bg-surface-container border border-outline-variant">
+<table class="w-full text-left font-code-sm text-code-sm border-collapse">
+<thead>
+<tr class="bg-surface-container-lowest border-b border-outline-variant text-outline tracking-wider uppercase text-[10px]">
+<th class="p-3 w-16">Key</th>
+<th class="p-3">File Target</th>
+<th class="p-3">Module Name</th>
+<th class="p-3">Persona / Operating Node</th>
+<th class="p-3">License Tier</th>
+<th class="p-3 text-right">Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/60">
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-primary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+1</kbd></td>
+<td class="p-3 text-on-surface">index.html</td>
+<td class="p-3 text-on-surface font-semibold">Packhouse Ops Command Station</td>
+<td class="p-3 text-on-surface-variant">Chief Verification Officer</td>
+<td class="p-3 text-secondary">AGPL-3.0 Open Core</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-primary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+2</kbd></td>
+<td class="p-3 text-on-surface">dossiers.html</td>
+<td class="p-3 text-on-surface font-semibold">Container Dossier Registry</td>
+<td class="p-3 text-on-surface-variant">Reefer Cold-Chain Specialist</td>
+<td class="p-3 text-secondary">AGPL-3.0 Open Core</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-primary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+3</kbd></td>
+<td class="p-3 text-on-surface">auditor.html</td>
+<td class="p-3 text-on-surface font-semibold">Field Auditor 5-Gate Tool</td>
+<td class="p-3 text-on-surface-variant">Quarantine Officer</td>
+<td class="p-3 text-secondary">AGPL-3.0 Open Core</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-primary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+4</kbd></td>
+<td class="p-3 text-on-surface">buyer.html</td>
+<td class="p-3 text-on-surface font-semibold">Buyer Cryptographic Portal</td>
+<td class="p-3 text-on-surface-variant">Guangzhou Consignee</td>
+<td class="p-3 text-secondary">AGPL-3.0 Open Core</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-primary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+5</kbd></td>
+<td class="p-3 text-on-surface">cluster.html</td>
+<td class="p-3 text-on-surface font-semibold">Mekong Delta Cluster Ops Room</td>
+<td class="p-3 text-on-surface-variant">Regional Director</td>
+<td class="p-3 text-tertiary">Enterprise Telematics</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-primary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+6</kbd></td>
+<td class="p-3 text-on-surface">portability.html</td>
+<td class="p-3 text-on-surface font-semibold">Open-Core Portability Hub</td>
+<td class="p-3 text-on-surface-variant">Sovereign Data Steward</td>
+<td class="p-3 text-secondary">AGPL-3.0 Open Core</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-primary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+7</kbd></td>
+<td class="p-3 text-on-surface">upgrade.html</td>
+<td class="p-3 text-on-surface font-semibold">Pro SaaS Upgrade & Licensing</td>
+<td class="p-3 text-on-surface-variant">Enterprise Manager</td>
+<td class="p-3 text-on-surface">Commercial Ed25519</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-primary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+8</kbd></td>
+<td class="p-3 text-on-surface">styleguide.html</td>
+<td class="p-3 text-on-surface font-semibold">Living Style Guide & Tokens</td>
+<td class="p-3 text-on-surface-variant">Design System Team</td>
+<td class="p-3 text-secondary">AGPL-3.0 Open Core</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-secondary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+9</kbd></td>
+<td class="p-3 text-on-surface">paper-canvas.html</td>
+<td class="p-3 text-on-surface font-semibold">Paper-as-the-Canvas Highlighter</td>
+<td class="p-3 text-on-surface-variant">Weighbridge Clerk</td>
+<td class="p-3 text-secondary">AGPL-3.0 Open Core</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-secondary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+10</kbd></td>
+<td class="p-3 text-on-surface">excel-grid.html</td>
+<td class="p-3 text-on-surface font-semibold">Excel Speed Grid + 300% Loupe</td>
+<td class="p-3 text-on-surface-variant">Customs Accountant</td>
+<td class="p-3 text-secondary">AGPL-3.0 Open Core</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-secondary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+11</kbd></td>
+<td class="p-3 text-on-surface">zalo-bot.html</td>
+<td class="p-3 text-on-surface font-semibold">Zalo-First Conversational Bot</td>
+<td class="p-3 text-on-surface-variant">Truck Driver / Dispatcher</td>
+<td class="p-3 text-secondary">AGPL-3.0 Open Core</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-secondary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+12</kbd></td>
+<td class="p-3 text-on-surface">mobile-weighbridge.html</td>
+<td class="p-3 text-on-surface font-semibold">Mobile Weighbridge Touch</td>
+<td class="p-3 text-on-surface-variant">Yard Supervisor</td>
+<td class="p-3 text-secondary">AGPL-3.0 Open Core</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-tertiary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+13</kbd></td>
+<td class="p-3 text-on-surface">field-proven.html</td>
+<td class="p-3 text-on-surface font-semibold">Field-Proven High Contrast POS</td>
+<td class="p-3 text-on-surface-variant">Outdoor Barge / Loading Bay</td>
+<td class="p-3 text-tertiary">Industrial Theme</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="p-3 font-bold text-tertiary"><kbd class="px-1.5 py-0.5 rounded bg-surface-container-low border border-outline-variant">G+14</kbd></td>
+<td class="p-3 text-on-surface">foundry.html</td>
+<td class="p-3 text-on-surface font-semibold">Foundry Cryptographic Command</td>
+<td class="p-3 text-on-surface-variant">GACC Gate Crypto Warden</td>
+<td class="p-3 text-primary">Cryptographic Suite</td>
+<td class="p-3 text-right"><span class="inline-flex items-center gap-1 text-primary"><span class="w-1.5 h-1.5 rounded-full bg-primary"></span> Ready</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- System Specifications & Offline Protocol Footer -->
+<footer class="pt-6 border-t border-outline-variant text-on-surface-variant space-y-4">
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-md text-code-sm font-code-sm">
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant">
+<div class="text-primary font-bold mb-1 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">security</span>
+<span>SOVEREIGN AIR-GAP GUARANTEE</span>
+</div>
+<p class="text-outline text-body-sm">All cryptographic proofs (Ed25519 & SHA-256) execute inside client memory and local SQLite WAL without unconsented remote telemetry.</p>
+</div>
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant">
+<div class="text-secondary font-bold mb-1 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">description</span>
+<span>GACC DECREE 248/249 NATIVE</span>
+</div>
+<p class="text-outline text-body-sm">Dual bilingual Vietnamese/Simplified Chinese inspection taxonomies mapped directly to GACC border node customs schema.</p>
+</div>
+<div class="p-3 rounded bg-surface-container-low border border-outline-variant">
+<div class="text-tertiary font-bold mb-1 flex items-center gap-1.5">
+<span class="material-symbols-outlined text-sm">hub</span>
+<span>INTEROPERABILITY ENGINE</span>
+</div>
+<p class="text-outline text-body-sm">Exportable to standard unencrypted RFC-6962 audit logs, JSON-LD, or raw SQLite dumps with zero vendor tie-in.</p>
+</div>
+</div>
+<div class="flex flex-col sm:flex-row justify-between items-center text-outline text-label-sm font-label-sm py-2">
+<span>MEKONG CLEAR SOVEREIGN TRADE OS // STATION TIEN GIANG // BUILD STAMP 2025.05.28-GACC</span>
+<div class="flex items-center gap-3 mt-2 sm:mt-0">
+<span class="text-primary">SHA-256: 4f8b91a27e01dc...e901</span>
+<span>•</span>
+<span>ALL RIGHTS RESERVED AGPL-3.0</span>
+</div>
+</div>
+</footer>
+</main>
+</div>
+<script>
+    // Lightweight keyboard navigation hotkeys (G + 1..14)
+    let lastKey = '';
+    let lastKeyTime = 0;
+
+    const screenMap = {
+      '1': 'index.html',
+      '2': 'dossiers.html',
+      '3': 'auditor.html',
+      '4': 'buyer.html',
+      '5': 'cluster.html',
+      '6': 'portability.html',
+      '7': 'upgrade.html',
+      '8': 'styleguide.html',
+      '9': 'paper-canvas.html',
+      '10': 'excel-grid.html',
+      '11': 'zalo-bot.html',
+      '12': 'mobile-weighbridge.html',
+      '13': 'field-proven.html',
+      '14': 'foundry.html'
+    };
+
+    window.addEventListener('keydown', (e) => {
+      // Don't trigger if user is in an input
+      if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+
+      const now = Date.now();
+      const key = e.key.toLowerCase();
+
+      if (lastKey === 'g' && now - lastKeyTime < 1000) {
+        if (screenMap[key]) {
+          e.preventDefault();
+          window.location.href = screenMap[key];
+        }
+      }
+
+      lastKey = key;
+      lastKeyTime = now;
+    });
+
+    function downloadRepoAlert() {
+      alert("Generating sovereign cryptographic package (durios-sovereign-v2.4.9.tar.gz)... Local SHA256 and full offline suite included.");
+    }
+
+    function lockSealsWorkflow() {
+      alert("Node #VN-84B: Tamper-evident electronic bolt seal sequence initiated. Reefer telemetry stream verified.");
+    }
+  </script>
+</body></html>
