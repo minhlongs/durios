@@ -31,6 +31,17 @@ describe("Deep Brainstorm & 25-Step Open-Core Public GitHub + SaaS Introspector 
       expect(turn.passed).toBe(true);
     }
 
+    expect(report.uiUxDeepAudit.verdict).toBe("GO_2027_UI_UX_STANDARDIZED");
+    expect(report.uiUxDeepAudit.allTurnsPassed).toBe(true);
+    expect(report.uiUxDeepAudit.totalHtmlSurfacesAudited).toBe(26);
+    expect(report.uiUxDeepAudit.balancedDomSurfacesCount).toBe(26);
+    expect(report.uiUxDeepAudit.deadHrefHashCount).toBe(0);
+    expect(report.uiUxDeepAudit.stitchScreensCount).toBe(25);
+    expect(report.uiUxDeepAudit.socraticTurns).toHaveLength(5);
+    for (const turn of report.uiUxDeepAudit.socraticTurns) {
+      expect(turn.passed).toBe(true);
+    }
+
     expect(report.editionModuleCounts.communityOpenCore).toBeGreaterThanOrEqual(6);
     expect(report.editionModuleCounts.packhouseProSaas).toBeGreaterThanOrEqual(4);
     expect(report.editionModuleCounts.exporterEnterprise).toBeGreaterThanOrEqual(2);
@@ -63,6 +74,7 @@ describe("Deep Brainstorm & 25-Step Open-Core Public GitHub + SaaS Introspector 
     expect(report.socraticTurns[0]?.passed).toBe(false);
     expect(report.socraticTurns[0]?.evidenceSummary).toContain("/saas/");
     expect(report.socraticTurns[1]?.passed).toBe(false);
+    expect(report.uiUxDeepAudit.allTurnsPassed).toBe(false);
   });
 
   it("serves deep Socratic brainstorm report over GET /api/v1/open-core/blueprint-status?deep=true", async () => {
@@ -90,6 +102,8 @@ describe("Deep Brainstorm & 25-Step Open-Core Public GitHub + SaaS Introspector 
       expect(body.data.ideaVerdict).toBe("GO_OPEN_CORE_SAAS");
       expect(body.data.allTurnsPassed).toBe(true);
       expect(body.data.socraticTurns).toHaveLength(5);
+      expect(body.data.uiUxDeepAudit.verdict).toBe("GO_2027_UI_UX_STANDARDIZED");
+      expect(body.data.uiUxDeepAudit.allTurnsPassed).toBe(true);
     } finally {
       app.sqliteClient.close();
     }

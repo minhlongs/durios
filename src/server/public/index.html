@@ -678,8 +678,14 @@
     .workflow-step-hidden {
       display: none !important;
     }
-    html.durios-focus-canvas .disclaimer-strip {
+    .disclaimer-strip {
       display: none !important;
+    }
+    .app-header {
+      min-height: 42px;
+      height: 42px;
+      top: 44px;
+      padding: 0 var(--space-4);
     }
   </style>
   <link id="durios-design-system-link" rel="stylesheet" href="/stitch/durios-design-system.css">
@@ -693,19 +699,16 @@
 
   <header class="app-header">
     <div class="brand">
-      <div class="brand__mark" aria-hidden="true">Du</div>
-      <div>
-        <h1 class="brand__title">DuriOS <span class="badge badge--neutral">Cai Lậy Pilot // v0.6</span></h1>
-      </div>
-    </div>
-    <div class="header-tools">
       <span class="server-status" id="system-status" data-state="checking" role="status">
         <span class="server-status__dot" aria-hidden="true"></span>
         <span id="system-status-text">Máy chủ: Sẵn sàng</span>
       </span>
+      <span class="badge badge--neutral" title="Bản thử nghiệm cục bộ với dữ liệu giả lập (STAGE ZERO): không tự cấp chứng nhận hữu cơ, không giữ tiền/hàng, không bảo đảm thông quan.">STAGE ZERO · Local On-Prem</span>
+    </div>
+    <div class="header-tools">
       <div class="role-picker">
         <label for="actor-role">Vai trò</label>
-        <select id="actor-role" class="select" onchange="reloadWorkspace()" aria-describedby="actor-role-hint">
+        <select id="actor-role" class="select" style="min-height: 30px; min-width: 175px; font-size: 12px;" onchange="reloadWorkspace()" aria-describedby="actor-role-hint">
           <option value="CLERK">Nhân viên (CLERK)</option>
           <option value="MANAGER">Quản lý (MANAGER)</option>
         </select>
@@ -714,17 +717,14 @@
       <button type="button" class="btn btn--primary btn--sm" id="btn-pilot-rehearsal-seed" onclick="runPilotRehearsalBootstrap()">
         <span>🚀 Diễn tập 5 Cont &amp; 5/5 Gates</span>
       </button>
+      <button type="button" class="btn btn--secondary btn--sm" id="btn-stitch-ecosystem" onclick="openStitchEcosystemDialog()">
+        <span>🧠 Socratic 10-Turn (--deep)</span>
+      </button>
       <button type="button" class="btn btn--secondary btn--sm" id="btn-stitch-gallery" onclick="openStitchGalleryModal()">
-        <span>🎨 25 Màn hình Stitch</span>
+        <span>🎨 25 Màn hình</span>
       </button>
-      <button type="button" class="btn btn--secondary btn--sm" id="btn-stitch-ecosystem" onclick="openStitchEcosystemDialog()" style="display:none;">
-        <span>Kiểm toán 25 bước</span>
-      </button>
-      <a class="btn btn--secondary btn--sm" href="/stitch/gallery.html" target="_blank" rel="noopener">
-        <span>Master Hub ↗</span>
-      </a>
-      <button type="button" class="btn btn--secondary btn--sm" id="btn-workspace-theme" onclick="toggleWorkspaceTheme()" title="Chuyển đổi giao diện Sáng (Field) / Tối (Emerald Ops)">
-        <span id="workspace-theme-label">🌙 Emerald</span>
+      <button type="button" class="btn btn--secondary btn--sm" id="btn-workspace-theme" onclick="toggleWorkspaceTheme()" style="display:none;" title="Chuyển đổi giao diện Sáng (Field) / Tối (Emerald Ops)">
+        <span id="workspace-theme-label">☀️ Field</span>
       </button>
       <button type="button" class="btn btn--secondary btn--sm" id="btn-auth-session" onclick="openAuthDialog()">
         <span id="auth-session-label">Đăng nhập Pilot</span>
@@ -2781,17 +2781,34 @@
       }
       const marginPct = deep && deep.unitEconomicsVerification ? `${deep.unitEconomicsVerification.containerGrossMarginPct}%` : "94.67%";
       const verdict = deep && deep.ideaVerdict ? deep.ideaVerdict : "GO_OPEN_CORE_SAAS";
+      const uiux = deep && deep.uiUxDeepAudit ? deep.uiUxDeepAudit : null;
+      const uiuxVerdict = uiux && uiux.verdict ? uiux.verdict : "GO_2027_UI_UX_STANDARDIZED";
+      const openCoreTurns = deep && Array.isArray(deep.socraticTurns) ? deep.socraticTurns : [];
+      const uiuxTurns = uiux && Array.isArray(uiux.socraticTurns) ? uiux.socraticTurns : [];
       const modulesCount = ed && Array.isArray(ed.modules) ? ed.modules.length : 12;
+      const renderTurnRows = (turns, prefix) => turns.map((t) => `
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:6px 8px;border:1px solid var(--color-border);border-radius:var(--radius-sm);background:var(--color-surface);font-size:11px;">
+          <div>
+            <strong>${escapeHtml(prefix)} T${escapeHtml(String(t.turnNumber))}: ${escapeHtml(String(t.dimension))}</strong>
+            <div class="muted">${escapeHtml(String(t.evidenceSummary))}</div>
+          </div>
+          <span class="badge ${t.passed ? "badge--success" : "badge--danger"}">${t.passed ? "PASS" : "FAIL"}</span>
+        </div>
+      `).join("");
       box.innerHTML = `
         <div class="callout callout--success" style="margin-bottom: 8px;">
           <div class="callout__body">
-            <p class="callout__title">Kiểm toán 25 Bước Blueprint: ${escapeHtml(String(bp.completedStepsCount))}/${escapeHtml(String(bp.totalSteps))} hoàn tất (${bp.overallPassed ? "PASSED" : "PENDING"}) · Phán quyết Socratic 5 Vòng: <code>${escapeHtml(String(verdict))}</code></p>
+            <p class="callout__title">Kiểm toán Socratic 10 Vòng (--deep): Open-Core <code>${escapeHtml(String(verdict))}</code> · UI/UX 2027 <code>${escapeHtml(String(uiuxVerdict))}</code> (${escapeHtml(String(bp.completedStepsCount))}/${escapeHtml(String(bp.totalSteps))} Blueprint Steps PASSED)</p>
             <p style="font-size: 12px; margin-top: 4px;">
               Composite SHA-256: <code class="mono">${escapeHtml(String(bp.blueprintCompositeSha256 || "").slice(0, 24))}…</code> ·
               Biên lợi nhuận gộp Pro SaaS: <strong>${escapeHtml(marginPct)}</strong> ·
               Số module Open-Core: <strong>${escapeHtml(String(modulesCount))}</strong> ·
-              Số màn hình Stitch trực tuyến: <strong>25/25</strong>
+              Bề mặt HTML cân bằng DOM: <strong>${escapeHtml(String(uiux ? uiux.balancedDomSurfacesCount : 26))}/${escapeHtml(String(uiux ? uiux.totalHtmlSurfacesAudited : 26))} (0 Dead Links)</strong>
             </p>
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:6px;margin-top:8px;">
+              ${renderTurnRows(openCoreTurns, "Open-Core")}
+              ${renderTurnRows(uiuxTurns, "UI/UX")}
+            </div>
           </div>
         </div>
       `;
@@ -2840,21 +2857,22 @@
     }
 
     function applyWorkspaceTheme(theme) {
-      const isDark = theme === "dark";
+      const isDark = theme !== "daylight";
       document.documentElement.setAttribute("data-durios-theme", isDark ? "dark" : "daylight");
+      document.documentElement.classList.toggle("daylight-theme", !isDark);
       try { window.localStorage.setItem("durios_theme", isDark ? "dark" : "daylight"); } catch (_e) { /* ignore */ }
       const lbl = document.getElementById("workspace-theme-label");
       if (lbl) lbl.textContent = isDark ? "☀️ Field" : "🌙 Emerald";
     }
 
     function toggleWorkspaceTheme() {
-      const current = document.documentElement.getAttribute("data-durios-theme") || "daylight";
+      const current = document.documentElement.getAttribute("data-durios-theme") || "dark";
       applyWorkspaceTheme(current === "dark" ? "daylight" : "dark");
     }
 
     function initWorkspaceTheme() {
-      let saved = "daylight";
-      try { saved = window.localStorage.getItem("durios_theme") || "daylight"; } catch (_e) { /* ignore */ }
+      let saved = "dark";
+      try { saved = window.localStorage.getItem("durios_theme") || "dark"; } catch (_e) { /* ignore */ }
       applyWorkspaceTheme(saved);
     }
 

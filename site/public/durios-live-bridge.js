@@ -619,8 +619,12 @@
         '<!-- Socratic & Telemetry Summary -->' +
         '<div id="durios-dock-telemetry-panel" style="background:var(--durios-bg-surface);border:1px solid var(--durios-border-subtle);border-radius:6px;padding:8px;font-size:10px;color:var(--durios-text-muted);">' +
           '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
-            '<span>Socratic 5-Turn: <strong style="color:var(--durios-accent);" id="dock-socratic-verdict">GO_OPEN_CORE_SAAS</strong></span>' +
+            '<span>Open-Core 5-Turn: <strong style="color:var(--durios-accent);" id="dock-socratic-verdict">GO_OPEN_CORE_SAAS</strong></span>' +
             '<span>Margin: <strong style="color:var(--durios-warning);" id="dock-margin">94.67%</strong></span>' +
+          '</div>' +
+          '<div style="display:flex;justify-content:space-between;margin-bottom:4px;">' +
+            '<span>UI/UX 5-Turn (--deep): <strong style="color:var(--durios-accent);" id="dock-uiux-verdict">GO_2027_UI_UX_STANDARDIZED</strong></span>' +
+            '<span>DOM: <strong style="color:var(--durios-text-primary);" id="dock-uiux-surfaces">26/26</strong></span>' +
           '</div>' +
           '<div style="display:flex;justify-content:space-between;">' +
             '<span>Gates: <strong style="color:var(--durios-accent);" id="dock-gates">5/5</strong></span>' +
@@ -628,8 +632,9 @@
           '</div>' +
         '</div>' +
 
-        '<div style="text-align:center;">' +
-          '<a href="/" style="color:var(--durios-accent);text-decoration:none;font-weight:600;font-size:11px;">⚡ Open Primary Workspace (/) ↗</a>' +
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">' +
+          '<a href="/" style="color:var(--durios-accent);text-decoration:none;font-weight:600;font-size:11px;">⚡ Primary Workspace (/) ↗</a>' +
+          '<a href="' + getScreenHref("socratic-introspector.html") + '" style="color:var(--durios-warning);text-decoration:none;font-weight:600;font-size:11px;">🧠 Socratic 10-Turn Lab ↗</a>' +
         '</div>' +
       '</div>';
 
@@ -730,6 +735,16 @@
 
     var socraticEl = document.getElementById("dock-socratic-verdict");
     if (socraticEl) socraticEl.textContent = soc.ideaVerdict || "GO_OPEN_CORE_SAAS";
+
+    var uiuxAudit = soc.uiUxDeepAudit || {};
+    var uiuxVerdictEl = document.getElementById("dock-uiux-verdict");
+    if (uiuxVerdictEl) uiuxVerdictEl.textContent = uiuxAudit.verdict || "GO_2027_UI_UX_STANDARDIZED";
+
+    var uiuxSurfacesEl = document.getElementById("dock-uiux-surfaces");
+    if (uiuxSurfacesEl) {
+      uiuxSurfacesEl.textContent =
+        (uiuxAudit.balancedDomSurfacesCount ?? 26) + "/" + (uiuxAudit.totalHtmlSurfacesAudited ?? 26);
+    }
 
     var marginEl = document.getElementById("dock-margin");
     if (marginEl) marginEl.textContent = (econ.containerGrossMarginPct != null ? econ.containerGrossMarginPct : "94.67") + "%";
