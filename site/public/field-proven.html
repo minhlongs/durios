@@ -1,0 +1,672 @@
+<!DOCTYPE html>
+
+<html class="h-full bg-surface" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>DuriOS EXPORT // TERMINAL-04</title>
+<!-- Material Symbols Font -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Industrial Typography: Plus Jakarta Sans & Space Mono (verbatim fallback to IBM Plex Mono / Space Mono in config) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800;900&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS with Forms and Container Queries -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Theme Configuration Verbatim from System Guidance -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-container-low": "#eff4ff",
+            "on-error-container": "#93000a",
+            "outline": "#707881",
+            "inverse-surface": "#213145",
+            "on-primary-fixed-variant": "#004b73",
+            "tertiary-fixed": "#7ffc97",
+            "primary-fixed-dim": "#93ccff",
+            "on-error": "#ffffff",
+            "on-primary": "#ffffff",
+            "on-surface-variant": "#3f4850",
+            "error-container": "#ffdad6",
+            "on-tertiary": "#ffffff",
+            "primary-fixed": "#cce5ff",
+            "surface-container": "#e5eeff",
+            "on-tertiary-fixed": "#002109",
+            "tertiary-fixed-dim": "#62df7d",
+            "primary": "#006194",
+            "on-primary-fixed": "#001d31",
+            "surface-container-lowest": "#ffffff",
+            "error": "#ba1a1a",
+            "on-surface": "#0b1c30",
+            "tertiary-container": "#00873a",
+            "surface-tint": "#006398",
+            "secondary-container": "#fd651e",
+            "outline-variant": "#bfc7d2",
+            "on-tertiary-fixed-variant": "#005320",
+            "tertiary": "#006b2c",
+            "on-primary-container": "#fdfcff",
+            "surface": "#f8f9ff",
+            "on-secondary-fixed": "#370e00",
+            "on-secondary": "#ffffff",
+            "on-secondary-container": "#571a00",
+            "surface-variant": "#d3e4fe",
+            "on-tertiary-container": "#f7fff2",
+            "background": "#f8f9ff",
+            "surface-dim": "#cbdbf5",
+            "on-secondary-fixed-variant": "#7f2b00",
+            "surface-container-high": "#dce9ff",
+            "secondary-fixed-dim": "#ffb599",
+            "primary-container": "#007bb9",
+            "secondary": "#a73a00",
+            "secondary-fixed": "#ffdbce",
+            "surface-container-highest": "#d3e4fe",
+            "inverse-on-surface": "#eaf1ff",
+            "surface-bright": "#f8f9ff",
+            "inverse-primary": "#93ccff",
+            "on-background": "#0b1c30"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-xs": "0.25rem",
+            "gutter": "1rem",
+            "margin": "1rem",
+            "space-md": "0.75rem",
+            "gutter-desktop": "1.5rem",
+            "margin-desktop": "2rem",
+            "space-xl": "2rem",
+            "space-lg": "1.25rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "headline-md": ["Plus Jakarta Sans"],
+            "label-telemetry-sm": ["Space Mono"],
+            "label-telemetry-lg": ["Space Mono"],
+            "body-md": ["Plus Jakarta Sans"],
+            "headline-xl-mobile": ["Plus Jakarta Sans"],
+            "body-sm": ["Plus Jakarta Sans"],
+            "body-lg": ["Plus Jakarta Sans"],
+            "headline-xl": ["Plus Jakarta Sans"],
+            "label-caps": ["Plus Jakarta Sans"],
+            "label-telemetry-md": ["Space Mono"],
+            "headline-lg": ["Plus Jakarta Sans"]
+          },
+          "fontSize": {
+            "headline-md": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+            "label-telemetry-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "700" }],
+            "label-telemetry-lg": ["24px", { "lineHeight": "28px", "letterSpacing": "0.02em", "fontWeight": "700" }],
+            "body-md": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+            "headline-xl-mobile": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+            "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "body-lg": ["18px", { "lineHeight": "26px", "fontWeight": "500" }],
+            "headline-xl": ["40px", { "lineHeight": "48px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+            "label-caps": ["13px", { "lineHeight": "16px", "letterSpacing": "0.08em", "fontWeight": "800" }],
+            "label-telemetry-md": ["16px", { "lineHeight": "22px", "letterSpacing": "0.04em", "fontWeight": "700" }],
+            "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.01em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Mechanical Tactile Stamp Shadows & Inset Bezels */
+    .tactile-stamp-black {
+      box-shadow: 3px 3px 0px #0b1c30;
+    }
+    .tactile-stamp-black:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #0b1c30;
+    }
+    .tactile-stamp-primary {
+      box-shadow: 3px 3px 0px #004b73;
+    }
+    .tactile-stamp-primary:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #004b73;
+    }
+    .tactile-stamp-orange {
+      box-shadow: 3px 3px 0px #571a00;
+    }
+    .tactile-stamp-orange:active {
+      transform: translate(2px, 2px);
+      box-shadow: 1px 1px 0px #571a00;
+    }
+    .inset-well {
+      box-shadow: inset 2px 2px 0px rgba(11, 28, 48, 0.08);
+    }
+    /* Scan Line Animation */
+    @keyframes scanline {
+      0% { top: 0%; opacity: 0.8; }
+      50% { opacity: 0.3; }
+      100% { top: 100%; opacity: 0.8; }
+    }
+    .animate-scanline {
+      animation: scanline 4s linear infinite;
+    }
+  </style>
+</head>
+<body class="h-full flex flex-col font-body-md text-on-surface bg-surface select-none overflow-x-hidden">
+<!-- =========================================================================
+       1. TOP INDUSTRIAL STATUS BAR (TopNavBar Anchor Execution)
+       ========================================================================= -->
+<header class="flex justify-between items-center w-full px-4 h-16 border-b-2 border-outline-variant bg-surface-container shrink-0 z-30">
+<!-- Brand / Terminal Identity -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-sm bg-primary text-on-primary px-space-md py-1 border-2 border-outline tactile-stamp-black font-label-telemetry-md text-label-telemetry-md">
+<span class="material-symbols-outlined text-base">terminal</span>
+<span>BAY-08</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-black tracking-tight text-on-surface uppercase">
+          DuriOS EXPORT // TERMINAL-04
+        </h1>
+<p class="font-label-telemetry-sm text-label-telemetry-sm text-on-surface-variant flex items-center gap-2">
+<span>PACKHOUSE COLD CHAIN BAY-08</span>
+<span class="inline-block w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span>
+<span>BATCH: VN-DUR-2025-089A</span>
+</p>
+</div>
+</div>
+<!-- Monospace Live Telemetry Badges Strip -->
+<div class="hidden lg:flex items-center gap-space-sm font-label-telemetry-sm text-label-telemetry-sm">
+<div class="px-space-md py-1.5 bg-surface-container-lowest border-2 border-outline-variant flex items-center gap-2">
+<span class="text-on-surface-variant font-label-caps text-label-caps">DEST:</span>
+<span class="font-bold text-on-surface">CN-SZX (Shenzhen)</span>
+</div>
+<div class="px-space-md py-1.5 bg-tertiary-container/10 border-2 border-tertiary-container text-tertiary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm font-bold" style="font-variation-settings: 'FILL' 1;">verified</span>
+<span>GACC ONLINE</span>
+</div>
+<div class="px-space-md py-1.5 bg-surface-container-lowest border-2 border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary">thermostat</span>
+<span class="font-bold text-on-surface">14.2°C</span>
+</div>
+<div class="px-space-md py-1.5 bg-surface-container-lowest border-2 border-outline-variant flex items-center gap-2">
+<span class="material-symbols-outlined text-sm text-primary">water_drop</span>
+<span class="font-bold text-on-surface">RH: 88%</span>
+</div>
+</div>
+<!-- Tactile Quick Actions (Emergency Stop & Secondary) -->
+<div class="flex items-center gap-space-md">
+<button class="h-12 px-space-md bg-surface-container-lowest hover:bg-surface-container-high text-on-surface border-2 border-outline font-label-caps text-label-caps flex items-center gap-2 tactile-stamp-black active:translate-x-[2px] active:translate-y-[2px] transition-transform duration-75" onclick="triggerRescan()">
+<span class="material-symbols-outlined text-lg">sync</span>
+<span>BATCH RE-SCAN</span>
+</button>
+<button class="h-12 px-space-lg bg-secondary-container hover:bg-secondary text-on-secondary border-2 border-on-surface font-label-caps text-label-caps flex items-center gap-2 tactile-stamp-orange active:translate-x-[2px] active:translate-y-[2px] transition-transform duration-75 font-black" onclick="emergencyHalt()">
+<span class="material-symbols-outlined text-xl" style="font-variation-settings: 'FILL' 1;">report</span>
+<span>EMERGENCY STOP</span>
+</button>
+</div>
+</header>
+<!-- =========================================================================
+       MAIN INDUSTRIAL WORKSPACE: DOCKED SIDEBAR + TWO-COLUMN 50/50 WORKSPACE
+       ========================================================================= -->
+<div class="flex flex-1 overflow-hidden relative">
+<!-- Docked Industrial SideNav (Per Shared Component SideNavBar Spec) -->
+<aside class="flex flex-col justify-between h-full w-64 border-r-2 border-outline-variant py-4 px-2 bg-surface-container-lowest shrink-0 select-none">
+<div class="space-y-space-md">
+<!-- Station Banner -->
+<div class="px-space-sm pb-space-sm border-b-2 border-outline-variant flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container text-on-primary flex items-center justify-center border-2 border-outline font-bold">
+<span class="material-symbols-outlined">warehouse</span>
+</div>
+<div>
+<div class="font-headline-md text-headline-md text-on-surface font-bold text-base leading-tight">STATION 04</div>
+<div class="font-label-telemetry-sm text-label-telemetry-sm text-on-surface-variant text-[10px]">Cold Chain Packhouse Hub</div>
+</div>
+</div>
+<!-- Navigation Tabs: Phyto Scan is Active based on Workspace Intent -->
+<nav class="space-y-1">
+<!-- Tab 1: Phyto Scan [ACTIVE] -->
+<button class="flex items-center gap-3 w-full h-14 px-4 bg-primary text-on-primary border-2 border-outline font-bold tactile-stamp-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">document_scanner</span>
+<span class="font-label-caps text-label-caps text-left tracking-wide">Phyto Scan</span>
+</button>
+<!-- Tab 2: Container Verification -->
+<button class="flex items-center gap-3 w-full h-14 px-4 text-on-surface-variant hover:bg-surface-container border-2 border-transparent hover:border-outline-variant font-medium transition-colors">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-label-caps text-label-caps text-left">Container Verification</span>
+</button>
+<!-- Tab 3: Lab / Cadmium -->
+<button class="flex items-center gap-3 w-full h-14 px-4 text-on-surface-variant hover:bg-surface-container border-2 border-transparent hover:border-outline-variant font-medium transition-colors">
+<span class="material-symbols-outlined">science</span>
+<span class="font-label-caps text-label-caps text-left">Lab / Cadmium</span>
+</button>
+<!-- Tab 4: Seal Manifest -->
+<button class="flex items-center gap-3 w-full h-14 px-4 text-on-surface-variant hover:bg-surface-container border-2 border-transparent hover:border-outline-variant font-medium transition-colors">
+<span class="material-symbols-outlined">qr_code_2</span>
+<span class="font-label-caps text-label-caps text-left">Seal Manifest</span>
+</button>
+<!-- Tab 5: Dispatch Logs -->
+<button class="flex items-center gap-3 w-full h-14 px-4 text-on-surface-variant hover:bg-surface-container border-2 border-transparent hover:border-outline-variant font-medium transition-colors">
+<span class="material-symbols-outlined">local_shipping</span>
+<span class="font-label-caps text-label-caps text-left">Dispatch Logs</span>
+</button>
+</nav>
+</div>
+<!-- Station Footer & Diagnostic Status -->
+<div class="space-y-space-sm pt-space-sm border-t-2 border-outline-variant">
+<button class="w-full h-12 bg-surface-container-high hover:bg-surface-container text-secondary font-label-caps text-label-caps border-2 border-outline font-bold flex items-center justify-center gap-2 tactile-stamp-black">
+<span class="material-symbols-outlined text-sm">security_update_warning</span>
+<span>BATCH OVERRIDE</span>
+</button>
+<div class="flex gap-1">
+<button class="flex-1 h-10 flex items-center justify-center gap-1.5 text-on-surface-variant font-label-caps text-label-caps text-xs border border-outline-variant hover:bg-surface-container">
+<span class="material-symbols-outlined text-sm">build</span>
+<span>Diagnostics</span>
+</button>
+<button class="flex-1 h-10 flex items-center justify-center gap-1.5 text-on-surface-variant font-label-caps text-label-caps text-xs border border-outline-variant hover:bg-surface-container">
+<span class="material-symbols-outlined text-sm">help</span>
+<span>Help</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- =======================================================================
+         TWO-COLUMN 50/50 RUGGED WORKSPACE
+         ======================================================================= -->
+<main class="flex-1 grid grid-cols-1 xl:grid-cols-2 overflow-y-auto bg-surface-container-low p-space-md gap-space-md">
+<!-- =====================================================================
+           LEFT 50% - HIGH-CONTRAST DOCUMENT SCAN VIEWER
+           ===================================================================== -->
+<section class="flex flex-col bg-surface-container-lowest border-2 border-outline-variant h-full min-h-[640px] shadow-sm relative">
+<!-- Viewer Control Header -->
+<div class="flex items-center justify-between px-space-md py-space-sm bg-surface-container border-b-2 border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary font-bold">document_scanner</span>
+<div>
+<div class="font-label-caps text-label-caps text-on-surface font-extrabold tracking-tight">
+                PHYTOSANITARY &amp; GACC EXPORT BILL OF LADING [SCAN-REV-3]
+              </div>
+<div class="font-label-telemetry-sm text-label-telemetry-sm text-on-surface-variant">
+                SOURCE: HIGH-RESOLUTION COLD-LINE FLATBED RIG 08
+              </div>
+</div>
+</div>
+<!-- Touch Zoom/Pan Manipulation Cluster (Min 48px tactile buttons) -->
+<div class="flex items-center gap-1 bg-surface-container-lowest border-2 border-outline-variant p-0.5">
+<button class="w-12 h-12 flex items-center justify-center hover:bg-surface-container active:bg-surface-container-high border border-outline-variant text-on-surface font-bold tactile-stamp-black" onclick="handleZoom(-10)" title="Zoom Out">
+<span class="material-symbols-outlined">zoom_out</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center hover:bg-surface-container active:bg-surface-container-high border border-outline-variant text-on-surface font-bold tactile-stamp-black" onclick="handleZoom(10)" title="Zoom In">
+<span class="material-symbols-outlined">zoom_in</span>
+</button>
+<button class="w-12 h-12 flex items-center justify-center hover:bg-surface-container active:bg-surface-container-high border border-outline-variant text-on-surface font-bold tactile-stamp-black" onclick="resetZoom()" title="Reset Perspective">
+<span class="material-symbols-outlined">filter_center_focus</span>
+</button>
+<button class="h-12 px-space-md flex items-center gap-1.5 bg-surface-container-high text-on-surface font-label-caps text-label-caps border border-outline font-bold tactile-stamp-black" id="invertToggleBtn" onclick="toggleInvert()" title="Invert Optical Filter">
+<span class="material-symbols-outlined text-sm">invert_colors</span>
+<span class="hidden sm:inline">INVERT</span>
+</button>
+</div>
+</div>
+<!-- High-Contrast Document Viewport Area -->
+<div class="flex-1 bg-surface-dim relative overflow-hidden flex items-center justify-center p-space-md select-none transition-colors duration-200" id="documentViewport">
+<!-- Moving Industrial Scan Line Simulation -->
+<div class="absolute inset-x-0 h-1 bg-primary shadow-[0_0_12px_#007bb9] z-20 pointer-events-none animate-scanline"></div>
+<!-- Visual Scale & Grid Marks -->
+<div class="absolute top-2 left-2 font-label-telemetry-sm text-label-telemetry-sm text-outline font-bold">R-GRID // X:412 Y:890</div>
+<div class="absolute bottom-2 right-2 font-label-telemetry-sm text-label-telemetry-sm text-outline font-bold">OPTICAL RES: 600 DPI 24-BIT</div>
+<!-- Digitized Document Container Canvas -->
+<div class="w-full max-w-xl bg-surface-container-lowest border-2 border-outline-variant shadow-md p-6 relative font-label-telemetry-sm transition-transform duration-150" id="phytocertSheet">
+<!-- Document Official Header -->
+<div class="border-b-2 border-outline pb-3 mb-4 flex justify-between items-start">
+<div>
+<div class="font-headline-md text-headline-md text-on-surface font-extrabold uppercase tracking-tighter">
+                  SOCIALIST REPUBLIC OF VIETNAM
+                </div>
+<div class="text-xs font-bold text-on-surface-variant tracking-wider">
+                  MINISTRY OF AGRICULTURE AND RURAL DEVELOPMENT - PLANT PROTECTION DEPT
+                </div>
+<div class="text-sm font-black text-primary tracking-widest mt-1">
+                  PHYTOSANITARY CERTIFICATE // GACC APPROVED EXPORT
+                </div>
+</div>
+<div class="w-14 h-14 border-2 border-outline bg-surface-container flex items-center justify-center p-1 text-center font-bold text-[9px] uppercase leading-tight">
+                OFFICIAL SEAL VN-PP
+              </div>
+</div>
+<!-- Inverted Bounding Boxes With Tactile OCR Callouts -->
+<div class="space-y-4">
+<!-- Box 1: Container ID -->
+<div class="relative group cursor-pointer border-2 border-primary bg-primary-fixed/30 p-2.5 transition-all hover:bg-primary-fixed/50">
+<div class="absolute -top-3 right-2 bg-primary text-on-primary px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[10px]">check_circle</span>
+<span>CONFIDENCE 99.8%</span>
+</div>
+<div class="text-[10px] uppercase text-on-surface-variant font-bold">FIELD 01: SHIPPING UNIT CARRIER IDENTIFIER</div>
+<div class="text-lg font-bold font-label-telemetry-md text-on-surface tracking-wider">
+                  CONTAINER ID: <span class="bg-primary/20 px-1.5 py-0.5 border border-primary text-primary font-black">MSKU1234565</span>
+</div>
+</div>
+<!-- Box 2: Customs Seal -->
+<div class="relative group cursor-pointer border-2 border-secondary bg-secondary-fixed/30 p-2.5 transition-all hover:bg-secondary-fixed/50">
+<div class="absolute -top-3 right-2 bg-secondary text-on-secondary px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[10px]">lock</span>
+<span>CONFIDENCE 99.4%</span>
+</div>
+<div class="text-[10px] uppercase text-on-surface-variant font-bold">FIELD 02: HIGH-SECURITY MECHANICAL SEAL DIGITS</div>
+<div class="text-lg font-bold font-label-telemetry-md text-on-surface tracking-wider">
+                  CUSTOMS SEAL NO: <span class="bg-secondary-fixed-dim/40 px-1.5 py-0.5 border border-secondary text-on-surface font-black">SEAL-VN-9872</span>
+</div>
+</div>
+<!-- Box 3: Cadmium Test -->
+<div class="relative group cursor-pointer border-2 border-tertiary-container bg-tertiary-fixed/30 p-2.5 transition-all hover:bg-tertiary-fixed/50">
+<div class="absolute -top-3 right-2 bg-tertiary-container text-on-tertiary px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[10px]">science</span>
+<span>PASS GACC MAX 0.05 mg/kg</span>
+</div>
+<div class="text-[10px] uppercase text-on-surface-variant font-bold">FIELD 03: ICP-MS MASS SPECTROMETRY CADMIUM (Cd)</div>
+<div class="text-lg font-bold font-label-telemetry-md text-tertiary tracking-wider">
+                  CADMIUM (Cd) TEST: <span class="bg-tertiary-fixed-dim/50 px-1.5 py-0.5 border border-tertiary font-black text-on-surface">0.028 mg/kg</span>
+</div>
+</div>
+<!-- Box 4: Farm Code -->
+<div class="relative group cursor-pointer border-2 border-primary bg-primary-fixed/20 p-2.5 transition-all hover:bg-primary-fixed/40">
+<div class="absolute -top-3 right-2 bg-primary-container text-on-primary-container px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[10px]">verified</span>
+<span>VERIFIED PROVENANCE</span>
+</div>
+<div class="text-[10px] uppercase text-on-surface-variant font-bold">FIELD 04: REGISTERED EXPORT ORCHARD PUC / PACKHOUSE ID</div>
+<div class="text-lg font-bold font-label-telemetry-md text-on-surface tracking-wider">
+                  FARM CODE: <span class="bg-surface-container-highest px-1.5 py-0.5 border border-outline font-black text-on-surface">VN-DL-PACK-019</span>
+</div>
+</div>
+</div>
+<!-- Certificate Footer Telemetry -->
+<div class="mt-4 pt-3 border-t-2 border-dashed border-outline-variant flex justify-between items-center text-[10px] text-on-surface-variant">
+<span>AUTHORIZED SIGNATURE: DR. LE VAN THANG</span>
+<span class="font-bold">INSPECTION DATE: 2025-05-18 09:24 UTC+7</span>
+</div>
+</div>
+</div>
+<!-- Live OCR Status Strip -->
+<div class="px-space-md py-space-sm bg-surface-container border-t-2 border-outline-variant flex flex-wrap justify-between items-center text-xs font-label-telemetry-sm text-on-surface">
+<div class="flex items-center gap-2">
+<span class="w-2.5 h-2.5 bg-tertiary-container rounded-none"></span>
+<span class="font-bold">4/4 FIELDS EXTRACTED</span>
+<span class="text-on-surface-variant">// HARDWARE SENSOR: CAM-BAY-08A CALIBRATED</span>
+</div>
+<div class="text-on-surface-variant font-bold">
+            LATENCY: 42ms // OCR ENGINE v4.2
+          </div>
+</div>
+</section>
+<!-- =====================================================================
+           RIGHT 50% - BIG-BUTTON TACTILE VERIFICATION STATION
+           ===================================================================== -->
+<section class="flex flex-col gap-space-md">
+<!-- Giant Digital Countdown Timer Card (IBM Plex / Space Mono High Contrast) -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant p-space-md tactile-stamp-black">
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-md">
+<div>
+<div class="font-label-caps text-label-caps text-secondary font-extrabold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-base">timer</span>
+<span>COLD-CHAIN AUDIT WINDOW</span>
+</div>
+<div class="font-label-caps text-label-caps text-on-surface-variant text-xs">
+                TIME REMAINING BEFORE COLD-CHAIN BREAK PROTOCOL
+              </div>
+</div>
+<!-- Huge Monospace Readout Timer -->
+<div class="flex items-center gap-2 bg-surface-dim px-5 py-2 border-2 border-outline inset-well">
+<span class="font-label-telemetry-lg text-4xl sm:text-5xl font-black text-on-surface tracking-tight" id="countdownTimer">03:42</span>
+<span class="font-label-telemetry-sm text-xs font-bold text-secondary uppercase leading-none">MIN<br/>SEC</span>
+</div>
+</div>
+<!-- Visual Cold Chain Safety Progress Bar -->
+<div class="w-full bg-surface-container-high h-2.5 mt-space-sm border border-outline-variant overflow-hidden">
+<div class="bg-secondary-container h-full w-[65%] transition-all duration-1000"></div>
+</div>
+</div>
+<!-- 4 Chunky Tactile Touch Cards (Min 56px to 64px Hit Height) -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-space-sm">
+<!-- Card 1: Container Identification -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant p-space-md flex flex-col justify-between tactile-stamp-black">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">CONTAINER ID</span>
+<span class="bg-primary/10 text-primary border border-primary px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm">
+                RFID MATCH
+              </span>
+</div>
+<div class="font-label-telemetry-lg text-label-telemetry-lg text-on-surface tracking-wider font-extrabold my-1">
+              MSKU1234565
+            </div>
+<button class="mt-2 w-full min-h-[48px] bg-surface-container hover:bg-surface-container-high active:translate-x-[2px] active:translate-y-[2px] border-2 border-outline text-on-surface font-label-caps text-label-caps flex items-center justify-center gap-2 transition-transform" onclick="toggleConfirm(this)">
+<span class="material-symbols-outlined text-base text-primary">check_box</span>
+<span class="btn-text">CONFIRM TOUCH</span>
+</button>
+</div>
+<!-- Card 2: Customs Seal Number -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant p-space-md flex flex-col justify-between tactile-stamp-black">
+<div class="flex justify-between items-start mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant">CUSTOMS SEAL NO</span>
+<span class="bg-secondary-container text-on-secondary px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm flex items-center gap-1">
+<span class="material-symbols-outlined text-[10px]">barcode_scanner</span>
+                BARCODE
+              </span>
+</div>
+<div class="font-label-telemetry-lg text-label-telemetry-lg text-on-surface tracking-wider font-extrabold my-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-secondary text-xl">lock</span>
+<span>SEAL-VN-9872</span>
+</div>
+<button class="mt-2 w-full min-h-[48px] bg-surface-container hover:bg-surface-container-high active:translate-x-[2px] active:translate-y-[2px] border-2 border-outline text-on-surface font-label-caps text-label-caps flex items-center justify-center gap-2 transition-transform" onclick="toggleConfirm(this)">
+<span class="material-symbols-outlined text-base text-primary">lock_clock</span>
+<span class="btn-text">LOCK VERIFIED</span>
+</button>
+</div>
+<!-- Card 3: Lab Heavy Metals Telemetry (Cadmium) -->
+<div class="bg-surface-container-lowest border-2 border-tertiary-container p-space-md flex flex-col justify-between tactile-stamp-black">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant">CADMIUM (Cd) LAB TEST</span>
+<span class="bg-tertiary-container text-on-tertiary px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm">
+                GACC PASS
+              </span>
+</div>
+<div class="font-label-telemetry-lg text-label-telemetry-lg text-tertiary font-black my-1">
+              0.028 mg/kg
+            </div>
+<div class="text-xs font-label-telemetry-sm text-on-surface-variant border-t border-outline-variant pt-2 mt-1">
+              GACC SAFE (Limit &lt; 0.050 mg/kg)<br/>
+<span class="text-tertiary font-bold">✓ ICP-MS Lab Certified</span>
+</div>
+</div>
+<!-- Card 4: Temperature Core Sensor -->
+<div class="bg-surface-container-lowest border-2 border-outline-variant p-space-md flex flex-col justify-between tactile-stamp-black">
+<div class="flex justify-between items-start mb-1">
+<span class="font-label-caps text-label-caps text-on-surface-variant">CONTAINER CORE TEMP</span>
+<span class="bg-primary-fixed text-on-primary-fixed-variant px-2 py-0.5 text-[10px] font-bold font-label-telemetry-sm">
+                STABLE
+              </span>
+</div>
+<div class="font-label-telemetry-lg text-label-telemetry-lg text-primary font-black my-1 flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-2xl">thermostat</span>
+<span>14.2°C</span>
+</div>
+<div class="text-xs font-label-telemetry-sm text-on-surface-variant border-t border-outline-variant pt-2 mt-1">
+              OPTIMAL DURIAN WINDOW<br/>
+<span class="text-on-surface font-bold">13.0°C – 15.0°C (SAFE EXPORT)</span>
+</div>
+</div>
+</div>
+<!-- Giant Full-Width Primary Action Trigger (64px Min Touch Height) -->
+<button class="w-full min-h-[68px] py-3 px-space-lg bg-primary hover:bg-primary-container text-on-primary border-2 border-on-surface tactile-stamp-primary active:translate-x-[2px] active:translate-y-[2px] transition-all flex flex-col justify-center items-center group" onclick="commitSeal()">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-2xl text-secondary-fixed group-hover:rotate-12 transition-transform">lock_person</span>
+<span class="font-headline-md text-headline-md font-black tracking-wide text-on-primary">
+              SEAL CONTAINER &amp; PRINT QR MANIFEST
+            </span>
+</div>
+<div class="font-label-telemetry-sm text-label-telemetry-sm text-primary-fixed font-bold tracking-wider uppercase mt-1">
+            TRANSMIT GACC BLOCKCHAIN // E-SEAL LOCK // PRINT BAY-08 DISPATCH
+          </div>
+</button>
+<!-- Secondary Tactile Emergency / Anomaly Buttons -->
+<div class="grid grid-cols-2 gap-space-sm">
+<button class="min-h-[52px] bg-surface-container-lowest hover:bg-error-container text-error border-2 border-error font-label-caps text-label-caps flex items-center justify-center gap-2 tactile-stamp-black active:translate-x-[2px] active:translate-y-[2px] font-bold" onclick="flagAnomaly()">
+<span class="material-symbols-outlined text-lg">flag</span>
+<span>FLAG ANOMALY (CADMIUM)</span>
+</button>
+<button class="min-h-[52px] bg-surface-container-lowest hover:bg-surface-container text-on-surface border-2 border-outline font-label-caps text-label-caps flex items-center justify-center gap-2 tactile-stamp-black active:translate-x-[2px] active:translate-y-[2px] font-bold" onclick="manualAudit()">
+<span class="material-symbols-outlined text-lg">fact_check</span>
+<span>MANUAL AUDIT RE-READ</span>
+</button>
+</div>
+<!-- Operational Audit Stamp Bar (GACC Standard Compliance Notice) -->
+<div class="bg-surface-container border-2 border-outline-variant p-space-sm flex items-center justify-between text-xs font-label-telemetry-sm text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-base">verified_user</span>
+<span>GACC PROTOCOL V4.2 // SHA-256 E-SEAL ENCRYPTED</span>
+</div>
+<div class="font-bold text-on-surface">
+            INSPECTOR: TECH-ID-7822-VN
+          </div>
+</div>
+</section>
+</main>
+</div>
+<!-- =========================================================================
+       POPUP NOTIFICATION / AUDIT FEEDBACK BANNER (INTERACTIVE TOAST)
+       ========================================================================= -->
+<div class="fixed bottom-6 right-6 hidden z-50 bg-inverse-surface text-inverse-on-surface border-2 border-primary-fixed p-4 tactile-stamp-black max-w-md" id="toastNotification">
+<div class="flex items-start gap-3">
+<span class="material-symbols-outlined text-primary-fixed-dim text-2xl" id="toastIcon">info</span>
+<div>
+<div class="font-label-caps text-label-caps font-bold uppercase text-primary-fixed-dim" id="toastTitle">NOTIFICATION</div>
+<div class="font-label-telemetry-sm text-label-telemetry-sm mt-1" id="toastMessage">System operational.</div>
+</div>
+</div>
+</div>
+<!-- =========================================================================
+       INDUSTRIAL TOUCHSCREEN SCRIPTS & GLOVE-FRIENDLY INTERACTIONS
+       ========================================================================= -->
+<script>
+    // Zoom & Document Perspective Control
+    let currentScale = 1.0;
+    const certSheet = document.getElementById('phytocertSheet');
+    const docViewport = document.getElementById('documentViewport');
+
+    function handleZoom(delta) {
+      currentScale += (delta / 100);
+      if (currentScale < 0.8) currentScale = 0.8;
+      if (currentScale > 1.6) currentScale = 1.6;
+      certSheet.style.transform = `scale(${currentScale})`;
+    }
+
+    function resetZoom() {
+      currentScale = 1.0;
+      certSheet.style.transform = `scale(1.0)`;
+      showToast("ZOOM RESET", "Document display scale set to default 100% optical size.", "fit_screen");
+    }
+
+    // High Contrast Optical Filter Inversion
+    let isInverted = false;
+    function toggleInvert() {
+      isInverted = !isInverted;
+      if (isInverted) {
+        certSheet.classList.add('invert', 'contrast-125');
+        document.getElementById('invertToggleBtn').classList.add('bg-primary', 'text-on-primary');
+        showToast("OPTICAL FILTER", "High-contrast inversion filter ENABLED for damaged ink scan detection.", "invert_colors");
+      } else {
+        certSheet.classList.remove('invert', 'contrast-125');
+        document.getElementById('invertToggleBtn').classList.remove('bg-primary', 'text-on-primary');
+        showToast("OPTICAL FILTER", "Standard illumination restored.", "light_mode");
+      }
+    }
+
+    // Countdown Timer Simulation
+    let timeRemaining = 222; // 3 min 42 sec
+    const timerElem = document.getElementById('countdownTimer');
+
+    setInterval(() => {
+      if (timeRemaining > 0) {
+        timeRemaining--;
+        const mins = Math.floor(timeRemaining / 60);
+        const secs = timeRemaining % 60;
+        timerElem.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      } else {
+        timerElem.textContent = "00:00";
+      }
+    }, 1000);
+
+    // Tactile Confirm Button Toggle State
+    function toggleConfirm(btn) {
+      const textSpan = btn.querySelector('.btn-text');
+      const iconSpan = btn.querySelector('.material-symbols-outlined');
+      
+      if (btn.classList.contains('bg-tertiary-container')) {
+        btn.classList.remove('bg-tertiary-container', 'text-on-tertiary');
+        btn.classList.add('bg-surface-container', 'text-on-surface');
+        textSpan.textContent = "CONFIRM TOUCH";
+        iconSpan.textContent = "check_box_outline_blank";
+      } else {
+        btn.classList.remove('bg-surface-container', 'text-on-surface');
+        btn.classList.add('bg-tertiary-container', 'text-on-tertiary');
+        textSpan.textContent = "VERIFIED BY TOUCH";
+        iconSpan.textContent = "check_circle";
+        showToast("FIELD VERIFIED", "Tactile operator confirmation logged to station memory.", "verified");
+      }
+    }
+
+    // Master Confirmation
+    function commitSeal() {
+      showToast(
+        "GACC MANIFEST COMMITTED", 
+        "RFID Lock #SEAL-VN-9872 locked. Transmitting phytosanitary cryptographic manifest to Shenzhen Customs GACC Node...",
+        "verified_user"
+      );
+    }
+
+    // Anomaly Escalation
+    function flagAnomaly() {
+      showToast(
+        "ALERT LOGGED", 
+        "Cadmium manual re-test requested. Secondary lab sample route dispatched to Terminal 04 Buffer.",
+        "warning"
+      );
+    }
+
+    function manualAudit() {
+      showToast(
+        "MANUAL AUDIT", 
+        "Optical hardware paused. Handheld scanner active for Inspector TECH-ID-7822-VN.",
+        "qr_code_scanner"
+      );
+    }
+
+    function emergencyHalt() {
+      alert("EMERGENCY STOP TRIGGERED: Cold-chain conveyor Bay-08 power cut. Safety relays active.");
+    }
+
+    function triggerRescan() {
+      showToast("SCAN RE-TRIGGER", "Camera CAM-BAY-08A acquiring new high-resolution frame...", "sync");
+    }
+
+    // Reusable Industrial Toast Alert
+    let toastTimeout;
+    function showToast(title, msg, icon = "info") {
+      const toast = document.getElementById('toastNotification');
+      const titleElem = document.getElementById('toastTitle');
+      const msgElem = document.getElementById('toastMessage');
+      const iconElem = document.getElementById('toastIcon');
+
+      titleElem.textContent = title;
+      msgElem.textContent = msg;
+      iconElem.textContent = icon;
+
+      toast.classList.remove('hidden');
+
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.add('hidden');
+      }, 4500);
+    }
+  </script>
+</body></html>

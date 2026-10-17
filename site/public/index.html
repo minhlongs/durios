@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mekong Clear // GACC Dur-Exp-Ops Workspace</title>
+<!-- Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration verbatim -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "error": "#ffb4ab",
+            "on-background": "#dce5dc",
+            "primary-fixed": "#6ffbbe",
+            "surface-container": "#19211c",
+            "primary": "#4edea3",
+            "on-tertiary-fixed": "#2a1700",
+            "on-secondary-fixed": "#002114",
+            "on-primary-fixed-variant": "#005236",
+            "error-container": "#93000a",
+            "on-secondary-fixed-variant": "#005137",
+            "tertiary-fixed-dim": "#ffb95f",
+            "surface-container-high": "#242c26",
+            "secondary-fixed-dim": "#45dfa4",
+            "surface-variant": "#2e3731",
+            "outline": "#86948a",
+            "on-tertiary-container": "#523200",
+            "on-error-container": "#ffdad6",
+            "surface-dim": "#0d1510",
+            "surface-tint": "#4edea3",
+            "on-secondary-container": "#00452e",
+            "secondary-fixed": "#68fcbf",
+            "primary-fixed-dim": "#4edea3",
+            "on-primary-fixed": "#002113",
+            "surface-container-lowest": "#08100b",
+            "tertiary-container": "#e29100",
+            "inverse-on-surface": "#2a322c",
+            "secondary": "#45dfa4",
+            "primary-container": "#10b981",
+            "inverse-surface": "#dce5dc",
+            "surface-container-highest": "#2e3731",
+            "on-primary-container": "#00422b",
+            "outline-variant": "#3c4a42",
+            "tertiary": "#ffb95f",
+            "on-secondary": "#003825",
+            "on-error": "#690005",
+            "on-primary": "#003824",
+            "on-surface-variant": "#bbcabf",
+            "secondary-container": "#00bd85",
+            "surface-bright": "#333b35",
+            "background": "#0d1510",
+            "surface-container-low": "#151d18",
+            "on-surface": "#dce5dc",
+            "inverse-primary": "#006c49",
+            "surface": "#0d1510",
+            "on-tertiary": "#472a00",
+            "on-tertiary-fixed-variant": "#653e00",
+            "tertiary-fixed": "#ffddb8"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-sm": "0.5rem",
+            "margin-mobile": "0.75rem",
+            "space-lg": "1.25rem",
+            "margin": "1.5rem",
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "gutter-compact": "0.5rem",
+            "space-xl": "2rem",
+            "space-md": "0.75rem"
+          },
+          "fontFamily": {
+            "code-md": ["JetBrains Mono"],
+            "headline-lg": ["Inter"],
+            "body-sm": ["Inter"],
+            "headline-sm": ["Inter"],
+            "label-sm": ["JetBrains Mono"],
+            "label-md": ["JetBrains Mono"],
+            "body-md": ["Inter"],
+            "code-lg": ["JetBrains Mono"],
+            "headline-xl-mobile": ["Inter"],
+            "headline-xl": ["Inter"],
+            "code-sm": ["JetBrains Mono"],
+            "headline-md": ["Inter"],
+            "body-lg": ["Inter"]
+          },
+          "fontSize": {
+            "code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "code-lg": ["15px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "headline-xl-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Custom glow and pulse styles for command station */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.95); opacity: 0.8; }
+      50% { transform: scale(1.15); opacity: 0.3; }
+      100% { transform: scale(0.95); opacity: 0.8; }
+    }
+    .status-pulse {
+      animation: pulse-ring 2.2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #08100b;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #1f3b2c;
+      border-radius: 2px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: #4edea3;
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface antialiased overflow-hidden select-none font-body-md text-body-md h-screen flex flex-col">
+<!-- TOP OPERATIONAL BAR / SHARED COMPONENT [TopNavBar] -->
+<header class="flex justify-between items-center w-full px-margin h-14 bg-surface-container border-b border-outline-variant shrink-0 z-30">
+<div class="flex items-center gap-space-lg">
+<!-- Brand & Facility Node -->
+<div class="flex items-center gap-space-md">
+<div class="w-8 h-8 rounded-lg bg-surface-container-high border border-outline-variant flex items-center justify-center text-primary shadow-[0_0_12px_rgba(78,222,163,0.15)]">
+<span class="material-symbols-outlined text-[20px]" data-icon="terminal">terminal</span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-headline-sm font-headline-sm uppercase tracking-wider text-primary font-bold">MEKONG CLEAR // GACC DUR-EXP-OPS</span>
+<span class="flex h-2 w-2 relative">
+<span class="status-pulse absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
+</span>
+</div>
+<p class="font-code-sm text-code-sm text-on-surface-variant flex items-center gap-1.5">
+<span>STATION #VN-84B</span>
+<span class="text-outline-variant">•</span>
+<span>TIEN GIANG STATION</span>
+<span class="text-outline-variant">•</span>
+<span class="text-secondary font-code-sm">EXP-DUR-2025-084B</span>
+</p>
+</div>
+</div>
+<!-- Navigation Links from TopNavBar Spec -->
+<nav class="hidden xl:flex items-center gap-space-md ml-space-md border-l border-outline-variant pl-space-md">
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="#">Manifest Queue</a>
+<a class="text-primary border-b-2 border-primary font-code-md text-code-md py-1" href="#">Phytosanitary Log</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="#">Cold-Chain Telemetry</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:text-on-surface transition-colors duration-150" href="#">Customs Gateway</a>
+</nav>
+</div>
+<!-- Live Telemetry Capsule & Batch Metadata -->
+<div class="hidden lg:flex items-center gap-space-md bg-surface-container-low px-space-md py-1 rounded border border-outline-variant">
+<div class="flex items-center gap-1.5 text-secondary">
+<span class="material-symbols-outlined text-[16px]" data-icon="ac_unit">ac_unit</span>
+<span class="font-label-sm text-label-sm uppercase tracking-wide">Cold Chain</span>
+</div>
+<div class="h-3 w-px bg-outline-variant"></div>
+<div class="font-code-sm text-code-sm text-on-surface flex items-center gap-space-md">
+<span>SET: <strong class="text-primary">+13.5°C</strong></span>
+<span>AMB: <strong class="text-on-surface">+13.6°C</strong></span>
+<span>RH: <strong class="text-primary">88%</strong></span>
+<span>CO2: <strong class="text-on-surface">0.8%</strong></span>
+</div>
+<div class="px-1.5 py-0.5 rounded bg-primary-container/20 border border-primary text-primary font-label-sm text-label-sm uppercase">
+        OPTIMAL
+      </div>
+</div>
+<!-- Inspector & Trailing Actions -->
+<div class="flex items-center gap-space-md">
+<!-- Lead Officer -->
+<div class="hidden 2xl:flex items-center gap-space-sm pr-space-sm border-r border-outline-variant text-right">
+<div>
+<div class="font-label-md text-label-md text-on-surface">V. Q. Nguyen</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Lead Officer #84-21</div>
+</div>
+<div class="w-8 h-8 rounded bg-surface-variant border border-outline-variant flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified">verified</span>
+</div>
+</div>
+<!-- Action Icons from JSON -->
+<div class="flex items-center gap-1">
+<button class="p-1.5 rounded hover:bg-surface-variant hover:text-on-surface text-on-surface-variant transition-colors" title="Sensors Telemetry">
+<span class="material-symbols-outlined text-[18px]" data-icon="sensors">sensors</span>
+</button>
+<button class="p-1.5 rounded hover:bg-surface-variant hover:text-on-surface text-on-surface-variant transition-colors relative" title="Notifications">
+<span class="material-symbols-outlined text-[18px]" data-icon="notifications">notifications</span>
+<span class="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-tertiary"></span>
+</button>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-space-sm">
+<button class="px-space-md py-1.5 rounded border border-tertiary/40 bg-surface-container-high text-tertiary hover:bg-tertiary/10 font-label-md text-label-md tracking-wider uppercase transition-colors flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="warning">warning</span>
+          Hold Quarantine
+        </button>
+<button class="px-space-md py-1.5 rounded bg-primary-container text-on-primary-container hover:bg-primary font-headline-sm text-label-md tracking-wider uppercase transition-all shadow-[0_0_16px_rgba(16,185,129,0.25)] flex items-center gap-1.5 font-bold">
+<span class="material-symbols-outlined text-[16px]" data-icon="send">send</span>
+          Clear Consignment
+        </button>
+</div>
+</div>
+</header>
+<!-- WORKSPACE BODY (Side rail + 3-Column Command Canvas) -->
+<div class="flex flex-1 h-[calc(100vh-3.5rem)] overflow-hidden">
+<!-- SIDE NAV BAR / SHARED COMPONENT [SideNavBar] -->
+<aside class="flex flex-col justify-between h-full w-60 border-r border-outline-variant bg-surface-container-lowest p-space-md shrink-0 select-none">
+<div class="flex flex-col gap-space-md">
+<!-- Header / Node Stamp -->
+<div class="p-space-sm bg-surface-container-low rounded border border-outline-variant">
+<div class="text-label-md font-label-md text-primary font-bold tracking-widest uppercase">FACILITY #VN-84B</div>
+<div class="text-code-sm font-code-sm text-on-surface-variant">TIEN GIANG STATION</div>
+<div class="mt-1 flex items-center justify-between text-label-sm font-label-sm text-secondary">
+<span>NODE: ACTIVE</span>
+<span class="font-code-sm text-on-surface">ONLINE</span>
+</div>
+</div>
+<!-- Main Rail Tabs -->
+<nav class="flex flex-col gap-1">
+<a class="bg-surface-container-high text-primary border-l-2 border-primary px-space-md py-space-sm font-code-sm flex items-center gap-space-sm transition-transform active:translate-x-0.5" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="verified">verified</span>
+<span>Verify Ops</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface px-space-md py-space-sm font-code-sm flex items-center gap-space-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="biotech">biotech</span>
+<span>Cadmium Lab</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface px-space-md py-space-sm font-code-sm flex items-center gap-space-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="ac_unit">ac_unit</span>
+<span>Cold Chain</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface px-space-md py-space-sm font-code-sm flex items-center gap-space-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="lock">lock</span>
+<span>Seal Chain</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface px-space-md py-space-sm font-code-sm flex items-center gap-space-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="receipt_long">receipt_long</span>
+<span>Audit Trail</span>
+</a>
+</nav>
+<!-- CTA in side rail from JSON -->
+<div class="pt-space-sm border-t border-outline-variant">
+<button class="w-full py-2 px-space-sm rounded bg-surface-container-high border border-outline hover:border-primary text-on-surface hover:text-primary font-code-sm flex items-center justify-center gap-1.5 transition-colors">
+<span class="material-symbols-outlined text-[16px]" data-icon="lock">lock</span>
+<span>Lock Container Seal</span>
+</button>
+</div>
+</div>
+<!-- Footer Rail Tabs from JSON -->
+<div class="flex flex-col gap-1 border-t border-outline-variant pt-space-sm">
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface px-space-md py-space-sm font-code-sm flex items-center gap-space-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="sync">sync</span>
+<span>Telemetry Sync</span>
+</a>
+<a class="text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface px-space-md py-space-sm font-code-sm flex items-center gap-space-sm transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]" data-icon="settings">settings</span>
+<span>System Specs</span>
+</a>
+<div class="mt-2 text-label-sm font-label-sm text-outline-variant px-space-md uppercase">
+          GACC PROTOCOL // 2022-VN
+        </div>
+</div>
+</aside>
+<!-- 3-COLUMN WORKSPACE -->
+<main class="flex-1 flex overflow-hidden bg-background">
+<!-- COLUMN A: DOCUMENT UPLOAD & REGULATORY DOSSIER (w-80 / 320px) -->
+<section class="w-80 border-r border-outline-variant flex flex-col bg-surface-container-low shrink-0">
+<!-- Column Header -->
+<div class="p-space-md border-b border-outline-variant bg-surface-container flex items-center justify-between">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-[18px]" data-icon="folder">folder</span>
+<h2 class="font-label-md text-label-md tracking-wider text-on-surface uppercase">REGULATORY DOSSIER</h2>
+</div>
+<p class="font-code-sm text-code-sm text-on-surface-variant mt-0.5">Consignment 4/4 Verified Files</p>
+</div>
+<span class="px-2 py-0.5 bg-primary-container/15 border border-primary text-primary font-label-sm text-label-sm rounded uppercase">
+            OCR 100%
+          </span>
+</div>
+<!-- Dossier File Cards Stack -->
+<div class="flex-1 overflow-y-auto p-space-sm space-y-space-sm custom-scroll">
+<!-- Card 1: Active Selected -->
+<div class="p-space-md rounded bg-surface-container-high border-l-4 border-primary border-t border-r border-b border-outline-variant cursor-pointer transition-all shadow-[0_4px_12px_rgba(0,0,0,0.3)]">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold">ACTIVE INSPECTION</span>
+<span class="flex items-center gap-1 text-primary font-code-sm text-code-sm">
+<span class="material-symbols-outlined text-[14px]" data-icon="check_circle">check_circle</span>
+                Matched 100%
+              </span>
+</div>
+<h3 class="font-headline-sm text-body-md text-on-surface font-semibold mt-1">Packing List &amp; Weighbridge</h3>
+<p class="font-code-sm text-code-sm text-on-surface-variant mt-0.5">PL-EXPORT-84B-REVISED.PDF</p>
+<div class="mt-space-sm pt-space-sm border-t border-outline-variant grid grid-cols-2 gap-2 text-code-sm font-code-sm">
+<div>
+<span class="text-outline-variant text-label-sm block">CRATES</span>
+<span class="text-on-surface">1,280 Crates</span>
+</div>
+<div>
+<span class="text-outline-variant text-label-sm block">GROSS WT</span>
+<span class="text-on-surface font-bold text-secondary">24,180 KG</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Cadmium Lab Report -->
+<div class="p-space-md rounded bg-surface-container border border-outline-variant hover:border-outline transition-colors cursor-pointer">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">LAB RECORD ICP-MS</span>
+<span class="px-1.5 py-0.2 bg-primary/10 border border-primary/40 text-primary font-code-sm text-code-sm rounded">
+                0.021 mg/kg
+              </span>
+</div>
+<h3 class="font-headline-sm text-body-md text-on-surface font-semibold mt-1">Cadmium Heavy Metal Log</h3>
+<p class="font-code-sm text-code-sm text-on-surface-variant mt-0.5">NAFIQAD-LAB-2025-4190.PDF</p>
+<div class="mt-2 text-label-sm font-label-sm text-secondary flex items-center gap-1">
+<span class="material-symbols-outlined text-[12px]" data-icon="verified_user">verified_user</span>
+              NAFIQAD ACCREDITED STAMPED
+            </div>
+</div>
+<!-- Card 3: Phytosanitary Certificate -->
+<div class="p-space-md rounded bg-surface-container border border-outline-variant hover:border-outline transition-colors cursor-pointer">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">FORM PQ-1 CERT</span>
+<span class="text-primary font-code-sm text-code-sm flex items-center gap-0.5">
+<span class="material-symbols-outlined text-[14px]" data-icon="task_alt">task_alt</span>
+                Valid
+              </span>
+</div>
+<h3 class="font-headline-sm text-body-md text-on-surface font-semibold mt-1">Phytosanitary Clearance</h3>
+<p class="font-code-sm text-code-sm text-on-surface-variant mt-0.5">PHYTO-VN-PPD-84920.PDF</p>
+<p class="font-code-sm text-[10px] text-outline mt-1 truncate">Pest Free: P. cryptus &amp; B. correcta</p>
+</div>
+<!-- Card 4: GACC Registry -->
+<div class="p-space-md rounded bg-surface-container border border-outline-variant hover:border-outline transition-colors cursor-pointer">
+<div class="flex items-start justify-between">
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase">GACC REGISTRY</span>
+<span class="text-secondary font-code-sm text-code-sm">ACTIVE</span>
+</div>
+<h3 class="font-headline-sm text-body-md text-on-surface font-semibold mt-1">Orchard PUC &amp; PHC Code</h3>
+<div class="mt-1 space-y-0.5 font-code-sm text-code-sm">
+<div class="flex justify-between">
+<span class="text-outline-variant">PUC:</span>
+<span class="text-on-surface">VN-TGOR-0129</span>
+</div>
+<div class="flex justify-between">
+<span class="text-outline-variant">PHC:</span>
+<span class="text-on-surface">VN-TGPH-0084</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Dropzone Footer -->
+<div class="p-space-sm border-t border-outline-variant bg-surface-container">
+<div class="border border-dashed border-outline-variant hover:border-primary/60 rounded p-space-sm text-center bg-surface-container-lowest transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-[20px] text-primary" data-icon="upload_file">upload_file</span>
+<div class="font-label-sm text-label-sm text-on-surface uppercase mt-1">Upload Supplementary BOL</div>
+<div class="font-code-sm text-[10px] text-on-surface-variant">PDF, TIFF, max 50MB (Auto-OCR)</div>
+</div>
+</div>
+</section>
+<!-- COLUMN B: HIGH-RESOLUTION PDF SCAN INSPECTOR (flex-1) -->
+<section class="flex-1 flex flex-col bg-surface-dim overflow-hidden relative">
+<!-- Viewer Toolbar -->
+<div class="h-10 px-space-md bg-surface-container border-b border-outline-variant flex items-center justify-between shrink-0 text-on-surface">
+<div class="flex items-center gap-space-md">
+<span class="font-code-md text-code-md text-primary font-bold">PL-EXPORT-84B-REVISED.PDF</span>
+<span class="text-outline-variant">|</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">Page 1 of 3</span>
+<div class="flex items-center gap-1 border-l border-outline-variant pl-space-md">
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-surface-variant text-on-surface-variant hover:text-on-surface" title="Zoom Out">
+<span class="material-symbols-outlined text-[16px]" data-icon="remove">remove</span>
+</button>
+<span class="font-code-sm text-code-sm px-1">100%</span>
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-surface-variant text-on-surface-variant hover:text-on-surface" title="Zoom In">
+<span class="material-symbols-outlined text-[16px]" data-icon="add">add</span>
+</button>
+<button class="w-6 h-6 flex items-center justify-center rounded hover:bg-surface-variant text-on-surface-variant hover:text-on-surface ml-1" title="Fit Width">
+<span class="material-symbols-outlined text-[16px]" data-icon="fit_screen">fit_screen</span>
+</button>
+</div>
+</div>
+<!-- OCR & Layer Toggles -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-1.5 px-2 py-0.5 rounded bg-surface-container-high border border-outline-variant font-code-sm text-code-sm">
+<span class="w-2 h-2 rounded-full bg-primary inline-block"></span>
+<span class="text-on-surface">OCR Layer: <strong class="text-primary font-bold">ON (99.4%)</strong></span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-code-sm text-code-sm">
+<span class="material-symbols-outlined text-[16px] text-secondary" data-icon="layers">layers</span>
+<span>BBox: ACTIVE</span>
+</div>
+<button class="w-7 h-7 rounded border border-outline-variant hover:border-primary flex items-center justify-center text-on-surface-variant hover:text-primary" title="High Contrast Filter">
+<span class="material-symbols-outlined text-[16px]" data-icon="contrast">contrast</span>
+</button>
+</div>
+</div>
+<!-- Document Inspection Canvas -->
+<div class="flex-1 overflow-auto p-6 flex justify-center items-start custom-scroll bg-[#060c08] relative">
+<!-- Simulated High-Fidelity Phytosanitary Bill & Manifest Document -->
+<div class="w-[660px] min-h-[920px] bg-[#111c15] border border-outline-variant shadow-2xl p-8 text-[#d0ded5] font-code-sm relative select-text">
+<!-- Document Watermark & Border Stamp -->
+<div class="absolute top-4 right-4 border-2 border-primary/40 px-3 py-1 rounded text-center rotate-[-4deg] pointer-events-none">
+<div class="text-[9px] font-bold text-primary tracking-widest uppercase">GACC PRE-INSPECTED</div>
+<div class="text-[8px] text-secondary">TIEN GIANG PHYTO BAY #4</div>
+</div>
+<!-- Official Document Header -->
+<div class="text-center pb-4 border-b-2 border-outline-variant">
+<div class="text-label-sm font-label-sm tracking-widest uppercase text-outline">SOCIALIST REPUBLIC OF VIETNAM</div>
+<div class="text-[12px] font-bold uppercase tracking-wider text-on-surface mt-0.5">COMMERCIAL EXPORT PACKING LIST &amp; WEIGHBRIDGE MANIFEST</div>
+<div class="text-[10px] text-outline mt-0.5">FOR FRESH DURIAN EXPORTS TO THE PEOPLE'S REPUBLIC OF CHINA (GACC PROTOCOL)</div>
+</div>
+<!-- Document Metadata Grid -->
+<div class="grid grid-cols-2 gap-4 py-4 border-b border-outline-variant text-[11px]">
+<div>
+<span class="text-outline block text-[9px] uppercase">EXPORTER / PACKHOUSE</span>
+<strong class="text-on-surface">MEKONG FRUIT EXPORT LOGISTICS CORP</strong><br/>
+<span>PHC CODE: VN-TGPH-0084 (CAI BE, TIEN GIANG)</span><br/>
+<span>ORCHARD PUC: VN-TGOR-0129</span>
+</div>
+<div class="text-right">
+<span class="text-outline block text-[9px] uppercase">CONSIGNMENT REFERENCE</span>
+<strong class="text-primary font-bold">EXP-DUR-2025-084B</strong><br/>
+<span>DATE: 2025-02-28 | PORT: YOUYIGUAN</span><br/>
+<span>CARRIER: GULF-MEKONG REEFER LINE</span>
+</div>
+</div>
+<!-- Document Table with Target Highlights -->
+<div class="mt-4">
+<div class="text-[10px] font-bold uppercase text-outline pb-1 border-b border-outline-variant">
+                CRITICAL CONTAINERIZED REEFER SPECIFICATION
+              </div>
+<div class="space-y-4 pt-3">
+<!-- Highlight 1: Container Number -->
+<div class="p-2 relative bg-surface-container/50 border border-transparent rounded">
+<span class="text-[10px] text-outline-variant block">PRIMARY ISO CONTAINER NUMBER:</span>
+<!-- Glowing Precision BBox -->
+<div class="relative inline-block mt-1 group">
+<span class="px-2 py-1 bg-primary/20 border-2 border-primary text-primary font-bold text-[14px] tracking-widest rounded relative inline-block shadow-[0_0_12px_rgba(78,222,163,0.4)]">
+                      MSKU1234565
+                      <!-- Pin Icon -->
+<span class="absolute -top-2.5 -right-2.5 w-5 h-5 bg-primary text-background rounded-full flex items-center justify-center text-[10px] font-bold">
+                        1
+                      </span>
+</span>
+<!-- Floating Tooltip Box -->
+<div class="absolute left-0 -top-8 bg-surface-container-high border border-primary text-on-surface text-[10px] px-2 py-0.5 rounded shadow-lg whitespace-nowrap z-20 flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[12px]" data-icon="check_circle">check_circle</span>
+<span>ISO 6346 VALID [100% OCR CONFIDENCE]</span>
+</div>
+</div>
+</div>
+<!-- Highlight 2: Seal Number -->
+<div class="p-2 relative bg-surface-container/50 border border-transparent rounded">
+<span class="text-[10px] text-outline-variant block">GACC COMPLIANT HIGH-SECURITY BOLT SEAL:</span>
+<!-- Glowing Precision BBox -->
+<div class="relative inline-block mt-1 group">
+<span class="px-2 py-1 bg-primary/20 border-2 border-primary text-primary font-bold text-[14px] tracking-widest rounded relative inline-block shadow-[0_0_12px_rgba(78,222,163,0.4)]">
+                      SEAL-VN-9872
+                      <!-- Pin Icon -->
+<span class="absolute -top-2.5 -right-2.5 w-5 h-5 bg-primary text-background rounded-full flex items-center justify-center text-[10px] font-bold">
+                        2
+                      </span>
+</span>
+<!-- Floating Tooltip Box -->
+<div class="absolute left-0 -top-8 bg-surface-container-high border border-primary text-on-surface text-[10px] px-2 py-0.5 rounded shadow-lg whitespace-nowrap z-20 flex items-center gap-1">
+<span class="material-symbols-outlined text-primary text-[12px]" data-icon="nfc">nfc</span>
+<span>BOLT SEAL: SEAL-VN-9872 [TAMPER RFID MATCHED]</span>
+</div>
+</div>
+</div>
+<!-- Highlight 3: Gross Weight & Cold Chain -->
+<div class="grid grid-cols-2 gap-3 pt-2">
+<div class="p-2 border border-primary/40 bg-primary/5 rounded relative">
+<span class="text-[9px] text-outline block">CERTIFIED WEIGHBRIDGE GROSS:</span>
+<span class="text-[13px] font-bold text-on-surface">24,180 KG</span>
+<span class="text-[9px] text-secondary ml-1">(NET: 18,240 KG DURIAN)</span>
+</div>
+<div class="p-2 border border-primary/40 bg-primary/5 rounded relative">
+<span class="text-[9px] text-outline block">REEFER SETPOINT REQUIRED:</span>
+<span class="text-[13px] font-bold text-primary">+13.5°C</span>
+<span class="text-[9px] text-outline ml-1">(TOLERANCE ±0.5°C)</span>
+</div>
+</div>
+<!-- Product Manifest Lines -->
+<div class="mt-4 pt-3 border-t border-outline-variant text-[10px]">
+<table class="w-full text-left">
+<thead>
+<tr class="text-outline uppercase border-b border-outline-variant">
+<th class="pb-1">Variety</th>
+<th class="pb-1">Grade</th>
+<th class="pb-1">Crates</th>
+<th class="pb-1">Avg Weight</th>
+<th class="pb-1">Pest Inspection</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30 text-on-surface">
+<tr>
+<td class="py-1.5 font-bold">Monthong (DONA)</td>
+<td class="py-1.5 text-primary">Grade A (Export)</td>
+<td class="py-1.5">850</td>
+<td class="py-1.5">15.5 kg/box</td>
+<td class="py-1.5 text-secondary">Passed (Nil)</td>
+</tr>
+<tr>
+<td class="py-1.5 font-bold">Ri6 Fresh Whole</td>
+<td class="py-1.5 text-primary">Grade A (Export)</td>
+<td class="py-1.5">430</td>
+<td class="py-1.5">14.8 kg/box</td>
+<td class="py-1.5 text-secondary">Passed (Nil)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Official Signature Block -->
+<div class="pt-8 flex justify-between items-end text-[10px] border-t border-outline-variant mt-6">
+<div>
+<span class="text-outline block">WEIGHBRIDGE OPERATOR:</span>
+<span class="font-bold text-on-surface">LE VAN THANG (ID: #WB-84)</span>
+<p class="text-[9px] text-outline">STAMP: TIEN GIANG TERMINAL WEIGHBRIDGE</p>
+</div>
+<div class="text-right">
+<span class="text-outline block">PPD QUARANTINE CHIEF:</span>
+<span class="font-bold text-primary">VO QUOC NGUYEN (#84-21)</span>
+<p class="text-[9px] text-secondary">DIGITALLY NOTARIZED (SHA-256)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Minimap Thumbnail Navigator (Bottom-Right) -->
+<div class="absolute bottom-4 right-4 w-28 h-40 bg-surface-container-high/90 border border-outline rounded p-1 shadow-2xl backdrop-blur">
+<div class="text-[8px] font-label-sm text-outline uppercase pb-0.5 flex justify-between">
+<span>NAV-MAP</span>
+<span class="text-primary">PAGE 1</span>
+</div>
+<div class="w-full h-[120px] bg-surface-container-lowest border border-outline-variant relative overflow-hidden">
+<div class="w-full h-full opacity-30 flex flex-col gap-1 p-1">
+<div class="h-2 w-3/4 bg-on-surface"></div>
+<div class="h-1 w-1/2 bg-outline"></div>
+<div class="h-8 w-full bg-outline-variant"></div>
+<div class="h-6 w-full bg-outline-variant"></div>
+</div>
+<!-- Viewport Indicator Box -->
+<div class="absolute top-2 left-1 right-1 h-14 border border-primary bg-primary/20"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- COLUMN C: HUMAN-IN-THE-LOOP (HITL) ARBITRATION (w-96 / 380px) -->
+<section class="w-96 border-l border-outline-variant flex flex-col bg-surface-container-low shrink-0 select-none">
+<!-- HITL Panel Header -->
+<div class="p-space-md border-b border-outline-variant bg-surface-container flex items-center justify-between">
+<div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="gavel">gavel</span>
+<h2 class="font-headline-sm text-headline-sm text-on-surface font-bold">HITL ARBITRATION</h2>
+</div>
+<p class="font-code-sm text-code-sm text-on-surface-variant">Regulatory Decision Gateway</p>
+</div>
+<span class="px-2 py-0.5 rounded bg-tertiary/15 border border-tertiary text-tertiary font-label-sm text-label-sm uppercase">
+            SLA Level 1
+          </span>
+</div>
+<!-- Scrollable Arbitration Body -->
+<div class="flex-1 overflow-y-auto p-space-md space-y-space-md custom-scroll">
+<!-- Arithmetic Mean Countdown Timer Widget -->
+<div class="p-space-md rounded bg-surface-container-lowest border border-outline-variant relative overflow-hidden">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-outline uppercase tracking-wider">ARBITRATION PACE</span>
+<span class="px-1.5 py-0.5 rounded bg-primary/10 text-primary font-label-sm text-label-sm border border-primary/30 flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
+                COMPLIANT PACE
+              </span>
+</div>
+<!-- Digital Clock Display -->
+<div class="mt-2 flex items-baseline gap-2">
+<span class="font-code-lg text-[32px] leading-none font-bold text-primary tracking-wider font-code-md">03:42</span>
+<span class="font-code-sm text-code-sm text-on-surface-variant">REMAINING FOR SLA</span>
+</div>
+<p class="font-label-sm text-[10px] text-outline mt-1 uppercase">MEAN INSPECTION TIME (TARGET &lt; 5.0 MINS)</p>
+<!-- SLA Arithmetic Mean Progress Bar -->
+<div class="mt-3">
+<div class="flex justify-between font-code-sm text-[11px] mb-1">
+<span class="text-on-surface-variant">Session Mean: <strong class="text-secondary font-bold">3m 18s</strong></span>
+<span class="text-outline">Max SLA: 5m 00s</span>
+</div>
+<div class="w-full h-1.5 bg-surface-variant rounded-full overflow-hidden">
+<div class="h-full bg-primary rounded-full transition-all duration-300" style="width: 66%;"></div>
+</div>
+</div>
+</div>
+<!-- CHECKLIST MODULES -->
+<div class="space-y-space-sm">
+<!-- Check 1: ISO 6346 Checksum -->
+<div class="p-space-md rounded bg-surface-container border border-outline-variant hover:border-primary/50 transition-colors">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold">CHECK 01 // CONTAINER ID</span>
+<span class="font-code-sm text-[10px] text-secondary">FORMULA ISO-6346</span>
+</div>
+<div class="mt-1 flex items-center justify-between">
+<div>
+<div class="font-code-md text-code-md font-bold text-on-surface">MSKU 123456 5</div>
+<div class="font-code-sm text-[11px] text-outline">Check digit [5] mathematically valid</div>
+</div>
+</div>
+<button class="mt-2 w-full py-1.5 px-space-sm rounded bg-primary-container text-on-primary-container font-code-sm font-bold flex items-center justify-center gap-1.5 transition-all shadow-[0_0_12px_rgba(16,185,129,0.2)]">
+<span class="material-symbols-outlined text-[16px]" data-icon="check">check</span>
+                Confirm ISO 6346 [MSKU 123456 5]
+              </button>
+</div>
+<!-- Check 2: Tamper-Evident High-Security Bolt Seal -->
+<div class="p-space-md rounded bg-surface-container border border-outline-variant">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-secondary uppercase font-bold">CHECK 02 // RFID BOLT SEAL</span>
+<span class="font-code-sm text-[10px] text-primary">MATCHED</span>
+</div>
+<div class="mt-1">
+<div class="font-code-md text-code-md text-on-surface font-bold">SEAL-VN-9872</div>
+<div class="font-code-sm text-[11px] text-on-surface-variant">OCR Match vs CCTV Bay #4 Telemetry Tag</div>
+</div>
+<label class="mt-2 flex items-center gap-2 p-1.5 rounded bg-surface-container-high border border-outline-variant cursor-pointer hover:border-primary transition-colors">
+<input checked="" class="rounded border-outline-variant text-primary focus:ring-primary bg-surface-container-lowest h-4 w-4" type="checkbox"/>
+<span class="font-code-sm text-[11px] text-on-surface">Seal Serial &amp; Barcode Confirmed Untampered</span>
+</label>
+</div>
+<!-- Check 3: GACC Cadmium Threshold Limit -->
+<div class="p-space-md rounded bg-surface-container border border-outline-variant">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold">CHECK 03 // CADMIUM ICP-MS</span>
+<span class="font-code-sm text-code-sm text-primary font-bold">0.021 mg/kg</span>
+</div>
+<!-- Threshold Gauge Card -->
+<div class="mt-2 p-2 rounded bg-surface-container-lowest border border-outline-variant">
+<div class="flex justify-between items-center text-label-sm font-label-sm">
+<span class="text-on-surface-variant">GACC Limit: ≤ 0.050 mg/kg</span>
+<span class="text-primary font-bold">PASSED (42% of max)</span>
+</div>
+<!-- Visual Safety Gauge -->
+<div class="w-full h-2 bg-surface-variant rounded-full mt-1.5 relative overflow-hidden">
+<div class="h-full bg-primary rounded-full" style="width: 42%;"></div>
+<div class="absolute top-0 bottom-0 left-[80%] w-0.5 bg-tertiary" title="Warning Threshold (0.040 mg/kg)"></div>
+</div>
+<div class="flex justify-between text-[9px] font-code-sm text-outline mt-1">
+<span>0.000 (Safe)</span>
+<span class="text-tertiary">0.040 (Warning)</span>
+<span class="text-error">0.050 (Reject)</span>
+</div>
+</div>
+</div>
+<!-- Check 4: Cold Chain Temperature Tolerance -->
+<div class="p-space-md rounded bg-surface-container border border-outline-variant">
+<div class="flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-primary uppercase font-bold">CHECK 04 // TEMPERATURE TOLERANCE</span>
+<span class="font-code-sm text-[10px] text-primary">STABLE</span>
+</div>
+<div class="mt-2 grid grid-cols-2 gap-2 font-code-sm text-code-sm">
+<div class="p-1.5 rounded bg-surface-container-high">
+<span class="text-[10px] text-outline block">REEFER SET</span>
+<span class="font-bold text-on-surface">+13.5°C</span>
+</div>
+<div class="p-1.5 rounded bg-surface-container-high">
+<span class="text-[10px] text-outline block">PULP PROBE AVG</span>
+<span class="font-bold text-secondary">+13.7°C</span>
+</div>
+</div>
+<p class="font-code-sm text-[10px] text-outline mt-1.5">
+                Delta: <strong class="text-primary">+0.2°C</strong> (Well within statutory ≤ 0.5°C tolerance)
+              </p>
+</div>
+</div>
+<!-- Officer Attestation Form -->
+<div class="pt-space-sm border-t border-outline-variant">
+<label class="flex items-start gap-2 p-2 rounded bg-surface-container-high border border-outline-variant cursor-pointer">
+<input checked="" class="mt-0.5 rounded border-outline-variant text-primary focus:ring-primary bg-surface-container-lowest h-4 w-4" type="checkbox"/>
+<span class="font-body-sm text-[11px] text-on-surface leading-tight">
+                I certify under Vietnam Plant Protection Dept &amp; GACC Protocol Decree 2022 that consignment <strong>EXP-DUR-2025-084B</strong> meets all quarantine, heavy metal, and cold-chain integrity requirements.
+              </span>
+</label>
+</div>
+</div>
+<!-- Sticky Arbitration Decision Actions -->
+<div class="p-space-md border-t border-outline-variant bg-surface-container space-y-space-sm shrink-0">
+<button class="w-full py-2.5 px-space-md rounded bg-primary text-surface-container-lowest font-headline-sm font-bold text-label-md tracking-wider uppercase transition-all shadow-[0_0_20px_rgba(78,222,163,0.3)] hover:bg-secondary flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]" data-icon="lock">lock</span>
+            SIGN &amp; DISPATCH GACC CLEARANCE TELEGRAM
+          </button>
+<button class="w-full py-1.5 px-space-md rounded border border-outline-variant hover:border-error/50 bg-surface-container-high text-on-surface-variant hover:text-error font-code-sm text-[11px] uppercase transition-colors flex items-center justify-center gap-1.5">
+<span class="material-symbols-outlined text-[14px]" data-icon="flag">flag</span>
+            Flag Discrepancy / Request Re-Inspection
+          </button>
+</div>
+</section>
+</main>
+</div>
+</body></html>
