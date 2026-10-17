@@ -14,7 +14,8 @@ if (isDeep) {
     process.stdout.write(" DuriOS Deep Open-Core & SaaS Brainstorm (--deep)\n");
     process.stdout.write("=====================================================\n");
     process.stdout.write(`Idea Verdict: ${deepReport.ideaVerdict}\n`);
-    process.stdout.write(`All 5 Socratic Turns Passed: ${deepReport.allTurnsPassed ? "YES" : "NO"}\n`);
+    process.stdout.write(`UI/UX 2027 Verdict: ${deepReport.uiUxDeepAudit.verdict} (${deepReport.uiUxDeepAudit.balancedDomSurfacesCount}/${deepReport.uiUxDeepAudit.totalHtmlSurfacesAudited} HTML Surfaces, ${deepReport.uiUxDeepAudit.deadHrefHashCount} Dead Links)\n`);
+    process.stdout.write(`All 10 Socratic Turns Passed: ${deepReport.allTurnsPassed && deepReport.uiUxDeepAudit.allTurnsPassed ? "YES (10/10)" : "NO"}\n`);
     process.stdout.write(`25-Step Blueprint Passed: ${deepReport.blueprintAudit.overallPassed ? "YES (25/25)" : "NO"}\n`);
     process.stdout.write(
       `Container Gross Margin: ${deepReport.unitEconomicsVerification.containerGrossMarginPct}% (150k VND vs 8k COGS)\n`
@@ -22,11 +23,15 @@ if (isDeep) {
     process.stdout.write("-----------------------------------------------------\n");
     for (const turn of deepReport.socraticTurns) {
       const badge = turn.passed ? "[PASS]" : "[FAIL]";
-      process.stdout.write(`${badge} Turn ${turn.turnNumber} (${turn.dimension}): ${turn.evidenceSummary}\n`);
+      process.stdout.write(`${badge} Open-Core Turn ${turn.turnNumber} (${turn.dimension}): ${turn.evidenceSummary}\n`);
+    }
+    for (const turn of deepReport.uiUxDeepAudit.socraticTurns) {
+      const badge = turn.passed ? "[PASS]" : "[FAIL]";
+      process.stdout.write(`${badge} UI/UX Turn ${turn.turnNumber} (${turn.dimension}): ${turn.evidenceSummary}\n`);
     }
     process.stdout.write("=====================================================\n");
   }
-  if (!deepReport.allTurnsPassed || !deepReport.blueprintAudit.overallPassed) {
+  if (!deepReport.allTurnsPassed || !deepReport.uiUxDeepAudit.allTurnsPassed || !deepReport.blueprintAudit.overallPassed) {
     process.exit(1);
   }
   process.exit(0);
