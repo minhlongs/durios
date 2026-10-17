@@ -1,0 +1,816 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Field Auditor 5-Gate Launch Tool // Mekong Clear GACC Durian Ops</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-fixed-variant": "#653e00",
+            "tertiary-container": "#e29100",
+            "primary-container": "#10b981",
+            "on-primary-container": "#00422b",
+            "primary-fixed-dim": "#4edea3",
+            "tertiary-fixed": "#ffddb8",
+            "on-secondary-container": "#00452e",
+            "secondary-fixed-dim": "#45dfa4",
+            "surface-container-high": "#242c26",
+            "tertiary-fixed-dim": "#ffb95f",
+            "surface": "#0d1510",
+            "surface-variant": "#2e3731",
+            "surface-container-low": "#151d18",
+            "primary-fixed": "#6ffbbe",
+            "surface-container-highest": "#2e3731",
+            "on-surface-variant": "#bbcabf",
+            "on-primary": "#003824",
+            "secondary-container": "#00bd85",
+            "inverse-on-surface": "#2a322c",
+            "error-container": "#93000a",
+            "on-secondary-fixed": "#002114",
+            "outline-variant": "#3c4a42",
+            "on-error-container": "#ffdad6",
+            "on-primary-fixed-variant": "#005236",
+            "surface-container": "#19211c",
+            "on-tertiary-container": "#523200",
+            "error": "#ffb4ab",
+            "on-error": "#690005",
+            "on-tertiary-fixed": "#2a1700",
+            "inverse-primary": "#006c49",
+            "secondary": "#45dfa4",
+            "surface-dim": "#0d1510",
+            "on-tertiary": "#472a00",
+            "primary": "#4edea3",
+            "on-background": "#dce5dc",
+            "secondary-fixed": "#68fcbf",
+            "on-secondary-fixed-variant": "#005137",
+            "surface-bright": "#333b35",
+            "tertiary": "#ffb95f",
+            "on-surface": "#dce5dc",
+            "background": "#0d1510",
+            "surface-tint": "#4edea3",
+            "on-secondary": "#003825",
+            "inverse-surface": "#dce5dc",
+            "surface-container-lowest": "#08100b",
+            "on-primary-fixed": "#002113",
+            "outline": "#86948a"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "gutter": "1rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2rem",
+            "space-lg": "1.25rem",
+            "margin": "1.5rem",
+            "gutter-compact": "0.5rem",
+            "margin-mobile": "0.75rem",
+            "space-sm": "0.5rem",
+            "space-md": "0.75rem"
+          },
+          "fontFamily": {
+            "headline-sm": ["Inter"],
+            "headline-lg": ["Inter"],
+            "label-md": ["JetBrains Mono"],
+            "code-lg": ["JetBrains Mono"],
+            "body-lg": ["Inter"],
+            "code-md": ["JetBrains Mono"],
+            "code-sm": ["JetBrains Mono"],
+            "headline-xl": ["Inter"],
+            "body-sm": ["Inter"],
+            "body-md": ["Inter"],
+            "headline-md": ["Inter"],
+            "label-sm": ["JetBrains Mono"],
+            "headline-xl-mobile": ["Inter"]
+          },
+          "fontSize": {
+            "headline-sm": ["16px", { "lineHeight": "24px", "fontWeight": "600" }],
+            "headline-lg": ["24px", { "lineHeight": "32px", "fontWeight": "600" }],
+            "label-md": ["11px", { "lineHeight": "14px", "fontWeight": "600" }],
+            "code-lg": ["15px", { "lineHeight": "20px", "fontWeight": "500" }],
+            "body-lg": ["15px", { "lineHeight": "22px", "fontWeight": "400" }],
+            "code-md": ["13px", { "lineHeight": "18px", "fontWeight": "500" }],
+            "code-sm": ["11px", { "lineHeight": "14px", "fontWeight": "400" }],
+            "headline-xl": ["32px", { "lineHeight": "40px", "fontWeight": "700" }],
+            "body-sm": ["12px", { "lineHeight": "16px", "fontWeight": "400" }],
+            "body-md": ["13px", { "lineHeight": "18px", "fontWeight": "400" }],
+            "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+            "label-sm": ["10px", { "lineHeight": "12px", "fontWeight": "600" }],
+            "headline-xl-mobile": ["24px", { "lineHeight": "32px", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    .material-symbols-outlined {
+      font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 20;
+      display: inline-block;
+      vertical-align: middle;
+    }
+    .pulse-radar {
+      animation: radar-ping 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    @keyframes radar-ping {
+      75%, 100% {
+        transform: scale(2.2);
+        opacity: 0;
+      }
+    }
+    /* Technical scrollbars */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #08100b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #3c4a42;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #4edea3;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-md min-h-screen flex flex-col selection:bg-primary selection:text-on-primary">
+<!-- Top Navigation Bar (Shared Component: TopNavBar with Auditor Active Mapping) -->
+<header class="flex justify-between items-center w-full px-margin h-14 bg-surface-container border-b border-outline-variant sticky top-0 z-50">
+<div class="flex items-center gap-space-lg">
+<div class="flex items-center gap-space-sm">
+<span class="material-symbols-outlined text-primary" data-icon="terminal">terminal</span>
+<span class="text-headline-sm font-headline-sm uppercase tracking-wider text-primary font-bold">MEKONG CLEAR // GACC DUR-EXP-OPS</span>
+</div>
+<!-- Left Operational Metadata Tags -->
+<div class="hidden xl:flex items-center gap-space-xs text-code-sm font-code-sm bg-surface-container-lowest px-space-sm py-1 border border-outline-variant rounded">
+<span class="inline-flex h-2 w-2 rounded-full bg-primary-container relative">
+<span class="pulse-radar absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+</span>
+<span class="text-primary font-label-sm font-bold">NODE: ACTIVE</span>
+<span class="text-outline">|</span>
+<span class="text-on-surface-variant font-label-sm">FACILITY #VN-84B</span>
+<span class="text-outline">|</span>
+<span class="text-on-surface-variant font-label-sm">TIEN GIANG STATION</span>
+<span class="text-outline">|</span>
+<span class="text-primary font-label-sm">AUDIT DISPATCH DESK</span>
+</div>
+</div>
+<!-- Center Navigation Links -->
+<nav class="hidden lg:flex items-center gap-space-lg">
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:bg-surface-variant hover:text-on-surface transition-colors duration-150" href="index.html">Manifest Queue</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:bg-surface-variant hover:text-on-surface transition-colors duration-150" href="dossiers.html">Phytosanitary Log</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:bg-surface-variant hover:text-on-surface transition-colors duration-150" href="index.html">Cold-Chain Telemetry</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:bg-surface-variant hover:text-on-surface transition-colors duration-150" href="index.html">Customs Gateway</a>
+<a class="text-primary border-b-2 border-primary font-code-md text-code-md py-1 flex items-center gap-1" href="auditor.html">
+<span class="material-symbols-outlined text-sm" data-icon="verified">verified</span>
+<span>Field Auditor (Active)</span>
+</a>
+<a class="text-on-surface-variant font-code-md text-code-md py-1 hover:bg-surface-variant hover:text-on-surface transition-colors duration-150" href="dossiers.html">Dossiers</a>
+</nav>
+<!-- Right Trailing Controls & Badge -->
+<div class="flex items-center gap-space-md">
+<div class="hidden sm:flex flex-col text-right">
+<span class="text-code-sm font-code-sm text-primary font-bold">2026-10-27 08:30:00 UTC+7</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">HW KEY: ED25519-AUTH-VALID</span>
+</div>
+<div class="h-6 w-px bg-outline-variant hidden sm:block"></div>
+<!-- Chief Auditor Badge -->
+<div class="flex items-center gap-space-sm bg-surface-container-high border border-outline-variant px-space-sm py-1 rounded">
+<span class="material-symbols-outlined text-primary" data-icon="shield_person">shield_person</span>
+<div class="flex flex-col text-left">
+<span class="text-label-sm font-label-sm font-bold text-on-surface">SOPHIA FOUNDER</span>
+<span class="text-label-sm font-label-sm text-primary">LEAD AUDITOR // GACC-084</span>
+</div>
+</div>
+</div>
+</header>
+<div class="flex flex-1 overflow-hidden">
+<!-- Side Rail (Shared Component: SideNavBar) -->
+<aside class="flex flex-col justify-between h-[calc(100vh-3.5rem)] w-64 border-r border-outline-variant bg-surface-container-lowest p-space-md shrink-0 hidden md:flex">
+<div class="space-y-space-md">
+<!-- Rail Station Header -->
+<div class="border-b border-outline-variant pb-space-sm">
+<div class="text-label-md font-label-md text-primary font-bold tracking-widest uppercase">FACILITY #VN-84B</div>
+<div class="text-label-sm font-label-sm text-on-surface-variant">TIEN GIANG STATION</div>
+<div class="text-label-sm font-label-sm text-outline mt-1 font-mono">GACC Border Control Node VN-084</div>
+</div>
+<!-- Rail Main Tabs -->
+<nav class="space-y-1">
+<a class="bg-surface-container-high text-primary border-l-2 border-primary px-space-md py-space-sm font-code-sm flex items-center gap-space-sm w-full block" href="auditor.html">
+<span class="material-symbols-outlined text-primary" data-icon="verified">verified</span>
+<span>Verify Ops</span>
+</a>
+<a class="text-on-surface-variant px-space-md py-space-sm font-code-sm flex items-center gap-space-sm hover:bg-surface-container-high hover:text-on-surface transition-colors duration-150 w-full block" href="dossiers.html">
+<span class="material-symbols-outlined text-outline" data-icon="biotech">biotech</span>
+<span>Cadmium Lab</span>
+</a>
+<a class="text-on-surface-variant px-space-md py-space-sm font-code-sm flex items-center gap-space-sm hover:bg-surface-container-high hover:text-on-surface transition-colors duration-150 w-full block" href="index.html">
+<span class="material-symbols-outlined text-outline" data-icon="ac_unit">ac_unit</span>
+<span>Cold Chain</span>
+</a>
+<a class="text-on-surface-variant px-space-md py-space-sm font-code-sm flex items-center gap-space-sm hover:bg-surface-container-high hover:text-on-surface transition-colors duration-150 w-full block" href="index.html">
+<span class="material-symbols-outlined text-outline" data-icon="lock">lock</span>
+<span>Seal Chain</span>
+</a>
+<a class="text-on-surface-variant px-space-md py-space-sm font-code-sm flex items-center gap-space-sm hover:bg-surface-container-high hover:text-on-surface transition-colors duration-150 w-full block" href="dossiers.html">
+<span class="material-symbols-outlined text-outline" data-icon="receipt_long">receipt_long</span>
+<span>Audit Trail</span>
+</a>
+</nav>
+<!-- CTA in rail -->
+<div class="pt-space-sm">
+<button class="w-full bg-surface-container border border-primary text-primary font-code-sm py-2 px-space-sm flex items-center justify-center gap-2 hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-sm" data-icon="lock">lock</span>
+<span>Lock Container Seal</span>
+</button>
+</div>
+</div>
+<!-- Rail Footer Tabs -->
+<div class="border-t border-outline-variant pt-space-sm space-y-1">
+<a class="text-on-surface-variant px-space-md py-space-sm font-code-sm flex items-center gap-space-sm hover:bg-surface-container-high hover:text-on-surface transition-colors block" href="#sync">
+<span class="material-symbols-outlined text-outline" data-icon="sync">sync</span>
+<span>Telemetry Sync</span>
+</a>
+<a class="text-on-surface-variant px-space-md py-space-sm font-code-sm flex items-center gap-space-sm hover:bg-surface-container-high hover:text-on-surface transition-colors block" href="#specs">
+<span class="material-symbols-outlined text-outline" data-icon="settings">settings</span>
+<span>System Specs</span>
+</a>
+</div>
+</aside>
+<!-- Main Workspace Content Canvas -->
+<main class="flex-1 overflow-y-auto bg-surface p-gutter md:p-space-xl pb-28 space-y-space-lg">
+<!-- Site Inspection Header Bar -->
+<section class="bg-surface-container-low border border-outline-variant p-space-md rounded">
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex flex-wrap items-center gap-y-2 gap-x-space-lg">
+<div>
+<div class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Facility &amp; Location</div>
+<div class="text-body-md font-headline-sm text-on-surface font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="location_on">location_on</span>
+                Site VN-TG-PH-001 (Cai Lậy Hub, Tiền Giang, Vietnam)
+              </div>
+</div>
+<div class="h-8 w-px bg-outline-variant hidden sm:block"></div>
+<div>
+<div class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Inspection Protocol</div>
+<div class="text-body-md font-headline-sm text-on-surface font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="gavel">gavel</span>
+                GACC Decree 2022 / VN-PPD Protocol 2024-C7
+              </div>
+</div>
+<div class="h-8 w-px bg-outline-variant hidden md:block"></div>
+<div>
+<div class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Target Market</div>
+<div class="text-body-md font-headline-sm text-on-surface font-semibold flex items-center gap-1.5">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="local_shipping">local_shipping</span>
+                GACC China (CN) Border Corridor (Youyi Guan / Mohan)
+              </div>
+</div>
+</div>
+<!-- Lead & Batch Badge -->
+<div class="flex items-center gap-space-sm bg-surface-container px-space-sm py-1.5 border border-outline-variant rounded self-start lg:self-auto">
+<span class="material-symbols-outlined text-secondary" data-icon="tag">tag</span>
+<span class="text-code-sm font-code-sm text-on-surface-variant font-bold">BATCH: DURIAN-EXP-LIVE-L4</span>
+</div>
+</div>
+</section>
+<!-- Overall Status Hero Banner -->
+<section class="bg-surface-container border-2 border-primary-container p-space-lg rounded relative overflow-hidden">
+<!-- Subtle industrial background glow accent -->
+<div class="absolute -top-12 -right-12 w-96 h-96 bg-primary-container opacity-5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md border-b border-outline-variant pb-space-md mb-space-md">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="inline-flex items-center gap-1.5 bg-primary-container/20 border border-primary px-2.5 py-0.5 rounded text-label-sm font-label-sm text-primary uppercase font-bold tracking-wider">
+<span class="inline-block w-2 h-2 rounded-full bg-primary-container"></span>
+                SYSTEM CLEARANCE: 100% COMPLIANT (5/5 GATES)
+              </span>
+<span class="bg-surface-variant text-on-surface-variant px-2 py-0.5 rounded text-label-sm font-label-sm">AIR-GAP VERIFIED</span>
+</div>
+<h1 class="text-headline-lg font-headline-lg text-on-surface tracking-tight">
+              GO FOR LIVE OPERATIONAL LAUNCH — ALL 5 GATES EVALUATED &amp; VERIFIED
+            </h1>
+<p class="text-body-sm font-body-sm text-on-surface-variant">
+              Commercial export consignment phytosanitary certification is ready for instant cryptographic seal application.
+            </p>
+</div>
+<!-- Cryptographic Seal Quick Box -->
+<div class="bg-surface-container-lowest border border-outline-variant p-space-sm rounded lg:max-w-md w-full">
+<div class="flex items-center justify-between text-label-sm font-label-sm mb-1">
+<span class="text-outline uppercase tracking-wider">Overall Cryptographic Seal</span>
+<span class="text-primary font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="verified_user">verified_user</span>
+                TAMPER-PROOF VERIFIED
+              </span>
+</div>
+<div class="flex items-center justify-between bg-surface-container-low px-2 py-1.5 rounded border border-outline-variant">
+<span class="font-code-sm text-code-sm text-primary truncate max-w-[260px] sm:max-w-[320px]">
+                8a4f9c2d1b7e3f81e05d47a83c6b29e01f4c9a87d2e3b1c5f6a9e8d7c4b2a1f0
+              </span>
+<button class="text-outline hover:text-primary transition-colors ml-2" title="Copy Hash">
+<span class="material-symbols-outlined text-sm" data-icon="content_copy">content_copy</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Summary KPI Cards Bento Row -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-space-sm">
+<div class="bg-surface-container-low border border-outline-variant p-space-sm rounded">
+<div class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Gate Clearance</div>
+<div class="text-headline-md font-headline-md text-primary font-bold mt-1">5 / 5 PASSED</div>
+<div class="text-code-sm font-code-sm text-primary mt-0.5">100% Sub-criteria Met</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-space-sm rounded">
+<div class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Mean Verification SLA</div>
+<div class="text-headline-md font-headline-md text-primary font-bold mt-1">3.4 mins</div>
+<div class="text-code-sm font-code-sm text-on-surface-variant mt-0.5">Target &lt; 5.0 mins (Compliant)</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-space-sm rounded">
+<div class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Blind Fault Injection</div>
+<div class="text-headline-md font-headline-md text-primary font-bold mt-1">2 / 2 Caught</div>
+<div class="text-code-sm font-code-sm text-primary mt-0.5">100% Intercept Rate</div>
+</div>
+<div class="bg-surface-container-low border border-outline-variant p-space-sm rounded">
+<div class="text-label-sm font-label-sm text-outline uppercase tracking-wider">Data Protection &amp; WAL</div>
+<div class="text-headline-md font-headline-md text-primary font-bold mt-1">100% Immutable</div>
+<div class="text-code-sm font-code-sm text-on-surface-variant mt-0.5">Zero Outbound WAN Egress</div>
+</div>
+</div>
+</section>
+<!-- 5-Gate Deep Inspection Matrix -->
+<section class="space-y-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="fact_check">fact_check</span>
+<h2 class="text-headline-md font-headline-md text-on-surface tracking-tight">5-Gate Deep Inspection Matrix</h2>
+</div>
+<span class="text-label-sm font-label-sm text-on-surface-variant bg-surface-container-high px-2 py-1 border border-outline-variant rounded">
+            CALIBRATION PROTOCOL: GACC-VN-2026-LIVE
+          </span>
+</div>
+<div class="grid grid-cols-1 gap-space-md">
+<!-- GATE-01: LEGAL CONSENT & DATA PROTECTION -->
+<article class="bg-surface-container border border-outline-variant hover:border-primary transition-colors rounded overflow-hidden">
+<div class="h-1 bg-primary-container w-full"></div>
+<div class="p-space-md space-y-space-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-space-sm">
+<span class="bg-surface-container-highest text-primary font-code-md text-code-md px-2 py-0.5 rounded border border-outline-variant font-bold">
+                    GATE-01
+                  </span>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">LEGAL CONSENT &amp; DATA PROTECTION</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Data Protection Agreement (DPA) signed under Law 91/2025/QH15 &amp; Vietnam Personal Data Protection Decree</p>
+</div>
+</div>
+<div class="self-start sm:self-auto">
+<span class="inline-flex items-center gap-1 bg-primary-container/15 border border-primary text-primary px-2.5 py-1 rounded text-label-sm font-label-sm uppercase font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span>
+                    PASSED [100% CONSENT]
+                  </span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm bg-surface-container-low p-space-sm border border-outline-variant rounded">
+<div>
+<span class="text-label-sm font-label-sm text-outline uppercase">Audit Evidence</span>
+<p class="text-body-sm font-body-sm text-on-surface mt-1">100% consent recorded on-chain with cryptographic timestamp. 48 packhouse farmer/sorter entities signed. Zero pending opt-outs.</p>
+</div>
+<div>
+<span class="text-label-sm font-label-sm text-outline uppercase">Transaction Anchor</span>
+<div class="font-code-sm text-code-sm text-primary mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs" data-icon="link">link</span>
+                    tx-dpa-88f219a12c4b8e99e04f7c2a514d3
+                  </div>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Witness: Ministry of Agriculture &amp; Rural Dev (MARD)</span>
+</div>
+<div>
+<span class="text-label-sm font-label-sm text-outline uppercase">Consent Scope</span>
+<div class="flex items-center gap-1.5 mt-1">
+<span class="bg-surface-container-high text-on-surface px-1.5 py-0.5 text-code-sm font-code-sm border border-outline-variant rounded">GPS Packhouse Tagging</span>
+<span class="bg-surface-container-high text-on-surface px-1.5 py-0.5 text-code-sm font-code-sm border border-outline-variant rounded">Biometric ID</span>
+</div>
+<span class="text-label-sm font-label-sm text-primary mt-1 block">Full compliance with Decree 13/2023/ND-CP</span>
+</div>
+</div>
+</div>
+</article>
+<!-- GATE-02: MULTI-CHANNEL AUTH & OTP DRILL -->
+<article class="bg-surface-container border border-outline-variant hover:border-primary transition-colors rounded overflow-hidden">
+<div class="h-1 bg-primary-container w-full"></div>
+<div class="p-space-md space-y-space-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-space-sm">
+<span class="bg-surface-container-highest text-primary font-code-md text-code-md px-2 py-0.5 rounded border border-outline-variant font-bold">
+                    GATE-02
+                  </span>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">MULTI-CHANNEL AUTH &amp; OTP DRILL</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Zalo ZNS + SMS Brandname Telecommunications Fallback Drill</p>
+</div>
+</div>
+<div class="self-start sm:self-auto">
+<span class="inline-flex items-center gap-1 bg-primary-container/15 border border-primary text-primary px-2.5 py-1 rounded text-label-sm font-label-sm uppercase font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span>
+                    PASSED [10/10 DELIVERED]
+                  </span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm bg-surface-container-low p-space-sm border border-outline-variant rounded">
+<div class="md:col-span-2">
+<span class="text-label-sm font-label-sm text-outline uppercase">Drill Telemetry &amp; Failover Profile</span>
+<p class="text-body-sm font-body-sm text-on-surface mt-1">10/10 test OTPs delivered in &lt; 15 seconds (mean delivery: 4.2s). Automatic failover from Zalo Notification Service (ZNS) to Telco SMS Brandname (Viettel/VNPT Gateway) verified with zero packet drop.</p>
+<!-- Compact Latency Visual Track -->
+<div class="mt-space-sm space-y-1">
+<div class="flex justify-between text-code-sm font-code-sm text-on-surface-variant">
+<span>Delivery Distribution (10/10 Delivered)</span>
+<span class="text-primary font-bold">4.2s Mean SLA (Max: 6.8s)</span>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded flex overflow-hidden">
+<div class="bg-primary h-full w-[42%]" title="Mean latency"></div>
+<div class="bg-secondary h-full w-[26%]" title="ZNS primary"></div>
+<div class="bg-tertiary-container h-full w-[12%]" title="SMS fallback"></div>
+</div>
+</div>
+</div>
+<div class="border-t md:border-t-0 md:border-l border-outline-variant md:pl-space-sm space-y-2">
+<div>
+<span class="text-label-sm font-label-sm text-outline uppercase">Network Metrics</span>
+<div class="text-headline-sm font-headline-sm text-primary font-bold">4.2s Mean Latency</div>
+</div>
+<div class="text-code-sm font-code-sm text-on-surface-variant space-y-0.5">
+<div>Reliability: <span class="text-primary font-semibold">99.98%</span></div>
+<div>Throttled: <span class="text-primary font-semibold">0 Rejected</span></div>
+<div>Carrier Fallback: <span class="text-primary font-semibold">Ready (Instant)</span></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- GATE-03: LOCAL NETWORK ISOLATION -->
+<article class="bg-surface-container border border-outline-variant hover:border-primary transition-colors rounded overflow-hidden">
+<div class="h-1 bg-primary-container w-full"></div>
+<div class="p-space-md space-y-space-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-space-sm">
+<span class="bg-surface-container-highest text-primary font-code-md text-code-md px-2 py-0.5 rounded border border-outline-variant font-bold">
+                    GATE-03
+                  </span>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">LOCAL NETWORK ISOLATION</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Air-Gapped LAN Weighbridge Station &amp; Port Binding Audit</p>
+</div>
+</div>
+<div class="self-start sm:self-auto">
+<span class="inline-flex items-center gap-1 bg-primary-container/15 border border-primary text-primary px-2.5 py-1 rounded text-label-sm font-label-sm uppercase font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span>
+                    PASSED [AIR-GAPPED]
+                  </span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm bg-surface-container-low p-space-sm border border-outline-variant rounded">
+<div class="md:col-span-2">
+<span class="text-label-sm font-label-sm text-outline uppercase">Isolation Telemetry</span>
+<p class="text-body-sm font-body-sm text-on-surface mt-1">Weighbridge scale interface strictly bound to <code class="text-primary font-code-sm bg-surface-container px-1 py-0.5 rounded">127.0.0.1:3000</code> local loopback. Deep packet inspection confirms zero external telemetry leaks, outbound WAN egress blocked on inspection subnet.</p>
+<div class="mt-space-sm bg-surface-container-lowest p-2 border border-outline-variant rounded font-code-sm text-code-sm text-on-surface-variant">
+<span class="text-outline"># iptables verification dump:</span><br/>
+<span class="text-primary font-semibold">Chain OUTPUT (policy DROP)</span><br/>
+<span class="text-on-surface">OUTPUT -s 127.0.0.1/32 -d 127.0.0.1/32 -p tcp --dport 3000 -j ACCEPT</span><br/>
+<span class="text-error font-semibold">OUTPUT -d 0.0.0.0/0 -j REJECT [VERIFIED ACTIVE]</span>
+</div>
+</div>
+<div class="border-t md:border-t-0 md:border-l border-outline-variant md:pl-space-sm space-y-2">
+<span class="text-label-sm font-label-sm text-outline uppercase">Firewall &amp; Socket State</span>
+<div class="space-y-1 text-code-sm font-code-sm">
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">Binding Interface:</span>
+<span class="text-primary">lo0 (127.0.0.1)</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">WAN Egress:</span>
+<span class="text-primary font-bold">BLOCKED</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">Port Leaks:</span>
+<span class="text-primary font-bold">0 Detected</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="text-on-surface-variant">Hardware Port:</span>
+<span class="text-on-surface font-mono">RS232-USB0</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- GATE-04: OFF-SITE RECOVERY & INTEGRITY -->
+<article class="bg-surface-container border border-outline-variant hover:border-primary transition-colors rounded overflow-hidden">
+<div class="h-1 bg-primary-container w-full"></div>
+<div class="p-space-md space-y-space-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-space-sm">
+<span class="bg-surface-container-highest text-primary font-code-md text-code-md px-2 py-0.5 rounded border border-outline-variant font-bold">
+                    GATE-04
+                  </span>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">OFF-SITE RECOVERY &amp; INTEGRITY</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">SQLite WAL Mode Integrity &amp; Automated Hourly Encrypted Sync Drill</p>
+</div>
+</div>
+<div class="self-start sm:self-auto">
+<span class="inline-flex items-center gap-1 bg-primary-container/15 border border-primary text-primary px-2.5 py-1 rounded text-label-sm font-label-sm uppercase font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span>
+                    PASSED [ZERO DATA LOSS]
+                  </span>
+</div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-space-sm bg-surface-container-low p-space-sm border border-outline-variant rounded">
+<div class="md:col-span-2">
+<span class="text-label-sm font-label-sm text-outline uppercase">Storage Architecture &amp; WAL Drills</span>
+<p class="text-body-sm font-body-sm text-on-surface mt-1">SQLite Write-Ahead Logging (WAL) checkpoint integrity verified under continuous concurrency simulation. Hourly AES-256 encrypted sync tested against off-site disaster recovery node. Recovery point objective (RPO) &lt; 60s confirmed.</p>
+<div class="mt-space-sm flex flex-wrap gap-2 text-code-sm font-code-sm">
+<span class="bg-surface-container px-2 py-1 border border-outline-variant rounded text-primary">
+                      PRAGMA journal_mode = WAL;
+                    </span>
+<span class="bg-surface-container px-2 py-1 border border-outline-variant rounded text-primary">
+                      PRAGMA synchronous = EXTRA;
+                    </span>
+<span class="bg-surface-container px-2 py-1 border border-outline-variant rounded text-on-surface">
+                      wal_checkpoint(PASSIVE) = OK
+                    </span>
+</div>
+</div>
+<div class="border-t md:border-t-0 md:border-l border-outline-variant md:pl-space-sm space-y-2">
+<span class="text-label-sm font-label-sm text-outline uppercase">Integrity Verifier</span>
+<div class="text-headline-sm font-headline-sm text-primary font-bold">wal_cksum_ok=true</div>
+<div class="text-code-sm font-code-sm text-on-surface-variant space-y-0.5">
+<div>Corruption Rate: <span class="text-primary font-semibold">0.00%</span></div>
+<div>Sync Target: <span class="text-on-surface font-mono">GACC-DR-02-HCMC</span></div>
+<div>Encryption: <span class="text-primary font-semibold">AES-256-GCM</span></div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<!-- GATE-05: 5-CONTAINER TIMED REHEARSAL -->
+<article class="bg-surface-container border border-outline-variant hover:border-primary transition-colors rounded overflow-hidden">
+<div class="h-1 bg-primary-container w-full"></div>
+<div class="p-space-md space-y-space-sm">
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+<div class="flex items-center gap-space-sm">
+<span class="bg-surface-container-highest text-primary font-code-md text-code-md px-2 py-0.5 rounded border border-outline-variant font-bold">
+                    GATE-05
+                  </span>
+<div>
+<h3 class="text-headline-sm font-headline-sm text-on-surface">5-CONTAINER TIMED REHEARSAL</h3>
+<p class="text-body-sm font-body-sm text-on-surface-variant">Live Reefer Processing Rehearsal &amp; Active Fault Injection Stress Test</p>
+</div>
+</div>
+<div class="self-start sm:self-auto">
+<span class="inline-flex items-center gap-1 bg-primary-container/15 border border-primary text-primary px-2.5 py-1 rounded text-label-sm font-label-sm uppercase font-bold">
+<span class="material-symbols-outlined text-xs" data-icon="check_circle">check_circle</span>
+                    PASSED [SLA COMPLIANT &amp; 2/2 FAULTS INTERCEPTED]
+                  </span>
+</div>
+</div>
+<!-- Rehearsal Metric Row -->
+<div class="bg-surface-container-low p-space-sm border border-outline-variant rounded">
+<div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-outline-variant pb-2 mb-2 gap-2">
+<span class="text-label-sm font-label-sm text-outline uppercase">Timed Rehearsal Performance</span>
+<div class="flex items-center gap-space-md text-code-sm font-code-sm">
+<span class="text-on-surface">Containers Tested: <strong class="text-primary">5 Units</strong></span>
+<span class="text-on-surface">Mean Processing Speed: <strong class="text-primary">3.4 mins</strong> (Limit: 5.0 mins)</span>
+</div>
+</div>
+<!-- Blind Fault Injection Report -->
+<div class="space-y-2">
+<div class="text-label-sm font-label-sm text-tertiary uppercase font-bold tracking-wider flex items-center gap-1">
+<span class="material-symbols-outlined text-sm" data-icon="warning">warning</span>
+                    Blind Fault Injection Forensic Log (Intercepted Prior to Seal Affixation)
+                  </div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-space-sm">
+<!-- Fault 1 -->
+<div class="bg-surface-container border-l-2 border-primary-container p-space-sm rounded">
+<div class="flex items-center justify-between text-code-sm font-code-sm">
+<span class="text-on-surface font-bold">FAULT #01: RFID Tamper Intercept</span>
+<span class="text-primary font-bold text-label-sm font-label-sm bg-primary/10 px-1.5 py-0.5 rounded">CAUGHT</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                        Intercepted RFID Bolt Seal Tamper Hash Mismatch on Container <code class="text-on-surface font-code-sm">OOLU 452910 8</code>. The terminal auto-flagged inconsistency and triggered Human Verification Quarantine.
+                      </p>
+<div class="text-label-sm font-label-sm text-primary mt-1 font-mono">Action: Protocol Quarantine Executed (0.4s)</div>
+</div>
+<!-- Fault 2 -->
+<div class="bg-surface-container border-l-2 border-primary-container p-space-sm rounded">
+<div class="flex items-center justify-between text-code-sm font-code-sm">
+<span class="text-on-surface font-bold">FAULT #02: Cadmium Threshold Warning</span>
+<span class="text-primary font-bold text-label-sm font-label-sm bg-primary/10 px-1.5 py-0.5 rounded">CAUGHT</span>
+</div>
+<p class="text-body-sm font-body-sm text-on-surface-variant mt-1">
+                        Intercepted Cadmium ICP-MS 0.048 mg/kg Threshold Warning (&gt; 96% of statutory 0.05 mg/kg limit on container <code class="text-on-surface font-code-sm">MSKU 123456 5</code>). Pre-emptive secondary laboratory titration alert flagged.
+                      </p>
+<div class="text-label-sm font-label-sm text-primary mt-1 font-mono">Action: Secondary Spectrometry Triggered (Pre-Seal)</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- Forensic Rehearsal Audit Evidence Log Table -->
+<section class="bg-surface-container-low border border-outline-variant p-space-md rounded">
+<div class="flex items-center justify-between mb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-sm" data-icon="table_view">table_view</span>
+<span class="text-headline-sm font-headline-sm text-on-surface">5-Container Rehearsal Run Proofs</span>
+</div>
+<span class="text-label-sm font-label-sm text-outline font-mono">TOTAL SAMPLES: 5 | REEFER TEMP: -18.2°C to +4.0°C</span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="border-b border-outline-variant font-code-sm text-code-sm text-outline uppercase tracking-wider">
+<th class="py-2 px-3">Container Unit</th>
+<th class="py-2 px-3">Reefer Telemetry</th>
+<th class="py-2 px-3">Dry Matter %</th>
+<th class="py-2 px-3">Ethylene ppm</th>
+<th class="py-2 px-3">Duration</th>
+<th class="py-2 px-3">Gate 5 Status</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant font-code-sm text-code-sm">
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors">
+<td class="py-2 px-3 font-bold text-on-surface">OOLU 452910 8</td>
+<td class="py-2 px-3 text-primary">+13.4°C (Ambient Chilled)</td>
+<td class="py-2 px-3 text-on-surface">32.8% (Ri6 Grade A)</td>
+<td class="py-2 px-3 text-on-surface">0.14 ppm</td>
+<td class="py-2 px-3 text-on-surface-variant">3.1 mins</td>
+<td class="py-2 px-3"><span class="text-primary font-bold">TAMPER TRAP VERIFIED</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-2 px-3 font-bold text-on-surface">MSKU 123456 5</td>
+<td class="py-2 px-3 text-primary">+13.2°C (Optimal)</td>
+<td class="py-2 px-3 text-on-surface">34.1% (Monthong Gold)</td>
+<td class="py-2 px-3 text-on-surface">0.09 ppm</td>
+<td class="py-2 px-3 text-on-surface-variant">3.6 mins</td>
+<td class="py-2 px-3"><span class="text-primary font-bold">CADMIUM SPIKE INTERCEPT</span></td>
+</tr>
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors">
+<td class="py-2 px-3 font-bold text-on-surface">CMAU 998120 1</td>
+<td class="py-2 px-3 text-primary">+13.5°C (Stable)</td>
+<td class="py-2 px-3 text-on-surface">33.5% (Ri6 Premium)</td>
+<td class="py-2 px-3 text-on-surface">0.11 ppm</td>
+<td class="py-2 px-3 text-on-surface-variant">3.2 mins</td>
+<td class="py-2 px-3"><span class="text-primary font-bold">PASSED [CLEARED]</span></td>
+</tr>
+<tr class="hover:bg-surface-container-high transition-colors">
+<td class="py-2 px-3 font-bold text-on-surface">SITC 771239 4</td>
+<td class="py-2 px-3 text-primary">+13.1°C (Optimal)</td>
+<td class="py-2 px-3 text-on-surface">35.0% (Musang King VN)</td>
+<td class="py-2 px-3 text-on-surface">0.08 ppm</td>
+<td class="py-2 px-3 text-on-surface-variant">3.3 mins</td>
+<td class="py-2 px-3"><span class="text-primary font-bold">PASSED [CLEARED]</span></td>
+</tr>
+<tr class="bg-surface-container hover:bg-surface-container-high transition-colors">
+<td class="py-2 px-3 font-bold text-on-surface">EVER 604312 0</td>
+<td class="py-2 px-3 text-primary">+13.3°C (Optimal)</td>
+<td class="py-2 px-3 text-on-surface">33.0% (Monthong)</td>
+<td class="py-2 px-3 text-on-surface">0.12 ppm</td>
+<td class="py-2 px-3 text-on-surface-variant">3.8 mins</td>
+<td class="py-2 px-3"><span class="text-primary font-bold">PASSED [CLEARED]</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+</div>
+<!-- Sticky Action Footer Bar -->
+<footer class="fixed bottom-0 left-0 right-0 h-16 bg-surface-container-lowest border-t border-outline-variant px-gutter flex items-center justify-between z-50">
+<!-- Left Navigation Quick Links -->
+<div class="flex items-center gap-space-md">
+<a class="flex items-center gap-1.5 text-code-sm font-code-sm text-on-surface-variant hover:text-primary transition-colors py-1" href="index.html">
+<span class="material-symbols-outlined text-sm" data-icon="dashboard">dashboard</span>
+<span class="hidden sm:inline">Command Station (index.html)</span>
+<span class="sm:hidden">Command</span>
+</a>
+<span class="text-outline">/</span>
+<a class="flex items-center gap-1.5 text-code-sm font-code-sm text-on-surface-variant hover:text-primary transition-colors py-1" href="dossiers.html">
+<span class="material-symbols-outlined text-sm" data-icon="folder_managed">folder_managed</span>
+<span class="hidden sm:inline">Dossier Registry (dossiers.html)</span>
+<span class="sm:hidden">Dossiers</span>
+</a>
+</div>
+<!-- Center Terminal Daemon Snapshot -->
+<div class="hidden xl:flex items-center gap-2 text-code-sm font-code-sm bg-surface-container px-space-md py-1 border border-outline-variant rounded font-mono">
+<span class="inline-block w-2 h-2 rounded-full bg-primary-container"></span>
+<span class="text-primary">audit_daemon.sock: LISTENING</span>
+<span class="text-outline">|</span>
+<span class="text-on-surface-variant">KEY_RING: ED25519_LOADED</span>
+</div>
+<!-- Right Action CTAs -->
+<div class="flex items-center gap-space-sm">
+<button class="bg-surface-container border border-outline-variant text-on-surface hover:border-primary hover:text-primary text-code-sm font-code-sm py-2 px-space-md rounded flex items-center gap-1.5 transition-colors" onclick="downloadAuditPack()">
+<span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+<span class="hidden md:inline">Download Sealed Auditor Pack (.json)</span>
+<span class="md:hidden">Export JSON</span>
+</button>
+<button class="bg-primary-container text-on-primary-container font-headline-sm text-code-sm font-bold py-2 px-space-lg rounded flex items-center gap-1.5 shadow hover:brightness-110 active:scale-[0.99] transition-all" onclick="authorizeCommercialLaunch()">
+<span class="material-symbols-outlined text-sm" data-icon="key">key</span>
+<span>Sign Off &amp; Authorize Live Commercial Traffic</span>
+</button>
+</div>
+</footer>
+<!-- Hardware Key Signature Modal Prompt (Hidden by default) -->
+<div class="hidden fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4" id="authModal">
+<div class="bg-surface-container border-2 border-primary max-w-lg w-full p-space-lg rounded shadow-2xl space-y-space-md">
+<div class="flex items-center justify-between border-b border-outline-variant pb-space-sm">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" data-icon="verified_user">verified_user</span>
+<span class="text-headline-sm font-headline-sm text-on-surface">ED25519 HARDWARE TOKEN SIGN-OFF</span>
+</div>
+<button class="text-outline hover:text-on-surface" onclick="closeAuthModal()">
+<span class="material-symbols-outlined text-sm" data-icon="close">close</span>
+</button>
+</div>
+<div class="space-y-space-sm text-body-sm font-body-sm">
+<p class="text-on-surface">
+          You are executing the final legal clearance for export batch <strong>DURIAN-EXP-LIVE-L4</strong> destined for the GACC China corridor.
+        </p>
+<div class="bg-surface-container-lowest p-space-sm rounded border border-outline-variant space-y-1 font-mono text-code-sm">
+<div class="text-outline">Signature Target: ALL 5 GATES (VERIFIED)</div>
+<div class="text-primary font-bold">Officer: Sophia Founder // CVCO #VN-084</div>
+<div class="text-on-surface-variant truncate">Fingerprint: ed25519:bf98a...41e8c90</div>
+</div>
+<div class="p-space-sm bg-primary-container/10 border border-primary/30 rounded text-code-sm font-code-sm text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" data-icon="lock_clock">lock_clock</span>
+<span>Please touch your physical YubiKey / FIPS Token to seal and broadcast the manifest.</span>
+</div>
+</div>
+<div class="flex justify-end gap-space-sm pt-space-xs">
+<button class="px-space-md py-1.5 text-code-sm font-code-sm text-on-surface-variant hover:text-on-surface" onclick="closeAuthModal()">
+          Cancel
+        </button>
+<button class="bg-primary text-on-primary font-bold px-space-lg py-1.5 rounded text-code-sm font-code-sm flex items-center gap-1 hover:brightness-110" onclick="confirmHardwareSignature()">
+<span class="material-symbols-outlined text-sm" data-icon="draw">draw</span>
+          Touch Key &amp; Commit Broadcast
+        </button>
+</div>
+</div>
+</div>
+<script>
+    function authorizeCommercialLaunch() {
+      document.getElementById('authModal').classList.remove('hidden');
+    }
+
+    function closeAuthModal() {
+      document.getElementById('authModal').classList.add('hidden');
+    }
+
+    function confirmHardwareSignature() {
+      alert("CRITICAL AUTHORIZATION RECORDED:\n\nSHA-256 seal signed via Ed25519 Hardware Token.\nLive Commercial Consignment status set to CLEARED FOR CN CORRIDOR.\nBroadcasted to GACC Border Node VN-084.");
+      closeAuthModal();
+    }
+
+    function downloadAuditPack() {
+      const auditPayload = {
+        station: "VN-84B TIEN GIANG STATION",
+        facility: "Site VN-TG-PH-001 (Cai Lậy Hub)",
+        protocol: "GACC Decree 2022 / VN-PPD Protocol 2024-C7",
+        lead_auditor: "Sophia Founder (Chief Verification & Compliance Officer)",
+        batch: "DURIAN-EXP-LIVE-L4",
+        clearance_rate: "5/5 GATES PASSED (100%)",
+        sha256_seal: "8a4f9c2d1b7e3f81e05d47a83c6b29e01f4c9a87d2e3b1c5f6a9e8d7c4b2a1f0",
+        gates_evaluated: [
+          { gate: "GATE-01", name: "LEGAL CONSENT & DPA", result: "PASSED", consent: "100%" },
+          { gate: "GATE-02", name: "ZALO ZNS + SMS FAILOVER", result: "PASSED", latency: "4.2s" },
+          { gate: "GATE-03", name: "AIR-GAPPED LAN ISOLATION", result: "PASSED", binding: "127.0.0.1:3000" },
+          { gate: "GATE-04", name: "SQLITE WAL MODE INTEGRITY", result: "PASSED", checksum: "wal_cksum_ok=true" },
+          { gate: "GATE-05", name: "5-CONTAINER REHEARSAL", result: "PASSED", intercepted_faults: 2 }
+        ],
+        timestamp_utc: "2026-10-27T08:30:00Z"
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(auditPayload, null, 2));
+      const downloadAnchor = document.createElement('a');
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", "MekongClear_Auditor_Pack_VN84B_LIVE.json");
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+    }
+  </script>
+</body></html>
