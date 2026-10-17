@@ -8,6 +8,7 @@ import {
 } from "./auth-handlers.js";
 import { errorResponse, jsonResponse, mapDomainErrorToResponse } from "./server-types.js";
 import { serveIndexHtml } from "./static-ui.js";
+import { serveStitchStaticAsset } from "./stitch-static-handler.js";
 import {
   handleListDossiers,
   handleCreateDossier,
@@ -50,6 +51,10 @@ export async function routeHttpRequest(
 
   if (method === "GET" && (path === "/" || path === "/index.html")) {
     return serveIndexHtml();
+  }
+  if (method === "GET" && path.startsWith("/stitch/")) {
+    const stitchResp = serveStitchStaticAsset(path);
+    if (stitchResp) return stitchResp;
   }
   if (method === "GET" && path === "/api/health") {
     return jsonResponse({
