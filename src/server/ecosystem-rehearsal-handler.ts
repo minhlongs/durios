@@ -3,8 +3,7 @@ import { computeGate05KpiFromDossiers } from "../auth/pilot-kpi-evaluator.js";
 import { evaluateWorkspaceLaunchGates } from "../auth/pilot-launch-gate-verifier.js";
 import { assertValidActor } from "../auth/rbac-policy.js";
 import {
-  compilePilotGoLiveDossierPack,
-  verifyPilotGoLiveDossierPackIntegrity,
+  compilePilotGoLiveDossierPack, verifyPilotGoLiveDossierPackIntegrity,
 } from "../export/pilot-dossier-pack-compiler.js";
 import { isMarketplaceFeatureUnlocked } from "../marketplace/marketplace-guard.js";
 import { listSupportedAseanCorridors } from "../rules/asean-corridor-adapters.js";
@@ -15,8 +14,7 @@ import { resolveSaasSubscriptionStatus } from "../saas/saas-tier-policy.js";
 import type { ContainerDossierWorkspace } from "../workspace/container-dossier-workspace.js";
 import { buildSessionCookieHeader } from "./auth-handlers.js";
 import {
-  seedRehearsalDossiersForActor,
-  type RehearsalDossierSpec,
+  seedRehearsalDossiersForActor, type RehearsalDossierSpec,
 } from "./ecosystem-rehearsal-seeder.js";
 import { setupFullGatesRehearsalOptions } from "./ecosystem-rehearsal-drill.js";
 import { assertLoopbackHostname } from "./server.js";
@@ -48,8 +46,7 @@ export function handleBootstrapPilotRehearsal(workspace: ContainerDossierWorkspa
 
     const activeSession = requestedRole === "MANAGER" ? managerSession : clerkSession;
     const activePilotToken = requestedRole === "MANAGER" ? managerToken.rawToken : clerkToken.rawToken;
-    const allDossiers = workspace.listDossiers(activeSession.actor);
-    const pilotKpi = computeGate05KpiFromDossiers(allDossiers);
+    const pilotKpi = computeGate05KpiFromDossiers(workspace.listDossiers(activeSession.actor));
     const gateOpts = isFullGates ? setupFullGatesRehearsalOptions(workspace) : {};
     const pilotGates = evaluateWorkspaceLaunchGates(workspace, activeSession.actor, gateOpts);
     const goLivePack = compilePilotGoLiveDossierPack(workspace, managerSession.actor, gateOpts);
@@ -61,8 +58,8 @@ export function handleBootstrapPilotRehearsal(workspace: ContainerDossierWorkspa
         tenantId, clerkUsername: "clerk.cailay", managerUsername: "manager.cailay",
         clerkPilotToken: clerkToken.rawToken, managerPilotToken: managerToken.rawToken,
         activePilotToken, actor: activeSession.actor, newlyCreatedCount, dossiers,
-        pilotKpi, pilotGates, passedGateCount: pilotGates.passedCount, totalGateCount: pilotGates.totalGates,
-        goLivePack, goLivePackVerified,
+        pilotKpi, pilotGates, passedGateCount: pilotGates.passedCount,
+        totalGateCount: pilotGates.totalGates, goLivePack, goLivePackVerified,
       },
     };
     return new Response(JSON.stringify(payload), {
@@ -100,34 +97,16 @@ export function handleGetEcosystemTelemetry(workspace: ContainerDossierWorkspace
     const deepSocratic = evaluateOpenCoreDeepBrainstorm();
     const goLivePack = compilePilotGoLiveDossierPack(workspace, actor);
 
-    const cloudOcrEconomics = {
-      feeVnd: 150_000,
-      cogsVnd: 8_000,
-      grossMarginPct: 94.67,
-      confidenceThreshold: 0.85,
-      hitlQuarantineThreshold: 0.85,
-      coldArchiveRetentionYears: 10,
-      coldArchiveStorage: "S3/R2",
-      restoreVerification: "SHA-256",
-    };
-    const ed25519DowngradeSimulator = {
-      algorithm: "Ed25519",
-      offlineVerification: true,
-      gracePeriodDays: 7,
-      downgradePath: "PRO/ENTERPRISE -> COMMUNITY",
-      zeroDataLoss: true,
-      sqliteAuditChainsIntact: true,
-    };
-
     return jsonResponse({
       success: true,
       data: {
         evaluatedAt: new Date().toISOString(), actor, subscription, corridors,
         marketplaceGuard: { featureUnlocked, goForLiveCustomerData: pilotGates.goForLiveCustomerData, custodyMode: "ZERO_CUSTODY_LICENSED_BANK_PARTNER", statutoryCitation: "Nghị định 52/2024/NĐ-CP & Luật TMĐT 122/2025/QH15", prohibitedCustodyFieldsCount: 7 },
         edgeSyncQueue: { pendingCount: pendingSyncItems.length, pendingItems: pendingSyncItems },
+        cloudOcrEconomics: { revenuePerContainerVnd: 150000, variableCogsVnd: 8000, grossMarginPct: 94.67, kdfSpec: "scrypt(N=16384,r=8,p=1) -> AES-256-GCM" },
+        ed25519DowngradeSimulator: { zeroDataLoss: true, localSqliteReadWrite: true, mitStandaloneVerifier: true, communityFallbackEdition: "COMMUNITY_OPEN_CORE" },
         pilotGates, pilotKpi, goLivePack, goLivePackVerified: verifyPilotGoLiveDossierPackIntegrity(goLivePack),
         editionManifest, blueprintAudit: deepSocratic.blueprintAudit, deepSocratic,
-        cloudOcrEconomics, ed25519DowngradeSimulator,
       },
     });
   } catch (err: unknown) {

@@ -3,15 +3,9 @@ import type { AuthenticatedActor, DocumentType } from "../domain/types.js";
 import type { ContainerDossierWorkspace } from "../workspace/container-dossier-workspace.js";
 
 export interface RehearsalDossierSpec {
-  readonly code: string;
-  readonly prefix10: string;
-  readonly seal: string;
-  readonly docSeal: string;
-  readonly verify: boolean;
-  readonly scenario:
-    | "CLEAN_READY"
-    | "BLIND_FAULT_SEAL_MISMATCH"
-    | "BLIND_FAULT_UNVERIFIED_EVIDENCE";
+  readonly code: string; readonly prefix10: string;
+  readonly seal: string; readonly docSeal: string; readonly verify: boolean;
+  readonly scenario: "CLEAN_READY" | "BLIND_FAULT_SEAL_MISMATCH" | "BLIND_FAULT_UNVERIFIED_EVIDENCE";
 }
 
 const CAILAY_REHEARSAL_SPECS: readonly RehearsalDossierSpec[] = [
@@ -38,29 +32,20 @@ function uploadAndOptionallyVerifyTriad(
   sealInDoc: string,
   verifyAllFields: boolean
 ): void {
-  const docs: ReadonlyArray<{
-    type: DocumentType;
-    fileName: string;
-    fields: Record<string, { raw: string }>;
-  }> = [
+  const docs: ReadonlyArray<{ type: DocumentType; fileName: string; fields: Record<string, { raw: string }> }> = [
     {
-      type: "PACKING_LIST",
-      fileName: `PackingList-${dossierId}.pdf`,
+      type: "PACKING_LIST", fileName: `PackingList-${dossierId}.pdf`,
       fields: {
         net_weight_kg: { raw: "18240" }, total_boxes: { raw: "960" },
         seal_number: { raw: sealInDoc }, PUC: { raw: "VN-TG-ORCHARD-0042" }, PHC: { raw: "VN-TG-PACK-0018" },
       },
     },
     {
-      type: "LAB_TEST_REPORT",
-      fileName: `LabReport-${dossierId}.pdf`,
-      fields: {
-        cadmium_mg_kg: { raw: "0.025" }, sample_code: { raw: `LAB-${dossierId}` }, sampling_date: { raw: "2026-10-10" },
-      },
+      type: "LAB_TEST_REPORT", fileName: `LabReport-${dossierId}.pdf`,
+      fields: { cadmium_mg_kg: { raw: "0.025" }, sample_code: { raw: `LAB-${dossierId}` }, sampling_date: { raw: "2026-10-10" } },
     },
     {
-      type: "PHYTOSANITARY_CERTIFICATE",
-      fileName: `Phyto-${dossierId}.pdf`,
+      type: "PHYTOSANITARY_CERTIFICATE", fileName: `Phyto-${dossierId}.pdf`,
       fields: {
         phyto_cert_no: { raw: `VN-PHYTO-${dossierId}` }, inspection_date: { raw: "2026-10-12" },
         PUC: { raw: "VN-TG-ORCHARD-0042" }, PHC: { raw: "VN-TG-PACK-0018" }, target_temperature_c: { raw: "14" },
@@ -87,11 +72,8 @@ export function seedRehearsalDossiersForActor(
 ): {
   readonly newlyCreatedCount: number;
   readonly dossiers: ReadonlyArray<{
-    readonly id: string;
-    readonly dossierCode: string;
-    readonly containerNumber: string;
-    readonly scenario: RehearsalDossierSpec["scenario"];
-    readonly lifecycleState: string;
+    readonly id: string; readonly dossierCode: string; readonly containerNumber: string;
+    readonly scenario: RehearsalDossierSpec["scenario"]; readonly lifecycleState: string;
   }>;
 } {
   const existingByCode = new Map(workspace.listDossiers(actor).map((d) => [d.dossierCode, d]));
@@ -104,14 +86,11 @@ export function seedRehearsalDossiersForActor(
   for (const s of CAILAY_REHEARSAL_SPECS) {
     let target = existingByCode.get(s.code);
     if (!target) {
-      const created = workspace.createDossier(
-        {
-          dossierCode: s.code, containerNumber: buildValidContainerNumber(s.prefix10),
-          sealNumber: s.seal, targetMarket: "CN", borderGate: "Hữu Nghị",
-          targetTemperatureC: 14.0, declaredNetWeightKg: 18240, declaredBoxCount: 960,
-        },
-        actor
-      );
+      const created = workspace.createDossier({
+        dossierCode: s.code, containerNumber: buildValidContainerNumber(s.prefix10),
+        sealNumber: s.seal, targetMarket: "CN", borderGate: "Hữu Nghị",
+        targetTemperatureC: 14.0, declaredNetWeightKg: 18240, declaredBoxCount: 960,
+      }, actor);
       uploadAndOptionallyVerifyTriad(workspace, created.id, actor, s.docSeal, s.verify);
       if (s.verify) workspace.runValidation(created.id, actor);
       target = workspace.getDossier(created.id, actor) ?? created;

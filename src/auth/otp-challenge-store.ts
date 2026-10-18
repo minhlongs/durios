@@ -1,18 +1,12 @@
 import type { SqliteClient } from "../storage/sqlite-client.js";
 import {
-  generateNumericOtpCode,
-  generateSaltHex,
-  hashSecretWithSalt,
-  verifySecretWithSalt,
+  generateNumericOtpCode, generateSaltHex, hashSecretWithSalt, verifySecretWithSalt,
 } from "./crypto-helpers.js";
 import type { OtpChannel, OtpProviderAdapter } from "./otp-provider.js";
 import { AuthenticationError, type IssuedOtpChallenge } from "./auth-types.js";
 import {
-  assertRateLimitAllowed,
-  clearRateLimitBucket,
-  OTP_REQUEST_LIMIT_POLICY,
-  OTP_VERIFY_LIMIT_POLICY,
-  recordRateLimitAttempt,
+  assertRateLimitAllowed, clearRateLimitBucket,
+  OTP_REQUEST_LIMIT_POLICY, OTP_VERIFY_LIMIT_POLICY, recordRateLimitAttempt,
 } from "./rate-limit-store.js";
 
 export async function createOtpChallengeRecord(
@@ -25,9 +19,7 @@ export async function createOtpChallengeRecord(
 ): Promise<IssuedOtpChallenge> {
   const reqBucket = `otp_req:${phoneNumber}`;
   recordRateLimitAttempt(
-    client,
-    reqBucket,
-    OTP_REQUEST_LIMIT_POLICY,
+    client, reqBucket, OTP_REQUEST_LIMIT_POLICY,
     "Too many OTP requests for this phone number. Please wait before retrying."
   );
 
@@ -39,13 +31,7 @@ export async function createOtpChallengeRecord(
   const expiresAt = new Date(now.getTime() + ttlMs).toISOString();
 
   if (accountId !== null) {
-    await otpProvider.sendOtp({
-      challengeId,
-      phoneNumber,
-      otpCode,
-      channel,
-      expiresAt,
-    });
+    await otpProvider.sendOtp({ challengeId, phoneNumber, otpCode, channel, expiresAt });
   }
 
   client.db.run(
@@ -56,13 +42,7 @@ export async function createOtpChallengeRecord(
     [challengeId, accountId, phoneNumber, channel, codeHash, salt, expiresAt, now.toISOString()]
   );
 
-  return {
-    challengeId,
-    phoneNumber,
-    channel,
-    expiresAt,
-    providerReference: "OTP-DISPATCH-ACCEPTED",
-  };
+  return { challengeId, phoneNumber, channel, expiresAt, providerReference: "OTP-DISPATCH-ACCEPTED" };
 }
 
 export function consumeVerifiedOtpChallenge(
@@ -73,34 +53,22 @@ export function consumeVerifiedOtpChallenge(
   const ch = client.db
     .query<
       {
-        id: string;
-        account_id: string | null;
-        phone_number: string;
-        code_hash: string;
-        code_salt: string;
-        expires_at: string;
-        consumed_at: string | null;
-        attempts: number;
-        max_attempts: number;
+        id: string; account_id: string | null; phone_number: string;
+        code_hash: string; code_salt: string; expires_at: string;
+        consumed_at: string | null; attempts: number; max_attempts: number;
       },
       [string]
     >("SELECT * FROM otp_challenges WHERE id = ?")
     .get(challengeId.trim());
 
-  if (!ch) {
-    throw new AuthenticationError("Invalid or expired OTP verification code.", "OTP_INVALID");
-  }
+  if (!ch) throw new AuthenticationError("Invalid or expired OTP verification code.", "OTP_INVALID");
 
   const verifyBucket = `otp_verify:${ch.phone_number}`;
   assertRateLimitAllowed(
-    client,
-    verifyBucket,
-    "Too many failed OTP verification attempts. Please wait before retrying."
+    client, verifyBucket, "Too many failed OTP verification attempts. Please wait before retrying."
   );
 
-  if (ch.consumed_at) {
-    throw new AuthenticationError("OTP challenge has already been consumed.", "OTP_CONSUMED");
-  }
+  if (ch.consumed_at) throw new AuthenticationError("OTP challenge has already been consumed.", "OTP_CONSUMED");
   if (ch.attempts >= ch.max_attempts) {
     throw new AuthenticationError("OTP maximum verification attempts exceeded.", "OTP_MAX_ATTEMPTS");
   }
@@ -112,9 +80,7 @@ export function consumeVerifiedOtpChallenge(
   if (!codeMatches || ch.account_id === null) {
     client.db.run("UPDATE otp_challenges SET attempts = attempts + 1 WHERE id = ?", [ch.id]);
     recordRateLimitAttempt(
-      client,
-      verifyBucket,
-      OTP_VERIFY_LIMIT_POLICY,
+      client, verifyBucket, OTP_VERIFY_LIMIT_POLICY,
       "Too many failed OTP verification attempts. Please wait before retrying."
     );
     if (ch.attempts + 1 >= ch.max_attempts) {
@@ -124,10 +90,6 @@ export function consumeVerifiedOtpChallenge(
   }
 
   clearRateLimitBucket(client, verifyBucket);
-  client.db.run("UPDATE otp_challenges SET consumed_at = ? WHERE id = ?", [
-    new Date().toISOString(),
-    ch.id,
-  ]);
-
+  client.db.run("UPDATE otp_challenges SET consumed_at = ? WHERE id = ?", [new Date().toISOString(), ch.id]);
   return ch.account_id;
 }

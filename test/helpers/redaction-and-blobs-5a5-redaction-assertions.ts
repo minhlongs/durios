@@ -4,32 +4,15 @@ import { calculateSha256 } from "../../src/ingestion/document-hasher.js";
 import { routeHttpRequest } from "../../src/server/http-router.js";
 import type { ContainerDossierWorkspace } from "../../src/workspace/container-dossier-workspace.js";
 import {
-  seedAndMakeActor,
-  type DossierDetailResponse,
-  type DossierListOrDetailResponse,
+  seedAndMakeActor, type DossierDetailResponse, type DossierListOrDetailResponse,
 } from "./redaction-and-blobs-5a5-fixtures.js";
 
 const FORBIDDEN_COMMERCIAL_KEYS = [
-  "invoice_value",
-  "invoiceValue",
-  "unit_price",
-  "unitPrice",
-  "buyer_name",
-  "buyerName",
-  "buyer_contact",
-  "buyerContact",
-  "commercial_contract_no",
-  "commercialContractNo",
-  "payment_terms",
-  "paymentTerms",
-  "exporter_margin",
-  "exporterMargin",
-  "customs_broker_fee",
-  "customsBrokerFee",
-  "clerkNote",
-  "clerk_note",
-  "storagePath",
-  "storage_path",
+  "invoice_value", "invoiceValue", "unit_price", "unitPrice",
+  "buyer_name", "buyerName", "buyer_contact", "buyerContact",
+  "commercial_contract_no", "commercialContractNo", "payment_terms", "paymentTerms",
+  "exporter_margin", "exporterMargin", "customs_broker_fee", "customsBrokerFee",
+  "clerkNote", "clerk_note", "storagePath", "storage_path",
 ];
 
 export function assertNoCommercialLeak(payload: unknown): void {
@@ -83,13 +66,8 @@ export async function verifyMultiGrantRevocationAndRawSafety(
   pdfBytes: Uint8Array
 ): Promise<void> {
   const extraLogisticsGrant = workspace.shareManager.grantAccess(
-    currentDossier,
-    "TENANT-BUYER-5A5",
-    "LOGISTICS",
-    "READ_ONLY",
-    futureIso,
-    ownerActor,
-    workspace.auditLedger
+    currentDossier, "TENANT-BUYER-5A5", "LOGISTICS", "READ_ONLY",
+    futureIso, ownerActor, workspace.auditLedger
   );
 
   const multiGrantRes = await routeHttpRequest(
@@ -103,11 +81,7 @@ export async function verifyMultiGrantRevocationAndRawSafety(
   expect(multiGrantJson.data.declaredBoxCount).toBe(925);
 
   workspace.shareManager.revokeAccess(
-    extraLogisticsGrant.id,
-    currentDossier,
-    "Logistics leg finished",
-    ownerActor,
-    workspace.auditLedger
+    extraLogisticsGrant.id, currentDossier, "Logistics leg finished", ownerActor, workspace.auditLedger
   );
 
   const afterRevokeRes = await routeHttpRequest(
@@ -123,7 +97,5 @@ export async function verifyMultiGrantRevocationAndRawSafety(
   const rawAfter = workspace.getRawDossier(currentDossier.id)!;
   expect(rawAfter.declaredNetWeightKg).toBe(18500);
   expect(rawAfter.declaredBoxCount).toBe(925);
-  expect(rawAfter.documents[0]?.storagePath).toBe(
-    `storage/blobs/${calculateSha256(pdfBytes)}.bin`
-  );
+  expect(rawAfter.documents[0]?.storagePath).toBe(`storage/blobs/${calculateSha256(pdfBytes)}.bin`);
 }

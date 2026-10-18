@@ -49,25 +49,17 @@ describe("Adversarial Verification Suite (Supreme Command #07)", () => {
   });
 
   afterEach(() => {
-    try {
-      client.close();
-    } catch {
-      // ignore
-    }
-    if (existsSync(tempDir)) {
-      rmSync(tempDir, { recursive: true, force: true });
-    }
+    try { client.close(); } catch { /* ignore */ }
+    if (existsSync(tempDir)) rmSync(tempDir, { recursive: true, force: true });
   });
 
   describe("Section 2: Database and File Consistency", () => {
     it("cleans up newly created file when repository metadata save fails, preserving unrelated files", () => {
       runFailedSaveCleanupScenario(workspace, repo, ledger, storage, dataDir);
     });
-
     it("sanitizes unsafe filenames and prevents path traversal", () => {
       runSafePathAndTraversalScenario(storage, dataDir);
     });
-
     it("rejects oversized file uploads beyond configured limit (25MB)", () => {
       runOversizedUploadRejectionScenario(workspace);
     });
@@ -77,7 +69,6 @@ describe("Adversarial Verification Suite (Supreme Command #07)", () => {
     it("invalidates previous passing validation and resets lifecycle when field is modified", () => {
       runValidationInvalidationOnFieldModifyScenario(workspace);
     });
-
     it("prohibits document uploads and field verification on sealed/exported dossiers", () => {
       runSealedDossierProhibitsMutationsScenario(workspace);
     });
@@ -93,7 +84,6 @@ describe("Adversarial Verification Suite (Supreme Command #07)", () => {
     it("rejects client-controlled headers and resolves role strictly from server-verified tokens", () => {
       runActorSpoofingRejectionScenario(workspace);
     });
-
     it("enforces server-side role gate: CLERK cannot approve dossier for export", () => {
       runClerkRoleApprovalGateScenario(workspace);
     });
@@ -103,11 +93,9 @@ describe("Adversarial Verification Suite (Supreme Command #07)", () => {
     it("detects payload modification in SQLite and fails integrity verification", () => {
       runAuditPayloadTamperDetectionScenario(workspace, client, ledger);
     });
-
     it("detects event deletion and breaks cryptographic chain", () => {
       runAuditDeletionDetectionScenario(workspace, client, ledger);
     });
-
     it("fails closed on export when audit tampering is detected", () => {
       runAuditTamperBlocksExportScenario(workspace, client);
     });

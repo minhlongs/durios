@@ -15,8 +15,7 @@ export async function runStagingLiveDossierKpiStep(
       method: "POST", headers: { Cookie: clerkOtpCookie, "Content-Type": "application/json" },
       body: JSON.stringify({
         dossierCode: "DOS-CAILAY-LIVE-01", containerNumber: "MSKU1234565", sealNumber: "SEAL-CAILAY-888",
-        targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
-        declaredNetWeightKg: 18500, declaredBoxCount: 925,
+        targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5, declaredNetWeightKg: 18500, declaredBoxCount: 925,
       }),
     })
   );
@@ -29,8 +28,7 @@ export async function runStagingLiveDossierKpiStep(
       base64Content: Buffer.from("%PDF-1.7 CAILAY-LIVE-PL-BYTES").toString("base64"),
       fixtureFields: {
         container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-CAILAY-888" },
-        net_weight_kg: { raw: "18500" }, box_count: { raw: "925" },
-        buyer_name: { raw: "Synthetic Buyer Confidential Corp" },
+        net_weight_kg: { raw: "18500" }, box_count: { raw: "925" }, buyer_name: { raw: "Synthetic Buyer Confidential Corp" },
       },
     },
     {
@@ -76,10 +74,7 @@ export async function runStagingLiveDossierKpiStep(
       const verRes = await siteA.handler(
         new Request(
           `https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/documents/${uploadedDoc.id}/fields/${f.id}/verify`,
-          {
-            method: "POST", headers: { Cookie: clerkOtpCookie, "Content-Type": "application/json" },
-            body: JSON.stringify({ confirmedValue: f.rawValue }),
-          }
+          { method: "POST", headers: { Cookie: clerkOtpCookie, "Content-Type": "application/json" }, body: JSON.stringify({ confirmedValue: f.rawValue }) }
         )
       );
       expect(verRes.status).toBe(200);
@@ -87,15 +82,12 @@ export async function runStagingLiveDossierKpiStep(
   }
 
   const liveValRes = await siteA.handler(
-    new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/validate`, {
-      method: "POST", headers: { Cookie: clerkOtpCookie },
-    })
+    new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/validate`, { method: "POST", headers: { Cookie: clerkOtpCookie } })
   );
   expect(liveValRes.status).toBe(200);
   const liveValData = ((await liveValRes.json()) as { data: StagingValidationView }).data;
   expect(["PASSED", "REVIEW_REQUIRED"]).toContain(liveValData.status);
-  expect(liveValData.criticalBlockers).toBe(0);
-  expect(Date.now() - kpiStartMs).toBeLessThan(180_000);
+  expect(liveValData.criticalBlockers === 0 && Date.now() - kpiStartMs < 180_000).toBe(true);
 
   const orgRes = await siteA.handler(
     new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/organic-evidence`, {
@@ -111,20 +103,13 @@ export async function runStagingLiveDossierKpiStep(
   );
   expect(orgRes.status).toBe(201);
 
-  expect(
-    (await siteA.handler(new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/approve`, { method: "POST", headers: { Cookie: mgrCookie } }))).status
-  ).toBe(200);
-  expect(
-    (await siteA.handler(new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/export`, { method: "POST", headers: { Cookie: mgrCookie } }))).status
-  ).toBe(200);
+  expect((await siteA.handler(new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/approve`, { method: "POST", headers: { Cookie: mgrCookie } }))).status).toBe(200);
+  expect((await siteA.handler(new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/export`, { method: "POST", headers: { Cookie: mgrCookie } }))).status).toBe(200);
 
   const shareRes = await siteA.handler(
     new Request(`https://durios-pilot.local/api/v1/dossiers/${liveDossierId}/shares`, {
       method: "POST", headers: { Cookie: mgrCookie, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        granteeTenantId: "TENANT-BUYER-CN-01", purpose: "BUYER_VERIFICATION",
-        scope: "READ_ONLY", expiresAt: futureIso,
-      }),
+      body: JSON.stringify({ granteeTenantId: "TENANT-BUYER-CN-01", purpose: "BUYER_VERIFICATION", scope: "READ_ONLY", expiresAt: futureIso }),
     })
   );
   expect(shareRes.status).toBe(201);

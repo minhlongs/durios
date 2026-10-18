@@ -14,12 +14,8 @@ export function verifySiteBackup(backupDir: string): SiteBackupVerificationResul
   const backupUploadsDir = join(absBackupDir, "uploads");
   const errors: string[] = [];
 
-  if (!existsSync(manifestPath)) {
-    return { valid: false, errors: ["Missing backup-manifest.json in backup directory."] };
-  }
-  if (!existsSync(backupDbPath)) {
-    return { valid: false, errors: ["Missing durios.db in backup directory."] };
-  }
+  if (!existsSync(manifestPath)) return { valid: false, errors: ["Missing backup-manifest.json in backup directory."] };
+  if (!existsSync(backupDbPath)) return { valid: false, errors: ["Missing durios.db in backup directory."] };
 
   let manifest: SiteBackupManifest;
   try {
@@ -30,15 +26,12 @@ export function verifySiteBackup(backupDir: string): SiteBackupVerificationResul
 
   const actualDbSha = calculateSha256(new Uint8Array(readFileSync(backupDbPath)));
   if (actualDbSha !== manifest.databaseSha256) {
-    errors.push(
-      `Database SHA-256 mismatch: manifest expects '${manifest.databaseSha256}', actual is '${actualDbSha}'.`
-    );
+    errors.push(`Database SHA-256 mismatch: manifest expects '${manifest.databaseSha256}', actual is '${actualDbSha}'.`);
   }
 
   const client = new SqliteClient({ dbPath: backupDbPath });
   try {
-    const ledger = new SqliteAuditLedger(client);
-    if (!ledger.verifyIntegrity()) {
+    if (!new SqliteAuditLedger(client).verifyIntegrity()) {
       errors.push("Backup SQLite audit ledger hash chain failed verifyIntegrity().");
     }
 
@@ -92,9 +85,7 @@ export function restoreSiteBackup(
     throw new Error(`Refusing to restore invalid or corrupted backup: ${verification.errors.join("; ")}`);
   }
 
-  const absBackupDir = resolve(backupDir);
-  const absTargetDbPath = resolve(targetDbPath);
-  const absTargetDataDir = resolve(targetDataDir);
+  const [absBackupDir, absTargetDbPath, absTargetDataDir] = [resolve(backupDir), resolve(targetDbPath), resolve(targetDataDir)];
 
   mkdirSync(dirname(absTargetDbPath), { recursive: true });
   mkdirSync(join(absTargetDataDir, "storage", "blobs"), { recursive: true });

@@ -8,11 +8,8 @@ export type WorkspaceAppInstance = ReturnType<typeof createWorkspaceApp>;
 
 export interface AuthDataPayload {
   data: {
-    sessionToken?: string;
-    challengeId?: string;
-    providerReference?: string;
-    sessionId?: string;
-    actor?: Record<string, unknown>;
+    sessionToken?: string; challengeId?: string; providerReference?: string;
+    sessionId?: string; actor?: Record<string, unknown>;
   };
 }
 
@@ -28,15 +25,10 @@ export async function runCookieOtpAndMptUnificationScenario(
   const rawPassword = "StrongPilotPassword#2026";
   runPilotOpsCliArgs(
     [
-      "provision-account",
-      "--id", "ACT-CAILAY-MGR-01",
-      "--username", "mgr.cailay",
-      "--phone", "+84909111222",
-      "--name", "Tran Thi B (Packhouse Manager)",
-      "--tenant", "TENANT-CAILAY-01",
-      "--tenant-type", "PACKHOUSE_EXPORTER",
-      "--role", "MANAGER",
-      "--persona", "PACKHOUSE_MANAGER",
+      "provision-account", "--id", "ACT-CAILAY-MGR-01", "--username", "mgr.cailay",
+      "--phone", "+84909111222", "--name", "Tran Thi B (Packhouse Manager)",
+      "--tenant", "TENANT-CAILAY-01", "--tenant-type", "PACKHOUSE_EXPORTER",
+      "--role", "MANAGER", "--persona", "PACKHOUSE_MANAGER",
     ],
     app.authService,
     { DURIOS_PILOT_PASSWORD: rawPassword }
@@ -45,20 +37,16 @@ export async function runCookieOtpAndMptUnificationScenario(
   process.env.NODE_ENV = "production";
   const pwRes = await app.handler(
     new Request("http://127.0.0.1/api/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: "mgr.cailay", password: rawPassword }),
     })
   );
   expect(pwRes.status).toBe(200);
   expect(pwRes.headers.get("cache-control")).toBe("no-store");
   const pwSetCookie = pwRes.headers.get("set-cookie") ?? "";
-  expect(pwSetCookie).toContain("HttpOnly");
-  expect(pwSetCookie).toContain("SameSite=Strict");
-  expect(pwSetCookie).toContain("Path=/");
-  expect(pwSetCookie).toContain("Max-Age=");
-  expect(pwSetCookie).toContain("Expires=");
-  expect(pwSetCookie).toContain("Secure");
+  for (const part of ["HttpOnly", "SameSite=Strict", "Path=/", "Max-Age=", "Expires=", "Secure"]) {
+    expect(pwSetCookie).toContain(part);
+  }
   const pwBody = (await pwRes.json()) as AuthDataPayload;
   expect(pwBody.data.sessionToken).toBeUndefined();
   const pwCookiePair = extractSessionCookiePair(pwSetCookie);
@@ -66,8 +54,7 @@ export async function runCookieOtpAndMptUnificationScenario(
   restoreNodeEnv();
   const otpReqRes = await app.handler(
     new Request("http://127.0.0.1/api/auth/otp/request", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ phoneNumber: "+84909111222", channel: "ZALO" }),
     })
   );
@@ -77,8 +64,7 @@ export async function runCookieOtpAndMptUnificationScenario(
 
   const otpVerRes = await app.handler(
     new Request("http://127.0.0.1/api/auth/otp/verify", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+      method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ challengeId, otpCode: deliveredOtp.otpCode }),
     })
   );
@@ -89,10 +75,8 @@ export async function runCookieOtpAndMptUnificationScenario(
 
   const issuedMpt = runPilotOpsCliArgs(
     [
-      "issue-token",
-      "--account-id", "ACT-CAILAY-MGR-01",
-      "--device", "CaiLay-Scanner-Tablet-01",
-      "--expires-at", new Date(Date.now() + 3600_000).toISOString(),
+      "issue-token", "--account-id", "ACT-CAILAY-MGR-01",
+      "--device", "CaiLay-Scanner-Tablet-01", "--expires-at", new Date(Date.now() + 3600_000).toISOString(),
     ],
     app.authService
   );
@@ -103,12 +87,9 @@ export async function runCookieOtpAndMptUnificationScenario(
   const meMpt = (await (await app.handler(new Request("http://127.0.0.1/api/auth/me", { headers: { "x-pilot-token": issuedMpt.rawToken } }))).json()) as AuthDataPayload;
 
   const expectedActor = {
-    id: "ACT-CAILAY-MGR-01",
-    name: "Tran Thi B (Packhouse Manager)",
-    tenantId: "TENANT-CAILAY-01",
-    tenantType: "PACKHOUSE_EXPORTER",
-    role: "MANAGER",
-    persona: "PACKHOUSE_MANAGER",
+    id: "ACT-CAILAY-MGR-01", name: "Tran Thi B (Packhouse Manager)",
+    tenantId: "TENANT-CAILAY-01", tenantType: "PACKHOUSE_EXPORTER",
+    role: "MANAGER", persona: "PACKHOUSE_MANAGER",
   };
   expect(mePw.data.actor).toEqual(expectedActor);
   expect(meOtp.data.actor).toEqual(expectedActor);

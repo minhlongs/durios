@@ -1,16 +1,10 @@
 import type {
-  AuthenticatedActor,
-  ContainerDossier,
-  DossierExportManifest,
+  AuthenticatedActor, ContainerDossier, DossierExportManifest,
 } from "../domain/types.js";
 import { AccessControlError } from "../auth/rbac-policy.js";
 import type { SqliteClient } from "./sqlite-client.js";
 import {
-  type DocumentRow,
-  type DossierRow,
-  type FieldRow,
-  mapRowsToDossier,
-  upsertDossierRows,
+  type DocumentRow, type DossierRow, type FieldRow, mapRowsToDossier, upsertDossierRows,
 } from "./sqlite-dossier-mapper.js";
 
 export class SqliteDossierRepository {
@@ -25,33 +19,23 @@ export class SqliteDossierRepository {
   }
 
   public save(dossier: ContainerDossier): void {
-    this.client.transaction(() => {
-      upsertDossierRows(this.client.db, dossier);
-    });
+    this.client.transaction(() => { upsertDossierRows(this.client.db, dossier); });
   }
 
   private hydrateDossier(dRow: DossierRow): ContainerDossier {
-    const docRows = this.client.db
-      .query<DocumentRow, [string]>("SELECT * FROM documents WHERE dossier_id = ?")
-      .all(dRow.id);
-    const fieldRows = this.client.db
-      .query<FieldRow, [string]>("SELECT * FROM extracted_fields WHERE dossier_id = ?")
-      .all(dRow.id);
+    const docRows = this.client.db.query<DocumentRow, [string]>("SELECT * FROM documents WHERE dossier_id = ?").all(dRow.id);
+    const fieldRows = this.client.db.query<FieldRow, [string]>("SELECT * FROM extracted_fields WHERE dossier_id = ?").all(dRow.id);
     return mapRowsToDossier(dRow, docRows, fieldRows);
   }
 
   public findRaw(dossierId: string): ContainerDossier | undefined {
-    const dRow = this.client.db
-      .query<DossierRow, [string]>("SELECT * FROM container_dossiers WHERE id = ?")
-      .get(dossierId);
+    const dRow = this.client.db.query<DossierRow, [string]>("SELECT * FROM container_dossiers WHERE id = ?").get(dossierId);
     return dRow ? this.hydrateDossier(dRow) : undefined;
   }
 
   public hasDocumentReferencingBlob(storagePath: string, sha256Hash: string): boolean {
     const row = this.client.db
-      .query<{ id: string }, [string, string]>(
-        "SELECT id FROM documents WHERE storage_path = ? OR sha256_hash = ? LIMIT 1"
-      )
+      .query<{ id: string }, [string, string]>("SELECT id FROM documents WHERE storage_path = ? OR sha256_hash = ? LIMIT 1")
       .get(storagePath, sha256Hash);
     return Boolean(row);
   }
@@ -107,11 +91,9 @@ export class SqliteDossierRepository {
 
   public saveExportManifest(manifest: DossierExportManifest, actor: AuthenticatedActor): void {
     this.client.db.run(
-      `INSERT INTO export_manifests (
-        id, dossier_id, tenant_id, composite_hash, manifest_json, created_at
-      ) VALUES (?, ?, ?, ?, ?, ?)
-      ON CONFLICT(dossier_id) DO UPDATE SET
-        composite_hash = excluded.composite_hash, manifest_json = excluded.manifest_json`,
+      `INSERT INTO export_manifests (id, dossier_id, tenant_id, composite_hash, manifest_json, created_at)
+       VALUES (?, ?, ?, ?, ?, ?)
+       ON CONFLICT(dossier_id) DO UPDATE SET composite_hash = excluded.composite_hash, manifest_json = excluded.manifest_json`,
       [
         `MAN-${manifest.dossierId}`, manifest.dossierId, actor.tenantId,
         manifest.compositeManifestSha256, JSON.stringify(manifest),

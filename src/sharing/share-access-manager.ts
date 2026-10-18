@@ -24,9 +24,7 @@ export class ShareAccessManager {
     assertOwnerManagementRole(actor, dossier.tenantId, "grantShare");
     const trimmedGrantee = granteeTenantId?.trim() ?? "";
     if (!trimmedGrantee) throw new Error("Grantee tenant ID is required.");
-    if (trimmedGrantee === dossier.tenantId) {
-      throw new Error("Cannot share dossier with owning tenant itself.");
-    }
+    if (trimmedGrantee === dossier.tenantId) throw new Error("Cannot share dossier with owning tenant itself.");
     const expiresDate = new Date(expiresAt);
     if (isNaN(expiresDate.getTime()) || expiresDate <= new Date()) {
       throw new Error("Expiration date must be a valid future ISO timestamp.");
@@ -81,9 +79,7 @@ export class ShareAccessManager {
     hasAccess: boolean; scope?: ShareScope | undefined;
     grant?: ShareAccessGrant | undefined; activeGrants?: readonly ShareAccessGrant[] | undefined;
   } {
-    if (ownerTenantId === actorTenantId) {
-      return { hasAccess: true, scope: "READ_AND_VERIFY", activeGrants: [] };
-    }
+    if (ownerTenantId === actorTenantId) return { hasAccess: true, scope: "READ_AND_VERIFY", activeGrants: [] };
     const activeGrants = this.getActiveGrantsForTenant(dossierId, ownerTenantId, actorTenantId, referenceNow);
     if (activeGrants.length === 0) return { hasAccess: false, activeGrants: [] };
     const primaryGrant = activeGrants.find((g) => g.scope === "READ_AND_VERIFY") ?? activeGrants[0]!;
@@ -95,9 +91,7 @@ export class ShareAccessManager {
   ): readonly ShareAccessGrant[] {
     const nowIso = referenceNow instanceof Date
       ? referenceNow.toISOString()
-      : typeof referenceNow === "string"
-        ? new Date(referenceNow).toISOString()
-        : new Date().toISOString();
+      : typeof referenceNow === "string" ? new Date(referenceNow).toISOString() : new Date().toISOString();
     return queryActiveGrantsForGrantee(this.client, dossierId, ownerTenantId, granteeTenantId, nowIso);
   }
 
@@ -123,9 +117,8 @@ export class ShareAccessManager {
 
   public listGrantsForDossier(dossier: ContainerDossier, actor: AuthenticatedActor): readonly ShareAccessGrant[] {
     assertValidActor(actor);
-    if (actor.tenantId === dossier.tenantId) {
-      return queryAllGrantsForOwner(this.client, dossier.id, dossier.tenantId);
-    }
-    return this.getActiveGrantsForTenant(dossier.id, dossier.tenantId, actor.tenantId);
+    return actor.tenantId === dossier.tenantId
+      ? queryAllGrantsForOwner(this.client, dossier.id, dossier.tenantId)
+      : this.getActiveGrantsForTenant(dossier.id, dossier.tenantId, actor.tenantId);
   }
 }

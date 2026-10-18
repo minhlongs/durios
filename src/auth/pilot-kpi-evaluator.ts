@@ -5,30 +5,17 @@ import {
 } from "./pilot-kpi-extended-types.js";
 
 export interface ContainerKpiMetric {
-  readonly dossierId: string;
-  readonly dossierCode: string;
-  readonly containerNumber: string;
-  readonly lifecycleState: string;
-  readonly tStartIso: string;
-  readonly tEndIso: string | null;
-  readonly deltaSeconds: number | null;
-  readonly underFiveMinutes: boolean;
-  readonly underThreeMinutes: boolean;
-  readonly isBlindFault: boolean;
-  readonly blindFaultBlocked: boolean;
+  readonly dossierId: string; readonly dossierCode: string; readonly containerNumber: string;
+  readonly lifecycleState: string; readonly tStartIso: string; readonly tEndIso: string | null;
+  readonly deltaSeconds: number | null; readonly underFiveMinutes: boolean;
+  readonly underThreeMinutes: boolean; readonly isBlindFault: boolean; readonly blindFaultBlocked: boolean;
 }
 
 export interface Gate05KpiEvaluationReport {
-  readonly evaluatedAt: string;
-  readonly totalContainers: number;
-  readonly reconciledCount: number;
-  readonly meanDeltaSeconds: number;
-  readonly underFiveMinuteGate: boolean;
-  readonly underThreeMinuteTarget: boolean;
-  readonly blindFaultCount: number;
-  readonly blindFaultsCaught: number;
-  readonly zeroMissGate: boolean;
-  readonly gate05Passed: boolean;
+  readonly evaluatedAt: string; readonly totalContainers: number; readonly reconciledCount: number;
+  readonly meanDeltaSeconds: number; readonly underFiveMinuteGate: boolean;
+  readonly underThreeMinuteTarget: boolean; readonly blindFaultCount: number;
+  readonly blindFaultsCaught: number; readonly zeroMissGate: boolean; readonly gate05Passed: boolean;
   readonly containerMetrics: readonly ContainerKpiMetric[];
   readonly firstContainerMetrics?: FirstContainerValueMetrics | undefined;
 }
@@ -91,7 +78,6 @@ export function computeGate05KpiFromDossiers(dossiers: readonly ContainerDossier
   const zeroMissGate = blindFaultMetrics.length >= 2 && blindFaultsCaught === blindFaultMetrics.length;
   const underFiveMinuteGate = validDeltas.length >= 5 && meanDeltaSeconds < 300;
   const underThreeMinuteTarget = validDeltas.length >= 5 && meanDeltaSeconds < 180;
-
   const firstContainerMetrics = dossiers.length > 0 ? evaluateFirstContainerValueMetrics(dossiers[0]!) : undefined;
 
   return {
@@ -110,7 +96,6 @@ export function evaluateGate05PilotKpi(options: { dbPath?: string; dataDir?: str
     const rows = app.sqliteClient.db
       .query<{ id: string }, []>("SELECT id FROM container_dossiers ORDER BY created_at ASC, id ASC")
       .all();
-
     const dossiers: ContainerDossier[] = [];
     for (const r of rows) {
       const raw = app.workspace.getRawDossier(r.id);

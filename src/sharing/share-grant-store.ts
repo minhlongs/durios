@@ -3,32 +3,17 @@ import type { ShareAccessGrant, SharePurpose, ShareScope } from "../domain/pilot
 import type { SqliteClient } from "../storage/sqlite-client.js";
 
 export interface ShareGrantRow {
-  id: string;
-  dossier_id: string;
-  owner_tenant_id: string;
-  grantee_tenant_id: string;
-  purpose: SharePurpose;
-  scope: ShareScope;
-  granted_at: string;
-  granted_by: string;
-  expires_at: string;
-  is_revoked: number;
-  revoked_at: string | null;
-  revoked_by: string | null;
-  revocation_reason: string | null;
+  id: string; dossier_id: string; owner_tenant_id: string; grantee_tenant_id: string;
+  purpose: SharePurpose; scope: ShareScope; granted_at: string; granted_by: string;
+  expires_at: string; is_revoked: number; revoked_at: string | null;
+  revoked_by: string | null; revocation_reason: string | null;
 }
 
 export function mapRowToShareGrant(row: ShareGrantRow): ShareAccessGrant {
   return {
-    id: row.id,
-    dossierId: row.dossier_id,
-    ownerTenantId: row.owner_tenant_id,
-    granteeTenantId: row.grantee_tenant_id,
-    purpose: row.purpose,
-    scope: row.scope,
-    grantedAt: row.granted_at,
-    grantedBy: row.granted_by,
-    expiresAt: row.expires_at,
+    id: row.id, dossierId: row.dossier_id, ownerTenantId: row.owner_tenant_id,
+    granteeTenantId: row.grantee_tenant_id, purpose: row.purpose, scope: row.scope,
+    grantedAt: row.granted_at, grantedBy: row.granted_by, expiresAt: row.expires_at,
     isRevoked: row.is_revoked === 1,
     revokedAt: row.revoked_at ?? undefined,
     revokedBy: row.revoked_by ?? undefined,
@@ -84,8 +69,7 @@ export function markShareGrantRevokedRow(
   revocationReason: string
 ): void {
   client.db.run(
-    `UPDATE share_grants
-     SET is_revoked = 1, revoked_at = ?, revoked_by = ?, revocation_reason = ?
+    `UPDATE share_grants SET is_revoked = 1, revoked_at = ?, revoked_by = ?, revocation_reason = ?
      WHERE id = ? AND dossier_id = ? AND owner_tenant_id = ?`,
     [revokedAt, revokedBy, revocationReason, grantId, dossierId, ownerTenantId]
   );

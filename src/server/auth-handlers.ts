@@ -17,32 +17,18 @@ export function buildSessionCookieHeader(sessionToken: string, expiresAtIso: str
   return parts.join("; ");
 }
 
-function sessionResponseWithCookie(
-  payload: unknown, sessionToken: string, expiresAtIso: string, req: Request, status = 200
-): Response {
+function sessionResponseWithCookie(payload: unknown, sessionToken: string, expiresAtIso: string, req: Request, status = 200): Response {
   return new Response(JSON.stringify(payload), {
     status,
-    headers: {
-      "Content-Type": "application/json; charset=utf-8",
-      "Cache-Control": "no-store",
-      "Set-Cookie": buildSessionCookieHeader(sessionToken, expiresAtIso, req),
-    },
+    headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "Set-Cookie": buildSessionCookieHeader(sessionToken, expiresAtIso, req) },
   });
 }
 
-export async function handlePasswordLogin(
-  authService: SqliteAuthService | undefined, req: Request
-): Promise<Response> {
+export async function handlePasswordLogin(authService: SqliteAuthService | undefined, req: Request): Promise<Response> {
   if (!authService) return errorResponse("Authentication service unavailable", 503);
   let body: { username?: string; password?: string };
-  try {
-    body = (await req.json()) as { username?: string; password?: string };
-  } catch {
-    return errorResponse("Invalid JSON payload", 400);
-  }
-  if (!body.username || !body.password) {
-    return errorResponse("Missing required fields: username, password", 400);
-  }
+  try { body = (await req.json()) as { username?: string; password?: string }; } catch { return errorResponse("Invalid JSON payload", 400); }
+  if (!body.username || !body.password) return errorResponse("Missing required fields: username, password", 400);
 
   try {
     const session = authService.loginWithPassword(String(body.username), String(body.password));
@@ -129,8 +115,7 @@ export function handleGetAuthenticatedMe(
   authService: SqliteAuthService | undefined, req: Request
 ): Response {
   try {
-    const actor = resolveAuthenticatedActor(req, authService);
-    return jsonResponse({ success: true, data: { actor } });
+    return jsonResponse({ success: true, data: { actor: resolveAuthenticatedActor(req, authService) } });
   } catch (err) {
     return mapDomainErrorToResponse(err, "Authentication failed");
   }

@@ -7,36 +7,18 @@ import type { ContainerDossierWorkspace } from "../../src/workspace/container-do
 import { seedTestPilotActor } from "./auth-test-helper.js";
 
 export interface Redaction5A5Context {
-  tempDir: string;
-  dbPath: string;
-  dataDir: string;
-  client: SqliteClient;
-  repo: SqliteDossierRepository;
-  ledger: SqliteAuditLedger;
-  fileStorage: FileStorageService;
+  tempDir: string; dbPath: string; dataDir: string;
+  client: SqliteClient; repo: SqliteDossierRepository;
+  ledger: SqliteAuditLedger; fileStorage: FileStorageService;
   workspace: ContainerDossierWorkspace;
 }
 
-export interface DossierDocumentFieldPayload {
-  id: string;
-  fieldKey: string;
-  rawValue: string;
-}
-
-export interface DossierDocumentPayload {
-  id: string;
-  storagePath?: string;
-  extractedFields: DossierDocumentFieldPayload[];
-}
-
+export interface DossierDocumentFieldPayload { id: string; fieldKey: string; rawValue: string }
+export interface DossierDocumentPayload { id: string; storagePath?: string; extractedFields: DossierDocumentFieldPayload[] }
 export interface DossierPayload {
-  id: string;
-  declaredNetWeightKg?: number;
-  declaredBoxCount?: number;
-  documents: DossierDocumentPayload[];
-  [key: string]: unknown;
+  id: string; declaredNetWeightKg?: number; declaredBoxCount?: number;
+  documents: DossierDocumentPayload[]; [key: string]: unknown;
 }
-
 export interface DossierDetailResponse { data: DossierPayload }
 export interface DossierListOrDetailResponse { data: DossierPayload | DossierPayload[] }
 
@@ -79,14 +61,11 @@ export function buildValidDossierReadyForValidation(
   actor: AuthenticatedActor,
   dossierCode: string
 ): ContainerDossier {
-  const dossier = ws.createDossier(
-    {
-      dossierCode, containerNumber: "MSKU1234565", sealNumber: "SEAL-VALID-01",
-      targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
-      declaredNetWeightKg: 18000, declaredBoxCount: 900,
-    },
-    actor
-  );
+  const dossier = ws.createDossier({
+    dossierCode, containerNumber: "MSKU1234565", sealNumber: "SEAL-VALID-01",
+    targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
+    declaredNetWeightKg: 18000, declaredBoxCount: 900,
+  }, actor);
 
   const requiredDocs: Array<{
     type: "PACKING_LIST" | "LAB_TEST_REPORT" | "PHYTOSANITARY_CERTIFICATE";
@@ -123,6 +102,5 @@ export function buildValidDossierReadyForValidation(
       ws.verifyField(dossier.id, document.id, { fieldId: field.id, confirmedValue: field.rawValue }, actor);
     }
   }
-
   return ws.getDossier(dossier.id, actor)!;
 }

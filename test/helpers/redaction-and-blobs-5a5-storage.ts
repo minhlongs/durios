@@ -15,14 +15,10 @@ export function runContentAddressedBlobStorageScenario(ctx: Redaction5A5Context)
   let { dbPath, dataDir, client, workspace } = ctx;
   const clerk = seedAndMakeActor(workspace, "TENANT-BLOB-01", "CLERK");
 
-  const dossier = workspace.createDossier(
-    {
-      dossierCode: "DOS-BLOB-001", containerNumber: "MSKU1234565", sealNumber: "SEAL-BLOB-01",
-      targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
-      declaredNetWeightKg: 18000, declaredBoxCount: 900,
-    },
-    clerk.actor
-  );
+  const dossier = workspace.createDossier({
+    dossierCode: "DOS-BLOB-001", containerNumber: "MSKU1234565", sealNumber: "SEAL-BLOB-01",
+    targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5, declaredNetWeightKg: 18000, declaredBoxCount: 900,
+  }, clerk.actor);
 
   const pdfBytes = createPdfBytes("content-addressed-blob-01");
   const expectedSha = calculateSha256(pdfBytes);
@@ -39,9 +35,7 @@ export function runContentAddressedBlobStorageScenario(ctx: Redaction5A5Context)
   expect(calculateSha256(new Uint8Array(readFileSync(expectedPhysicalPath)))).toBe(expectedSha);
 
   const dbRow = client.db
-    .query<{ storage_path: string; sha256_hash: string }, [string]>(
-      "SELECT storage_path, sha256_hash FROM documents WHERE id = ?"
-    )
+    .query<{ storage_path: string; sha256_hash: string }, [string]>("SELECT storage_path, sha256_hash FROM documents WHERE id = ?")
     .get(document.id);
   expect(dbRow?.storage_path).toBe(expectedRelativePath);
   expect(dbRow?.sha256_hash).toBe(expectedSha);
@@ -68,22 +62,14 @@ export function runBlobDeduplicationAndRollbackScenario(ctx: Redaction5A5Context
   const { dataDir, repo, ledger, fileStorage, workspace } = ctx;
   const clerk = seedAndMakeActor(workspace, "TENANT-DEDUP-01", "CLERK");
 
-  const d1 = workspace.createDossier(
-    {
-      dossierCode: "DOS-DEDUP-001", containerNumber: "MSKU1234565", sealNumber: "SEAL-DEDUP-01",
-      targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
-      declaredNetWeightKg: 18000, declaredBoxCount: 900,
-    },
-    clerk.actor
-  );
-  const d2 = workspace.createDossier(
-    {
-      dossierCode: "DOS-DEDUP-002", containerNumber: "MSKU1234565", sealNumber: "SEAL-DEDUP-02",
-      targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
-      declaredNetWeightKg: 18000, declaredBoxCount: 900,
-    },
-    clerk.actor
-  );
+  const d1 = workspace.createDossier({
+    dossierCode: "DOS-DEDUP-001", containerNumber: "MSKU1234565", sealNumber: "SEAL-DEDUP-01",
+    targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5, declaredNetWeightKg: 18000, declaredBoxCount: 900,
+  }, clerk.actor);
+  const d2 = workspace.createDossier({
+    dossierCode: "DOS-DEDUP-002", containerNumber: "MSKU1234565", sealNumber: "SEAL-DEDUP-02",
+    targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5, declaredNetWeightKg: 18000, declaredBoxCount: 900,
+  }, clerk.actor);
 
   const sharedPdf = createPdfBytes("shared-across-dossiers");
   const expectedSha = calculateSha256(sharedPdf);
@@ -97,9 +83,7 @@ export function runBlobDeduplicationAndRollbackScenario(ctx: Redaction5A5Context
   expect(reused.storagePath).toBe(`storage/blobs/${expectedSha}.bin`);
 
   const failingRepo: SqliteDossierRepository = Object.create(repo);
-  failingRepo.save = () => {
-    throw new Error("Simulated DB failure on second dossier");
-  };
+  failingRepo.save = () => { throw new Error("Simulated DB failure on second dossier"); };
   const failingWs = new ContainerDossierWorkspace(failingRepo, ledger, fileStorage);
 
   expect(() => failingWs.uploadDocument(d2.id, sharedPdf, "packing_2.pdf", "PACKING_LIST", clerk.actor)).toThrow(

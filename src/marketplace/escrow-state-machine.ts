@@ -1,12 +1,7 @@
 import { AccessControlError, assertValidActor } from "../auth/rbac-policy.js";
 import type { AuthenticatedActor, ContainerDossier, DossierExportManifest } from "../domain/types.js";
-import type {
-  BankEscrowWebhookCallbackInput, CreateMarketplaceListingInput,
-  DurianMarketplaceListing, InitiateNonCustodialEscrowInput, NonCustodialEscrowContract,
-} from "../domain/marketplace-types.js";
-import {
-  assertMarketplaceFeatureUnlocked, assertZeroCustodyCompliance, type MarketplaceDualLockContext,
-} from "./marketplace-guard.js";
+import type { BankEscrowWebhookCallbackInput, CreateMarketplaceListingInput, DurianMarketplaceListing, InitiateNonCustodialEscrowInput, NonCustodialEscrowContract } from "../domain/marketplace-types.js";
+import { assertMarketplaceFeatureUnlocked, assertZeroCustodyCompliance, type MarketplaceDualLockContext } from "./marketplace-guard.js";
 
 const STATUTORY_ESCROW_NOTICE = "DuriOS chỉ điều phối trạng thái chứng từ; hợp đồng mua bán thuộc bên mua và bên bán; tiền ký quỹ do ngân hàng được cấp phép nắm giữ theo Nghị định 52/2024/NĐ-CP và Luật TMĐT 122/2025/QH15.";
 
@@ -33,8 +28,7 @@ export class NonCustodialEscrowCoordinator {
       variety: input.variety, targetMarket: input.targetMarket, borderGate: dossier.borderGate,
       quantityBoxes: dossier.declaredBoxCount ?? 0, netWeightKg: dossier.declaredNetWeightKg ?? 0,
       indicativePriceVndPerKg: input.indicativePriceVndPerKg,
-      listingStatus: "PUBLISHED_TO_APPROVED_BUYERS",
-      approvedBuyerTenantIds: [...input.approvedBuyerTenantIds],
+      listingStatus: "PUBLISHED_TO_APPROVED_BUYERS", approvedBuyerTenantIds: [...input.approvedBuyerTenantIds],
       createdAt: now, updatedAt: now, statutoryDisclaimer: STATUTORY_ESCROW_NOTICE,
     };
     this.listings.set(listing.listingId, listing);
@@ -72,14 +66,10 @@ export class NonCustodialEscrowCoordinator {
     const now = new Date().toISOString();
     const contract: NonCustodialEscrowContract = {
       contractId: `ESC-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`,
-      listingId: listing.listingId, dossierId: listing.dossierId,
-      sellerTenantId: listing.sellerTenantId, buyerTenantId: actor.tenantId,
-      custodyMode: "ZERO_CUSTODY_LICENSED_BANK_PARTNER",
-      licensedBankPartnerCode: input.licensedBankPartnerCode,
-      bankEscrowReferenceNo: input.bankEscrowReferenceNo,
-      expectedManifestSha256: input.expectedManifestSha256,
-      status: "AWAITING_BANK_LOCK", lastIdempotencyKey: input.idempotencyKey,
-      createdAt: now, updatedAt: now, statutoryNotice: STATUTORY_ESCROW_NOTICE,
+      listingId: listing.listingId, dossierId: listing.dossierId, sellerTenantId: listing.sellerTenantId, buyerTenantId: actor.tenantId,
+      custodyMode: "ZERO_CUSTODY_LICENSED_BANK_PARTNER", licensedBankPartnerCode: input.licensedBankPartnerCode,
+      bankEscrowReferenceNo: input.bankEscrowReferenceNo, expectedManifestSha256: input.expectedManifestSha256,
+      status: "AWAITING_BANK_LOCK", lastIdempotencyKey: input.idempotencyKey, createdAt: now, updatedAt: now, statutoryNotice: STATUTORY_ESCROW_NOTICE,
     };
     this.contracts.set(contract.contractId, contract);
     this.processedIdempotencyKeys.set(input.idempotencyKey, contract);
@@ -100,17 +90,13 @@ export class NonCustodialEscrowCoordinator {
     const nextStatus =
       callback.eventType === "BANK_FUNDS_LOCKED" ? "BANK_ESCROW_LOCKED"
         : callback.eventType === "BANK_SETTLEMENT_COMPLETED" ? "SETTLED_DIRECTLY_BY_BANK" : "DISPUTED_AT_BANK";
-    const updated: NonCustodialEscrowContract = {
-      ...contract, status: nextStatus, lastIdempotencyKey: callback.idempotencyKey, updatedAt: new Date().toISOString(),
-    };
+    const updated: NonCustodialEscrowContract = { ...contract, status: nextStatus, lastIdempotencyKey: callback.idempotencyKey, updatedAt: new Date().toISOString() };
     this.contracts.set(contract.contractId, updated);
     this.processedIdempotencyKeys.set(callback.idempotencyKey, updated);
     return updated;
   }
 
-  public authorizeBankEscrowRelease(
-    contractId: string, dossier: ContainerDossier, exportManifest: DossierExportManifest, actor: AuthenticatedActor
-  ): NonCustodialEscrowContract {
+  public authorizeBankEscrowRelease(contractId: string, dossier: ContainerDossier, exportManifest: DossierExportManifest, actor: AuthenticatedActor): NonCustodialEscrowContract {
     assertMarketplaceFeatureUnlocked(this.lockContext);
     assertValidActor(actor);
     const contract = this.contracts.get(contractId);
@@ -127,8 +113,7 @@ export class NonCustodialEscrowCoordinator {
     }
     const now = new Date().toISOString();
     const updated: NonCustodialEscrowContract = {
-      ...contract, status: "RELEASE_AUTHORIZED_AT_BANK",
-      verifiedManifestSha256: exportManifest.compositeManifestSha256,
+      ...contract, status: "RELEASE_AUTHORIZED_AT_BANK", verifiedManifestSha256: exportManifest.compositeManifestSha256,
       releaseAuthorizedAt: now, releaseAuthorizedByActorId: actor.id, updatedAt: now,
     };
     this.contracts.set(contractId, updated);

@@ -54,16 +54,11 @@ export async function runIdentityTupleValidationScenario(
   setApp(app);
 
   const validTuples: Array<[ProductPersona, TenantType, UserRole]> = [
-    ["ORCHARD_OFFICER", "ORCHARD_COOP", "CLERK"],
-    ["ORCHARD_OFFICER", "ORCHARD_COOP", "MANAGER"],
-    ["ORCHARD_OFFICER", "ORCHARD_COOP", "ADMIN"],
-    ["PACKHOUSE_CLERK", "PACKHOUSE_EXPORTER", "CLERK"],
-    ["PACKHOUSE_MANAGER", "PACKHOUSE_EXPORTER", "MANAGER"],
-    ["PACKHOUSE_MANAGER", "PACKHOUSE_EXPORTER", "ADMIN"],
-    ["BUYER_VIEWER", "BUYER_IMPORTER", "VIEWER"],
-    ["BUYER_VIEWER", "PACKHOUSE_EXPORTER", "VIEWER"],
-    ["SYSTEM_AUDITOR", "INSPECTION_AUDITOR", "AUDITOR"],
-    ["SYSTEM_AUDITOR", "PACKHOUSE_EXPORTER", "AUDITOR"],
+    ["ORCHARD_OFFICER", "ORCHARD_COOP", "CLERK"], ["ORCHARD_OFFICER", "ORCHARD_COOP", "MANAGER"],
+    ["ORCHARD_OFFICER", "ORCHARD_COOP", "ADMIN"], ["PACKHOUSE_CLERK", "PACKHOUSE_EXPORTER", "CLERK"],
+    ["PACKHOUSE_MANAGER", "PACKHOUSE_EXPORTER", "MANAGER"], ["PACKHOUSE_MANAGER", "PACKHOUSE_EXPORTER", "ADMIN"],
+    ["BUYER_VIEWER", "BUYER_IMPORTER", "VIEWER"], ["BUYER_VIEWER", "PACKHOUSE_EXPORTER", "VIEWER"],
+    ["SYSTEM_AUDITOR", "INSPECTION_AUDITOR", "AUDITOR"], ["SYSTEM_AUDITOR", "PACKHOUSE_EXPORTER", "AUDITOR"],
     ["SYSTEM_AUDITOR", "ORCHARD_COOP", "AUDITOR"],
   ];
   for (const [persona, tenantType, role] of validTuples) {
@@ -73,16 +68,11 @@ export async function runIdentityTupleValidationScenario(
   }
 
   const invalidTuples: Array<[unknown, unknown, unknown]> = [
-    ["BUYER_VIEWER", "BUYER_IMPORTER", "MANAGER"],
-    ["BUYER_VIEWER", "BUYER_IMPORTER", "CLERK"],
-    ["PACKHOUSE_CLERK", "PACKHOUSE_EXPORTER", "MANAGER"],
-    ["PACKHOUSE_CLERK", "PACKHOUSE_EXPORTER", "VIEWER"],
-    ["SYSTEM_AUDITOR", "INSPECTION_AUDITOR", "CLERK"],
-    ["SYSTEM_AUDITOR", "INSPECTION_AUDITOR", "ADMIN"],
-    ["ORCHARD_OFFICER", "BUYER_IMPORTER", "CLERK"],
-    ["PACKHOUSE_MANAGER", "ORCHARD_COOP", "MANAGER"],
-    ["UNKNOWN_PERSONA", "PACKHOUSE_EXPORTER", "CLERK"],
-    [undefined, "PACKHOUSE_EXPORTER", "CLERK"],
+    ["BUYER_VIEWER", "BUYER_IMPORTER", "MANAGER"], ["BUYER_VIEWER", "BUYER_IMPORTER", "CLERK"],
+    ["PACKHOUSE_CLERK", "PACKHOUSE_EXPORTER", "MANAGER"], ["PACKHOUSE_CLERK", "PACKHOUSE_EXPORTER", "VIEWER"],
+    ["SYSTEM_AUDITOR", "INSPECTION_AUDITOR", "CLERK"], ["SYSTEM_AUDITOR", "INSPECTION_AUDITOR", "ADMIN"],
+    ["ORCHARD_OFFICER", "BUYER_IMPORTER", "CLERK"], ["PACKHOUSE_MANAGER", "ORCHARD_COOP", "MANAGER"],
+    ["UNKNOWN_PERSONA", "PACKHOUSE_EXPORTER", "CLERK"], [undefined, "PACKHOUSE_EXPORTER", "CLERK"],
   ];
   for (const [persona, tenantType, role] of invalidTuples) {
     expect(() =>
@@ -107,33 +97,24 @@ export async function runIdentityTupleValidationScenario(
 
   const sessionsBefore = (app.sqliteClient.db.query<{ c: number }, []>("SELECT COUNT(*) as c FROM auth_sessions").get())!.c;
 
-  const pwBadRes = await app.handler(
-    new Request("http://127.0.0.1/api/auth/login", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ username: "legacy.bad", password: "LegacyPass#1" }),
-    })
-  );
-  expect(pwBadRes.status).toBe(403);
+  const pwBadRes = await app.handler(new Request("http://127.0.0.1/api/auth/login", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ username: "legacy.bad", password: "LegacyPass#1" }),
+  }));
+  expect(pwBadRes.status === 403 && pwBadRes.headers.get("set-cookie") === null).toBe(true);
   expect(((await pwBadRes.json()) as ErrorCodePayload).errorCode).toBe("INVALID_IDENTITY_TUPLE");
-  expect(pwBadRes.headers.get("set-cookie")).toBeNull();
 
-  const otpReq = await app.handler(
-    new Request("http://127.0.0.1/api/auth/otp/request", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phoneNumber: "+84911000999", channel: "ZALO" }),
-    })
-  );
+  const otpReq = await app.handler(new Request("http://127.0.0.1/api/auth/otp/request", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ phoneNumber: "+84911000999", channel: "ZALO" }),
+  }));
   const chId = ((await otpReq.json()) as ErrorCodePayload).data!.challengeId;
   const otpCode = fakeOtp.getLatestForPhone("+84911000999")!.otpCode;
-  const otpVerBad = await app.handler(
-    new Request("http://127.0.0.1/api/auth/otp/verify", {
-      method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ challengeId: chId, otpCode }),
-    })
-  );
-  expect(otpVerBad.status).toBe(403);
-  expect(otpVerBad.headers.get("set-cookie")).toBeNull();
+  const otpVerBad = await app.handler(new Request("http://127.0.0.1/api/auth/otp/verify", {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ challengeId: chId, otpCode }),
+  }));
+  expect(otpVerBad.status === 403 && otpVerBad.headers.get("set-cookie") === null).toBe(true);
   expect((app.sqliteClient.db.query<{ c: number }, []>("SELECT COUNT(*) as c FROM auth_sessions").get())!.c).toBe(sessionsBefore);
-
   expect((await app.handler(new Request("http://127.0.0.1/api/dossiers", { headers: { "x-pilot-token": "dpt_legacy_bad_token" } }))).status).toBe(403);
 }

@@ -6,33 +6,22 @@ import { SqliteClient } from "../storage/sqlite-client.js";
 export { restoreSiteBackup, verifySiteBackup } from "./site-restore-service.js";
 
 export interface BackupBlobEntry {
-  readonly relativePath: string;
-  readonly sha256: string;
-  readonly sizeBytes: number;
+  readonly relativePath: string; readonly sha256: string; readonly sizeBytes: number;
 }
 
 export interface SiteBackupManifest {
-  readonly manifestVersion: "1.0.0";
-  readonly createdAt: string;
-  readonly databaseSha256: string;
-  readonly auditChainValid: boolean;
-  readonly dossierCount: number;
-  readonly documentCount: number;
+  readonly manifestVersion: "1.0.0"; readonly createdAt: string; readonly databaseSha256: string;
+  readonly auditChainValid: boolean; readonly dossierCount: number; readonly documentCount: number;
   readonly blobs: readonly BackupBlobEntry[];
 }
 
 export interface SiteBackupVerificationResult {
-  readonly valid: boolean;
-  readonly errors: readonly string[];
+  readonly valid: boolean; readonly errors: readonly string[];
   readonly manifest?: SiteBackupManifest | undefined;
 }
 
 export interface DocBackupRow {
-  id: string;
-  dossier_id: string;
-  sha256_hash: string;
-  storage_path: string;
-  file_size_bytes: number;
+  id: string; dossier_id: string; sha256_hash: string; storage_path: string; file_size_bytes: number;
 }
 
 export function createSiteBackup(
@@ -40,10 +29,7 @@ export function createSiteBackup(
   dataDir: string,
   backupDir: string
 ): SiteBackupManifest {
-  const absDbPath = resolve(dbPath);
-  const absDataDir = resolve(dataDir);
-  const absBackupDir = resolve(backupDir);
-
+  const [absDbPath, absDataDir, absBackupDir] = [resolve(dbPath), resolve(dataDir), resolve(backupDir)];
   if (!existsSync(absDbPath)) throw new Error(`Source SQLite database does not exist at '${absDbPath}'.`);
 
   mkdirSync(absBackupDir, { recursive: true });
@@ -68,9 +54,7 @@ export function createSiteBackup(
       .query<{ cnt: number }, []>("SELECT COUNT(*) as cnt FROM container_dossiers")
       .get();
     const docRows = backupClient.db
-      .query<DocBackupRow, []>(
-        "SELECT id, dossier_id, sha256_hash, storage_path, file_size_bytes FROM documents ORDER BY uploaded_at ASC, id ASC"
-      )
+      .query<DocBackupRow, []>("SELECT id, dossier_id, sha256_hash, storage_path, file_size_bytes FROM documents ORDER BY uploaded_at ASC, id ASC")
       .all();
 
     const backupUploadsDir = join(absBackupDir, "uploads");

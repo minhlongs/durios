@@ -11,49 +11,19 @@ import {
 function buildFullMekongClusterNodes(): ClusterOrganizationNode[] {
   const nodes: ClusterOrganizationNode[] = [];
   for (let i = 1; i <= 8; i++) {
-    nodes.push({
-      orgId: `PH-${i}`,
-      orgName: `Vựa Cai Lậy ${i}`,
-      role: "PACKHOUSE",
-      province: "Tiền Giang",
-      verifiedProfileActive: true,
-    });
+    nodes.push({ orgId: `PH-${i}`, orgName: `Vựa Cai Lậy ${i}`, role: "PACKHOUSE", province: "Tiền Giang", verifiedProfileActive: true });
   }
   for (let i = 1; i <= 3; i++) {
-    nodes.push({
-      orgId: `EXP-${i}`,
-      orgName: `Exporter ĐBSCL ${i}`,
-      role: "EXPORTER",
-      province: "Tiền Giang",
-      verifiedProfileActive: true,
-    });
+    nodes.push({ orgId: `EXP-${i}`, orgName: `Exporter ĐBSCL ${i}`, role: "EXPORTER", province: "Tiền Giang", verifiedProfileActive: true });
   }
   for (let i = 1; i <= 2; i++) {
-    nodes.push({
-      orgId: `LAB-${i}`,
-      orgName: `Lab Kiểm Nghiệm ${i}`,
-      role: "ACCREDITED_LAB",
-      province: "TP.HCM",
-      verifiedProfileActive: true,
-    });
+    nodes.push({ orgId: `LAB-${i}`, orgName: `Lab Kiểm Nghiệm ${i}`, role: "ACCREDITED_LAB", province: "TP.HCM", verifiedProfileActive: true });
   }
   for (let i = 1; i <= 3; i++) {
-    nodes.push({
-      orgId: `LOG-${i}`,
-      orgName: `Logistics Lạnh ${i}`,
-      role: "COLD_CHAIN_LOGISTICS",
-      province: "Tiền Giang",
-      verifiedProfileActive: true,
-    });
+    nodes.push({ orgId: `LOG-${i}`, orgName: `Logistics Lạnh ${i}`, role: "COLD_CHAIN_LOGISTICS", province: "Tiền Giang", verifiedProfileActive: true });
   }
   for (let i = 1; i <= 5; i++) {
-    nodes.push({
-      orgId: `BUY-${i}`,
-      orgName: `Buyer Importer ${i}`,
-      role: "BUYER_IMPORTER",
-      province: "Guangxi",
-      verifiedProfileActive: true,
-    });
+    nodes.push({ orgId: `BUY-${i}`, orgName: `Buyer Importer ${i}`, role: "BUYER_IMPORTER", province: "Guangxi", verifiedProfileActive: true });
   }
   return nodes;
 }
@@ -62,10 +32,7 @@ describe("Step 15: Dense Cluster GTM Playbook & Readiness Evaluator", () => {
   it("blocks cluster expansion when Cai Lay beachhead GATE-05 or paid conversion is not yet met", () => {
     const nodes = buildFullMekongClusterNodes();
     const blockedGate05 = evaluateDenseClusterReadiness({
-      beachheadGate05Passed: false,
-      beachheadPaidConversionConfirmed: false,
-      nodes,
-      edges: [],
+      beachheadGate05Passed: false, beachheadPaidConversionConfirmed: false, nodes, edges: [],
     });
 
     expect(blockedGate05.expansionAuthorized).toBe(false);
@@ -73,10 +40,7 @@ describe("Step 15: Dense Cluster GTM Playbook & Readiness Evaluator", () => {
     expect(blockedGate05.blockReasonVi).toContain("GATE-05");
 
     const blockedWtp = evaluateDenseClusterReadiness({
-      beachheadGate05Passed: true,
-      beachheadPaidConversionConfirmed: false,
-      nodes,
-      edges: [],
+      beachheadGate05Passed: true, beachheadPaidConversionConfirmed: false, nodes, edges: [],
     });
 
     expect(blockedWtp.expansionAuthorized).toBe(false);
@@ -94,10 +58,7 @@ describe("Step 15: Dense Cluster GTM Playbook & Readiness Evaluator", () => {
     ];
 
     const report = evaluateDenseClusterReadiness({
-      beachheadGate05Passed: true,
-      beachheadPaidConversionConfirmed: true,
-      nodes,
-      edges,
+      beachheadGate05Passed: true, beachheadPaidConversionConfirmed: true, nodes, edges,
     });
 
     expect(report.expansionAuthorized).toBe(true);
@@ -105,12 +66,8 @@ describe("Step 15: Dense Cluster GTM Playbook & Readiness Evaluator", () => {
     expect(report.countsByRole.PACKHOUSE).toBe(MEKONG_DELTA_CLUSTER_TARGETS.targetPackhouses);
     expect(report.countsByRole.EXPORTER).toBe(MEKONG_DELTA_CLUSTER_TARGETS.targetExporters);
     expect(report.countsByRole.ACCREDITED_LAB).toBe(MEKONG_DELTA_CLUSTER_TARGETS.targetLabs);
-    expect(report.countsByRole.COLD_CHAIN_LOGISTICS).toBe(
-      MEKONG_DELTA_CLUSTER_TARGETS.targetColdChainLogistics
-    );
-    expect(report.countsByRole.BUYER_IMPORTER).toBe(
-      MEKONG_DELTA_CLUSTER_TARGETS.targetBuyerImporters
-    );
+    expect(report.countsByRole.COLD_CHAIN_LOGISTICS).toBe(MEKONG_DELTA_CLUSTER_TARGETS.targetColdChainLogistics);
+    expect(report.countsByRole.BUYER_IMPORTER).toBe(MEKONG_DELTA_CLUSTER_TARGETS.targetBuyerImporters);
     expect(report.totalActiveNodes).toBe(21);
     expect(report.totalVerifiedEdges).toBe(4);
     expect(report.networkDensityScore).toBeGreaterThan(0);
@@ -118,10 +75,7 @@ describe("Step 15: Dense Cluster GTM Playbook & Readiness Evaluator", () => {
   });
 
   it("confirms all 25 steps in plans/company-blueprint/tasks.md are marked [x] [COMPLETED]", () => {
-    const tasksMd = readFileSync(
-      join(process.cwd(), "plans/company-blueprint/tasks.md"),
-      "utf-8"
-    );
+    const tasksMd = readFileSync(join(process.cwd(), "plans/company-blueprint/tasks.md"), "utf-8");
     const completedLines = tasksMd.match(/^- \[x\] \*\*Step \d+:/gm) ?? [];
     const uncompletedLines = tasksMd.match(/^- \[ \] \*\*Step \d+:/gm) ?? [];
     expect(completedLines.length).toBe(25);

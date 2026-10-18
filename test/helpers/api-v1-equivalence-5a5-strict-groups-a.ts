@@ -12,21 +12,13 @@ export async function runEquivalenceGroups1And2And6(actors: EquivalenceActors, c
   const { ownerAdmin, ownerClerk, ownerViewer, sharedCustomsClerk, sharedCustomsViewer, sharedLogisticsViewer, intruderAdmin, unauthenticated } = actors;
 
   await compareCall("/dossiers", "/dossiers", "GET", unauthenticated, undefined, 401);
-  await compareCall(
-    "/dossiers", "/dossiers", "POST", ownerViewer,
-    { dossierCode: "DOS-EQ-DENIED", containerNumber: "MSKU1234565", sealNumber: "SEAL-EQ-01" }, 403
-  );
+  await compareCall("/dossiers", "/dossiers", "POST", ownerViewer, { dossierCode: "DOS-EQ-DENIED", containerNumber: "MSKU1234565", sealNumber: "SEAL-EQ-01" }, 403);
   await compareCall("/dossiers", "/dossiers", "POST", ownerAdmin, { dossierCode: "" }, 400);
 
-  const createdPair = await compareCall<DossierDetailResponse>(
-    "/dossiers", "/dossiers", "POST", ownerAdmin,
-    {
-      dossierCode: "DOS-EQ-MAIN-001", containerNumber: "MSKU1234565", sealNumber: "SEAL-EQ-01",
-      targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
-      declaredNetWeightKg: 18000, declaredBoxCount: 900,
-    },
-    201
-  );
+  const createdPair = await compareCall<DossierDetailResponse>("/dossiers", "/dossiers", "POST", ownerAdmin, {
+    dossierCode: "DOS-EQ-MAIN-001", containerNumber: "MSKU1234565", sealNumber: "SEAL-EQ-01",
+    targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5, declaredNetWeightKg: 18000, declaredBoxCount: 900,
+  }, 201);
   const [dosApiId, dosV1Id] = [createdPair.bodyApi.data.id, createdPair.bodyV1.data.id];
 
   await compareCall("/dossiers", "/dossiers", "GET", ownerAdmin, undefined, 200);
@@ -48,16 +40,12 @@ export async function runEquivalenceGroups1And2And6(actors: EquivalenceActors, c
     {
       fileName: "eq_lab.pdf", documentType: "LAB_TEST_REPORT",
       base64Content: Buffer.from(createPdfBytes("eq-lab-content")).toString("base64"),
-      fixtureFields: {
-        cadmium_mg_kg: { raw: "0.024" }, sample_code: { raw: "SYNTH-EQ-SMP-01" }, sampling_date: { raw: "2026-10-06" },
-      },
+      fixtureFields: { cadmium_mg_kg: { raw: "0.024" }, sample_code: { raw: "SYNTH-EQ-SMP-01" }, sampling_date: { raw: "2026-10-06" } },
     },
     {
       fileName: "eq_phyto.pdf", documentType: "PHYTOSANITARY_CERTIFICATE",
       base64Content: Buffer.from(createPdfBytes("eq-phyto-content")).toString("base64"),
-      fixtureFields: {
-        container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-EQ-01" }, phyto_cert_number: { raw: "SYNTH-EQ-KDTV-01" },
-      },
+      fixtureFields: { container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SEAL-EQ-01" }, phyto_cert_number: { raw: "SYNTH-EQ-KDTV-01" } },
     },
   ];
 

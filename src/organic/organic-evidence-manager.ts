@@ -2,18 +2,13 @@ import type { AuthenticatedActor, ContainerDossier } from "../domain/types.js";
 import { assertDossierMutable } from "../domain/dossier-fsm.js";
 import { assertOwnerOperationalRole } from "../auth/rbac-policy.js";
 import {
-  type IssuerClaimedOrganicStatus,
-  type OrganicCertificationEvidence,
-  type OrganicStandardCode,
-  DURIOS_ORGANIC_DISCLAIMER,
-  DURIOS_ORGANIC_RECORD_STATUS,
+  type IssuerClaimedOrganicStatus, type OrganicCertificationEvidence, type OrganicStandardCode,
+  DURIOS_ORGANIC_DISCLAIMER, DURIOS_ORGANIC_RECORD_STATUS,
 } from "../domain/pilot-types.js";
 import type { AuditLedgerLike } from "../workspace/workspace-types.js";
 import { SqliteClient } from "../storage/sqlite-client.js";
 import {
-  insertOrganicEvidenceRow,
-  queryOrganicEvidenceByDossier,
-  queryOrganicEvidenceById,
+  insertOrganicEvidenceRow, queryOrganicEvidenceByDossier, queryOrganicEvidenceById,
 } from "./organic-evidence-store.js";
 
 export class InvalidOrganicEvidenceError extends Error {
@@ -27,18 +22,12 @@ export class InvalidOrganicEvidenceError extends Error {
 }
 
 export interface RecordOrganicEvidenceInput {
-  readonly certifierName: string;
-  readonly certifierAccreditationNumber?: string | undefined;
-  readonly certificateNumber: string;
-  readonly standardCode: OrganicStandardCode;
-  readonly standardDescription: string;
-  readonly certifiedScope: string;
-  readonly validFrom: string;
-  readonly validTo: string;
-  readonly issuingDate: string;
+  readonly certifierName: string; readonly certifierAccreditationNumber?: string | undefined;
+  readonly certificateNumber: string; readonly standardCode: OrganicStandardCode;
+  readonly standardDescription: string; readonly certifiedScope: string;
+  readonly validFrom: string; readonly validTo: string; readonly issuingDate: string;
   readonly issuerClaimedStatus: IssuerClaimedOrganicStatus;
-  readonly evidenceDocumentId?: string | undefined;
-  readonly sourceDocumentUrl?: string | undefined;
+  readonly evidenceDocumentId?: string | undefined; readonly sourceDocumentUrl?: string | undefined;
 }
 
 const VALID_ISSUER_STATUSES: readonly IssuerClaimedOrganicStatus[] = [
@@ -53,9 +42,7 @@ export class OrganicEvidenceManager {
     this.client = client ?? new SqliteClient({ dbPath: ":memory:", inMemory: true });
   }
 
-  public setClock(clockFn: () => Date): void {
-    this.clock = clockFn;
-  }
+  public setClock(clockFn: () => Date): void { this.clock = clockFn; }
 
   public recordEvidence(
     dossier: ContainerDossier,
@@ -85,8 +72,7 @@ export class OrganicEvidenceManager {
       throw new InvalidOrganicEvidenceError(`Cannot record organic evidence with issuerClaimedStatus '${input.issuerClaimedStatus}' as active proof.`);
     }
 
-    const fromDate = new Date(input.validFrom);
-    const toDate = new Date(input.validTo);
+    const [fromDate, toDate] = [new Date(input.validFrom), new Date(input.validTo)];
     if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime()) || toDate <= fromDate) {
       throw new InvalidOrganicEvidenceError("Certificate validTo date must be strictly after validFrom date.");
     }

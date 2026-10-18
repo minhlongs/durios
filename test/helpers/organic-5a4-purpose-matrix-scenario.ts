@@ -22,21 +22,14 @@ export async function runSharePurposeMatrixScenario(
   const bUnshared = seedTestPilotActor(app.authService, { tenantId: "TEN-UNSHARED", tenantType: "BUYER_IMPORTER", role: "VIEWER", persona: "BUYER_VIEWER" });
 
   const callHttp = (path: string, cookie: string, method = "GET", body?: unknown) =>
-    app.handler(
-      new Request(`http://127.0.0.1${path}`, {
-        method, headers: { Cookie: cookie, "Content-Type": "application/json" },
-        ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
-      })
-    );
+    app.handler(new Request(`http://127.0.0.1${path}`, {
+      method, headers: { Cookie: cookie, "Content-Type": "application/json" },
+      ...(body !== undefined ? { body: JSON.stringify(body) } : {}),
+    }));
 
-  const d1Res = await callHttp("/api/dossiers", aMgr.sessionCookie, "POST", {
-    dossierCode: "DOS-5A4-P1", containerNumber: "MSKU1234565", sealNumber: "SEAL-P1",
-  });
+  const d1Res = await callHttp("/api/dossiers", aMgr.sessionCookie, "POST", { dossierCode: "DOS-5A4-P1", containerNumber: "MSKU1234565", sealNumber: "SEAL-P1" });
   const dossierId = ((await d1Res.json()) as DossierCreatedPayload).data.id;
-
-  const d2Res = await callHttp("/api/dossiers", aMgr.sessionCookie, "POST", {
-    dossierCode: "DOS-5A4-P2", containerNumber: "MSKU1234565", sealNumber: "SEAL-P2",
-  });
+  const d2Res = await callHttp("/api/dossiers", aMgr.sessionCookie, "POST", { dossierCode: "DOS-5A4-P2", containerNumber: "MSKU1234565", sealNumber: "SEAL-P2" });
   const otherDossierId = ((await d2Res.json()) as DossierCreatedPayload).data.id;
 
   await callHttp(`/api/dossiers/${dossierId}/documents`, aMgr.sessionCookie, "POST", {
@@ -66,18 +59,10 @@ export async function runSharePurposeMatrixScenario(
   expect((await callHttp("/api/dossiers/DOS-NONEXISTENT/audit", aMgr.sessionCookie, "GET")).status).toBe(404);
 
   const futureIso = new Date(Date.now() + 3600_000).toISOString();
-  await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", {
-    granteeTenantId: "TEN-LOGISTICS", purpose: "LOGISTICS", scope: "READ_ONLY", expiresAt: futureIso,
-  });
-  await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", {
-    granteeTenantId: "TEN-BUYER", purpose: "BUYER_VERIFICATION", scope: "READ_ONLY", expiresAt: futureIso,
-  });
-  await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", {
-    granteeTenantId: "TEN-CUSTOMS", purpose: "CUSTOMS_INSPECTION", scope: "READ_AND_VERIFY", expiresAt: futureIso,
-  });
-  const auditGrantRes = await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", {
-    granteeTenantId: "TEN-AUDIT", purpose: "AUDIT", scope: "READ_ONLY", expiresAt: futureIso,
-  });
+  await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", { granteeTenantId: "TEN-LOGISTICS", purpose: "LOGISTICS", scope: "READ_ONLY", expiresAt: futureIso });
+  await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", { granteeTenantId: "TEN-BUYER", purpose: "BUYER_VERIFICATION", scope: "READ_ONLY", expiresAt: futureIso });
+  await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", { granteeTenantId: "TEN-CUSTOMS", purpose: "CUSTOMS_INSPECTION", scope: "READ_AND_VERIFY", expiresAt: futureIso });
+  const auditGrantRes = await callHttp(`/api/dossiers/${dossierId}/shares`, aMgr.sessionCookie, "POST", { granteeTenantId: "TEN-AUDIT", purpose: "AUDIT", scope: "READ_ONLY", expiresAt: futureIso });
   const auditGrantId = ((await auditGrantRes.json()) as ShareGrantPayload).grant.id;
 
   const logAuditRes = await callHttp(`/api/dossiers/${dossierId}/audit`, bLogistics.sessionCookie, "GET");
@@ -91,21 +76,16 @@ export async function runSharePurposeMatrixScenario(
   const customsAuditRes = await callHttp(`/api/dossiers/${dossierId}/audit`, bCustoms.sessionCookie, "GET");
   expect(customsAuditRes.status).toBe(200);
   const customsEvents = ((await customsAuditRes.json()) as AuditPayload).data.events;
-  expect(customsEvents.length).toBeGreaterThanOrEqual(4);
-  expect(customsEvents.every((e) => e.dossierId === dossierId && e.tenantId === "TEN-A")).toBe(true);
+  expect(customsEvents.length >= 4 && customsEvents.every((e) => e.dossierId === dossierId && e.tenantId === "TEN-A")).toBe(true);
 
   const d1Detail = ((await (await callHttp(`/api/dossiers/${dossierId}`, bCustoms.sessionCookie, "GET")).json()) as DossierDetailPayload).data;
-  const doc0 = d1Detail.documents[0]!;
-  const fld0 = doc0.extractedFields[0]!;
-  expect(
-    (await callHttp(`/api/dossiers/${dossierId}/documents/${doc0.id}/fields/${fld0.id}/verify`, bCustoms.sessionCookie, "POST", { confirmedValue: fld0.rawValue })).status
-  ).toBe(200);
+  const [doc0, fld0] = [d1Detail.documents[0]!, d1Detail.documents[0]!.extractedFields[0]!];
+  expect((await callHttp(`/api/dossiers/${dossierId}/documents/${doc0.id}/fields/${fld0.id}/verify`, bCustoms.sessionCookie, "POST", { confirmedValue: fld0.rawValue })).status).toBe(200);
 
   const auditorAuditRes = await callHttp(`/api/dossiers/${dossierId}/audit`, bAuditor.sessionCookie, "GET");
   expect(auditorAuditRes.status).toBe(200);
   const auditorEvents = ((await auditorAuditRes.json()) as AuditPayload).data.events;
-  expect(auditorEvents.length).toBeGreaterThanOrEqual(4);
-  expect(auditorEvents.every((e) => e.dossierId === dossierId && e.tenantId === "TEN-A")).toBe(true);
+  expect(auditorEvents.length >= 4 && auditorEvents.every((e) => e.dossierId === dossierId && e.tenantId === "TEN-A")).toBe(true);
 
   expect((await callHttp(`/api/dossiers/${otherDossierId}/audit`, bAuditor.sessionCookie, "GET")).status).toBe(404);
   expect((await callHttp(`/api/dossiers/${otherDossierId}/organic-evidence`, bAuditor.sessionCookie, "GET")).status).toBe(404);

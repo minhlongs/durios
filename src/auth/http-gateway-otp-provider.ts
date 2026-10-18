@@ -11,28 +11,17 @@ export class OtpProviderDispatchError extends Error {
 }
 
 export interface HttpGatewayOtpProviderConfig {
-  readonly providerName: string;
-  readonly apiUrl: string;
-  readonly apiKey: string;
-  readonly secretKey?: string | undefined;
-  readonly zaloOaId?: string | undefined;
-  readonly zaloTemplateId?: string | undefined;
-  readonly smsBrandname?: string | undefined;
-  readonly timeoutMs?: number | undefined;
-  readonly fetchImpl?: typeof fetch | undefined;
+  readonly providerName: string; readonly apiUrl: string; readonly apiKey: string;
+  readonly secretKey?: string | undefined; readonly zaloOaId?: string | undefined;
+  readonly zaloTemplateId?: string | undefined; readonly smsBrandname?: string | undefined;
+  readonly timeoutMs?: number | undefined; readonly fetchImpl?: typeof fetch | undefined;
 }
 
 export class HttpGatewayOtpProvider implements OtpProviderAdapter {
-  public readonly providerName: string;
-  public readonly isConfigured = true;
-  private readonly apiUrl: string;
-  private readonly apiKey: string;
-  private readonly secretKey: string | undefined;
-  private readonly zaloOaId: string | undefined;
-  private readonly zaloTemplateId: string | undefined;
-  private readonly smsBrandname: string | undefined;
-  private readonly timeoutMs: number;
-  private readonly fetchImpl: typeof fetch;
+  public readonly providerName: string; public readonly isConfigured = true;
+  private readonly apiUrl: string; private readonly apiKey: string; private readonly secretKey: string | undefined;
+  private readonly zaloOaId: string | undefined; private readonly zaloTemplateId: string | undefined;
+  private readonly smsBrandname: string | undefined; private readonly timeoutMs: number; private readonly fetchImpl: typeof fetch;
 
   constructor(config: HttpGatewayOtpProviderConfig) {
     const [providerName, apiUrl, apiKey] = [config.providerName.trim(), config.apiUrl.trim(), config.apiKey.trim()];
@@ -45,7 +34,6 @@ export class HttpGatewayOtpProvider implements OtpProviderAdapter {
     if (parsedUrl.protocol !== "https:" && !(isLocalhost && parsedUrl.protocol === "http:")) {
       throw new Error("OTP gateway URL must use https:// (or http:// on loopback for local staging).");
     }
-
     this.providerName = providerName;
     this.apiUrl = apiUrl;
     this.apiKey = apiKey;
@@ -59,21 +47,16 @@ export class HttpGatewayOtpProvider implements OtpProviderAdapter {
 
   public async sendOtp(request: OtpDispatchRequest): Promise<OtpDispatchResult> {
     if (request.channel === "ZALO" && (!this.zaloOaId || !this.zaloTemplateId)) {
-      throw new OtpProviderDispatchError(
-        `Zalo ZNS dispatch requires DURIOS_OTP_ZALO_OA_ID and DURIOS_OTP_ZALO_TEMPLATE_ID on '${this.providerName}'.`
-      );
+      throw new OtpProviderDispatchError(`Zalo ZNS dispatch requires DURIOS_OTP_ZALO_OA_ID and DURIOS_OTP_ZALO_TEMPLATE_ID on '${this.providerName}'.`);
     }
     if (request.channel === "SMS" && !this.smsBrandname) {
-      throw new OtpProviderDispatchError(
-        `SMS Brandname dispatch requires DURIOS_OTP_SMS_BRANDNAME on '${this.providerName}'.`
-      );
+      throw new OtpProviderDispatchError(`SMS Brandname dispatch requires DURIOS_OTP_SMS_BRANDNAME on '${this.providerName}'.`);
     }
 
     const headers: Record<string, string> = {
       "Content-Type": "application/json", Accept: "application/json", "X-Api-Key": this.apiKey,
       ...(this.secretKey ? { "X-Secret-Key": this.secretKey } : {}),
     };
-
     const payload = {
       challengeId: request.challengeId, phoneNumber: request.phoneNumber,
       channel: request.channel, otpCode: request.otpCode, expiresAt: request.expiresAt,
@@ -95,9 +78,7 @@ export class HttpGatewayOtpProvider implements OtpProviderAdapter {
     }
 
     let body: Record<string, unknown> = {};
-    try {
-      body = (await response.json()) as Record<string, unknown>;
-    } catch {
+    try { body = (await response.json()) as Record<string, unknown>; } catch {
       throw new OtpProviderDispatchError(`OTP gateway '${this.providerName}' returned malformed JSON.`);
     }
 

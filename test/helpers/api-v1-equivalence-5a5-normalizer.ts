@@ -11,25 +11,15 @@ export interface EquivalenceActors {
 }
 
 export type CompareCallFn = <T = Record<string, unknown>>(
-  suffixApi: string, suffixV1: string, method: string, actorPair: ActorHeaderPair,
-  bodyObj?: unknown, expectedStatus?: number
+  suffixApi: string, suffixV1: string, method: string, actorPair: ActorHeaderPair, bodyObj?: unknown, expectedStatus?: number
 ) => Promise<{ bodyApi: T; bodyV1: T }>;
 
 const DYNAMIC_ID_RE = /^(DOS|DOC|FLD|SHR|ORG|EVT|AUD)-[A-Za-z0-9-]+$/;
-const TIMESTAMP_KEYS = new Set([
-  "createdAt", "updatedAt", "uploadedAt", "verifiedAt", "evaluatedAt",
-  "exportSealedAt", "exportedAt", "grantedAt", "revokedAt", "recordedAt", "timestamp",
-]);
-const CHAIN_HASH_KEYS = new Set([
-  "previousHash", "eventHash", "compositeManifestSha256", "compositeSha256", "auditLedgerTailHash",
-]);
-
+const TIMESTAMP_KEYS = new Set(["createdAt", "updatedAt", "uploadedAt", "verifiedAt", "evaluatedAt", "exportSealedAt", "exportedAt", "grantedAt", "revokedAt", "recordedAt", "timestamp"]);
+const CHAIN_HASH_KEYS = new Set(["previousHash", "eventHash", "compositeManifestSha256", "compositeSha256", "auditLedgerTailHash"]);
 const isRecord = (v: unknown): v is Record<string, unknown> => v !== null && typeof v === "object" && !Array.isArray(v);
 
-export function createEquivalenceHarness(
-  wsApi: ContainerDossierWorkspace,
-  wsV1: ContainerDossierWorkspace
-): { actors: EquivalenceActors; compareCall: CompareCallFn } {
+export function createEquivalenceHarness(wsApi: ContainerDossierWorkspace, wsV1: ContainerDossierWorkspace): { actors: EquivalenceActors; compareCall: CompareCallFn } {
   const seedMatchingActor = (
     id: string, username: string, tenantId: string,
     tenantType: "PACKHOUSE_EXPORTER" | "BUYER_IMPORTER" | "INSPECTION_AUDITOR",

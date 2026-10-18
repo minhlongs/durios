@@ -8,21 +8,13 @@ import type { SqliteDossierRepository } from "../../src/storage/sqlite-dossier-r
 import { ContainerDossierWorkspace } from "../../src/workspace/container-dossier-workspace.js";
 
 export const CLERK: AuthenticatedActor = {
-  id: "USR-CLERK",
-  name: "Documentation Clerk",
-  role: "CLERK",
-  tenantId: "TENANT-VN-01",
-  tenantType: "PACKHOUSE_EXPORTER",
-  persona: "PACKHOUSE_CLERK",
+  id: "USR-CLERK", name: "Documentation Clerk", role: "CLERK",
+  tenantId: "TENANT-VN-01", tenantType: "PACKHOUSE_EXPORTER", persona: "PACKHOUSE_CLERK",
 };
 
 export const MANAGER: AuthenticatedActor = {
-  id: "USR-MGR",
-  name: "Packhouse Manager",
-  role: "MANAGER",
-  tenantId: "TENANT-VN-01",
-  tenantType: "PACKHOUSE_EXPORTER",
-  persona: "PACKHOUSE_MANAGER",
+  id: "USR-MGR", name: "Packhouse Manager", role: "MANAGER",
+  tenantId: "TENANT-VN-01", tenantType: "PACKHOUSE_EXPORTER", persona: "PACKHOUSE_MANAGER",
 };
 
 export function makePdf(tag: string): Uint8Array {
@@ -40,35 +32,18 @@ export function runFailedSaveCleanupScenario(
   writeFileSync(unrelatedFile, "unrelated content");
   expect(existsSync(unrelatedFile)).toBe(true);
 
-  const dossier = workspace.createDossier(
-    {
-      dossierCode: "DOS-CONSISTENCY-01",
-      containerNumber: "MSKU1234565",
-      sealNumber: "SEAL-CONS-1",
-      borderGate: "Huu Nghi",
-      targetMarket: "CN",
-      targetTemperatureC: 13.0,
-      declaredNetWeightKg: 18000,
-      declaredBoxCount: 900,
-    },
-    CLERK
-  );
+  const dossier = workspace.createDossier({
+    dossierCode: "DOS-CONSISTENCY-01", containerNumber: "MSKU1234565", sealNumber: "SEAL-CONS-1",
+    borderGate: "Huu Nghi", targetMarket: "CN", targetTemperatureC: 13.0,
+    declaredNetWeightKg: 18000, declaredBoxCount: 900,
+  }, CLERK);
 
   const brokenRepo: SqliteDossierRepository = Object.create(repo);
-  brokenRepo.save = () => {
-    throw new Error("Simulated SQLite write constraint failure");
-  };
-
+  brokenRepo.save = () => { throw new Error("Simulated SQLite write constraint failure"); };
   const brokenWorkspace = new ContainerDossierWorkspace(brokenRepo, ledger, storage);
 
   expect(() => {
-    brokenWorkspace.uploadDocument(
-      dossier.id,
-      makePdf("fail-test"),
-      "test-upload-fail.pdf",
-      "PACKING_LIST",
-      CLERK
-    );
+    brokenWorkspace.uploadDocument(dossier.id, makePdf("fail-test"), "test-upload-fail.pdf", "PACKING_LIST", CLERK);
   }).toThrow("Simulated SQLite write constraint failure");
 
   const files = readdirSync(dataDir);
@@ -80,20 +55,15 @@ export function runSafePathAndTraversalScenario(
   storage: FileStorageService,
   dataDir: string
 ): void {
-  expect(() => {
-    storage.resolveSafePath("../../../../etc/passwd");
-  }).toThrow(/path traversal/);
+  expect(() => storage.resolveSafePath("../../../../etc/passwd")).toThrow(/path traversal/);
 
   const stored = storage.storeFile(
-    makePdf("traversal-safe"),
-    "../../../../etc/passwd.pdf",
-    "DOC-TRAVERSAL-01"
+    makePdf("traversal-safe"), "../../../../etc/passwd.pdf", "DOC-TRAVERSAL-01"
   );
   expect(stored.storagePath).toBe(`storage/blobs/${stored.sha256}.bin`);
   expect(stored.storagePath.includes("..")).toBe(false);
   const physicalPath = storage.resolveSafePath(stored.storagePath);
-  expect(physicalPath.startsWith(dataDir)).toBe(true);
-  expect(existsSync(physicalPath)).toBe(true);
+  expect(physicalPath.startsWith(dataDir) && existsSync(physicalPath)).toBe(true);
 }
 
 export function runOversizedUploadRejectionScenario(workspace: ContainerDossierWorkspace): void {
@@ -103,27 +73,13 @@ export function runOversizedUploadRejectionScenario(workspace: ContainerDossierW
   overLimitBuffer[2] = 0x44;
   overLimitBuffer[3] = 0x46;
 
-  const dossier = workspace.createDossier(
-    {
-      dossierCode: "DOS-OVERSIZED",
-      containerNumber: "MSKU1234565",
-      sealNumber: "SEAL-OS-01",
-      borderGate: "Huu Nghi",
-      targetMarket: "CN",
-      targetTemperatureC: 13.0,
-      declaredNetWeightKg: 18000,
-      declaredBoxCount: 900,
-    },
-    CLERK
-  );
+  const dossier = workspace.createDossier({
+    dossierCode: "DOS-OVERSIZED", containerNumber: "MSKU1234565", sealNumber: "SEAL-OS-01",
+    borderGate: "Huu Nghi", targetMarket: "CN", targetTemperatureC: 13.0,
+    declaredNetWeightKg: 18000, declaredBoxCount: 900,
+  }, CLERK);
 
   expect(() => {
-    workspace.uploadDocument(
-      dossier.id,
-      overLimitBuffer,
-      "huge.pdf",
-      "PACKING_LIST",
-      CLERK
-    );
+    workspace.uploadDocument(dossier.id, overLimitBuffer, "huge.pdf", "PACKING_LIST", CLERK);
   }).toThrow(/exceeds 25MB statutory limit/);
 }

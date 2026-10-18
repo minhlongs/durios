@@ -1,24 +1,15 @@
 import type { SqliteClient } from "../storage/sqlite-client.js";
 import type { AuthenticatedActor, ProductPersona, TenantType, UserRole } from "../domain/types.js";
-import {
-  generateOpaqueToken, generateSaltHex, hashOpaqueToken, hashSecretWithSalt, verifySecretWithSalt,
-} from "./crypto-helpers.js";
+import { generateOpaqueToken, generateSaltHex, hashOpaqueToken, hashSecretWithSalt, verifySecretWithSalt } from "./crypto-helpers.js";
 import { type OtpChannel, type OtpProviderAdapter, UnconfiguredOtpProvider } from "./otp-provider.js";
-import {
-  AuthenticationError, type IssuedAuthSession, type IssuedManagedPilotToken,
-  type IssuedOtpChallenge, type PilotAccountRecord, type ProvisionPilotAccountInput,
-} from "./auth-types.js";
+import { AuthenticationError, type IssuedAuthSession, type IssuedManagedPilotToken, type IssuedOtpChallenge, type PilotAccountRecord, type ProvisionPilotAccountInput } from "./auth-types.js";
 import { consumeVerifiedOtpChallenge, createOtpChallengeRecord } from "./otp-challenge-store.js";
 import { assertValidIdentityTuple } from "./rbac-policy.js";
-import {
-  assertRateLimitAllowed, clearRateLimitBucket, PASSWORD_LOGIN_LIMIT_POLICY, recordRateLimitAttempt,
-} from "./rate-limit-store.js";
+import { assertRateLimitAllowed, clearRateLimitBucket, PASSWORD_LOGIN_LIMIT_POLICY, recordRateLimitAttempt } from "./rate-limit-store.js";
 
 interface AccountRow {
-  id: string; username: string; phone_number: string | null;
-  password_hash: string; password_salt: string; actor_name: string;
-  tenant_id: string; tenant_type: TenantType; role: UserRole;
-  persona: ProductPersona; is_active: number; created_at: string;
+  id: string; username: string; phone_number: string | null; password_hash: string; password_salt: string;
+  actor_name: string; tenant_id: string; tenant_type: TenantType; role: UserRole; persona: ProductPersona; is_active: number; created_at: string;
 }
 
 const rowToActor = (r: AccountRow): AuthenticatedActor => {
@@ -83,13 +74,11 @@ export class SqliteAuthService {
   public issueManagedPilotToken(accountId: string, deviceLabel: string, expiresAtIso: string): IssuedManagedPilotToken {
     const account = this.client.db.query<AccountRow, [string]>("SELECT * FROM pilot_accounts WHERE id = ?").get(accountId.trim());
     if (!account || !account.is_active) throw new Error(`Active pilot account '${accountId}' not found.`);
-    const actor = rowToActor(account);
-    const expDate = new Date(expiresAtIso);
+    const [actor, expDate] = [rowToActor(account), new Date(expiresAtIso)];
     if (isNaN(expDate.getTime()) || expDate.getTime() <= Date.now()) {
       throw new Error("Managed pilot token expiration must be a valid future ISO timestamp.");
     }
-    const tokenId = `MPT-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
-    const rawToken = generateOpaqueToken("dpt");
+    const [tokenId, rawToken] = [`MPT-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`, generateOpaqueToken("dpt")];
     this.client.db.run(
       `INSERT INTO managed_pilot_tokens (id, token_hash, account_id, device_label, expires_at, revoked_at, revocation_reason, created_at) VALUES (?, ?, ?, ?, ?, NULL, NULL, ?)`,
       [tokenId, hashOpaqueToken(rawToken), account.id, deviceLabel.trim(), expDate.toISOString(), new Date().toISOString()]
@@ -123,8 +112,7 @@ export class SqliteAuthService {
 
   private createSession(account: AccountRow, authMethod: "PASSWORD_SESSION" | "OTP_SESSION", ttlMs: number): IssuedAuthSession {
     const actor = rowToActor(account);
-    const sessionId = `SES-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
-    const sessionToken = generateOpaqueToken("dss");
+    const [sessionId, sessionToken] = [`SES-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`, generateOpaqueToken("dss")];
     const now = new Date();
     const expiresAt = new Date(now.getTime() + ttlMs).toISOString();
     this.client.db.run(

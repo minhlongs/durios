@@ -1,33 +1,11 @@
 import { expect } from "bun:test";
 
-interface DossierDocumentPayload {
-  id: string;
-  extractedFields: Array<{ id: string; rawValue: string }>;
-}
+interface DossierDocumentPayload { id: string; extractedFields: Array<{ id: string; rawValue: string }> }
+interface DossierDetailPayload { data: { id: string; lifecycleState: string; isImmutable: boolean; documents: DossierDocumentPayload[] } }
+interface ExportResultPayload { success: boolean; data: { lifecycleState: string; isImmutable: boolean } }
+interface AuditResultPayload { data: { isChainValid: boolean; count: number } }
 
-interface DossierDetailPayload {
-  data: {
-    id: string;
-    lifecycleState: string;
-    isImmutable: boolean;
-    documents: DossierDocumentPayload[];
-  };
-}
-
-interface ExportResultPayload {
-  success: boolean;
-  data: { lifecycleState: string; isImmutable: boolean };
-}
-
-interface AuditResultPayload {
-  data: { isChainValid: boolean; count: number };
-}
-
-export async function runHttpDossierLifecycleScenario(
-  handle: (req: Request) => Promise<Response> | Response,
-  clerkAuth: string,
-  managerAuth: string
-): Promise<void> {
+export async function runHttpDossierLifecycleScenario(handle: (req: Request) => Promise<Response> | Response, clerkAuth: string, managerAuth: string): Promise<void> {
   const createRes = await handle(
     new Request("http://127.0.0.1/api/dossiers", {
       method: "POST",
@@ -95,8 +73,7 @@ export async function runHttpDossierLifecycleScenario(
 
   const clerkExportRes = await handle(
     new Request(`http://127.0.0.1/api/dossiers/${dossierId}/export`, {
-      method: "POST",
-      headers: { Cookie: clerkAuth, "x-actor-role": "MANAGER" },
+      method: "POST", headers: { Cookie: clerkAuth, "x-actor-role": "MANAGER" },
     })
   );
   expect(clerkExportRes.status).toBe(403);

@@ -9,15 +9,8 @@ import { ContainerDossierWorkspace } from "../src/workspace/container-dossier-wo
 import type { SiteBackupManifest } from "../src/auth/site-backup-manager.js";
 import type { AuthenticatedActor, DossierExportManifest } from "../src/domain/types.js";
 
-const CLERK: AuthenticatedActor = {
-  id: "usr-clerk-cloud-01", tenantId: "ten-cailay-001", tenantType: "PACKHOUSE_EXPORTER",
-  role: "CLERK", persona: "PACKHOUSE_CLERK", name: "Cai Lay Clerk",
-};
-
-const MANAGER: AuthenticatedActor = {
-  id: "usr-mgr-cloud-01", tenantId: "ten-cailay-001", tenantType: "PACKHOUSE_EXPORTER",
-  role: "MANAGER", persona: "PACKHOUSE_MANAGER", name: "Cai Lay Manager",
-};
+const CLERK: AuthenticatedActor = { id: "usr-clerk-cloud-01", tenantId: "ten-cailay-001", tenantType: "PACKHOUSE_EXPORTER", role: "CLERK", persona: "PACKHOUSE_CLERK", name: "Cai Lay Clerk" };
+const MANAGER: AuthenticatedActor = { id: "usr-mgr-cloud-01", tenantId: "ten-cailay-001", tenantType: "PACKHOUSE_EXPORTER", role: "MANAGER", persona: "PACKHOUSE_MANAGER", name: "Cai Lay Manager" };
 
 const TEST_GACC_SNAPSHOT: ReadonlyMap<string, GaccCodeRegistryEntry> = new Map([
   ["VN-TG-ORCHARD-0042", { code: "VN-TG-ORCHARD-0042", codeType: "PUC", province: "Tiền Giang", status: "APPROVED_ACTIVE", updatedAt: "2026-10-01T00:00:00.000Z" }],
@@ -27,19 +20,14 @@ const TEST_GACC_SNAPSHOT: ReadonlyMap<string, GaccCodeRegistryEntry> = new Map([
 
 function buildSealedWorkspaceAndManifest(): { ws: ContainerDossierWorkspace; dossierId: string; manifest: DossierExportManifest } {
   const ws = new ContainerDossierWorkspace();
-  const created = ws.createDossier(
-    {
-      dossierCode: "DOS-CLOUD-2026-01", containerNumber: "MSKU1234565", sealNumber: "SL-998822",
-      targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 14,
-      declaredNetWeightKg: 18240, declaredBoxCount: 960,
-    },
-    CLERK
-  );
+  const created = ws.createDossier({
+    dossierCode: "DOS-CLOUD-2026-01", containerNumber: "MSKU1234565", sealNumber: "SL-998822",
+    targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 14, declaredNetWeightKg: 18240, declaredBoxCount: 960,
+  }, CLERK);
 
   const d1 = ws.uploadDocument(created.id, new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x35, 0x01]), "Packing.pdf", "PACKING_LIST", CLERK, {
     container_number: { raw: "MSKU1234565" }, seal_number: { raw: "SL-998822" },
-    net_weight_kg: { raw: "18240" }, total_boxes: { raw: "960" },
-    PUC: { raw: "VN-TG-ORCHARD-0042" }, PHC: { raw: "VN-TG-PACK-0018" },
+    net_weight_kg: { raw: "18240" }, total_boxes: { raw: "960" }, PUC: { raw: "VN-TG-ORCHARD-0042" }, PHC: { raw: "VN-TG-PACK-0018" },
   });
   const d2 = ws.uploadDocument(created.id, new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x35, 0x02]), "Lab.pdf", "LAB_TEST_REPORT", CLERK, {
     cadmium_mg_kg: { raw: "0.015" }, sample_code: { raw: "LAB-01" }, sampling_date: { raw: "2026-10-12" },
@@ -74,12 +62,10 @@ describe("25-Step Open-Core & SaaS Cloud Connectors Suite", () => {
   it("verifies sealed DossierExportManifest with MIT standalone verifier and rejects tampering or non-manifest JSON", () => {
     const { manifest } = buildSealedWorkspaceAndManifest();
     const validRes = verifyExportManifest(manifest);
-    expect(validRes.valid).toBe(true);
-    expect(validRes.iso6346ContainerValid).toBe(true);
+    expect(validRes.valid && validRes.iso6346ContainerValid).toBe(true);
     expect(validRes.verificationSealBadge).toBe("DuriOS Local Manifest Hash Check Passed (MIT Verifier)");
     expect(validRes.publicVerificationUrl).toBeUndefined();
     expect(verifyExportManifest(manifest, "https://verify.example.org/m").publicVerificationUrl).toContain(manifest.compositeManifestSha256);
-
     expect(verifyExportManifest({ ...manifest, sealNumber: "SL-TAMPERED" }).valid).toBe(false);
     expect(verifyExportManifest({ packFormatVersion: "1.0.0", randomField: true }).valid).toBe(false);
   });
@@ -93,8 +79,7 @@ describe("25-Step Open-Core & SaaS Cloud Connectors Suite", () => {
 
     expect(() => encryptBackupManifestForCloudVault("ten-cailay-001", sampleBackup, "ValidPassphrase#2026", {})).toThrow("requires an active PACKHOUSE_PRO_SAAS");
     const envelope = encryptBackupManifestForCloudVault("ten-cailay-001", sampleBackup, "ValidPassphrase#2026", proEnv);
-    expect(envelope.algorithm).toBe("AES-256-GCM");
-    expect(envelope.kdf).toBe("scrypt-sha256-v1");
+    expect(envelope.algorithm === "AES-256-GCM" && envelope.kdf === "scrypt-sha256-v1").toBe(true);
     expect(envelope.payloadScope).toBe("MANIFEST_METADATA_ONLY_NOT_BLOBS");
 
     expect(decryptCloudVaultBackupEnvelope(envelope, "ValidPassphrase#2026", "ten-cailay-001")).toEqual(sampleBackup);

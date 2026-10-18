@@ -35,11 +35,7 @@ const ALLOWED_IDENTITY_TUPLES: readonly AllowedTupleRule[] = [
   { persona: "SYSTEM_AUDITOR", allowedTenantTypes: ["INSPECTION_AUDITOR", "PACKHOUSE_EXPORTER", "ORCHARD_COOP"], allowedRoles: ["AUDITOR"] },
 ];
 
-export function isValidIdentityTuple(
-  persona: unknown,
-  tenantType: unknown,
-  role: unknown
-): boolean {
+export function isValidIdentityTuple(persona: unknown, tenantType: unknown, role: unknown): boolean {
   if (typeof persona !== "string" || typeof tenantType !== "string" || typeof role !== "string") {
     return false;
   }
@@ -51,11 +47,7 @@ export function isValidIdentityTuple(
   );
 }
 
-export function assertValidIdentityTuple(
-  persona: unknown,
-  tenantType: unknown,
-  role: unknown
-): void {
+export function assertValidIdentityTuple(persona: unknown, tenantType: unknown, role: unknown): void {
   if (!isValidIdentityTuple(persona, tenantType, role)) {
     throw new AccessControlError(
       `Invalid identity tuple (${String(persona)}, ${String(tenantType)}, ${String(role)}): combination is prohibited and no fallback role is permitted.`,

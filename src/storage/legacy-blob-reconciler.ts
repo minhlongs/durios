@@ -10,11 +10,8 @@ export type LegacyUnmigratedReason =
   | "UNSAFE_LEGACY_PATH";
 
 export interface LegacyBlobMigrationItem {
-  readonly documentId: string;
-  readonly dossierId: string;
-  readonly previousStoragePath: string;
-  readonly newStoragePath?: string | undefined;
-  readonly sha256Hash: string;
+  readonly documentId: string; readonly dossierId: string; readonly previousStoragePath: string;
+  readonly newStoragePath?: string | undefined; readonly sha256Hash: string;
   readonly reason?: LegacyUnmigratedReason | undefined;
 }
 
@@ -30,9 +27,7 @@ export function reconcileLegacyBlobsInSqlite(
   storeFile: (bytes: Uint8Array, fileName?: string, docId?: string) => StoredBlobResult
 ): LegacyBlobReconciliationReport {
   const hasDocs = db
-    .query<{ name: string }, []>(
-      "SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'documents'"
-    )
+    .query<{ name: string }, []>("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'documents'")
     .get();
   if (!hasDocs) return { migrated: [], unmigrated: [] };
 
@@ -50,10 +45,7 @@ export function reconcileLegacyBlobsInSqlite(
     const canonicalRelPath = `storage/blobs/${row.sha256_hash}.bin`;
     if (row.storage_path === canonicalRelPath) {
       const canonicalFull = resolveSafePath(canonicalRelPath);
-      if (
-        existsSync(canonicalFull) &&
-        calculateSha256(new Uint8Array(readFileSync(canonicalFull))) === row.sha256_hash
-      ) {
+      if (existsSync(canonicalFull) && calculateSha256(new Uint8Array(readFileSync(canonicalFull))) === row.sha256_hash) {
         continue;
       }
     }
@@ -61,11 +53,8 @@ export function reconcileLegacyBlobsInSqlite(
     const candidate = findDeterministicLegacyFile(row.id, row.storage_path, storageDir, resolveSafePath);
     if (candidate.status !== "FOUND") {
       unmigrated.push({
-        documentId: row.id,
-        dossierId: row.dossier_id,
-        previousStoragePath: row.storage_path,
-        sha256Hash: row.sha256_hash,
-        reason: candidate.reason,
+        documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path,
+        sha256Hash: row.sha256_hash, reason: candidate.reason,
       });
       continue;
     }
@@ -73,11 +62,8 @@ export function reconcileLegacyBlobsInSqlite(
     const fileBytes = new Uint8Array(readFileSync(candidate.fullPath));
     if (calculateSha256(fileBytes) !== row.sha256_hash) {
       unmigrated.push({
-        documentId: row.id,
-        dossierId: row.dossier_id,
-        previousStoragePath: row.storage_path,
-        sha256Hash: row.sha256_hash,
-        reason: "SHA256_MISMATCH",
+        documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path,
+        sha256Hash: row.sha256_hash, reason: "SHA256_MISMATCH",
       });
       continue;
     }
@@ -85,11 +71,8 @@ export function reconcileLegacyBlobsInSqlite(
     const stored = storeFile(fileBytes, row.file_name, row.id);
     db.run("UPDATE documents SET storage_path = ? WHERE id = ?", [stored.storagePath, row.id]);
     migrated.push({
-      documentId: row.id,
-      dossierId: row.dossier_id,
-      previousStoragePath: row.storage_path,
-      newStoragePath: stored.storagePath,
-      sha256Hash: row.sha256_hash,
+      documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path,
+      newStoragePath: stored.storagePath, sha256Hash: row.sha256_hash,
     });
   }
   return { migrated, unmigrated };

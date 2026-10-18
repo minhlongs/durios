@@ -12,40 +12,25 @@ import {
 } from "./ui-ux-deep-introspector.js";
 
 export interface SocraticTurnEvaluation {
-  readonly turnNumber: 1 | 2 | 3 | 4 | 5;
-  readonly dimension: string;
-  readonly socraticQuestion: string;
-  readonly passed: boolean;
-  readonly evidenceSummary: string;
+  readonly turnNumber: 1 | 2 | 3 | 4 | 5; readonly dimension: string;
+  readonly socraticQuestion: string; readonly passed: boolean; readonly evidenceSummary: string;
 }
 
 export interface OpenCoreDeepBrainstormReport {
-  readonly ideaVerdict: "GO_OPEN_CORE_SAAS";
-  readonly evaluatedAt: string;
-  readonly allTurnsPassed: boolean;
-  readonly blueprintAudit: Blueprint25StepAuditReport;
-  readonly uiUxDeepAudit: UiUxDeepBrainstormReport;
-  readonly editionModuleCounts: {
-    readonly communityOpenCore: number;
-    readonly packhouseProSaas: number;
-    readonly exporterEnterprise: number;
-  };
+  readonly ideaVerdict: "GO_OPEN_CORE_SAAS"; readonly evaluatedAt: string; readonly allTurnsPassed: boolean;
+  readonly blueprintAudit: Blueprint25StepAuditReport; readonly uiUxDeepAudit: UiUxDeepBrainstormReport;
+  readonly editionModuleCounts: { readonly communityOpenCore: number; readonly packhouseProSaas: number; readonly exporterEnterprise: number };
   readonly unitEconomicsVerification: {
-    readonly containerPriceVnd: 150_000;
-    readonly estimatedVariableCogsVnd: 8_000;
-    readonly containerGrossMarginPct: number;
-    readonly pureVietnamSaasCeilingUsd: number;
-    readonly targetArrUsd: number;
-    readonly multiRevenueStackMandatory: boolean;
+    readonly containerPriceVnd: 150_000; readonly estimatedVariableCogsVnd: 8_000;
+    readonly containerGrossMarginPct: number; readonly pureVietnamSaasCeilingUsd: number;
+    readonly targetArrUsd: number; readonly multiRevenueStackMandatory: boolean;
   };
   readonly socraticTurns: readonly SocraticTurnEvaluation[];
 }
 
 const MIT_BOUNDARY_FILES: readonly string[] = [
-  "src/domain/iso-6346.ts",
-  "src/ingestion/document-hasher.ts",
-  "src/export/manifest-compiler.ts",
-  "src/export/standalone-manifest-verifier.ts",
+  "src/domain/iso-6346.ts", "src/ingestion/document-hasher.ts",
+  "src/export/manifest-compiler.ts", "src/export/standalone-manifest-verifier.ts",
 ];
 
 const PUBLIC_GITHUB_GOVERNANCE_FILES: readonly string[] = [
@@ -62,6 +47,7 @@ export function evaluateOpenCoreDeepBrainstorm(
   nowIso = new Date().toISOString()
 ): OpenCoreDeepBrainstormReport {
   const blueprintAudit = evaluateBlueprint25Steps(rootDir, nowIso);
+  const uiUxDeepAudit = evaluateUiUxDeepBrainstorm(rootDir, nowIso);
   const manifest = getOpenCoreEditionManifest("COMMUNITY_OPEN_CORE");
 
   const mitBoundaryViolations: string[] = [];
@@ -120,13 +106,10 @@ export function evaluateOpenCoreDeepBrainstorm(
     { turnNumber: 5, dimension: "25-Step Blueprint & Tri-Edition Completeness", socraticQuestion: "Are all 25 steps and all 3 Open-Core editions (Community/Pro/Enterprise) synchronized?", passed: turn5Passed, evidenceSummary: `25/25 steps verified; ${communityOpenCore} Community, ${packhouseProSaas} Pro, ${exporterEnterprise} Enterprise modules.` },
   ];
 
-  const uiUxDeepAudit = evaluateUiUxDeepBrainstorm(rootDir, nowIso);
   return {
-    ideaVerdict: "GO_OPEN_CORE_SAAS",
-    evaluatedAt: nowIso,
+    ideaVerdict: "GO_OPEN_CORE_SAAS", evaluatedAt: nowIso,
     allTurnsPassed: socraticTurns.every((t) => t.passed),
-    blueprintAudit,
-    uiUxDeepAudit,
+    blueprintAudit, uiUxDeepAudit,
     editionModuleCounts: { communityOpenCore, packhouseProSaas, exporterEnterprise },
     unitEconomicsVerification: {
       containerPriceVnd, estimatedVariableCogsVnd, containerGrossMarginPct,

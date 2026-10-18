@@ -526,6 +526,62 @@ html.daylight-theme .border-outline-variant {
 }
 
 /* =========================================================================
+   10-TURN SOCRATIC INSPECTOR MODAL
+   ========================================================================= */
+.durios-socratic-modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+  z-index: 100020;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.durios-socratic-modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.durios-socratic-modal-card {
+  width: 100%;
+  max-width: 860px;
+  max-height: 85vh;
+  background: var(--durios-bg-surface-elevated);
+  border: 1px solid var(--durios-border-strong);
+  border-radius: var(--durios-radius-lg);
+  box-shadow: var(--durios-shadow-lg);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.durios-socratic-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--durios-border-subtle);
+  background: var(--durios-bg-surface);
+}
+
+.durios-socratic-modal-body {
+  padding: 20px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+/* =========================================================================
    COMPACT FLOATING LIVE DOCK (Bottom-Right Floating Pill + Popover)
    ========================================================================= */
 .durios-floating-dock-pill {
@@ -670,4 +726,148 @@ html.durios-focus-canvas .durios-secondary-banner {
   }
 }
 
+/* =========================================================================
+   UI/UX PRO MAX PRIORITY 1–7 ACCESSIBILITY, TOUCH & MOTION GUARDS
+   ========================================================================= */
+button,
+a,
+input,
+select,
+textarea,
+[role="button"] {
+  touch-action: manipulation;
+}
 
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+  outline: 2px solid var(--durios-border-focus) !important;
+  outline-offset: 2px !important;
+}
+
+button:active:not(:disabled),
+.durios-cmd-btn:active:not(:disabled) {
+  transform: scale(0.985);
+  transition: transform 120ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@media (pointer: coarse), (max-width: 768px) {
+  .durios-cmd-btn,
+  .durios-domain-trigger,
+  .durios-floating-dock-pill {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+  .durios-floating-dock-pill {
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px)) !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* =========================================================================
+   PRO MAX SOCRATIC 10-TURN MODAL, TELEMETRY RIBBON & TABLE FILTER HYDRATION
+   ========================================================================= */
+.durios-socratic-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(8px);
+  z-index: 100020;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.18s ease;
+}
+
+.durios-socratic-modal-backdrop.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.durios-socratic-modal-card {
+  width: 100%;
+  max-width: 920px;
+  max-height: 86vh;
+  background: var(--durios-bg-surface-elevated);
+  border: 1px solid var(--durios-border-strong);
+  border-radius: var(--durios-radius-lg);
+  box-shadow: var(--durios-shadow-lg);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  font-family: var(--durios-font-sans);
+  color: var(--durios-text-primary);
+}
+
+.durios-socratic-turn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 10px;
+}
+
+.durios-socratic-turn-card {
+  background: var(--durios-bg-surface);
+  border: 1px solid var(--durios-border-subtle);
+  border-radius: var(--durios-radius-md);
+  padding: 10px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.durios-telemetry-ribbon {
+  background: var(--durios-bg-surface);
+  border-bottom: 1px solid var(--durios-border-subtle);
+  padding: 4px 14px;
+  font-family: var(--durios-font-mono);
+  font-size: 10px;
+  color: var(--durios-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+tr.durios-row-match,
+.durios-card-match {
+  outline: 1px solid var(--durios-accent) !important;
+  background: var(--durios-accent-soft) !important;
+}
+
+tr.durios-row-hidden,
+.durios-card-hidden {
+  display: none !important;
+}
+
+@media (max-width: 640px) {
+  .durios-socratic-turn-grid {
+    grid-template-columns: 1fr;
+  }
+  .durios-telemetry-ribbon {
+    font-size: 9px;
+    padding: 4px 8px;
+  }
+}
+
+@media (min-width: 1440px) {
+  .durios-socratic-modal-card {
+    max-width: 1040px;
+  }
+}

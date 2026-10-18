@@ -1,34 +1,17 @@
 import type { ContainerDossierWorkspace } from "../workspace/container-dossier-workspace.js";
 import { resolveAuthenticatedActor } from "./actor-resolver.js";
-import {
-  handleGetAuthenticatedMe, handleOtpChallengeRequest,
-  handleOtpChallengeVerify, handlePasswordLogin,
-} from "./auth-handlers.js";
+import { handleGetAuthenticatedMe, handleOtpChallengeRequest, handleOtpChallengeVerify, handlePasswordLogin } from "./auth-handlers.js";
 import { errorResponse, jsonResponse, mapDomainErrorToResponse } from "./server-types.js";
 import { serveIndexHtml } from "./static-ui.js";
 import { serveStitchStaticAsset } from "./stitch-static-handler.js";
-import {
-  handleListDossiers, handleCreateDossier, handleGetDossier,
-  handleRunValidation, handleApproveForExport, handleExportDossier, handleGetExportManifest,
-} from "./dossier-handlers.js";
-import {
-  handleUploadDocument, handleVerifyField, handleGetAuditTrail,
-} from "./document-handlers.js";
-import {
-  handleGrantShare, handleListShares, handleRevokeShare,
-  handleRecordOrganicEvidence, handleListOrganicEvidence, handleGetPilotKpi, handleGetPilotGates,
-} from "./pilot-handlers.js";
+import { handleListDossiers, handleCreateDossier, handleGetDossier, handleRunValidation, handleApproveForExport, handleExportDossier, handleGetExportManifest } from "./dossier-handlers.js";
+import { handleUploadDocument, handleVerifyField, handleGetAuditTrail } from "./document-handlers.js";
+import { handleGrantShare, handleListShares, handleRevokeShare, handleRecordOrganicEvidence, handleListOrganicEvidence, handleGetPilotKpi, handleGetPilotGates } from "./pilot-handlers.js";
 import { handleGetPilotGoLivePack } from "./pilot-dossier-pack-handler.js";
 import { handleGetSaasStatus } from "./saas-status-handler.js";
-import {
-  handleExportWorkspacePortability, handleGetOpenCoreEditionManifest, handleVerifyWorkspacePortability,
-} from "./open-core-portability-handler.js";
+import { handleExportWorkspacePortability, handleGetOpenCoreEditionManifest, handleVerifyWorkspacePortability } from "./open-core-portability-handler.js";
 import { handleGetBlueprintStatus } from "./open-core-blueprint-handler.js";
-import {
-  handleBootstrapPilotRehearsal,
-  handleGetEcosystemTelemetry,
-  handleSeedAuthenticatedRehearsal,
-} from "./ecosystem-rehearsal-handler.js";
+import { handleBootstrapPilotRehearsal, handleGetEcosystemTelemetry, handleSeedAuthenticatedRehearsal } from "./ecosystem-rehearsal-handler.js";
 import { handleVerifyIsoAndManifest } from "./open-core-verifier-handler.js";
 
 export async function routeHttpRequest(
@@ -47,22 +30,17 @@ export async function routeHttpRequest(
   if (method === "GET" && path === "/api/health") {
     return jsonResponse({ status: "healthy", service: "durios-core-api", timestamp: new Date().toISOString() });
   }
-  if (method === "POST" && path === "/api/auth/login") return handlePasswordLogin(workspace.authService, req);
-  if (method === "POST" && path === "/api/auth/pilot-rehearsal-bootstrap") return handleBootstrapPilotRehearsal(workspace, req);
-  if (
-    (method === "POST" || method === "GET") &&
-    (path === "/api/v1/open-core/verify-iso-and-manifest" || path === "/api/open-core/verify-iso-and-manifest")
-  ) {
+  if ((method === "POST" || method === "GET") && (path === "/api/open-core/verify-iso-and-manifest" || path === "/api/v1/open-core/verify-iso-and-manifest")) {
     return handleVerifyIsoAndManifest(req);
   }
+  if (method === "POST" && path === "/api/auth/login") return handlePasswordLogin(workspace.authService, req);
+  if (method === "POST" && path === "/api/auth/pilot-rehearsal-bootstrap") return handleBootstrapPilotRehearsal(workspace, req);
   if (method === "POST" && path === "/api/auth/otp/request") return handleOtpChallengeRequest(workspace.authService, req);
   if (method === "POST" && path === "/api/auth/otp/verify") return handleOtpChallengeVerify(workspace.authService, req);
   if (method === "GET" && path === "/api/auth/me") return handleGetAuthenticatedMe(workspace.authService, req);
 
   let actor;
-  try {
-    actor = resolveAuthenticatedActor(req, workspace.authService);
-  } catch (err) {
+  try { actor = resolveAuthenticatedActor(req, workspace.authService); } catch (err) {
     return mapDomainErrorToResponse(err, "Authentication required");
   }
 

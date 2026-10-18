@@ -39,8 +39,7 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
       );
       expect(res.status).toBe(200);
       const body = (await res.json()) as { success: boolean; data: { manifest: typeof manifest } };
-      expect(body.success).toBe(true);
-      expect(body.data.manifest.economicTruth.targetArrUsd).toBe(1_000_000);
+      expect(body.success && body.data.manifest.economicTruth.targetArrUsd === 1_000_000).toBe(true);
     } finally {
       app.sqliteClient.close();
     }
@@ -55,14 +54,10 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
 
     try {
       const creds = seedTestPilotActor(app.authService, { role: "MANAGER" });
-      app.workspace.createDossier(
-        {
-          dossierCode: "DUR-CAILAY-TEST-01", containerNumber: "MSKU1234565", sealNumber: "SEAL-CL-001",
-          targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
-          declaredNetWeightKg: 18000, declaredBoxCount: 950,
-        },
-        app.authService.authenticateToken(creds.sessionToken)
-      );
+      app.workspace.createDossier({
+        dossierCode: "DUR-CAILAY-TEST-01", containerNumber: "MSKU1234565", sealNumber: "SEAL-CL-001",
+        targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5, declaredNetWeightKg: 18000, declaredBoxCount: 950,
+      }, app.authService.authenticateToken(creds.sessionToken));
 
       const exportRes = await routeHttpRequest(
         app.workspace,
@@ -70,8 +65,7 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
       );
       expect(exportRes.status).toBe(200);
       const exportJson = (await exportRes.json()) as PortabilityApiResponse;
-      expect(exportJson.success).toBe(true);
-      expect(exportJson.data.bundle.payload.totalDossiersCount).toBe(1);
+      expect(exportJson.success && exportJson.data.bundle.payload.totalDossiersCount === 1).toBe(true);
       expect(exportJson.data.bundle.hmacSignatureSha256).toBeDefined();
 
       const authJsonHeaders = { Authorization: `Bearer ${creds.sessionToken}`, "Content-Type": "application/json" };
@@ -105,22 +99,17 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
     try {
       const credsA = seedTestPilotActor(app.authService, { role: "MANAGER", tenantId: "TEN-A" });
       const credsB = seedTestPilotActor(app.authService, { role: "MANAGER", tenantId: "TEN-B", phoneNumber: "+84900000002" });
-      app.workspace.createDossier(
-        {
-          dossierCode: "DUR-TEN-A-01", containerNumber: "MSKU1234565", sealNumber: "SEAL-A",
-          targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
-          declaredNetWeightKg: 18000, declaredBoxCount: 950,
-        },
-        app.authService.authenticateToken(credsA.sessionToken)
-      );
+      app.workspace.createDossier({
+        dossierCode: "DUR-TEN-A-01", containerNumber: "MSKU1234565", sealNumber: "SEAL-A",
+        targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5, declaredNetWeightKg: 18000, declaredBoxCount: 950,
+      }, app.authService.authenticateToken(credsA.sessionToken));
 
       const resB = await routeHttpRequest(
         app.workspace,
         new Request("http://127.0.0.1:3000/api/v1/open-core/portability", { headers: { Authorization: `Bearer ${credsB.sessionToken}` } })
       );
       const jsonB = (await resB.json()) as PortabilityApiResponse;
-      expect(jsonB.data.bundle.payload.tenantId).toBe("TEN-B");
-      expect(jsonB.data.bundle.payload.totalDossiersCount).toBe(0);
+      expect(jsonB.data.bundle.payload.tenantId === "TEN-B" && jsonB.data.bundle.payload.totalDossiersCount === 0).toBe(true);
       expect(jsonB.data.bundle.payload.dossiersSummary).toHaveLength(0);
     } finally {
       app.sqliteClient.close();

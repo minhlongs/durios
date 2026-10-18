@@ -87,9 +87,7 @@ export async function handleVerifyField(
   }
 
   let body: VerifyFieldRequestBody;
-  try {
-    body = (await req.json()) as VerifyFieldRequestBody;
-  } catch {
+  try { body = (await req.json()) as VerifyFieldRequestBody; } catch {
     return errorResponse("Invalid JSON payload in request body", 400);
   }
   if (body.confirmedValue === undefined && !body.rejectField) {

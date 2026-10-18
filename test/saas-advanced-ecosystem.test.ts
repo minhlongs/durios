@@ -2,18 +2,12 @@ import { afterEach, describe, expect, it } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import {
-  createSignedSaasLicenseKey, generateEphemeralSaasLicenseKeyPair,
-} from "../src/saas/saas-tier-policy.js";
+import { createSignedSaasLicenseKey, generateEphemeralSaasLicenseKeyPair } from "../src/saas/saas-tier-policy.js";
 import { ManagedSaasZnsAlertRelay } from "../src/saas/managed-zns-alert-relay.js";
-import {
-  PartnerLabWebhookIngestor, signPartnerWebhookPayload,
-} from "../src/saas/partner-webhook-ingestor.js";
+import { PartnerLabWebhookIngestor, signPartnerWebhookPayload } from "../src/saas/partner-webhook-ingestor.js";
 import { HybridEdgeSyncQueue } from "../src/saas/hybrid-edge-sync-queue.js";
 import { SqliteClient } from "../src/storage/sqlite-client.js";
-import {
-  getMarketCompliancePack, listAllMarketCompliancePacks,
-} from "../src/rules/multi-market-pack-registry.js";
+import { getMarketCompliancePack, listAllMarketCompliancePacks } from "../src/rules/multi-market-pack-registry.js";
 import type { DossierExportManifest } from "../src/domain/types.js";
 
 describe("25-Step Open-Core Ecosystem: ZNS Relay, Partner Webhooks, Hybrid Edge Sync & Multi-Market Packs", () => {
@@ -50,10 +44,7 @@ describe("25-Step Open-Core Ecosystem: ZNS Relay, Partner Webhooks, Hybrid Edge 
       providerMessageId: "ZALO-MSG-2026-001", deliveredAt: "2026-10-17T10:00:01.000Z",
     }));
     const receipt = relay.dispatchAlert(req, proEnv, "2026-10-17T10:00:00.000Z");
-
-    expect(receipt.delivered).toBe(true);
-    expect(receipt.providerMessageId).toBe("ZALO-MSG-2026-001");
-    expect(receipt.remainingMonthlyQuota).toBe(499);
+    expect(receipt.delivered && receipt.providerMessageId === "ZALO-MSG-2026-001" && receipt.remainingMonthlyQuota === 499).toBe(true);
     expect(relay.getDispatchedCount("ten-cailay-001")).toBe(1);
   });
 
@@ -71,8 +62,7 @@ describe("25-Step Open-Core Ecosystem: ZNS Relay, Partner Webhooks, Hybrid Edge 
     const signatureSha256 = signPartnerWebhookPayload(unsigned, secret);
     const first = ingestor.ingestWebhook({ ...unsigned, signatureSha256 }, secret, proEnv);
     expect(first.duplicateIgnored).toBe(false);
-    expect(first.candidateFields).toHaveLength(2);
-    expect(first.candidateFields.every((f) => f.verificationStatus === "DRAFT")).toBe(true);
+    expect(first.candidateFields.length === 2 && first.candidateFields.every((f) => f.verificationStatus === "DRAFT")).toBe(true);
 
     expect(() => ingestor.ingestWebhook({ ...unsigned, signatureSha256: "0".repeat(64) }, secret, proEnv)).toThrow(
       "Partner webhook signature verification failed"
@@ -115,8 +105,7 @@ describe("25-Step Open-Core Ecosystem: ZNS Relay, Partner Webhooks, Hybrid Edge 
       const flushed = queue2.flushPendingToCloud(
         "ten-cailay-001", proEnv, "2026-10-17T06:00:00.000Z", () => ({ ackReceiptHash: "e".repeat(64) })
       );
-      expect(flushed[0]?.status).toBe("SYNCED_TO_CLOUD");
-      expect(flushed[0]?.cloudAckReceiptHash).toBe("e".repeat(64));
+      expect(flushed[0]?.status === "SYNCED_TO_CLOUD" && flushed[0]?.cloudAckReceiptHash === "e".repeat(64)).toBe(true);
       expect(queue2.listPendingItems("ten-cailay-001")).toHaveLength(0);
     } finally {
       client2.close();
@@ -126,9 +115,6 @@ describe("25-Step Open-Core Ecosystem: ZNS Relay, Partner Webhooks, Hybrid Edge 
   it("Step 21: serves CN market pack free in Community Edition and fails closed on unverified JP/KR/EU packs", () => {
     expect(listAllMarketCompliancePacks()).toHaveLength(4);
     expect(getMarketCompliancePack("CN", {}).editionRequired).toBe("COMMUNITY_OPEN_CORE");
-    expect(() => getMarketCompliancePack("JP", {})).toThrow();
-    expect(() => getMarketCompliancePack("JP", proEnv)).toThrow();
-    expect(() => getMarketCompliancePack("KR", proEnv)).toThrow();
-    expect(() => getMarketCompliancePack("EU", proEnv)).toThrow();
+    for (const m of ["JP", "KR", "EU"] as const) expect(() => getMarketCompliancePack(m, proEnv)).toThrow();
   });
 });

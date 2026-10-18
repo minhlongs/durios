@@ -5,29 +5,20 @@ import { resolveSaasSubscriptionStatus } from "./saas-tier-policy.js";
 export type GaccApprovalStatus = "APPROVED_ACTIVE" | "SUSPENDED_BY_GACC" | "REVOKED";
 
 export interface GaccCodeRegistryEntry {
-  readonly code: string;
-  readonly codeType: "PUC" | "PHC";
-  readonly province: string;
-  readonly status: GaccApprovalStatus;
-  readonly updatedAt: string;
+  readonly code: string; readonly codeType: "PUC" | "PHC"; readonly province: string;
+  readonly status: GaccApprovalStatus; readonly updatedAt: string;
   readonly suspensionReasonVi?: string | undefined;
 }
 
 export interface GaccWatchEvaluationResult {
-  readonly allActive: boolean;
-  readonly checkedPuc: string;
-  readonly checkedPhc: string;
+  readonly allActive: boolean; readonly checkedPuc: string; readonly checkedPhc: string;
   readonly alertsVi: readonly string[];
 }
 
 export interface CrossBorderBuyerRoomLink {
-  readonly roomId: string;
-  readonly dossierId: string;
-  readonly manifestSha256: string;
-  readonly portalUrl: string;
-  readonly supportedLocales: readonly ["vi-VN", "zh-CN", "en-US"];
-  readonly expiresAt: string;
-  readonly revocationTokenHash: string;
+  readonly roomId: string; readonly dossierId: string; readonly manifestSha256: string;
+  readonly portalUrl: string; readonly supportedLocales: readonly ["vi-VN", "zh-CN", "en-US"];
+  readonly expiresAt: string; readonly revocationTokenHash: string;
 }
 
 export function evaluateGaccRegistryWatch(
@@ -39,9 +30,7 @@ export function evaluateGaccRegistryWatch(
 ): GaccWatchEvaluationResult {
   const sub = resolveSaasSubscriptionStatus(env, new Date().toISOString(), expectedTenantId);
   if (!sub.entitlements.gaccLiveRegistryWatch) {
-    throw new Error(
-      "Live GACC Registry Watch requires a PACKHOUSE_PRO_SAAS or EXPORTER_ENTERPRISE subscription."
-    );
+    throw new Error("Live GACC Registry Watch requires a PACKHOUSE_PRO_SAAS or EXPORTER_ENTERPRISE subscription.");
   }
   if (!snapshotFeed || snapshotFeed.size === 0) {
     throw new Error("GACC registry snapshot feed is required (no built-in live GACC feed configured).");
@@ -62,17 +51,10 @@ export function evaluateGaccRegistryWatch(
   if (!phcEntry) {
     alertsVi.push(`Mã cơ sở đóng gói '${phcCode}' không có trong danh mục GACC đã đồng bộ.`);
   } else if (phcEntry.status !== "APPROVED_ACTIVE") {
-    alertsVi.push(
-      `CẢNH BÁO KHẨN: Mã cơ sở đóng gói '${phcCode}' đang ở trạng thái '${phcEntry.status}'.`
-    );
+    alertsVi.push(`CẢNH BÁO KHẨN: Mã cơ sở đóng gói '${phcCode}' đang ở trạng thái '${phcEntry.status}'.`);
   }
 
-  return {
-    allActive: alertsVi.length === 0,
-    checkedPuc: pucCode,
-    checkedPhc: phcCode,
-    alertsVi,
-  };
+  return { allActive: alertsVi.length === 0, checkedPuc: pucCode, checkedPhc: phcCode, alertsVi };
 }
 
 export function issueCrossBorderBuyerVerificationRoom(
@@ -90,9 +72,7 @@ export function issueCrossBorderBuyerVerificationRoom(
   }
 
   const trimmedGrantId = shareGrantId.trim();
-  if (!trimmedGrantId) {
-    throw new Error("shareGrantId is required to issue a Cross-Border Buyer Verification Room.");
-  }
+  if (!trimmedGrantId) throw new Error("shareGrantId is required to issue a Cross-Border Buyer Verification Room.");
 
   const parsedExpiry = Date.parse(expiresAt);
   if (Number.isNaN(parsedExpiry) || parsedExpiry <= Date.now()) {
@@ -102,9 +82,7 @@ export function issueCrossBorderBuyerVerificationRoom(
   const baseUrl = (portalBaseUrl ?? env.DURIOS_BUYER_PORTAL_BASE_URL)?.trim();
   if (
     !baseUrl ||
-    (!baseUrl.startsWith("https://") &&
-      !baseUrl.startsWith("http://127.0.0.1") &&
-      !baseUrl.startsWith("http://localhost"))
+    (!baseUrl.startsWith("https://") && !baseUrl.startsWith("http://127.0.0.1") && !baseUrl.startsWith("http://localhost"))
   ) {
     throw new Error(
       "Explicit buyer portal base URL (https://, http://127.0.0.1, or http://localhost) is required via portalBaseUrl or DURIOS_BUYER_PORTAL_BASE_URL."
@@ -112,18 +90,12 @@ export function issueCrossBorderBuyerVerificationRoom(
   }
 
   const roomId = `ROOM-${manifest.dossierCode}-${trimmedGrantId.slice(-6)}`;
-  const revocationTokenHash = calculateSha256(
-    `${roomId}|${manifest.compositeManifestSha256}|${expiresAt}`
-  );
+  const revocationTokenHash = calculateSha256(`${roomId}|${manifest.compositeManifestSha256}|${expiresAt}`);
   const cleanBase = baseUrl.replace(/\/+$/, "");
 
   return {
-    roomId,
-    dossierId: manifest.dossierId,
-    manifestSha256: manifest.compositeManifestSha256,
+    roomId, dossierId: manifest.dossierId, manifestSha256: manifest.compositeManifestSha256,
     portalUrl: `${cleanBase}/rooms/${roomId}?sig=${revocationTokenHash.slice(0, 24)}`,
-    supportedLocales: ["vi-VN", "zh-CN", "en-US"],
-    expiresAt,
-    revocationTokenHash,
+    supportedLocales: ["vi-VN", "zh-CN", "en-US"], expiresAt, revocationTokenHash,
   };
 }

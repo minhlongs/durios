@@ -6,10 +6,7 @@ import {
   errorResponse, jsonResponse, mapDomainErrorToResponse, type CreateDossierRequestBody,
 } from "./server-types.js";
 
-export async function handleListDossiers(
-  workspace: ContainerDossierWorkspace,
-  actor: AuthenticatedActor
-): Promise<Response> {
+export async function handleListDossiers(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor): Promise<Response> {
   try {
     assertValidActor(actor);
     const safeDossiers = redactDossierListForActor(workspace.listDossiers(actor), actor, workspace.shareManager);
@@ -19,24 +16,10 @@ export async function handleListDossiers(
   }
 }
 
-export async function handleCreateDossier(
-  workspace: ContainerDossierWorkspace,
-  actor: AuthenticatedActor,
-  req: Request
-): Promise<Response> {
-  try {
-    assertCanCreateContainerDossier(actor);
-  } catch (err) {
-    return mapDomainErrorToResponse(err, "Unauthorized to create dossier");
-  }
-
+export async function handleCreateDossier(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, req: Request): Promise<Response> {
+  try { assertCanCreateContainerDossier(actor); } catch (err) { return mapDomainErrorToResponse(err, "Unauthorized to create dossier"); }
   let body: CreateDossierRequestBody;
-  try {
-    body = (await req.json()) as CreateDossierRequestBody;
-  } catch {
-    return errorResponse("Invalid JSON payload in request body", 400);
-  }
-
+  try { body = (await req.json()) as CreateDossierRequestBody; } catch { return errorResponse("Invalid JSON payload in request body", 400); }
   if (!body.dossierCode || !body.containerNumber || !body.sealNumber) {
     return errorResponse("Missing required fields: dossierCode, containerNumber, sealNumber", 400);
   }

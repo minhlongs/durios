@@ -11,10 +11,8 @@ export interface SaasFeatureEntitlements {
 }
 
 export interface SaasSubscriptionStatus {
-  readonly edition: DuriosProductEdition;
-  readonly licenseValid: boolean;
-  readonly licensedTenantId?: string | undefined;
-  readonly expiresAt?: string | undefined;
+  readonly edition: DuriosProductEdition; readonly licenseValid: boolean;
+  readonly licensedTenantId?: string | undefined; readonly expiresAt?: string | undefined;
   readonly degradedToCommunityReason?: string | undefined;
   readonly entitlements: SaasFeatureEntitlements;
   readonly openSourceLicense: "AGPL-3.0-only (Core) + MIT (Verifier SDK)";
@@ -22,28 +20,21 @@ export interface SaasSubscriptionStatus {
 }
 
 export interface SaasLicensePayload {
-  readonly tenantId: string;
-  readonly edition: "PACKHOUSE_PRO_SAAS" | "EXPORTER_ENTERPRISE";
-  readonly expiresAt: string;
+  readonly tenantId: string; readonly edition: "PACKHOUSE_PRO_SAAS" | "EXPORTER_ENTERPRISE"; readonly expiresAt: string;
 }
 
 const OPEN_SOURCE_LICENSE_LABEL = "AGPL-3.0-only (Core) + MIT (Verifier SDK)" as const;
 
 function buildEntitlements(edition: DuriosProductEdition): SaasFeatureEntitlements {
   const isProOrAbove = edition === "PACKHOUSE_PRO_SAAS" || edition === "EXPORTER_ENTERPRISE";
-  const isEnterprise = edition === "EXPORTER_ENTERPRISE";
   return {
     localDeterministicCompliance: true, localSqliteAndManifestVerifier: true, localDataAccessGuaranteed: true,
     cloudVisionOcr: isProOrAbove, managedZaloZnsRelay: isProOrAbove, cloudE2eeBackupVault: isProOrAbove,
-    gaccLiveRegistryWatch: isProOrAbove, crossBorderBuyerPortal: isProOrAbove, multiSiteEnterpriseSync: isEnterprise,
+    gaccLiveRegistryWatch: isProOrAbove, crossBorderBuyerPortal: isProOrAbove, multiSiteEnterpriseSync: edition === "EXPORTER_ENTERPRISE",
   };
 }
 
-function downgradeToCommunity(
-  reason?: string,
-  upgradePortalUrl?: string,
-  extra?: { licensedTenantId?: string; expiresAt?: string }
-): SaasSubscriptionStatus {
+function downgradeToCommunity(reason?: string, upgradePortalUrl?: string, extra?: { licensedTenantId?: string; expiresAt?: string }): SaasSubscriptionStatus {
   return {
     edition: "COMMUNITY_OPEN_CORE", licenseValid: false,
     ...(reason ? { degradedToCommunityReason: reason } : {}),

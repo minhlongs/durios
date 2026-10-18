@@ -36,18 +36,12 @@ describe("UI sample document upload flow", () => {
 
   function initAppWithTokens() {
     app = createWorkspaceApp({ dbPath: TEST_DB, dataDir: TEST_UPLOADS });
-    roleTokens = {
-      CLERK: seedTestPilotActor(app.authService, { role: "CLERK" }).sessionToken,
-      MANAGER: seedTestPilotActor(app.authService, { role: "MANAGER" }).sessionToken,
-    };
+    roleTokens = { CLERK: seedTestPilotActor(app.authService, { role: "CLERK" }).sessionToken, MANAGER: seedTestPilotActor(app.authService, { role: "MANAGER" }).sessionToken };
   }
 
-  async function call<T = Record<string, unknown>>(
-    path: string, role: "CLERK" | "MANAGER", init: { method?: string; body?: unknown } = {}
-  ): Promise<{ success: boolean; data: T; error?: string }> {
+  async function call<T = Record<string, unknown>>(path: string, role: "CLERK" | "MANAGER", init: { method?: string; body?: unknown } = {}): Promise<{ success: boolean; data: T; error?: string }> {
     const res = await app!.handler(new Request(`http://127.0.0.1${path}`, {
-      method: init.method ?? "GET",
-      headers: { Authorization: `Bearer ${roleTokens[role]}`, "Content-Type": "application/json" },
+      method: init.method ?? "GET", headers: { Authorization: `Bearer ${roleTokens[role]}`, "Content-Type": "application/json" },
       ...(init.body !== undefined ? { body: JSON.stringify(init.body) } : {}),
     }));
     return (await res.json()) as { success: boolean; data: T; error?: string };
@@ -60,10 +54,7 @@ describe("UI sample document upload flow", () => {
 
     const created = await call<DossierView>("/api/dossiers", "CLERK", {
       method: "POST",
-      body: {
-        dossierCode: "DOS-UI-TEST-001", containerNumber: "MSKU1234565", sealNumber: "VN-SEAL-8899",
-        borderGate: "Huu Nghi", targetMarket: "CN", targetTemperatureC: 14, declaredNetWeightKg: 18240, declaredBoxCount: 960,
-      },
+      body: { dossierCode: "DOS-UI-TEST-001", containerNumber: "MSKU1234565", sealNumber: "VN-SEAL-8899", borderGate: "Huu Nghi", targetMarket: "CN", targetTemperatureC: 14, declaredNetWeightKg: 18240, declaredBoxCount: 960 },
     });
     expect(created.success).toBe(true);
     const id = created.data.id;
@@ -71,11 +62,9 @@ describe("UI sample document upload flow", () => {
     const hashes = new Set<string>();
     for (const s of samples) {
       const up = await call<DocumentView>(`/api/dossiers/${id}/documents`, "CLERK", {
-        method: "POST",
-        body: { documentType: s.type, fileName: s.fileName, base64Content: Buffer.from(s.content).toString("base64") },
+        method: "POST", body: { documentType: s.type, fileName: s.fileName, base64Content: Buffer.from(s.content).toString("base64") },
       });
-      expect(up.success).toBe(true);
-      expect(up.data.documentType).toBe(s.type);
+      expect(up.success && up.data.documentType === s.type).toBe(true);
       hashes.add(up.data.sha256Hash);
     }
     expect(hashes.size).toBe(3);
@@ -87,27 +76,20 @@ describe("UI sample document upload flow", () => {
 
     for (const doc of active) {
       for (const f of doc.extractedFields) {
-        const r = await call(`/api/dossiers/${id}/documents/${doc.id}/fields/${f.id}/verify`, "CLERK", {
-          method: "POST", body: { confirmedValue: f.rawValue },
-        });
-        expect(r.success).toBe(true);
+        expect((await call(`/api/dossiers/${id}/documents/${doc.id}/fields/${f.id}/verify`, "CLERK", { method: "POST", body: { confirmedValue: f.rawValue } })).success).toBe(true);
       }
     }
     const blocked = await call<ValidationResultView>(`/api/dossiers/${id}/validate`, "CLERK", { method: "POST" });
     expect(blocked.data.status).toBe("BLOCKED");
     for (const finding of blocked.data.findings) {
-      expect(typeof finding.messageVi).toBe("string");
-      expect(typeof finding.ruleName).toBe("string");
+      expect(typeof finding.messageVi === "string" && typeof finding.ruleName === "string").toBe(true);
     }
 
     dossier = (await call<DossierView>(`/api/dossiers/${id}`, "CLERK")).data;
     for (const doc of dossier.documents.filter((d) => !d.isSuperseded)) {
       for (const f of doc.extractedFields) {
-        const value = f.fieldKey === "container_number" ? dossier.containerNumber
-          : f.fieldKey === "seal_number" ? dossier.sealNumber : f.confirmedValue;
-        await call(`/api/dossiers/${id}/documents/${doc.id}/fields/${f.id}/verify`, "CLERK", {
-          method: "POST", body: { confirmedValue: value },
-        });
+        const value = f.fieldKey === "container_number" ? dossier.containerNumber : f.fieldKey === "seal_number" ? dossier.sealNumber : f.confirmedValue;
+        await call(`/api/dossiers/${id}/documents/${doc.id}/fields/${f.id}/verify`, "CLERK", { method: "POST", body: { confirmedValue: value } });
       }
     }
     expect((await call<ValidationResultView>(`/api/dossiers/${id}/validate`, "CLERK", { method: "POST" })).data.status).toBe("PASSED");
@@ -115,8 +97,7 @@ describe("UI sample document upload flow", () => {
     expect((await call(`/api/dossiers/${id}/approve`, "MANAGER", { method: "POST" })).success).toBe(true);
 
     const exported = await call<ExportManifestView>(`/api/dossiers/${id}/export`, "MANAGER", { method: "POST" });
-    expect(exported.success).toBe(true);
-    expect(exported.data.compositeManifestSha256).toMatch(/^[a-f0-9]{64}$/);
+    expect(exported.success && /^[a-f0-9]{64}$/.test(exported.data.compositeManifestSha256)).toBe(true);
 
     const manifest = await call<ExportManifestView>(`/api/dossiers/${id}/manifest`, "CLERK");
     expect(manifest.success).toBe(true);

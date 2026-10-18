@@ -8,35 +8,18 @@ export interface StagingCliAccountResult { id: string }
 export interface StagingCliTokenResult { rawToken: string }
 
 export interface StagingExtractedField {
-  id: string;
-  fieldKey: string;
-  rawValue: string;
-  confirmedValue?: string;
+  id: string; fieldKey: string; rawValue: string; confirmedValue?: string;
 }
-
 export interface StagingDocumentView {
-  id: string;
-  storagePath?: string;
-  extractedFields: StagingExtractedField[];
+  id: string; storagePath?: string; extractedFields: StagingExtractedField[];
 }
-
 export interface StagingDossierView {
-  id: string;
-  lifecycleState: string;
-  isImmutable?: boolean;
-  documents: StagingDocumentView[];
+  id: string; lifecycleState: string; isImmutable?: boolean; documents: StagingDocumentView[];
 }
-
-export interface StagingValidationView {
-  status: string;
-  criticalBlockers: number;
-}
+export interface StagingValidationView { status: string; criticalBlockers: number }
 
 export interface StagingAuthContext {
-  clerkOtpCookie: string;
-  mgrCookie: string;
-  buyerRawToken: string;
-  futureIso: string;
+  clerkOtpCookie: string; mgrCookie: string; buyerRawToken: string; futureIso: string;
 }
 
 export async function provisionAndVerifyStagingAccounts(

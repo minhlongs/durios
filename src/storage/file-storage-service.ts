@@ -1,12 +1,6 @@
 import {
-  existsSync,
-  mkdirSync,
-  readdirSync,
-  readFileSync,
-  renameSync,
-  rmdirSync,
-  unlinkSync,
-  writeFileSync,
+  existsSync, mkdirSync, readdirSync, readFileSync,
+  renameSync, rmdirSync, unlinkSync, writeFileSync,
 } from "node:fs";
 import { dirname, isAbsolute, relative, resolve, sep } from "node:path";
 import type { Database } from "bun:sqlite";
@@ -18,16 +12,10 @@ import {
   type LegacyUnmigratedReason,
 } from "./legacy-blob-reconciler.js";
 
-export type {
-  LegacyBlobMigrationItem,
-  LegacyBlobReconciliationReport,
-  LegacyUnmigratedReason,
-};
+export type { LegacyBlobMigrationItem, LegacyBlobReconciliationReport, LegacyUnmigratedReason };
 
 export interface StoredBlobResult {
-  readonly storagePath: string;
-  readonly sha256: string;
-  readonly createdNew: boolean;
+  readonly storagePath: string; readonly sha256: string; readonly createdNew: boolean;
 }
 
 export class FileStorageService {
@@ -38,19 +26,11 @@ export class FileStorageService {
     if (!existsSync(this.storageDir)) mkdirSync(this.storageDir, { recursive: true });
   }
 
-  public getStorageRoot(): string {
-    return this.storageDir;
-  }
+  public getStorageRoot(): string { return this.storageDir; }
 
-  public storeFile(
-    fileBytes: Uint8Array,
-    _originalFileName?: string,
-    _docId?: string
-  ): StoredBlobResult {
+  public storeFile(fileBytes: Uint8Array, _originalFileName?: string, _docId?: string): StoredBlobResult {
     const sha256 = calculateSha256(fileBytes);
-    if (!/^[a-f0-9]{64}$/.test(sha256)) {
-      throw new Error(`Invalid SHA-256 digest generated: '${sha256}'`);
-    }
+    if (!/^[a-f0-9]{64}$/.test(sha256)) throw new Error(`Invalid SHA-256 digest generated: '${sha256}'`);
 
     const relativeStoragePath = `storage/blobs/${sha256}.bin`;
     const targetPath = this.resolveSafePath(relativeStoragePath);
@@ -64,9 +44,7 @@ export class FileStorageService {
         existingBytes.byteLength === fileBytes.byteLength &&
         Buffer.compare(Buffer.from(existingBytes), Buffer.from(fileBytes)) === 0;
       if (!isIdentical) {
-        throw new Error(
-          `Integrity violation: existing blob at '${relativeStoragePath}' does not match SHA-256 '${sha256}'`
-        );
+        throw new Error(`Integrity violation: existing blob at '${relativeStoragePath}' does not match SHA-256 '${sha256}'`);
       }
       return { storagePath: relativeStoragePath, sha256, createdNew: false };
     }
@@ -130,8 +108,7 @@ export class FileStorageService {
 
   public reconcileLegacyDocumentBlobs(db: Database): LegacyBlobReconciliationReport {
     return reconcileLegacyBlobsInSqlite(
-      db,
-      this.storageDir,
+      db, this.storageDir,
       (relPath) => this.resolveSafePath(relPath),
       (bytes, fileName, docId) => this.storeFile(bytes, fileName, docId)
     );

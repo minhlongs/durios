@@ -5,12 +5,9 @@ import { resolveSaasSubscriptionStatus } from "./saas-tier-policy.js";
 export type EdgeSyncItemStatus = "PENDING_OFFLINE" | "SYNCED_TO_CLOUD";
 
 export interface QueuedEdgeSyncItem {
-  readonly queueItemId: string;
-  readonly tenantId: string;
-  readonly dossierId: string;
-  readonly dossierCode: string;
-  readonly compositeManifestSha256: string;
-  readonly queuedAt: string;
+  readonly queueItemId: string; readonly tenantId: string;
+  readonly dossierId: string; readonly dossierCode: string;
+  readonly compositeManifestSha256: string; readonly queuedAt: string;
   readonly status: EdgeSyncItemStatus;
   readonly cloudSyncedAt?: string | undefined;
   readonly cloudAckReceiptHash?: string | undefined;
@@ -29,14 +26,10 @@ export interface HybridEdgeSyncQueueOptions {
 }
 
 interface EdgeSyncRow {
-  readonly queue_item_id: string;
-  readonly tenant_id: string;
-  readonly dossier_id: string;
-  readonly dossier_code: string;
-  readonly composite_manifest_sha256: string;
-  readonly status: EdgeSyncItemStatus;
-  readonly queued_at: string;
-  readonly cloud_synced_at: string | null;
+  readonly queue_item_id: string; readonly tenant_id: string;
+  readonly dossier_id: string; readonly dossier_code: string;
+  readonly composite_manifest_sha256: string; readonly status: EdgeSyncItemStatus;
+  readonly queued_at: string; readonly cloud_synced_at: string | null;
   readonly cloud_ack_receipt_hash: string | null;
 }
 
@@ -70,7 +63,6 @@ export class HybridEdgeSyncQueue {
     if (manifest.lifecycleState !== "EXPORTED" || !manifest.isImmutable) {
       throw new Error("Only immutable EXPORTED manifests can be queued for edge sync.");
     }
-
     const existing = this.sqliteClient.db
       .query<EdgeSyncRow, [string]>("SELECT * FROM edge_sync_queue WHERE dossier_id = ? LIMIT 1")
       .get(manifest.dossierId);
@@ -79,8 +71,7 @@ export class HybridEdgeSyncQueue {
     const item: QueuedEdgeSyncItem = {
       queueItemId: `SYNC-${manifest.dossierCode}`, tenantId: manifest.tenantId,
       dossierId: manifest.dossierId, dossierCode: manifest.dossierCode,
-      compositeManifestSha256: manifest.compositeManifestSha256,
-      queuedAt, status: "PENDING_OFFLINE",
+      compositeManifestSha256: manifest.compositeManifestSha256, queuedAt, status: "PENDING_OFFLINE",
     };
 
     this.sqliteClient.db

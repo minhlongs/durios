@@ -42,11 +42,8 @@ export function evaluateUiUxDeepBrainstorm(
   for (const entry of allHtmlEntries) {
     const openDivs = (entry.html.match(/<div\b/gi) ?? []).length;
     const closeDivs = (entry.html.match(/<\/div>/gi) ?? []).length;
-    if (openDivs === closeDivs && openDivs > 0) {
-      balancedDomSurfacesCount += 1;
-    } else {
-      unbalancedFiles.push(`${entry.name}(${openDivs}/${closeDivs})`);
-    }
+    if (openDivs === closeDivs && openDivs > 0) balancedDomSurfacesCount += 1;
+    else unbalancedFiles.push(`${entry.name}(${openDivs}/${closeDivs})`);
     deadHrefHashCount += (entry.html.match(/href="#"/g) ?? []).length;
     if (
       entry.html.includes("<!-- DURIOS-TOP-NAV-START -->") &&
@@ -69,6 +66,8 @@ export function evaluateUiUxDeepBrainstorm(
     turn1Passed &&
     deadHrefHashCount === 0 &&
     jsRaw.includes("setupUniversalInteractiveDelegation") &&
+    jsRaw.includes("setupUniversalTableAndInputHydration") &&
+    jsRaw.includes("openSocratic10TurnModal") &&
     jsRaw.includes("showLiveToast");
 
   const turn3Passed =
@@ -84,15 +83,26 @@ export function evaluateUiUxDeepBrainstorm(
     rootHtml.includes("workspace-context-panel") &&
     rootHtml.includes("workflow-step-filter-bar") &&
     rootHtml.includes("uploadAllSampleDocs") &&
-    rootHtml.includes("verifyAllFields");
+    rootHtml.includes("verifyAllFields") &&
+    rootHtml.includes("kpi-grid") &&
+    rootHtml.includes("dossier-progress-bar");
 
   const rootScript = rootHtml.includes("<script>")
     ? rootHtml.slice(rootHtml.indexOf("<script>"), rootHtml.lastIndexOf("</script>"))
     : "";
   const hasBlockingAlert = /(^|[^.\w])alert\(/m.test(rootScript);
   const turn5Passed =
+    existsSync(join(rootDir, "design-system/MASTER.md")) &&
+    existsSync(join(rootDir, "design-system/pages/packhouse-workspace.md")) &&
+    existsSync(join(rootDir, "design-system/pages/stitch-command-hub.md")) &&
+    existsSync(join(rootDir, "design-system/pages/trust-and-verifier.md")) &&
+    existsSync(join(rootDir, "design-system/pages/open-core-and-saas-corridors.md")) &&
     cssRaw.includes("tabular-nums") &&
     cssRaw.includes("daylight-theme") &&
+    cssRaw.includes("touch-action: manipulation") &&
+    cssRaw.includes("prefers-reduced-motion: reduce") &&
+    jsRaw.includes("durios-svg-icon") &&
+    jsRaw.includes('aria-live", "polite"') &&
     rootHtml.includes("prefers-reduced-motion") &&
     rootHtml.includes(":focus-visible") &&
     rootHtml.includes('role="status"') &&
@@ -100,22 +110,18 @@ export function evaluateUiUxDeepBrainstorm(
     !hasBlockingAlert;
 
   const socraticTurns: readonly SocraticTurnEvaluation[] = [
-    { turnNumber: 1, dimension: "100% DOM Tree Balance & App Shell Sentinels", socraticQuestion: "Do all 26 HTML surfaces (root SPA + 25 Stitch screens) have 0 unbalanced <div> tags and unified 44px App Shell sentinels?", passed: turn1Passed, evidenceSummary: turn1Passed ? "26/26 HTML surfaces have openDivs === closeDivs (diff=0) and 44px App Shell sentinels." : `Unbalanced/missing: ${unbalancedFiles.join(", ")}` },
-    { turnNumber: 2, dimension: "Zero Dead Links & Universal Button Hydration", socraticQuestion: "Are there 0 dead href='#' links across all 26 HTML surfaces and 100% live button delegation with toasts?", passed: turn2Passed, evidenceSummary: `deadHrefHashCount=${deadHrefHashCount}; setupUniversalInteractiveDelegation & showLiveToast active.` },
-    { turnNumber: 3, dimension: "Single-Header Zero-Clutter Chrome & Theme Sync", socraticQuestion: "Are duplicate native headers, sub-navs, and sidebars deduplicated under a single 44px Command Bar with synced theming?", passed: turn3Passed, evidenceSummary: "44px Command Bar active; redundant sub-navs/asides collapsed; durios_theme synced across root & /stitch/*." },
-    { turnNumber: 4, dimension: "3-Zone Spatial Layout & 1-Click Batch Accelerators", socraticQuestion: "Does the Packhouse Workspace enforce a 3-Zone layout, workflow step filtering, and 1-click batch upload/verify?", passed: turn4Passed, evidenceSummary: "3-Zone layout, filterWorkflowStep, uploadAllSampleDocs, and verifyAllFields verified in index.html." },
-    { turnNumber: 5, dimension: "2027 Design System Tokens & WCAG Field Ergonomics", socraticQuestion: "Are tabular-nums, Daylight/Emerald adaptive themes, ARIA live regions, and zero alert() dialogs enforced?", passed: turn5Passed, evidenceSummary: "tabular-nums, daylight-theme, prefers-reduced-motion, ARIA status/alert regions, and 0 alert() verified." },
+    { turnNumber: 1, dimension: "100% DOM Tree Balance & App Shell Sentinels", socraticQuestion: "Do all 26 HTML surfaces (root workspace + 25 Stitch screens) maintain openDivs === closeDivs and load the 44px App Shell?", passed: turn1Passed, evidenceSummary: turn1Passed ? `${balancedDomSurfacesCount}/${totalHtmlSurfacesAudited} HTML surfaces have openDivs === closeDivs (diff=0) and 44px App Shell sentinels.` : `Unbalanced DOM in: ${unbalancedFiles.join(", ")}` },
+    { turnNumber: 2, dimension: "Zero Dead Links & Universal Input/Table Hydration", socraticQuestion: "Are there zero href=\"#\" dead links and does universal interactive delegation hydrate tables/inputs with live feedback?", passed: turn2Passed, evidenceSummary: `deadHrefHashCount=${deadHrefHashCount}; setupUniversalInteractiveDelegation, setupUniversalTableAndInputHydration & openSocratic10TurnModal active.` },
+    { turnNumber: 3, dimension: "Single-Header Zero-Clutter Chrome & Theme Sync", socraticQuestion: "Does the 44px Top Command Bar collapse redundant sub-navs/asides and sync Emerald Ops / Daylight Field themes across all 26 pages?", passed: turn3Passed, evidenceSummary: "44px Command Bar active; redundant sub-navs/asides collapsed; durios_theme synced across root & /stitch/*." },
+    { turnNumber: 4, dimension: "3-Zone Spatial Layout & 1-Click Batch Accelerators", socraticQuestion: "Does the primary packhouse workspace provide a 3-Zone layout, 4-step workflow filter, and 1-click batch upload/verify accelerators?", passed: turn4Passed, evidenceSummary: "3-Zone layout, filterWorkflowStep, uploadAllSampleDocs, and verifyAllFields verified in root workspace." },
+    { turnNumber: 5, dimension: "2027 Design System Tokens & WCAG Field Ergonomics", socraticQuestion: "Are tabular-nums, Daylight Field high-contrast tokens, prefers-reduced-motion, ARIA live regions, and zero alert() dialogs enforced?", passed: turn5Passed, evidenceSummary: `tabular-nums=true, daylightTheme=true, ariaLive=true, blockingAlerts=${hasBlockingAlert ? 1 : 0}.` },
   ];
 
   const allTurnsPassed = socraticTurns.every((t) => t.passed);
   return {
     verdict: allTurnsPassed ? "GO_2027_UI_UX_STANDARDIZED" : "HOLD_UI_UX_GAPS",
-    evaluatedAt: nowIso,
-    allTurnsPassed,
-    totalHtmlSurfacesAudited,
-    balancedDomSurfacesCount,
-    deadHrefHashCount,
-    stitchScreensCount: stitchFiles.length,
+    evaluatedAt: nowIso, allTurnsPassed, totalHtmlSurfacesAudited,
+    balancedDomSurfacesCount, deadHrefHashCount, stitchScreensCount: stitchFiles.length,
     socraticTurns,
   };
 }

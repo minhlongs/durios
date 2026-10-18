@@ -49,6 +49,9 @@ describe("Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite", 
     expect(jsText).toContain("1. Packhouse Ops");
     expect(jsText).toContain("4. SaaS & Corridors");
     expect(jsText).toContain("setupUniversalInteractiveDelegation");
+    expect(jsText).toContain("setupUniversalTableAndInputHydration");
+    expect(jsText).toContain("openSocratic10TurnModal");
+    expect(jsText).toContain("injectProMaxTelemetryRibbon");
 
     const cssRes = await routeHttpRequest(workspace, new Request("http://localhost:3000/stitch/durios-design-system.css"));
     expect(cssRes.status).toBe(200);
@@ -56,6 +59,7 @@ describe("Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite", 
     const cssText = await cssRes.text();
     expect(cssText).toContain("--durios-shell-height: 44px");
     expect(cssText).toContain("daylight-theme");
+    expect(cssText).toContain("durios-socratic-modal-backdrop");
   });
 
 

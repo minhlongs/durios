@@ -32,8 +32,7 @@ export async function verifyAliasDossierAndDocumentGroups(
 
   const listApiRes = await routeHttpRequest(workspace, new Request("http://localhost:3000/api/dossiers", { headers: adminHeaders }));
   const listV1Res = await routeHttpRequest(workspace, new Request("http://localhost:3000/api/v1/dossiers", { headers: adminHeaders }));
-  expect(listApiRes.status).toBe(200);
-  expect(listV1Res.status).toBe(200);
+  expect(listApiRes.status === 200 && listV1Res.status === 200).toBe(true);
   expect(await listV1Res.json()).toEqual(await listApiRes.json());
 
   const getApiRes = await routeHttpRequest(workspace, new Request(`http://localhost:3000/api/dossiers/${createdDossierId}`, { headers: adminHeaders }));
@@ -102,22 +101,13 @@ export async function verifyAliasSharesAndOrganicGroups(
     issuingDate: "2026-01-01", issuerClaimedStatus: "CERTIFIED",
   };
 
-  const recordOrgV1 = await routeHttpRequest(
-    workspace,
-    new Request(`http://localhost:3000/api/v1/dossiers/${readyDossierId}/organic-evidence`, {
-      method: "POST", headers: adminHeaders, body: JSON.stringify(baseOrgBody),
-    })
-  );
-  expect(recordOrgV1.status).toBe(201);
+  expect(
+    (await routeHttpRequest(workspace, new Request(`http://localhost:3000/api/v1/dossiers/${readyDossierId}/organic-evidence`, { method: "POST", headers: adminHeaders, body: JSON.stringify(baseOrgBody) }))).status
+  ).toBe(201);
 
-  const legacyStatusBothRes = await routeHttpRequest(
-    workspace,
-    new Request(`http://localhost:3000/api/v1/dossiers/${readyDossierId}/organic-evidence`, {
-      method: "POST", headers: adminHeaders,
-      body: JSON.stringify({ ...baseOrgBody, certificateNumber: "SYNTH-ORG-5A5-002", status: "CERTIFIED" }),
-    })
-  );
-  expect(legacyStatusBothRes.status).toBe(422);
+  expect(
+    (await routeHttpRequest(workspace, new Request(`http://localhost:3000/api/v1/dossiers/${readyDossierId}/organic-evidence`, { method: "POST", headers: adminHeaders, body: JSON.stringify({ ...baseOrgBody, certificateNumber: "SYNTH-ORG-5A5-002", status: "CERTIFIED" }) }))).status
+  ).toBe(422);
 
   const customsHeaders = { Authorization: `Bearer ${customsToken}` };
   const getOrgApi = await routeHttpRequest(workspace, new Request(`http://localhost:3000/api/dossiers/${readyDossierId}/organic-evidence`, { headers: customsHeaders }));

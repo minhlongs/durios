@@ -9,11 +9,8 @@ function collectTsFiles(dirPath: string): string[] {
   const results: string[] = [];
   for (const entry of readdirSync(dirPath)) {
     const full = join(dirPath, entry);
-    if (statSync(full).isDirectory()) {
-      results.push(...collectTsFiles(full));
-    } else if (entry.endsWith(".ts")) {
-      results.push(full);
-    }
+    if (statSync(full).isDirectory()) results.push(...collectTsFiles(full));
+    else if (entry.endsWith(".ts")) results.push(full);
   }
   return results;
 }
@@ -31,20 +28,15 @@ describe("Ecosystem Rehearsal Endpoints, ISO/Manifest Verifier & Codebase Modula
     try {
       const bootRes1 = await routeHttpRequest(
         app.workspace,
-        new Request("http://127.0.0.1:3000/api/auth/pilot-rehearsal-bootstrap?fullGates=true&role=MANAGER", {
-          method: "POST",
-        })
+        new Request("http://127.0.0.1:3000/api/auth/pilot-rehearsal-bootstrap?fullGates=true&role=MANAGER", { method: "POST" })
       );
       expect(bootRes1.status).toBe(200);
       expect(bootRes1.headers.get("set-cookie")).toContain("durios_session=");
       const bootBody1 = (await bootRes1.json()) as {
         success: boolean;
         data: {
-          newlyCreatedCount: number;
-          activePilotToken: string;
-          passedGateCount: number;
-          goLivePack: { overallVerdict: string };
-          goLivePackVerified: boolean;
+          newlyCreatedCount: number; activePilotToken: string; passedGateCount: number;
+          goLivePack: { overallVerdict: string }; goLivePackVerified: boolean;
           dossiers: ReadonlyArray<{ dossierCode: string; scenario: string }>;
           pilotKpi: { totalContainers: number; blindFaultCount: number; blindFaultsCaught: number };
         };
@@ -61,8 +53,7 @@ describe("Ecosystem Rehearsal Endpoints, ISO/Manifest Verifier & Codebase Modula
       const seedRes2 = await routeHttpRequest(
         app.workspace,
         new Request("http://127.0.0.1:3000/api/v1/pilot/rehearsal/seed", {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
+          method: "POST", headers: { Authorization: `Bearer ${token}` },
         })
       );
       expect(seedRes2.status).toBe(200);
@@ -80,8 +71,7 @@ describe("Ecosystem Rehearsal Endpoints, ISO/Manifest Verifier & Codebase Modula
       const mutateRes = await routeHttpRequest(
         app.workspace,
         new Request("http://127.0.0.1:3000/api/v1/open-core/verify-iso-and-manifest", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
+          method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ simulateCadimiMutation: true }),
         })
       );
@@ -92,9 +82,7 @@ describe("Ecosystem Rehearsal Endpoints, ISO/Manifest Verifier & Codebase Modula
 
       const telemetryRes = await routeHttpRequest(
         app.workspace,
-        new Request("http://127.0.0.1:3000/api/v1/open-core/ecosystem-telemetry", {
-          headers: { Authorization: `Bearer ${token}` },
-        })
+        new Request("http://127.0.0.1:3000/api/v1/open-core/ecosystem-telemetry", { headers: { Authorization: `Bearer ${token}` } })
       );
       expect(telemetryRes.status).toBe(200);
       const telemetryBody = (await telemetryRes.json()) as {

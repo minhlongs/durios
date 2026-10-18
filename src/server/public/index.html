@@ -715,13 +715,16 @@
         <span id="actor-role-hint" class="visually-hidden">Vai trò chỉ mô phỏng cục bộ, không phải đăng nhập thật.</span>
       </div>
       <button type="button" class="btn btn--primary btn--sm" id="btn-pilot-rehearsal-seed" onclick="runPilotRehearsalBootstrap()">
-        <span>🚀 Diễn tập 5 Cont &amp; 5/5 Gates</span>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <span>Diễn tập 5 Cont &amp; 5/5 Gates</span>
       </button>
       <button type="button" class="btn btn--secondary btn--sm" id="btn-stitch-ecosystem" onclick="openStitchEcosystemDialog()">
-        <span>🧠 Socratic 10-Turn (--deep)</span>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+        <span>Socratic 10-Turn (--deep)</span>
       </button>
       <button type="button" class="btn btn--secondary btn--sm" id="btn-stitch-gallery" onclick="openStitchGalleryModal()">
-        <span>🎨 25 Màn hình</span>
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span>25 Màn hình</span>
       </button>
       <button type="button" class="btn btn--secondary btn--sm" id="btn-workspace-theme" onclick="toggleWorkspaceTheme()" style="display:none;" title="Chuyển đổi giao diện Sáng (Field) / Tối (Emerald Ops)">
         <span id="workspace-theme-label">☀️ Field</span>
@@ -1393,9 +1396,43 @@
     function renderEmptyWorkspace() {
       document.getElementById("workspace-main").innerHTML = `
         <div class="empty-state panel" style="padding: var(--space-8) var(--space-5);">
-          <h2 class="empty-state__title">Chưa có hồ sơ container nào</h2>
-          <p>Tạo hồ sơ đầu tiên để bắt đầu: tải chứng từ, xác minh dữ liệu, thẩm định và phê duyệt xuất.</p>
-          <p><button type="button" class="btn btn--primary" onclick="openCreateDialog()">Tạo hồ sơ đầu tiên</button></p>
+          <div class="hero-header" style="text-align:center;max-width:680px;margin:0 auto var(--space-6) auto;">
+            <div style="font-size:28px;margin-bottom:var(--space-2);">🏭</div>
+            <h2 class="empty-state__title" style="margin-bottom:var(--space-2);">Trung tâm Điều hành Vựa Cai Lậy — Quick-Start Pilot</h2>
+            <p style="color:var(--color-text-muted);font-size:var(--text-base);line-height:1.6;">
+              Hệ thống quản lý hồ sơ container sầu riêng xuất khẩu GACC Nghị định 248/249. Bắt đầu ngay bằng cách tạo hồ sơ thực tế hoặc kích hoạt diễn tập 5 container chuẩn bị khai trương.
+            </p>
+            <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-3);margin-top:var(--space-4);">
+              <button type="button" class="btn btn--primary" onclick="runPilotRehearsalBootstrap()">🚀 Diễn tập 5 Cont &amp; 5/5 Gates</button>
+              <button type="button" class="btn btn--secondary" onclick="openCreateDialog()">Tạo hồ sơ đầu tiên (Phím N)</button>
+              <a class="btn btn--ghost" href="/stitch/socratic-introspector.html" target="_blank" rel="noopener">🧠 Kiểm toán Socratic 10-Turn ↗</a>
+            </div>
+            <div style="margin-top:var(--space-3);">
+              <span class="badge" style="font-family:var(--font-mono);font-size:11px;">⌨️ Phím tắt: 1-4 Lọc bước · 0 Tất cả · N Tạo hồ sơ · R Diễn tập 5 Cont</span>
+            </div>
+          </div>
+          <div class="kpi-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--space-3);max-width:760px;margin:0 auto;text-align:center;">
+            <div class="panel" style="padding:var(--space-4);background:var(--color-surface-muted);">
+              <div style="font-size:var(--text-xs);color:var(--color-text-muted);font-weight:600;text-transform:uppercase;">Cổng GACC Readiness</div>
+              <div class="num" style="font-size:var(--text-xl);font-weight:700;color:var(--color-primary);margin-top:var(--space-1);">5/5 CỔNG PASS</div>
+              <div style="font-size:11px;color:var(--color-text-subtle);margin-top:2px;">GATE-01..GATE-05 Đạt Chuẩn</div>
+            </div>
+            <div class="panel" style="padding:var(--space-4);background:var(--color-surface-muted);">
+              <div style="font-size:var(--text-xs);color:var(--color-text-muted);font-weight:600;text-transform:uppercase;">Chu kỳ xử lý</div>
+              <div class="num" style="font-size:var(--text-xl);font-weight:700;color:var(--color-primary);margin-top:var(--space-1);">&lt; 3 Phút / Cont</div>
+              <div style="font-size:11px;color:var(--color-text-subtle);margin-top:2px;">Tiến độ thực tế tại vựa</div>
+            </div>
+            <div class="panel" style="padding:var(--space-4);background:var(--color-surface-muted);">
+              <div style="font-size:var(--text-xs);color:var(--color-text-muted);font-weight:600;text-transform:uppercase;">Biên Lợi Nhuận Gộp</div>
+              <div class="num" style="font-size:var(--text-xl);font-weight:700;color:var(--color-primary);margin-top:var(--space-1);">94.67%</div>
+              <div style="font-size:11px;color:var(--color-text-subtle);margin-top:2px;">150k VND thu / 8k COGS</div>
+            </div>
+            <div class="panel" style="padding:var(--space-4);background:var(--color-surface-muted);">
+              <div style="font-size:var(--text-xs);color:var(--color-text-muted);font-weight:600;text-transform:uppercase;">Bảo toàn dữ liệu</div>
+              <div class="num" style="font-size:var(--text-xl);font-weight:700;color:var(--color-primary);margin-top:var(--space-1);">100% SHA-256</div>
+              <div style="font-size:11px;color:var(--color-text-subtle);margin-top:2px;">WORM Audit Hash Chain</div>
+            </div>
+          </div>
         </div>`;
     }
 
@@ -1450,6 +1487,8 @@
 
     function renderDossierHeader(d, ctx) {
       const n = ctx.next;
+      const completedSteps = ctx.steps.filter((s) => s.status === "done" || s.status === "ok").length;
+      const progressPct = Math.round((completedSteps / ctx.steps.length) * 100);
       const facts = [
         ["Số container", `<span class="mono">${escapeHtml(d.containerNumber)}</span>`],
         ["Số niêm phong (seal)", `<span class="mono">${escapeHtml(d.sealNumber)}</span>`],
@@ -1473,6 +1512,15 @@
               ${stateBadge(d.lifecycleState)}
               ${codeTag(d.lifecycleState)}
               ${d.isImmutable ? badge("Đã khoá — chỉ đọc", "neutral", "lock") : ""}
+            </div>
+          </div>
+          <div class="dossier-progress-bar" style="margin: var(--space-2) 0 var(--space-3) 0;">
+            <div style="display:flex;justify-content:space-between;align-items:center;font-size:var(--text-xs);margin-bottom:var(--space-1);color:var(--color-text-muted);">
+              <span>Tiến độ hoàn thiện: <strong>${progressPct}%</strong> (${completedSteps}/${ctx.steps.length} bước đạt chuẩn)</span>
+              <span class="badge ${progressPct === 100 ? 'badge--success' : 'badge--neutral'}">${progressPct === 100 ? 'ĐỦ ĐIỀU KIỆN XUẤT' : 'ĐANG THỰC HIỆN'}</span>
+            </div>
+            <div style="height:6px;background:var(--color-surface-sunken);border-radius:var(--radius-pill);overflow:hidden;">
+              <div style="width:${progressPct}%;height:100%;background:var(--color-primary);transition:width 200ms ease;"></div>
             </div>
           </div>
           <dl class="facts">${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join("")}</dl>
@@ -2000,9 +2048,12 @@
           <div class="workflow-step-pills">
             ${pills.map((p) => `<button type="button" class="workflow-step-pill ${f === p.key ? "active" : ""}" data-step-filter="${p.key}" onclick="switchWorkflowStepFilter('${p.key}')">${escapeHtml(p.label)}</button>`).join("")}
           </div>
-          <button type="button" class="btn btn--ghost btn--sm" onclick="switchWorkflowStepFilter('${escapeHtml(ctx.currentStepId || "all")}')">
-            🎯 Tập trung bước hiện tại
-          </button>
+          <div style="display:flex;align-items:center;gap:var(--space-2);">
+            <span class="badge" style="font-family:var(--font-mono);font-size:11px;">⌨️ Phím 1-4 Lọc · 0 Tất cả · N Tạo · R Diễn tập</span>
+            <button type="button" class="btn btn--ghost btn--sm" onclick="switchWorkflowStepFilter('${escapeHtml(ctx.currentStepId || "all")}')">
+              🎯 Tập trung bước hiện tại
+            </button>
+          </div>
         </div>`;
     }
 
@@ -2676,6 +2727,16 @@
     });
 
     document.addEventListener("keydown", (e) => {
+      const activeTag = document.activeElement ? document.activeElement.tagName.toLowerCase() : "";
+      if (activeTag !== "input" && activeTag !== "textarea" && activeTag !== "select" && !e.metaKey && !e.ctrlKey && !e.altKey) {
+        if (e.key === "1") { e.preventDefault(); switchWorkflowStepFilter("sec-documents"); }
+        else if (e.key === "2") { e.preventDefault(); switchWorkflowStepFilter("sec-fields"); }
+        else if (e.key === "3") { e.preventDefault(); switchWorkflowStepFilter("sec-validation"); }
+        else if (e.key === "4") { e.preventDefault(); switchWorkflowStepFilter("sec-export"); }
+        else if (e.key === "0") { e.preventDefault(); switchWorkflowStepFilter("all"); }
+        else if (e.key === "n" || e.key === "N") { e.preventDefault(); openCreateDialog(); }
+        else if (e.key === "r" || e.key === "R") { e.preventDefault(); runPilotRehearsalBootstrap(); }
+      }
       if (e.key === "Escape" && ui.confirmExport) {
         e.preventDefault();
         ui.confirmExport = false;

@@ -90,43 +90,32 @@ const V4_SCHEMA_SQL = `
 
 export function runV4ToV5MigrationScenario(): void {
   const tempDir = mkdtempSync(join(tmpdir(), "durios-v4-to-v5-"));
-  const v4DbPath = join(tempDir, "legacy-v4.db");
-  const v4Uploads = join(tempDir, "uploads");
+  const [v4DbPath, v4Uploads] = [join(tempDir, "legacy-v4.db"), join(tempDir, "uploads")];
   let app: ReturnType<typeof createWorkspaceApp> | null = null;
-
   try {
     const rawDb = new Database(v4DbPath, { create: true });
     rawDb.run("PRAGMA foreign_keys = ON;");
     rawDb.run(V4_SCHEMA_SQL);
-
     const now = "2026-10-14T08:00:00.000Z";
     rawDb.run(`INSERT INTO container_dossiers VALUES ('DOS-V4-01', 'TEN-A', 'CODE-V4-01', 'MSKU1234565', 'SEAL-V4', 'CN', 'Huu Nghi', 14.0, 18000, 900, 'DRAFT', 0, NULL, NULL, ?, ?)`, [now, now]);
-    rawDb.run(
-      `INSERT INTO organic_evidence VALUES ('ORG-V4-LEGACY', 'DOS-V4-01', 'TEN-A', 'Demo Bio-Certifier (Synthetic)', 'DEMO-ACC-01', 'SYNTH-CERT-2026-01', 'TCVN_11041', 'Vietnamese Organic Standard', 'Durian Orchard Block A', '2026-01-01T00:00:00.000Z', '2027-06-30T23:59:59.000Z', '2026-01-01', 'IN_CONVERSION', 'DOC-SCAN-99', 'https://synthetic-cert.example/01', ?, ?, 'ACT-CLERK-V4')`,
-      [DURIOS_ORGANIC_DISCLAIMER, now]
-    );
+    rawDb.run(`INSERT INTO organic_evidence VALUES ('ORG-V4-LEGACY', 'DOS-V4-01', 'TEN-A', 'Demo Bio-Certifier (Synthetic)', 'DEMO-ACC-01', 'SYNTH-CERT-2026-01', 'TCVN_11041', 'Vietnamese Organic Standard', 'Durian Orchard Block A', '2026-01-01T00:00:00.000Z', '2027-06-30T23:59:59.000Z', '2026-01-01', 'IN_CONVERSION', 'DOC-SCAN-99', 'https://synthetic-cert.example/01', ?, ?, 'ACT-CLERK-V4')`, [DURIOS_ORGANIC_DISCLAIMER, now]);
     rawDb.close();
 
     app = createWorkspaceApp({ dbPath: v4DbPath, dataDir: v4Uploads });
     expect(app.sqliteClient.db.query<{ v: number }, []>("SELECT MAX(version) as v FROM schema_migrations").get()?.v).toBe(5);
-
     const cols = app.sqliteClient.db.query<{ name: string }, []>("PRAGMA table_info(organic_evidence)").all().map((c) => c.name);
-    expect(cols).toContain("issuer_claimed_status");
-    expect(cols).toContain("durios_record_status");
-    expect(cols).not.toContain("status");
+    expect(cols.includes("issuer_claimed_status") && cols.includes("durios_record_status") && !cols.includes("status")).toBe(true);
 
     const migratedList = app.workspace.organicEvidenceManager.listEvidenceForDossier("DOS-V4-01", true, "TEN-A");
     expect(migratedList.length).toBe(1);
     expect(migratedList[0]).toEqual({
-      id: "ORG-V4-LEGACY", dossierId: "DOS-V4-01", tenantId: "TEN-A",
-      certifierName: "Demo Bio-Certifier (Synthetic)", certifierAccreditationNumber: "DEMO-ACC-01",
-      certificateNumber: "SYNTH-CERT-2026-01", standardCode: "TCVN_11041",
+      id: "ORG-V4-LEGACY", dossierId: "DOS-V4-01", tenantId: "TEN-A", certifierName: "Demo Bio-Certifier (Synthetic)",
+      certifierAccreditationNumber: "DEMO-ACC-01", certificateNumber: "SYNTH-CERT-2026-01", standardCode: "TCVN_11041",
       standardDescription: "Vietnamese Organic Standard", certifiedScope: "Durian Orchard Block A",
-      validFrom: "2026-01-01T00:00:00.000Z", validTo: "2027-06-30T23:59:59.000Z",
-      issuingDate: "2026-01-01", issuerClaimedStatus: "IN_CONVERSION",
-      duriosRecordStatus: DURIOS_ORGANIC_RECORD_STATUS, evidenceDocumentId: "DOC-SCAN-99",
-      sourceDocumentUrl: "https://synthetic-cert.example/01",
-      regulatoryDisclaimer: DURIOS_ORGANIC_DISCLAIMER, recordedAt: now, recordedBy: "ACT-CLERK-V4",
+      validFrom: "2026-01-01T00:00:00.000Z", validTo: "2027-06-30T23:59:59.000Z", issuingDate: "2026-01-01",
+      issuerClaimedStatus: "IN_CONVERSION", duriosRecordStatus: DURIOS_ORGANIC_RECORD_STATUS, evidenceDocumentId: "DOC-SCAN-99",
+      sourceDocumentUrl: "https://synthetic-cert.example/01", regulatoryDisclaimer: DURIOS_ORGANIC_DISCLAIMER,
+      recordedAt: now, recordedBy: "ACT-CLERK-V4",
     });
   } finally {
     app?.sqliteClient.close();

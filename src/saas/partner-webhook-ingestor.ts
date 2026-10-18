@@ -3,17 +3,11 @@ import type { DocumentType, ExtractedField } from "../domain/types.js";
 import { resolveSaasSubscriptionStatus } from "./saas-tier-policy.js";
 
 export interface PartnerWebhookPayload {
-  readonly webhookId: string;
-  readonly idempotencyKey: string;
-  readonly partnerCode: string;
-  readonly partnerType: "ACCREDITED_CADMIUM_LAB" | "COLD_CHAIN_LOGISTICS";
-  readonly tenantId: string;
-  readonly dossierId: string;
-  readonly documentId: string;
-  readonly documentType: DocumentType;
-  readonly reportedFields: Readonly<Record<string, string | number>>;
-  readonly issuedAt: string;
-  readonly signatureSha256: string;
+  readonly webhookId: string; readonly idempotencyKey: string;
+  readonly partnerCode: string; readonly partnerType: "ACCREDITED_CADMIUM_LAB" | "COLD_CHAIN_LOGISTICS";
+  readonly tenantId: string; readonly dossierId: string; readonly documentId: string;
+  readonly documentType: DocumentType; readonly reportedFields: Readonly<Record<string, string | number>>;
+  readonly issuedAt: string; readonly signatureSha256: string;
 }
 
 export interface PartnerWebhookIngestionResult {
@@ -30,16 +24,11 @@ function buildCanonicalPartnerWebhookPayload(
     sortedReportedFields[key] = payload.reportedFields[key]!;
   }
   return JSON.stringify({
-    webhookId: payload.webhookId,
-    idempotencyKey: payload.idempotencyKey,
-    partnerCode: payload.partnerCode,
-    partnerType: payload.partnerType,
-    tenantId: payload.tenantId,
-    dossierId: payload.dossierId,
-    documentId: payload.documentId,
-    documentType: payload.documentType,
-    reportedFields: sortedReportedFields,
-    issuedAt: payload.issuedAt,
+    webhookId: payload.webhookId, idempotencyKey: payload.idempotencyKey,
+    partnerCode: payload.partnerCode, partnerType: payload.partnerType,
+    tenantId: payload.tenantId, dossierId: payload.dossierId,
+    documentId: payload.documentId, documentType: payload.documentType,
+    reportedFields: sortedReportedFields, issuedAt: payload.issuedAt,
   });
 }
 
@@ -65,9 +54,7 @@ export class PartnerLabWebhookIngestor {
     env: Record<string, string | undefined> = process.env
   ): PartnerWebhookIngestionResult {
     const sub = resolveSaasSubscriptionStatus(
-      env,
-      payload.issuedAt || new Date().toISOString(),
-      payload.tenantId
+      env, payload.issuedAt || new Date().toISOString(), payload.tenantId
     );
     if (!sub.licenseValid) {
       throw new Error(
@@ -104,8 +91,7 @@ export class PartnerLabWebhookIngestor {
       const numVal = Number(strVal);
       candidateFields.push({
         id: `${payload.documentId}-partner-${index}`,
-        documentId: payload.documentId,
-        fieldKey: key,
+        documentId: payload.documentId, fieldKey: key,
         label: key.split("_").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "),
         rawValue: strVal,
         normalizedValue: !Number.isNaN(numVal) && strVal !== "" ? numVal : strVal,
@@ -117,9 +103,7 @@ export class PartnerLabWebhookIngestor {
     }
 
     const result: PartnerWebhookIngestionResult = {
-      duplicateIgnored: false,
-      partnerCode: payload.partnerCode,
-      candidateFields,
+      duplicateIgnored: false, partnerCode: payload.partnerCode, candidateFields,
     };
     this.processedKeys.set(scopedKey, { payloadDigest, result });
     return result;

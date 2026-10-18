@@ -19,15 +19,11 @@ import type { AuditLedgerLike, CreateDossierInput, DossierRepositoryLike } from 
 import type { AuthenticatedActor, ContainerDossier, DocumentType, DossierExportManifest, IngestedDocument, ValidationRunResult } from "../domain/types.js";
 
 export class ContainerDossierWorkspace {
-  public readonly auditLedger: AuditLedgerLike;
-  public readonly hitlService: HitlVerificationService;
-  public readonly ruleEngine: DeterministicRuleEngine;
-  public readonly fileStorage?: FileStorageService | undefined;
+  public readonly auditLedger: AuditLedgerLike; public readonly hitlService: HitlVerificationService;
+  public readonly ruleEngine: DeterministicRuleEngine; public readonly fileStorage?: FileStorageService | undefined;
   public readonly legacyBlobReconciliationReport?: LegacyBlobReconciliationReport | undefined;
-  public readonly shareManager: ShareAccessManager;
-  public readonly organicEvidenceManager: OrganicEvidenceManager;
-  public readonly authService: SqliteAuthService;
-  public readonly sqliteClient: SqliteClient;
+  public readonly shareManager: ShareAccessManager; public readonly organicEvidenceManager: OrganicEvidenceManager;
+  public readonly authService: SqliteAuthService; public readonly sqliteClient: SqliteClient;
   private readonly repo: DossierRepositoryLike;
 
   constructor(
@@ -55,8 +51,7 @@ export class ContainerDossierWorkspace {
     assertCanCreateContainerDossier(actor);
     const isoResult = validateIso6346Container(input.containerNumber);
     if (!isoResult.isValid) throw new Error(`Invalid container number: ${isoResult.reason ?? "ISO 6346 check digit failure"}`);
-    const id = `DOS-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`;
-    const now = new Date().toISOString();
+    const [id, now] = [`DOS-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`, new Date().toISOString()];
     const dossier: ContainerDossier = {
       id, tenantId: actor.tenantId, dossierCode: input.dossierCode, containerNumber: isoResult.normalized,
       sealNumber: input.sealNumber.trim(), targetMarket: input.targetMarket, borderGate: input.borderGate,
@@ -64,9 +59,7 @@ export class ContainerDossierWorkspace {
       declaredBoxCount: input.declaredBoxCount, lifecycleState: "DRAFT", isImmutable: false, createdAt: now, updatedAt: now, documents: [],
     };
     this.repo.save(dossier);
-    this.auditLedger.recordEvent(actor, id, "DOSSIER_CREATED", "CONTAINER_DOSSIER", id, null, {
-      dossierCode: input.dossierCode, containerNumber: dossier.containerNumber,
-    });
+    this.auditLedger.recordEvent(actor, id, "DOSSIER_CREATED", "CONTAINER_DOSSIER", id, null, { dossierCode: input.dossierCode, containerNumber: dossier.containerNumber });
     return dossier;
   }
 
@@ -78,10 +71,7 @@ export class ContainerDossierWorkspace {
     const dossier = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor);
     assertCanUploadDocument(actor, dossier.tenantId);
     assertDossierMutable(dossier, "upload to");
-
-    let { updatedDossier, document } = handleDocumentUpload(
-      dossier, fileBytes, fileName, documentType, actor, this.auditLedger, fixtureExtractedFields
-    );
+    let { updatedDossier, document } = handleDocumentUpload(dossier, fileBytes, fileName, documentType, actor, this.auditLedger, fixtureExtractedFields);
     let storedBlob: StoredBlobResult | undefined;
     if (this.fileStorage && !dossier.documents.some((d) => d.id === document.id && !d.isSuperseded)) {
       storedBlob = this.fileStorage.storeFile(fileBytes, fileName, document.id);
@@ -99,25 +89,18 @@ export class ContainerDossierWorkspace {
     return { dossier: updatedDossier, document };
   }
 
-  public verifyField(
-    dossierId: string, documentId: string, verification: HumanVerificationInput, actor: AuthenticatedActor
-  ): ContainerDossier {
+  public verifyField(dossierId: string, documentId: string, verification: HumanVerificationInput, actor: AuthenticatedActor): ContainerDossier {
     assertValidActor(actor);
     const dossier = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor);
     const hasReadAndVerify = actor.tenantId === dossier.tenantId ||
       (() => { const acc = this.shareManager.checkAccess(dossier.id, dossier.tenantId, actor.tenantId); return acc.hasAccess && acc.scope === "READ_AND_VERIFY"; })();
     assertCanVerifyField(actor, dossier.tenantId, hasReadAndVerify);
     assertDossierMutable(dossier, "verify fields on");
-
     const docIndex = dossier.documents.findIndex((d) => d.id === documentId && !d.isSuperseded);
     if (docIndex === -1) throw new Error(`Active document '${documentId}' not found.`);
-
-    const updatedDoc = this.hitlService.verifyOrCorrectField(dossier.documents[docIndex]!, verification, actor);
     const updatedDocuments = [...dossier.documents];
-    updatedDocuments[docIndex] = updatedDoc;
-    const updatedDossier: ContainerDossier = {
-      ...dossier, lifecycleState: "HUMAN_VERIFICATION_REQUIRED", latestValidationResult: undefined, documents: updatedDocuments, updatedAt: new Date().toISOString(),
-    };
+    updatedDocuments[docIndex] = this.hitlService.verifyOrCorrectField(dossier.documents[docIndex]!, verification, actor);
+    const updatedDossier: ContainerDossier = { ...dossier, lifecycleState: "HUMAN_VERIFICATION_REQUIRED", latestValidationResult: undefined, documents: updatedDocuments, updatedAt: new Date().toISOString() };
     this.repo.save(updatedDossier);
     return updatedDossier;
   }

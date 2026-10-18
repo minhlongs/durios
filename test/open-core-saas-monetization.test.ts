@@ -2,9 +2,7 @@ import { afterEach, describe, expect, it } from "bun:test";
 import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import {
-  createSignedSaasLicenseKey, generateEphemeralSaasLicenseKeyPair, resolveSaasSubscriptionStatus,
-} from "../src/saas/saas-tier-policy.js";
+import { createSignedSaasLicenseKey, generateEphemeralSaasLicenseKeyPair, resolveSaasSubscriptionStatus } from "../src/saas/saas-tier-policy.js";
 import { computeTenantUsageAndRoiReport } from "../src/saas/usage-metering-service.js";
 import { CloudVisionOcrExtractorAdapter } from "../src/saas/cloud-ocr-extractor-adapter.js";
 import { ContainerDossierWorkspace } from "../src/workspace/container-dossier-workspace.js";
@@ -29,10 +27,8 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
     const status = resolveSaasSubscriptionStatus({});
     expect(status.edition).toBe("COMMUNITY_OPEN_CORE");
     expect(status.licenseValid).toBe(false);
-    expect(status.entitlements.localDeterministicCompliance).toBe(true);
-    expect(status.entitlements.localDataAccessGuaranteed).toBe(true);
-    expect(status.entitlements.cloudVisionOcr).toBe(false);
-    expect(status.entitlements.managedZaloZnsRelay).toBe(false);
+    expect(status.entitlements.localDeterministicCompliance && status.entitlements.localDataAccessGuaranteed).toBe(true);
+    expect(status.entitlements.cloudVisionOcr || status.entitlements.managedZaloZnsRelay).toBe(false);
   });
 
   it("verifies Ed25519 license keys and fails closed on missing pubkey, invalid signature, tenant mismatch, and expiry", () => {
@@ -44,9 +40,7 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
 
     const proStatus = resolveSaasSubscriptionStatus(proEnv, "2026-10-17T00:00:00.000Z", "ten-cailay-001");
     expect(proStatus.edition).toBe("PACKHOUSE_PRO_SAAS");
-    expect(proStatus.licenseValid).toBe(true);
-    expect(proStatus.entitlements.cloudVisionOcr).toBe(true);
-    expect(proStatus.entitlements.crossBorderBuyerPortal).toBe(true);
+    expect(proStatus.licenseValid && proStatus.entitlements.cloudVisionOcr && proStatus.entitlements.crossBorderBuyerPortal).toBe(true);
     expect(proStatus.entitlements.multiSiteEnterpriseSync).toBe(false);
 
     expect(resolveSaasSubscriptionStatus(proEnv, "2026-10-17T00:00:00.000Z", "ten-other-999").degradedToCommunityReason).toBe("TENANT_MISMATCH_GRACEFUL_DOWNGRADE");
@@ -94,9 +88,7 @@ describe("Open-Core Public GitHub & SaaS Monetization Suite", () => {
     const ws = new ContainerDossierWorkspace();
     ws.createDossier({ dossierCode: "DOS-SAAS-001", containerNumber: "MSKU1234565", sealNumber: "SL-998822", targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 14, declaredNetWeightKg: 18240, declaredBoxCount: 960 }, MANAGER);
     const report = computeTenantUsageAndRoiReport(MANAGER.tenantId, ws.listDossiers(MANAGER), "PACKHOUSE_PRO_SAAS");
-    expect(report.totalDossiersCreated).toBe(1);
-    expect(report.sealedExportedContainers).toBe(0);
-    expect(report.isNonBindingEstimateOnly).toBe(true);
+    expect(report.totalDossiersCreated === 1 && report.sealedExportedContainers === 0 && report.isNonBindingEstimateOnly).toBe(true);
     expect(report.billingEstimateVnd.recommendedBillableVnd).toBe(0);
 
     const rootDir = mkdtempSync(join(tmpdir(), "durios-saas-http-"));
