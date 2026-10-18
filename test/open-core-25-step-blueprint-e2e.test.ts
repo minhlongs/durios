@@ -71,9 +71,7 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
       const authJsonHeaders = { Authorization: `Bearer ${creds.sessionToken}`, "Content-Type": "application/json" };
       const verifyRes = await routeHttpRequest(
         app.workspace,
-        new Request("http://127.0.0.1:3000/api/v1/open-core/portability/verify", {
-          method: "POST", headers: authJsonHeaders, body: JSON.stringify({ bundle: exportJson.data.bundle }),
-        })
+        new Request("http://127.0.0.1:3000/api/v1/open-core/portability/verify", { method: "POST", headers: authJsonHeaders, body: JSON.stringify({ bundle: exportJson.data.bundle }) })
       );
       expect(verifyRes.status).toBe(200);
       expect(((await verifyRes.json()) as { data: { valid: boolean } }).data.valid).toBe(true);
@@ -81,9 +79,7 @@ describe("Open-Core 25-Step Blueprint & Portability API E2E", () => {
       const tamperedBundle = { ...exportJson.data.bundle, payload: { ...exportJson.data.bundle.payload, totalDossiersCount: 999 } };
       const tamperRes = await routeHttpRequest(
         app.workspace,
-        new Request("http://127.0.0.1:3000/api/v1/open-core/portability/verify", {
-          method: "POST", headers: authJsonHeaders, body: JSON.stringify({ bundle: tamperedBundle }),
-        })
+        new Request("http://127.0.0.1:3000/api/v1/open-core/portability/verify", { method: "POST", headers: authJsonHeaders, body: JSON.stringify({ bundle: tamperedBundle }) })
       );
       expect(((await tamperRes.json()) as { data: { valid: boolean } }).data.valid).toBe(false);
     } finally {

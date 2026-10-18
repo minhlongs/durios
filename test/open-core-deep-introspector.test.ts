@@ -41,6 +41,14 @@ describe("Deep Brainstorm & 25-Step Open-Core Public GitHub + SaaS Introspector 
     for (const turn of report.uiUxDeepAudit.socraticTurns) {
       expect(turn.passed).toBe(true);
     }
+    expect(report.uiUxDeepAudit.proMaxScorecard.totalScore).toBe(100);
+    expect(report.uiUxDeepAudit.proMaxScorecard.maxScore).toBe(100);
+    expect(report.uiUxDeepAudit.proMaxScorecard.allDimensionsPassed).toBe(true);
+    expect(report.uiUxDeepAudit.proMaxScorecard.dimensions).toHaveLength(10);
+    for (const dim of report.uiUxDeepAudit.proMaxScorecard.dimensions) {
+      expect(dim.passed).toBe(true);
+      expect(dim.score).toBe(10);
+    }
 
     expect(report.editionModuleCounts.communityOpenCore).toBeGreaterThanOrEqual(6);
     expect(report.editionModuleCounts.packhouseProSaas).toBeGreaterThanOrEqual(4);
@@ -104,6 +112,7 @@ describe("Deep Brainstorm & 25-Step Open-Core Public GitHub + SaaS Introspector 
       expect(body.data.socraticTurns).toHaveLength(5);
       expect(body.data.uiUxDeepAudit.verdict).toBe("GO_2027_UI_UX_STANDARDIZED");
       expect(body.data.uiUxDeepAudit.allTurnsPassed).toBe(true);
+      expect(body.data.uiUxDeepAudit.proMaxScorecard.totalScore).toBe(100);
     } finally {
       app.sqliteClient.close();
     }

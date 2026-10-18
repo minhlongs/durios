@@ -11,7 +11,6 @@ export type AccessErrorCode =
 
 export class AccessControlError extends Error {
   public readonly status = 403 as const;
-
   constructor(
     message: string,
     public readonly code: AccessErrorCode = "INSUFFICIENT_ROLE"
@@ -36,9 +35,7 @@ const ALLOWED_IDENTITY_TUPLES: readonly AllowedTupleRule[] = [
 ];
 
 export function isValidIdentityTuple(persona: unknown, tenantType: unknown, role: unknown): boolean {
-  if (typeof persona !== "string" || typeof tenantType !== "string" || typeof role !== "string") {
-    return false;
-  }
+  if (typeof persona !== "string" || typeof tenantType !== "string" || typeof role !== "string") return false;
   const rule = ALLOWED_IDENTITY_TUPLES.find((r) => r.persona === persona);
   if (!rule) return false;
   return (
@@ -80,11 +77,7 @@ export function assertCanCreateContainerDossier(actor: AuthenticatedActor): void
   }
 }
 
-export function assertOwnerOperationalRole(
-  actor: AuthenticatedActor,
-  dossierTenantId: string,
-  operationName: string
-): void {
+export function assertOwnerOperationalRole(actor: AuthenticatedActor, dossierTenantId: string, operationName: string): void {
   assertValidActor(actor);
   if (isReadOnlyRole(actor.role)) {
     throw new AccessControlError(`Role '${actor.role}' is read-only and prohibited from '${operationName}'.`, "INSUFFICIENT_ROLE");
@@ -100,11 +93,7 @@ export function assertOwnerOperationalRole(
   }
 }
 
-export function assertOwnerManagementRole(
-  actor: AuthenticatedActor,
-  dossierTenantId: string,
-  operationName: string
-): void {
+export function assertOwnerManagementRole(actor: AuthenticatedActor, dossierTenantId: string, operationName: string): void {
   assertValidActor(actor);
   if (actor.tenantId !== dossierTenantId) {
     throw new AccessControlError(

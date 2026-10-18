@@ -16,6 +16,7 @@ if (isDeep) {
     process.stdout.write(`Idea Verdict: ${deepReport.ideaVerdict}\n`);
     process.stdout.write(`UI/UX 2027 Verdict: ${deepReport.uiUxDeepAudit.verdict} (${deepReport.uiUxDeepAudit.balancedDomSurfacesCount}/${deepReport.uiUxDeepAudit.totalHtmlSurfacesAudited} HTML Surfaces, ${deepReport.uiUxDeepAudit.deadHrefHashCount} Dead Links)\n`);
     process.stdout.write(`All 10 Socratic Turns Passed: ${deepReport.allTurnsPassed && deepReport.uiUxDeepAudit.allTurnsPassed ? "YES (10/10)" : "NO"}\n`);
+    process.stdout.write(`UI/UX Pro Max Scorecard: ${deepReport.uiUxDeepAudit.proMaxScorecard.totalScore}/${deepReport.uiUxDeepAudit.proMaxScorecard.maxScore}\n`);
     process.stdout.write(`25-Step Blueprint Passed: ${deepReport.blueprintAudit.overallPassed ? "YES (25/25)" : "NO"}\n`);
     process.stdout.write(
       `Container Gross Margin: ${deepReport.unitEconomicsVerification.containerGrossMarginPct}% (150k VND vs 8k COGS)\n`

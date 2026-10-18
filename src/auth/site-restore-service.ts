@@ -18,9 +18,7 @@ export function verifySiteBackup(backupDir: string): SiteBackupVerificationResul
   if (!existsSync(backupDbPath)) return { valid: false, errors: ["Missing durios.db in backup directory."] };
 
   let manifest: SiteBackupManifest;
-  try {
-    manifest = JSON.parse(readFileSync(manifestPath, "utf-8")) as SiteBackupManifest;
-  } catch {
+  try { manifest = JSON.parse(readFileSync(manifestPath, "utf-8")) as SiteBackupManifest; } catch {
     return { valid: false, errors: ["Malformed backup-manifest.json."] };
   }
 
@@ -38,7 +36,6 @@ export function verifySiteBackup(backupDir: string): SiteBackupVerificationResul
     const docRows = client.db
       .query<DocBackupRow, []>("SELECT id, dossier_id, sha256_hash, storage_path, file_size_bytes FROM documents")
       .all();
-
     if (docRows.length !== manifest.documentCount) {
       errors.push(`Document count mismatch: manifest records ${manifest.documentCount}, database has ${docRows.length}.`);
     }
@@ -51,9 +48,7 @@ export function verifySiteBackup(backupDir: string): SiteBackupVerificationResul
       }
       const actualBlobSha = calculateSha256(new Uint8Array(readFileSync(blobFile)));
       if (actualBlobSha !== doc.sha256_hash) {
-        errors.push(
-          `Corrupted blob for document '${doc.id}' at '${doc.storage_path}': expected '${doc.sha256_hash}', got '${actualBlobSha}'.`
-        );
+        errors.push(`Corrupted blob for document '${doc.id}' at '${doc.storage_path}': expected '${doc.sha256_hash}', got '${actualBlobSha}'.`);
       }
     }
 
@@ -71,7 +66,6 @@ export function verifySiteBackup(backupDir: string): SiteBackupVerificationResul
   } finally {
     client.close();
   }
-
   return { valid: errors.length === 0, errors, manifest };
 }
 
@@ -86,7 +80,6 @@ export function restoreSiteBackup(
   }
 
   const [absBackupDir, absTargetDbPath, absTargetDataDir] = [resolve(backupDir), resolve(targetDbPath), resolve(targetDataDir)];
-
   mkdirSync(dirname(absTargetDbPath), { recursive: true });
   mkdirSync(join(absTargetDataDir, "storage", "blobs"), { recursive: true });
 
@@ -105,7 +98,6 @@ export function restoreSiteBackup(
     const dstBlob = join(absTargetDataDir, blob.relativePath);
     mkdirSync(dirname(dstBlob), { recursive: true });
     writeFileSync(dstBlob, new Uint8Array(readFileSync(srcBlob)));
-
     if (calculateSha256(new Uint8Array(readFileSync(dstBlob))) !== blob.sha256) {
       throw new Error(`Restored blob '${blob.relativePath}' failed post-write SHA-256 check.`);
     }

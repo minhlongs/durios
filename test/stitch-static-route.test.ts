@@ -60,6 +60,16 @@ describe("Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite", 
     expect(cssText).toContain("--durios-shell-height: 44px");
     expect(cssText).toContain("daylight-theme");
     expect(cssText).toContain("durios-socratic-modal-backdrop");
+
+    const socRes = await routeHttpRequest(workspace, new Request("http://localhost:3000/stitch/socratic-introspector.html"));
+    expect(socRes.status).toBe(200);
+    const socHtml = await socRes.text();
+    expect(socHtml).toContain("10-Turn Socratic Deep Brainstorm");
+    expect(socHtml).toContain("Pillar A: 5 Open-Core & SaaS Unit Economics Turns");
+    expect(socHtml).toContain("Pillar B: 5 UI/UX Pro Max 2027 Architecture Turns");
+    expect(socHtml).toContain("10-Dimension UI/UX Pro Max Scorecard");
+    expect(socHtml).toContain("Re-Run Deep Socratic Audit (--deep)");
+    expect(socHtml).toContain("Export Deep Brainstorm Contract JSON");
   });
 
 

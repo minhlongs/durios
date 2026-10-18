@@ -107,15 +107,15 @@ describe("Ecosystem Rehearsal Endpoints, ISO/Manifest Verifier & Codebase Modula
     }
   });
 
-  it("enforces strict codebase modularity across all src/ (<= 145 LOC) and test/ (<= 145 LOC) files", () => {
+  it("enforces strict codebase modularity across all src/ (<= 135 LOC) and test/ (<= 135 LOC) files", () => {
     const repoRoot = process.cwd();
     const srcViolations = collectTsFiles(join(repoRoot, "src"))
       .map((f) => ({ file: f.slice(repoRoot.length + 1), lines: readFileSync(f, "utf-8").split("\n").length }))
-      .filter((x) => x.lines > 145);
+      .filter((x) => x.lines > 135);
 
     const testViolations = collectTsFiles(join(repoRoot, "test"))
       .map((f) => ({ file: f.slice(repoRoot.length + 1), lines: readFileSync(f, "utf-8").split("\n").length }))
-      .filter((x) => x.lines > 145);
+      .filter((x) => x.lines > 135);
 
     expect(srcViolations).toEqual([]);
     expect(testViolations).toEqual([]);

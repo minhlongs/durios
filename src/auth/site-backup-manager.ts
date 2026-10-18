@@ -24,11 +24,7 @@ export interface DocBackupRow {
   id: string; dossier_id: string; sha256_hash: string; storage_path: string; file_size_bytes: number;
 }
 
-export function createSiteBackup(
-  dbPath: string,
-  dataDir: string,
-  backupDir: string
-): SiteBackupManifest {
+export function createSiteBackup(dbPath: string, dataDir: string, backupDir: string): SiteBackupManifest {
   const [absDbPath, absDataDir, absBackupDir] = [resolve(dbPath), resolve(dataDir), resolve(backupDir)];
   if (!existsSync(absDbPath)) throw new Error(`Source SQLite database does not exist at '${absDbPath}'.`);
 
@@ -37,22 +33,15 @@ export function createSiteBackup(
   if (existsSync(backupDbPath)) unlinkSync(backupDbPath);
 
   const sourceClient = new SqliteClient({ dbPath: absDbPath });
-  try {
-    sourceClient.db.run(`VACUUM INTO '${backupDbPath.replace(/'/g, "''")}'`);
-  } finally {
-    sourceClient.close();
-  }
+  try { sourceClient.db.run(`VACUUM INTO '${backupDbPath.replace(/'/g, "''")}'`); } finally { sourceClient.close(); }
 
   const backupClient = new SqliteClient({ dbPath: backupDbPath });
   try {
-    const ledger = new SqliteAuditLedger(backupClient);
-    if (!ledger.verifyIntegrity()) {
+    if (!new SqliteAuditLedger(backupClient).verifyIntegrity()) {
       throw new Error("Refusing to complete backup: SQLite audit ledger hash chain failed integrity check.");
     }
 
-    const dossierCountRow = backupClient.db
-      .query<{ cnt: number }, []>("SELECT COUNT(*) as cnt FROM container_dossiers")
-      .get();
+    const dossierCountRow = backupClient.db.query<{ cnt: number }, []>("SELECT COUNT(*) as cnt FROM container_dossiers").get();
     const docRows = backupClient.db
       .query<DocBackupRow, []>("SELECT id, dossier_id, sha256_hash, storage_path, file_size_bytes FROM documents ORDER BY uploaded_at ASC, id ASC")
       .all();
@@ -72,9 +61,7 @@ export function createSiteBackup(
       const bytes = new Uint8Array(readFileSync(srcBlobPath));
       const actualSha = calculateSha256(bytes);
       if (actualSha !== doc.sha256_hash) {
-        throw new Error(
-          `Backup failed: blob SHA-256 mismatch for document '${doc.id}' at '${relPath}' (expected '${doc.sha256_hash}', got '${actualSha}').`
-        );
+        throw new Error(`Backup failed: blob SHA-256 mismatch for document '${doc.id}' at '${relPath}' (expected '${doc.sha256_hash}', got '${actualSha}').`);
       }
 
       if (!copiedPaths.has(relPath)) {

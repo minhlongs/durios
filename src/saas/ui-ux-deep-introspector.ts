@@ -1,30 +1,27 @@
 import { existsSync, readdirSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import type { SocraticTurnEvaluation } from "./open-core-deep-introspector.js";
+import {
+  evaluateUiUxProMaxScorecard, type UiUxProMaxScorecard, type UiUxProMaxScorecardDimension,
+} from "./ui-ux-scorecard.js";
+
+export type { UiUxProMaxScorecard, UiUxProMaxScorecardDimension };
 
 export interface UiUxDeepBrainstormReport {
   readonly verdict: "GO_2027_UI_UX_STANDARDIZED" | "HOLD_UI_UX_GAPS";
-  readonly evaluatedAt: string;
-  readonly allTurnsPassed: boolean;
-  readonly totalHtmlSurfacesAudited: number;
-  readonly balancedDomSurfacesCount: number;
-  readonly deadHrefHashCount: number;
-  readonly stitchScreensCount: number;
+  readonly evaluatedAt: string; readonly allTurnsPassed: boolean;
+  readonly totalHtmlSurfacesAudited: number; readonly balancedDomSurfacesCount: number;
+  readonly deadHrefHashCount: number; readonly stitchScreensCount: number;
   readonly socraticTurns: readonly SocraticTurnEvaluation[];
+  readonly proMaxScorecard: UiUxProMaxScorecard;
 }
 
-export function evaluateUiUxDeepBrainstorm(
-  rootDir = process.cwd(),
-  nowIso = new Date().toISOString()
-): UiUxDeepBrainstormReport {
+export function evaluateUiUxDeepBrainstorm(rootDir = process.cwd(), nowIso = new Date().toISOString()): UiUxDeepBrainstormReport {
   const siteDir = join(rootDir, "site/public");
   const rootIndexPath = join(rootDir, "src/server/public/index.html");
-  const cssPath = join(siteDir, "durios-design-system.css");
-  const jsPath = join(siteDir, "durios-live-bridge.js");
+  const [cssPath, jsPath] = [join(siteDir, "durios-design-system.css"), join(siteDir, "durios-live-bridge.js")];
 
-  const stitchFiles = existsSync(siteDir)
-    ? readdirSync(siteDir).filter((f) => f.endsWith(".html")).sort()
-    : [];
+  const stitchFiles = existsSync(siteDir) ? readdirSync(siteDir).filter((f) => f.endsWith(".html")).sort() : [];
   const rootHtml = existsSync(rootIndexPath) ? readFileSync(rootIndexPath, "utf-8") : "";
   const cssRaw = existsSync(cssPath) ? readFileSync(cssPath, "utf-8") : "";
   const jsRaw = existsSync(jsPath) ? readFileSync(jsPath, "utf-8") : "";
@@ -46,68 +43,26 @@ export function evaluateUiUxDeepBrainstorm(
     else unbalancedFiles.push(`${entry.name}(${openDivs}/${closeDivs})`);
     deadHrefHashCount += (entry.html.match(/href="#"/g) ?? []).length;
     if (
-      entry.html.includes("<!-- DURIOS-TOP-NAV-START -->") &&
-      entry.html.includes("<!-- DURIOS-TOP-NAV-END -->") &&
-      entry.html.includes("/stitch/durios-design-system.css") &&
-      entry.html.includes("/stitch/durios-live-bridge.js")
-    ) {
-      sentinelSurfacesCount += 1;
-    }
+      entry.html.includes("<!-- DURIOS-TOP-NAV-START -->") && entry.html.includes("<!-- DURIOS-TOP-NAV-END -->") &&
+      entry.html.includes("/stitch/durios-design-system.css") && entry.html.includes("/stitch/durios-live-bridge.js")
+    ) sentinelSurfacesCount += 1;
   }
 
   const totalHtmlSurfacesAudited = allHtmlEntries.length;
-  const turn1Passed =
-    stitchFiles.length === 25 &&
-    totalHtmlSurfacesAudited === 26 &&
-    balancedDomSurfacesCount === 26 &&
-    sentinelSurfacesCount === 26;
+  const turn1Passed = stitchFiles.length === 25 && totalHtmlSurfacesAudited === 26 && balancedDomSurfacesCount === 26 && sentinelSurfacesCount === 26;
+  const turn2Passed = turn1Passed && deadHrefHashCount === 0 && jsRaw.includes("setupUniversalInteractiveDelegation") && jsRaw.includes("setupUniversalTableAndInputHydration") && jsRaw.includes("openSocratic10TurnModal") && jsRaw.includes("showLiveToast");
+  const turn3Passed = cssRaw.includes("--durios-shell-height: 44px") && cssRaw.includes(".durios-redundant-subnav") && cssRaw.includes(".durios-nav-aside") && jsRaw.includes("durios_theme") && rootHtml.includes("durios_theme");
+  const turn4Passed = ["workspace-zones-wrapper", "workspace-center-canvas", "workspace-context-panel", "workflow-step-filter-bar", "uploadAllSampleDocs", "verifyAllFields", "kpi-grid", "dossier-progress-bar"].every((k) => rootHtml.includes(k));
 
-  const turn2Passed =
-    turn1Passed &&
-    deadHrefHashCount === 0 &&
-    jsRaw.includes("setupUniversalInteractiveDelegation") &&
-    jsRaw.includes("setupUniversalTableAndInputHydration") &&
-    jsRaw.includes("openSocratic10TurnModal") &&
-    jsRaw.includes("showLiveToast");
-
-  const turn3Passed =
-    cssRaw.includes("--durios-shell-height: 44px") &&
-    cssRaw.includes(".durios-redundant-subnav") &&
-    cssRaw.includes(".durios-nav-aside") &&
-    jsRaw.includes("durios_theme") &&
-    rootHtml.includes("durios_theme");
-
-  const turn4Passed =
-    rootHtml.includes("workspace-zones-wrapper") &&
-    rootHtml.includes("workspace-center-canvas") &&
-    rootHtml.includes("workspace-context-panel") &&
-    rootHtml.includes("workflow-step-filter-bar") &&
-    rootHtml.includes("uploadAllSampleDocs") &&
-    rootHtml.includes("verifyAllFields") &&
-    rootHtml.includes("kpi-grid") &&
-    rootHtml.includes("dossier-progress-bar");
-
-  const rootScript = rootHtml.includes("<script>")
-    ? rootHtml.slice(rootHtml.indexOf("<script>"), rootHtml.lastIndexOf("</script>"))
-    : "";
+  const rootScript = rootHtml.includes("<script>") ? rootHtml.slice(rootHtml.indexOf("<script>"), rootHtml.lastIndexOf("</script>")) : "";
   const hasBlockingAlert = /(^|[^.\w])alert\(/m.test(rootScript);
-  const turn5Passed =
-    existsSync(join(rootDir, "design-system/MASTER.md")) &&
-    existsSync(join(rootDir, "design-system/pages/packhouse-workspace.md")) &&
-    existsSync(join(rootDir, "design-system/pages/stitch-command-hub.md")) &&
-    existsSync(join(rootDir, "design-system/pages/trust-and-verifier.md")) &&
-    existsSync(join(rootDir, "design-system/pages/open-core-and-saas-corridors.md")) &&
-    cssRaw.includes("tabular-nums") &&
-    cssRaw.includes("daylight-theme") &&
-    cssRaw.includes("touch-action: manipulation") &&
-    cssRaw.includes("prefers-reduced-motion: reduce") &&
-    jsRaw.includes("durios-svg-icon") &&
-    jsRaw.includes('aria-live", "polite"') &&
-    rootHtml.includes("prefers-reduced-motion") &&
-    rootHtml.includes(":focus-visible") &&
-    rootHtml.includes('role="status"') &&
-    rootHtml.includes('role="alert"') &&
-    !hasBlockingAlert;
+  const designDocsPresent = ["MASTER.md", "pages/packhouse-workspace.md", "pages/stitch-command-hub.md", "pages/trust-and-verifier.md", "pages/open-core-and-saas-corridors.md"].every((p) => existsSync(join(rootDir, "design-system", p)));
+  const turn5Passed = designDocsPresent && cssRaw.includes("tabular-nums") && cssRaw.includes("daylight-theme") && cssRaw.includes("touch-action: manipulation") && cssRaw.includes("prefers-reduced-motion: reduce") && jsRaw.includes("durios-svg-icon") && jsRaw.includes('aria-live", "polite"') && rootHtml.includes("prefers-reduced-motion") && rootHtml.includes(":focus-visible") && rootHtml.includes('role="status"') && rootHtml.includes('role="alert"') && !hasBlockingAlert;
+
+  const proMaxScorecard = evaluateUiUxProMaxScorecard({
+    balancedDomCount: balancedDomSurfacesCount, totalSurfaces: totalHtmlSurfacesAudited,
+    deadHrefCount: deadHrefHashCount, cssRaw, jsRaw, rootHtml, hasBlockingAlert,
+  });
 
   const socraticTurns: readonly SocraticTurnEvaluation[] = [
     { turnNumber: 1, dimension: "100% DOM Tree Balance & App Shell Sentinels", socraticQuestion: "Do all 26 HTML surfaces (root workspace + 25 Stitch screens) maintain openDivs === closeDivs and load the 44px App Shell?", passed: turn1Passed, evidenceSummary: turn1Passed ? `${balancedDomSurfacesCount}/${totalHtmlSurfacesAudited} HTML surfaces have openDivs === closeDivs (diff=0) and 44px App Shell sentinels.` : `Unbalanced DOM in: ${unbalancedFiles.join(", ")}` },
@@ -117,11 +72,11 @@ export function evaluateUiUxDeepBrainstorm(
     { turnNumber: 5, dimension: "2027 Design System Tokens & WCAG Field Ergonomics", socraticQuestion: "Are tabular-nums, Daylight Field high-contrast tokens, prefers-reduced-motion, ARIA live regions, and zero alert() dialogs enforced?", passed: turn5Passed, evidenceSummary: `tabular-nums=true, daylightTheme=true, ariaLive=true, blockingAlerts=${hasBlockingAlert ? 1 : 0}.` },
   ];
 
-  const allTurnsPassed = socraticTurns.every((t) => t.passed);
+  const allTurnsPassed = socraticTurns.every((t) => t.passed) && proMaxScorecard.allDimensionsPassed;
   return {
     verdict: allTurnsPassed ? "GO_2027_UI_UX_STANDARDIZED" : "HOLD_UI_UX_GAPS",
     evaluatedAt: nowIso, allTurnsPassed, totalHtmlSurfacesAudited,
     balancedDomSurfacesCount, deadHrefHashCount, stitchScreensCount: stitchFiles.length,
-    socraticTurns,
+    socraticTurns, proMaxScorecard,
   };
 }

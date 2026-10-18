@@ -99,9 +99,7 @@ export function createOtpProviderFromEnv(
   fetchImpl?: typeof fetch | undefined
 ): OtpProviderAdapter {
   const providerType = env["DURIOS_OTP_PROVIDER"]?.trim().toUpperCase();
-  if (!providerType || providerType === "UNCONFIGURED" || providerType === "NONE") {
-    return new UnconfiguredOtpProvider();
-  }
+  if (!providerType || providerType === "UNCONFIGURED" || providerType === "NONE") return new UnconfiguredOtpProvider();
   const [apiUrl, apiKey] = [env["DURIOS_OTP_API_URL"]?.trim(), env["DURIOS_OTP_API_KEY"]?.trim()];
   if (!apiUrl || !apiKey) return new UnconfiguredOtpProvider();
   const timeoutRaw = env["DURIOS_OTP_TIMEOUT_MS"] ? Number(env["DURIOS_OTP_TIMEOUT_MS"]) : 8000;

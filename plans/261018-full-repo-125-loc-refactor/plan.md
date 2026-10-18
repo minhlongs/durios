@@ -1,7 +1,7 @@
 ---
 title: "Full-Repo <= 125 LOC Modularity Refactor & Deep Introspector Telemetry (--deep)"
 description: "Streamline all remaining 126-130 LOC modules across src/ and test/ so 100% of TypeScript files in the repository are strictly <= 125 LOC, enforced by the automated Codebase Modularity Guard."
-status: in_progress
+status: completed
 priority: P1
 effort: 1.5h
 branch: main
@@ -22,7 +22,7 @@ created: 2026-10-18
   4. `bun run typecheck && bun test && bun run blueprint:verify-25-steps -- --deep` passes 100%.
 
 ## 2. Implementation Steps
-- [ ] **Step 1:** Streamline the 15 `src/` modules (`126–130` LOC) to `<= 124` LOC each.
-- [ ] **Step 2:** Streamline the 22 `test/` modules (`126–130` LOC) to `<= 124` LOC each.
-- [ ] **Step 3:** Update `test/ecosystem-rehearsal-and-modularity.test.ts` to enforce `<= 125 LOC` across all `src/` and `test/` TypeScript files.
-- [ ] **Step 4:** Run `bun run typecheck && bun test && bun run blueprint:verify-25-steps -- --deep` and write technical journal entry.
+- [x] **Step 1:** Streamline the 15 `src/` modules (`126–130` LOC) to `<= 124` LOC each.
+- [x] **Step 2:** Streamline the 22 `test/` modules (`126–130` LOC) to `<= 124` LOC each.
+- [x] **Step 3:** Update `test/ecosystem-rehearsal-and-modularity.test.ts` to enforce `<= 125 LOC` across all `src/` and `test/` TypeScript files.
+- [x] **Step 4:** Run `bun run typecheck && bun test && bun run blueprint:verify-25-steps -- --deep` and write technical journal entry.
