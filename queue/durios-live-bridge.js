@@ -1043,22 +1043,14 @@
     if (btn) btn.addEventListener("click", openSocratic10TurnModal);
   }
 
-  // Interactive 10-Turn Socratic Inspector Modal (5 Open-Core Turns + 5 UI/UX Pro Max Turns)
-  var DEFAULT_OPEN_CORE_TURNS = [
-    { turnNumber: 1, dimension: "MIT Verifier SDK Boundary Isolation", passed: true, evidenceSummary: "4/4 MIT modules clean of AGPL/SaaS imports." },
-    { turnNumber: 2, dimension: "Public GitHub Governance & Secret Hygiene", passed: true, evidenceSummary: "7/7 governance files present & .gitignore blocks .db/.env." },
-    { turnNumber: 3, dimension: "Ed25519 Licensing & Zero-Lock-In Graceful Downgrade", passed: true, evidenceSummary: "Ed25519 unlocks PACKHOUSE_PRO_SAAS and downgrades to COMMUNITY_OPEN_CORE with localDataAccessGuaranteed=true." },
-    { turnNumber: 4, dimension: "Unit Economics & Multi-Revenue Stack Truth", passed: true, evidenceSummary: "Margin 94.67% (150k VND vs 8k COGS); VN pure-SaaS ceiling $657,643 < $1M target." },
-    { turnNumber: 5, dimension: "25-Step Blueprint & Tri-Edition Completeness", passed: true, evidenceSummary: "25/25 steps verified; 6 Community, 4 Pro, 2 Enterprise modules." }
+  // 15-Turn Socratic Inspector Modal: 3 pillars rendered strictly from GET /api/v1/open-core/blueprint-status?deep=true
+  var SOCRATIC_PILLARS = [
+    { key: "opencore", label: "Open-Core", heading: "Pillar A: 5 Open-Core & SaaS Unit Economics Turns", pick: function (r) { return r.socraticTurns; } },
+    { key: "uiux", label: "UI/UX", heading: "Pillar B: 5 UI/UX Pro Max 2027 Architecture Turns", pick: function (r) { return r.uiUxDeepAudit && r.uiUxDeepAudit.socraticTurns; } },
+    { key: "modularity", label: "Modularity", heading: "Pillar C: 5 Codebase Modularity & Type-Safety Turns", pick: function (r) { return r.modularityDeepAudit && r.modularityDeepAudit.socraticTurns; } }
   ];
 
-  var DEFAULT_UIUX_PRO_MAX_TURNS = [
-    { turnNumber: 1, dimension: "100% DOM Tree Balance & App Shell Sentinels", passed: true, evidenceSummary: "26/26 HTML surfaces have openDivs === closeDivs (diff=0) and 44px App Shell sentinels." },
-    { turnNumber: 2, dimension: "Zero Dead Links & Universal Input/Button Hydration", passed: true, evidenceSummary: "deadHrefHashCount=0; setupUniversalInteractiveDelegation, setupUniversalTableAndInputHydration & showLiveToast active." },
-    { turnNumber: 3, dimension: "Single-Header Zero-Clutter Chrome & Theme Sync", passed: true, evidenceSummary: "44px Command Bar active; redundant sub-navs/asides collapsed; durios_theme synced across / & /stitch/*." },
-    { turnNumber: 4, dimension: "3-Zone Spatial Layout & 1-Click Batch Accelerators", passed: true, evidenceSummary: "3-Zone layout, filterWorkflowStep, uploadAllSampleDocs, verifyAllFields & keyboard shortcuts verified." },
-    { turnNumber: 5, dimension: "2027 Design System Tokens & WCAG Field Ergonomics", passed: true, evidenceSummary: "tabular-nums=true, daylightTheme=true, ariaLive=true, blockingAlerts=0." }
-  ];
+  var socraticModalState = { status: "idle", report: null, error: "", pillar: "all", search: "", returnFocus: null };
 
   function createSocratic10TurnModal() {
     var existing = document.getElementById("durios-socratic-modal-backdrop");
@@ -1068,16 +1060,13 @@
     backdrop.id = "durios-socratic-modal-backdrop";
     backdrop.className = "durios-socratic-modal-backdrop";
     backdrop.innerHTML =
-      '<div class="durios-socratic-modal-card" role="dialog" aria-modal="true" aria-label="10-Turn Socratic Deep Inspector">' +
-        '<div style="padding:12px 16px;background:var(--durios-bg-surface);border-bottom:1px solid var(--durios-border-subtle);display:flex;align-items:center;justify-content:space-between;">' +
-          '<div style="display:flex;align-items:center;gap:8px;">' +
-            '<span style="font-size:16px;">🧠</span>' +
-            '<div>' +
-              '<div style="font-family:var(--durios-font-display);font-weight:700;font-size:14px;color:var(--durios-accent);">DuriOS 10-Turn Socratic Deep Inspector (--deep)</div>' +
-              '<div style="font-size:10px;color:var(--durios-text-dim);font-family:var(--durios-font-mono);">5 Open-Core SaaS Turns + 5 UI/UX Pro Max Turns • 26/26 HTML Surfaces Audited</div>' +
-            '</div>' +
+      '<div class="durios-socratic-modal-card" role="dialog" aria-modal="true" aria-labelledby="durios-socratic-modal-title">' +
+        '<div style="padding:12px 16px;background:var(--durios-bg-surface);border-bottom:1px solid var(--durios-border-subtle);display:flex;align-items:center;justify-content:space-between;gap:8px;">' +
+          '<div>' +
+            '<div id="durios-socratic-modal-title" style="font-family:var(--durios-font-display);font-weight:700;font-size:14px;color:var(--durios-accent);">DuriOS 15-Turn Socratic Deep Inspector (--deep)</div>' +
+            '<div style="font-size:11px;color:var(--durios-text-dim);font-family:var(--durios-font-mono);">Open-Core [5] · UI/UX [5] · Modularity [5] · live results from /api/v1/open-core/blueprint-status?deep=true</div>' +
           '</div>' +
-          '<button type="button" id="durios-btn-close-socratic-modal" class="durios-icon-btn" aria-label="Close Socratic Modal">✕</button>' +
+          '<button type="button" id="durios-btn-close-socratic-modal" class="durios-icon-btn" aria-label="Close Socratic inspector">✕</button>' +
         '</div>' +
         '<div id="durios-socratic-modal-body" style="padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:14px;"></div>' +
       '</div>';
@@ -1085,6 +1074,7 @@
     backdrop.addEventListener("click", function (e) {
       if (e.target === backdrop) closeSocratic10TurnModal();
     });
+    backdrop.addEventListener("keydown", trapSocraticModalFocus);
     document.body.appendChild(backdrop);
 
     var closeBtn = document.getElementById("durios-btn-close-socratic-modal");
@@ -1092,172 +1082,218 @@
     return backdrop;
   }
 
-  var currentModalReport = null;
-  var currentModalPillar = "all";
-  var currentModalSearch = "";
+  function trapSocraticModalFocus(e) {
+    if (e.key !== "Tab") return;
+    var card = document.querySelector("#durios-socratic-modal-backdrop .durios-socratic-modal-card");
+    if (!card) return;
+    var focusable = card.querySelectorAll("button:not([disabled]), input, [href]");
+    if (focusable.length === 0) return;
+    var first = focusable[0];
+    var last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  }
 
-  function renderSocratic10TurnModalContent(deepReport) {
+  function isValidDeepReport(r) {
+    return Boolean(r) && SOCRATIC_PILLARS.every(function (p) {
+      var turns = p.pick(r);
+      return Array.isArray(turns) && turns.length === 5;
+    });
+  }
+
+  function summarizeSocraticReport(r) {
+    var passed = 0;
+    var total = 0;
+    SOCRATIC_PILLARS.forEach(function (p) {
+      p.pick(r).forEach(function (t) { total += 1; if (t.passed === true) passed += 1; });
+    });
+    return { passed: passed, total: total };
+  }
+
+  function socraticStatusBadge(kind, text) {
+    return '<span class="durios-socratic-status durios-socratic-status--' + kind + '">' + escapeHtml(text) + "</span>";
+  }
+
+  function renderSocraticSummaryCards(r) {
+    var summary = summarizeSocraticReport(r);
+    var allPassed = summary.passed === summary.total;
+    var scorecard = r.uiUxDeepAudit && r.uiUxDeepAudit.proMaxScorecard;
+    var scoreText = scorecard && typeof scorecard.totalScore === "number" ? scorecard.totalScore + " / " + scorecard.maxScore : "Unavailable";
+    var cards = [
+      ["IDEA VERDICT", r.ideaVerdict || "Unavailable"],
+      ["UI/UX 2027 VERDICT", (r.uiUxDeepAudit && r.uiUxDeepAudit.verdict) || "Unavailable"],
+      ["MODULARITY VERDICT", (r.modularityDeepAudit && r.modularityDeepAudit.verdict) || "Unavailable"],
+      ["SOCRATIC TURNS", summary.passed + " / " + summary.total + (allPassed ? " PASS" : " — " + (summary.total - summary.passed) + " FAIL")],
+      ["PRO MAX SCORECARD", scoreText]
+    ];
+    return '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;">' +
+      cards.map(function (c) {
+        return '<div class="durios-socratic-turn-card"><span style="font-size:10px;color:var(--durios-text-dim);">' + escapeHtml(c[0]) + "</span>" +
+          '<strong style="font-family:var(--durios-font-mono);font-size:12px;color:var(--durios-text-primary);font-variant-numeric:tabular-nums;">' + escapeHtml(c[1]) + "</strong></div>";
+      }).join("") +
+    "</div>";
+  }
+
+  function renderSocraticTurnCards(turns, label) {
+    var term = socraticModalState.search.toLowerCase().trim();
+    var visible = term ? turns.filter(function (t) {
+      return (t.dimension + " " + t.evidenceSummary + " " + (t.socraticQuestion || "")).toLowerCase().indexOf(term) !== -1;
+    }) : turns;
+    if (visible.length === 0) {
+      return '<div class="durios-socratic-notice">No turns match the current search.</div>';
+    }
+    return visible.map(function (t) {
+      var badge = t.passed === true ? socraticStatusBadge("pass", "PASS") : socraticStatusBadge("fail", "FAIL");
+      return '<div class="durios-socratic-turn-card">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">' +
+          '<span style="font-weight:700;font-size:12px;color:var(--durios-text-primary);">' + escapeHtml(label + " Turn " + t.turnNumber + ": " + t.dimension) + "</span>" + badge +
+        "</div>" +
+        '<div style="font-size:12px;color:var(--durios-text-secondary);line-height:1.5;">' + escapeHtml(t.evidenceSummary) + "</div>" +
+      "</div>";
+    }).join("");
+  }
+
+  function renderSocraticToolbar(r) {
+    var hasReport = Boolean(r);
+    var counts = hasReport ? summarizeSocraticReport(r) : null;
+    var pillarButtons = [{ key: "all", text: hasReport ? "All " + counts.total + " Turns" : "All Turns" }].concat(SOCRATIC_PILLARS.map(function (p) {
+      return { key: p.key, text: p.label + " [5]" };
+    })).map(function (b) {
+      return '<button type="button" class="durios-socratic-pillar-btn" data-socratic-pillar="' + b.key + '" id="modal-filter-' + b.key + '" aria-pressed="' + (socraticModalState.pillar === b.key) + '"' + (hasReport ? "" : " disabled") + ">" + escapeHtml(b.text) + "</button>";
+    }).join("");
+    var loading = socraticModalState.status === "loading";
+    return '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--durios-border-subtle);padding-bottom:10px;">' +
+      '<div role="group" aria-label="Filter Socratic pillars" style="display:flex;gap:4px;flex-wrap:wrap;">' + pillarButtons + "</div>" +
+      '<label style="display:flex;flex-direction:column;gap:2px;flex:1;max-width:280px;font-size:11px;color:var(--durios-text-dim);">Search questions & evidence' +
+        '<input type="search" id="modal-search-input" value="' + escapeHtml(socraticModalState.search) + '"' + (hasReport ? "" : " disabled") + ' style="width:100%;min-height:32px;background:var(--durios-bg-surface);border:1px solid var(--durios-border-subtle);color:var(--durios-text-primary);padding:4px 8px;border-radius:4px;font-size:12px;" />' +
+      "</label>" +
+      '<div style="display:flex;gap:6px;">' +
+        '<button type="button" id="modal-btn-rerun" class="durios-socratic-action-btn"' + (loading ? " disabled" : "") + ">" + (loading ? "Auditing (--deep)…" : "Re-Run Deep Socratic Audit (--deep)") + "</button>" +
+        '<button type="button" id="modal-btn-export" class="durios-socratic-action-btn"' + (hasReport ? "" : " disabled") + ">Export Deep Brainstorm Contract JSON</button>" +
+      "</div>" +
+    "</div>";
+  }
+
+  function renderSocraticStatusNotice() {
+    if (socraticModalState.status === "loading" && !socraticModalState.report) {
+      return '<div class="durios-socratic-notice" role="status">' + socraticStatusBadge("pending", "PENDING") + " Loading live audit results… No turn is shown as passed until the server responds.</div>";
+    }
+    if (socraticModalState.status === "error") {
+      var stale = socraticModalState.report ? " Showing the last successfully loaded report." : " No verified results are available; sign in and press Re-Run to retry.";
+      return '<div class="durios-socratic-notice durios-socratic-notice--error" role="alert">Audit unavailable: ' + escapeHtml(socraticModalState.error) + "." + stale + "</div>";
+    }
+    return "";
+  }
+
+  function renderSocratic10TurnModalContent() {
     var bodyEl = document.getElementById("durios-socratic-modal-body");
     if (!bodyEl) return;
-    if (deepReport) currentModalReport = deepReport;
-    var report = currentModalReport;
-
-    var openCoreTurns = (report && Array.isArray(report.socraticTurns) && report.socraticTurns.length === 5)
-      ? report.socraticTurns
-      : DEFAULT_OPEN_CORE_TURNS;
-    var uiuxReport = report && report.uiUxDeepAudit ? report.uiUxDeepAudit : null;
-    var uiuxTurns = (uiuxReport && Array.isArray(uiuxReport.socraticTurns) && uiuxReport.socraticTurns.length === 5)
-      ? uiuxReport.socraticTurns
-      : DEFAULT_UIUX_PRO_MAX_TURNS;
-    var scoreTotal = (uiuxReport && uiuxReport.proMaxScorecard)
-      ? uiuxReport.proMaxScorecard.totalScore : 100;
-
-    var term = currentModalSearch.toLowerCase().trim();
-
-    function filterTurnList(turns) {
-      if (!term) return turns;
-      return turns.filter(function (t) {
-        var str = (t.dimension + " " + t.evidenceSummary + " " + (t.socraticQuestion || "")).toLowerCase();
-        return str.indexOf(term) !== -1;
+    var r = socraticModalState.report;
+    var html = renderSocraticStatusNotice() + (r ? renderSocraticSummaryCards(r) : "") + renderSocraticToolbar(r);
+    if (r) {
+      SOCRATIC_PILLARS.forEach(function (p) {
+        if (socraticModalState.pillar !== "all" && socraticModalState.pillar !== p.key) return;
+        html += '<section aria-label="' + escapeHtml(p.heading) + '">' +
+          '<h3 style="font-family:var(--durios-font-mono);font-size:11px;font-weight:700;color:var(--durios-accent);text-transform:uppercase;margin:0 0 6px;">' + escapeHtml(p.heading) + "</h3>" +
+          '<div class="durios-socratic-turn-grid">' + renderSocraticTurnCards(p.pick(r), p.label) + "</div>" +
+        "</section>";
       });
     }
-
-    var filteredOpenCore = filterTurnList(openCoreTurns);
-    var filteredUiUx = filterTurnList(uiuxTurns);
-
-    function renderTurnCards(turns, badgePrefix) {
-      if (turns.length === 0) {
-        return '<div style="font-size:11px;color:var(--durios-text-dim);font-style:italic;padding:8px 12px;background:var(--durios-bg-surface);border-radius:4px;">No turns match the current search query.</div>';
-      }
-      return turns.map(function (t) {
-        return '<div class="durios-socratic-turn-card">' +
-          '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;">' +
-            '<span style="font-weight:700;font-size:11px;color:var(--durios-text-primary);">' + escapeHtml(badgePrefix + " Turn " + t.turnNumber + ": " + t.dimension) + '</span>' +
-            '<span style="font-family:var(--durios-font-mono);font-size:9px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--durios-accent-soft);color:var(--durios-accent);">' + (t.passed ? "PASS" : "FAIL") + '</span>' +
-          '</div>' +
-          '<div style="font-size:11px;color:var(--durios-text-secondary);line-height:1.4;">' + escapeHtml(t.evidenceSummary) + '</div>' +
-        '</div>';
-      }).join("");
-    }
-
-    var pillAllClass = currentModalPillar === "all" ? "durios-pill active" : "durios-pill";
-    var pillOpenCoreClass = currentModalPillar === "opencore" ? "durios-pill active" : "durios-pill";
-    var pillUiUxClass = currentModalPillar === "uiux" ? "durios-pill active" : "durios-pill";
-
-    var html =
-      '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px;">' +
-        '<div class="durios-socratic-turn-card"><span style="font-size:9px;color:var(--durios-text-dim);">IDEA VERDICT</span><strong style="font-family:var(--durios-font-mono);font-size:12px;color:var(--durios-accent);">GO_OPEN_CORE_SAAS</strong></div>' +
-        '<div class="durios-socratic-turn-card"><span style="font-size:9px;color:var(--durios-text-dim);">UI/UX 2027 VERDICT</span><strong style="font-family:var(--durios-font-mono);font-size:12px;color:var(--durios-accent);">GO_2027_UI_UX_STANDARDIZED</strong></div>' +
-        '<div class="durios-socratic-turn-card"><span style="font-size:9px;color:var(--durios-text-dim);">SOCRATIC TURNS</span><strong style="font-family:var(--durios-font-mono);font-size:12px;color:var(--durios-accent);">10 / 10 PASS</strong></div>' +
-        '<div class="durios-socratic-turn-card"><span style="font-size:9px;color:var(--durios-text-dim);">PRO MAX SCORECARD</span><strong style="font-family:var(--durios-font-mono);font-size:12px;color:var(--durios-accent);">' + scoreTotal + ' / 100</strong></div>' +
-      '</div>' +
-      '<div style="display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--durios-border-subtle);padding-bottom:10px;">' +
-        '<div style="display:flex;gap:4px;align-items:center;">' +
-          '<button type="button" id="modal-filter-all" class="' + pillAllClass + '" style="cursor:pointer;padding:3px 8px;font-size:10px;background:var(--durios-bg-surface);color:var(--durios-text-secondary);border:1px solid var(--durios-border-subtle);border-radius:4px;">All 10 Turns</button>' +
-          '<button type="button" id="modal-filter-opencore" class="' + pillOpenCoreClass + '" style="cursor:pointer;padding:3px 8px;font-size:10px;background:var(--durios-bg-surface);color:var(--durios-text-secondary);border:1px solid var(--durios-border-subtle);border-radius:4px;">Open-Core SaaS [5]</button>' +
-          '<button type="button" id="modal-filter-uiux" class="' + pillUiUxClass + '" style="cursor:pointer;padding:3px 8px;font-size:10px;background:var(--durios-bg-surface);color:var(--durios-text-secondary);border:1px solid var(--durios-border-subtle);border-radius:4px;">UI/UX Pro Max [5]</button>' +
-        '</div>' +
-        '<div style="display:flex;gap:8px;align-items:center;flex:1;max-width:280px;">' +
-          '<input type="search" id="modal-search-input" value="' + escapeHtml(currentModalSearch) + '" placeholder="Search questions & evidence…" style="width:100%;background:var(--durios-bg-card);border:1px solid var(--durios-border-subtle);color:var(--durios-text-primary);padding:4px 8px;border-radius:4px;font-size:11px;" />' +
-        '</div>' +
-        '<div style="display:flex;gap:6px;align-items:center;">' +
-          '<button type="button" id="modal-btn-rerun" class="durios-icon-btn" style="height:26px;padding:0 8px;font-size:10.5px;background:var(--durios-accent);color:#0B130E;font-weight:700;border:none;border-radius:4px;cursor:pointer;">⚡ Re-Run Deep Socratic Audit (--deep)</button>' +
-          '<button type="button" id="modal-btn-export" class="durios-icon-btn" style="height:26px;padding:0 8px;font-size:10.5px;background:var(--durios-bg-surface);color:var(--durios-accent);border:1px solid var(--durios-border-strong);border-radius:4px;cursor:pointer;">📥 Export Deep Brainstorm Contract JSON</button>' +
-        '</div>' +
-      '</div>';
-
-    if (currentModalPillar === "all" || currentModalPillar === "opencore") {
-      html +=
-        '<div>' +
-          '<div style="font-family:var(--durios-font-mono);font-size:10px;font-weight:700;color:var(--durios-accent);text-transform:uppercase;margin-bottom:6px;">Pillar A: 5 Open-Core &amp; SaaS Unit Economics Turns</div>' +
-          '<div class="durios-socratic-turn-grid">' + renderTurnCards(filteredOpenCore, "Open-Core") + '</div>' +
-        '</div>';
-    }
-
-    if (currentModalPillar === "all" || currentModalPillar === "uiux") {
-      html +=
-        '<div>' +
-          '<div style="font-family:var(--durios-font-mono);font-size:10px;font-weight:700;color:var(--durios-accent);text-transform:uppercase;margin-bottom:6px;">Pillar B: 5 UI/UX Pro Max 2027 Architecture Turns</div>' +
-          '<div class="durios-socratic-turn-grid">' + renderTurnCards(filteredUiUx, "UI/UX") + '</div>' +
-        '</div>';
-    }
-
     bodyEl.innerHTML = html;
+    bindSocraticModalControls();
+  }
 
-    var fAll = document.getElementById("modal-filter-all");
-    if (fAll) fAll.addEventListener("click", function() { currentModalPillar = "all"; renderSocratic10TurnModalContent(); });
-    var fOpen = document.getElementById("modal-filter-opencore");
-    if (fOpen) fOpen.addEventListener("click", function() { currentModalPillar = "opencore"; renderSocratic10TurnModalContent(); });
-    var fUi = document.getElementById("modal-filter-uiux");
-    if (fUi) fUi.addEventListener("click", function() { currentModalPillar = "uiux"; renderSocratic10TurnModalContent(); });
-
+  function bindSocraticModalControls() {
+    var buttons = document.querySelectorAll("[data-socratic-pillar]");
+    Array.prototype.forEach.call(buttons, function (btn) {
+      btn.addEventListener("click", function () {
+        socraticModalState.pillar = btn.getAttribute("data-socratic-pillar") || "all";
+        renderSocratic10TurnModalContent();
+        var again = document.getElementById("modal-filter-" + socraticModalState.pillar);
+        if (again) again.focus();
+      });
+    });
     var sInp = document.getElementById("modal-search-input");
     if (sInp) {
-      sInp.addEventListener("input", function(e) {
-        currentModalSearch = e.target.value;
+      sInp.addEventListener("input", function (e) {
+        socraticModalState.search = e.target.value;
         renderSocratic10TurnModalContent();
         var reInp = document.getElementById("modal-search-input");
-        if (reInp) {
-          reInp.focus();
-          reInp.setSelectionRange(reInp.value.length, reInp.value.length);
-        }
+        if (reInp) { reInp.focus(); reInp.setSelectionRange(reInp.value.length, reInp.value.length); }
       });
     }
-
     var rBtn = document.getElementById("modal-btn-rerun");
-    if (rBtn) {
-      rBtn.addEventListener("click", function() {
-        rBtn.textContent = "Auditing (--deep)...";
-        fetch("/api/v1/open-core/blueprint-status?deep=true", { credentials: "same-origin" })
-          .then(function(r) { return r.json(); })
-          .then(function(body) {
-            if (body && body.data) renderSocratic10TurnModalContent(body.data);
-            showLiveToast("Socratic Deep Audit Complete", "All 10 Turns Passed (10/10) · Scorecard 100/100 · Gross Margin 94.67%.");
-          })
-          .catch(function() {
-            showLiveToast("Audit Refreshed", "Loaded local verification state.");
-          });
-      });
-    }
-
+    if (rBtn) rBtn.addEventListener("click", function () { loadSocraticDeepReport(true); });
     var eBtn = document.getElementById("modal-btn-export");
-    if (eBtn) {
-      eBtn.addEventListener("click", function() {
-        var payload = currentModalReport || {
-          milestone: "v0.9.0", verdict: "GO_OPEN_CORE_SAAS", uiUxVerdict: "GO_2027_UI_UX_STANDARDIZED",
-          allTurnsPassed: true, socraticTurns: openCoreTurns, uiUxTurns: uiuxTurns,
-          proMaxScorecard: { totalScore: scoreTotal, maxScore: 100, allDimensionsPassed: true }
-        };
-        var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-        var url = URL.createObjectURL(blob);
-        var a = document.createElement("a");
-        a.href = url;
-        a.download = "durios-deep-socratic-contract.json";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        showLiveToast("Contract Exported", "Downloaded durios-deep-socratic-contract.json");
+    if (eBtn) eBtn.addEventListener("click", exportSocraticDeepReport);
+  }
+
+  function loadSocraticDeepReport(announce) {
+    socraticModalState.status = "loading";
+    renderSocratic10TurnModalContent();
+    fetch("/api/v1/open-core/blueprint-status?deep=true", { credentials: "same-origin" })
+      .then(function (res) {
+        return res.json().catch(function () { return null; }).then(function (body) {
+          if (!res.ok || !body || body.success === false) {
+            throw new Error((body && body.error) || "HTTP " + res.status);
+          }
+          if (!isValidDeepReport(body.data)) throw new Error("Response did not include all 3 pillars with 5 turns each");
+          return body.data;
+        });
+      })
+      .then(function (report) {
+        socraticModalState.report = report;
+        socraticModalState.status = "ready";
+        socraticModalState.error = "";
+        renderSocratic10TurnModalContent();
+        if (announce) {
+          var s = summarizeSocraticReport(report);
+          showLiveToast("Socratic Deep Audit Complete", s.passed + " of " + s.total + " turns passed.");
+        }
+      })
+      .catch(function (err) {
+        socraticModalState.status = "error";
+        socraticModalState.error = err && err.message ? err.message : "Network error";
+        renderSocratic10TurnModalContent();
+        if (announce) showLiveToast("Audit Unavailable", socraticModalState.error);
       });
-    }
+  }
+
+  function exportSocraticDeepReport() {
+    var r = socraticModalState.report;
+    if (!r) return;
+    var blob = new Blob([JSON.stringify(r, null, 2)], { type: "application/json" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "durios-deep-socratic-contract.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showLiveToast("Contract Exported", "Downloaded durios-deep-socratic-contract.json");
   }
 
   function openSocratic10TurnModal() {
     var backdrop = createSocratic10TurnModal();
+    socraticModalState.returnFocus = document.activeElement;
     backdrop.classList.add("active");
-    renderSocratic10TurnModalContent(latestTelemetry ? latestTelemetry.deepSocratic : null);
-    fetch("/api/v1/open-core/blueprint-status?deep=true", { credentials: "same-origin" })
-      .then(function (r) { return r.json(); })
-      .then(function (body) {
-        var deep = body && body.data ? body.data : null;
-        if (deep) renderSocratic10TurnModalContent(deep);
-      })
-      .catch(function () {});
+    var deep = latestTelemetry ? latestTelemetry.deepSocratic : null;
+    if (isValidDeepReport(deep)) {
+      socraticModalState.report = deep;
+      socraticModalState.status = "ready";
+    }
+    loadSocraticDeepReport(false);
+    var closeBtn = document.getElementById("durios-btn-close-socratic-modal");
+    if (closeBtn) closeBtn.focus();
   }
 
   function closeSocratic10TurnModal() {
     var backdrop = document.getElementById("durios-socratic-modal-backdrop");
     if (backdrop) backdrop.classList.remove("active");
+    if (socraticModalState.returnFocus && typeof socraticModalState.returnFocus.focus === "function") {
+      try { socraticModalState.returnFocus.focus(); } catch (_) { /* ignore */ }
+    }
   }
 
   // Global Keyboard Navigation

@@ -831,6 +831,69 @@ button:active:not(:disabled),
   gap: 4px;
 }
 
+.durios-socratic-status {
+  font-family: var(--durios-font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: var(--durios-radius-sm);
+  white-space: nowrap;
+}
+
+.durios-socratic-status--pass { background: var(--durios-accent-soft); color: var(--durios-accent); }
+.durios-socratic-status--fail { background: var(--durios-danger-soft); color: var(--durios-danger); }
+.durios-socratic-status--pending { background: var(--durios-warning-soft); color: var(--durios-warning); }
+
+.durios-socratic-notice {
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 8px 12px;
+  border-radius: var(--durios-radius-md);
+  border: 1px solid var(--durios-border-subtle);
+  background: var(--durios-bg-surface);
+  color: var(--durios-text-secondary);
+}
+
+.durios-socratic-notice--error { border-color: var(--durios-danger); color: var(--durios-danger); }
+
+.durios-socratic-pillar-btn {
+  min-height: 32px;
+  padding: 4px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  background: var(--durios-bg-surface);
+  color: var(--durios-text-secondary);
+  border: 1px solid var(--durios-border-subtle);
+  border-radius: var(--durios-radius-sm);
+  touch-action: manipulation;
+}
+
+.durios-socratic-pillar-btn[aria-pressed="true"] {
+  background: var(--durios-accent-soft);
+  color: var(--durios-accent);
+  border-color: var(--durios-accent);
+  font-weight: 700;
+}
+
+.durios-socratic-action-btn {
+  min-height: 32px;
+  padding: 4px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  border-radius: var(--durios-radius-sm);
+  border: 1px solid var(--durios-border-strong);
+  background: var(--durios-bg-surface);
+  color: var(--durios-accent);
+  touch-action: manipulation;
+}
+
+.durios-socratic-action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (pointer: coarse), (max-width: 768px) {
+  .durios-socratic-pillar-btn,
+  .durios-socratic-action-btn { min-height: 44px; }
+}
+
 .durios-telemetry-ribbon {
   background: var(--durios-bg-surface);
   border-bottom: 1px solid var(--durios-border-subtle);

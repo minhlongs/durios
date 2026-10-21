@@ -2,7 +2,7 @@
 
 **Project:** `~/durios` — Verified Durian Trade Network  
 **Baseline Date:** 2026-10-17  
-**Last Updated:** 2026-10-21 — Revenue Layer 6 (Trade-Finance & Marine Insurance Verified Dossier API) added as `[IN_PROGRESS]`; see `plans/261021-1821-financial-verification-room/`.
+**Last Updated:** 2026-10-21 — Revenue Layer 6 (Trade-Finance & Marine Insurance Verified Dossier API) added as `[IN_PROGRESS]`; see `plans/261021-1821-financial-verification-room/`. Re-verification run: `bun run blueprint:verify-25-steps` reports 25/25 exit 0; record at `plans/261021-2015-durios-25-step-binh-phap-mapping/plan.md`.
 **Status Key:** `[COMPLETED]` (Hoàn thành trong mã nguồn/tài liệu) | `[IN_PROGRESS]` (Đang thực hiện tại thực địa) | `[BLOCKED_BY_GATE]` (Chờ điều kiện tiên quyết).
 
 ---
