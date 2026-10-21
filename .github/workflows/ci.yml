@@ -24,7 +24,9 @@ jobs:
 
       - name: Guard against tracked secrets, databases, and private keys
         run: |
-          FORBIDDEN_FILES=$(git ls-files | grep -E '(\.env($|\.)|\.db(-shm|-wal)?$|\.(pem|key|p12|pfx)$)' || true)
+          # .env.example is intentionally tracked (see .gitignore's `!.env.example`)
+          # so operators can see which DURIOS_* keys to set; exclude it by exact name.
+          FORBIDDEN_FILES=$(git ls-files | grep -E '(\.env($|\.)|\.db(-shm|-wal)?$|\.(pem|key|p12|pfx)$)' | grep -vxF '.env.example' || true)
           if [ -n "$FORBIDDEN_FILES" ]; then
             echo "Forbidden secret, database, or key files tracked in git:"
             echo "$FORBIDDEN_FILES"
