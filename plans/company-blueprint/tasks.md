@@ -2,6 +2,7 @@
 
 **Project:** `~/durios` — Verified Durian Trade Network  
 **Baseline Date:** 2026-10-17  
+**Last Updated:** 2026-10-21 — Revenue Layer 6 (Trade-Finance & Marine Insurance Verified Dossier API) added as `[IN_PROGRESS]`; see `plans/261021-1821-financial-verification-room/`.
 **Status Key:** `[COMPLETED]` (Hoàn thành trong mã nguồn/tài liệu) | `[IN_PROGRESS]` (Đang thực hiện tại thực địa) | `[BLOCKED_BY_GATE]` (Chờ điều kiện tiên quyết).
 
 ---
@@ -77,3 +78,20 @@
   *Artifacts:* `docs/pilot-readiness/DECISION-01-CAI-LAY-SITE-SELECTION.md`, Luật 91/2025/QH15.
 - [x] **Step 25: 9 Hard Kill Criteria & Incident Playbook** `[COMPLETED]`  
   *Artifacts:* `docs/product-direction/VALIDATION-AND-ECONOMICS-V2.md` (9 Hard Kill Criteria table).
+
+---
+
+## Revenue Layer 6 — Trade-Finance & Marine Insurance Verified Dossier API (Open-Core Boundary Expansion)
+
+- [ ] **Layer 6 Phase 1: Signed Single-Use Attestation Token** `[IN_PROGRESS]`  
+  *Purpose:* Let a bank or marine insurer verify one sealed dossier with no account, no RBAC change.  
+  *Evidence label:* **Verified** (code plan) / **Hypothesis** (that any bank pays).  
+  *Artifacts planned:* `src/saas/financial-attestation-token.ts`, `src/server/financial-verification-handler.ts`.
+- [ ] **Layer 6 Phase 2: `FINANCIAL_INSTITUTION` Tenant + RBAC Tuples** `[BLOCKED_BY_GATE]`  
+  *Blocked by:* Phase 1 paying pilot + legal clearance under Luật 91/2025/QH15 + `GATE-01` signed DPA.
+- [ ] **Layer 6 Commercial Module Registration** `[PENDING]`  
+  *Artifacts:* `MOD-ENT-03` in `src/saas/open-core-edition-manifest.ts` (edition `EXPORTER_ENTERPRISE`).
+
+> **Truthfulness guard:** 281 packhouses × 60M VND ≈ $657,643 ARR remains the **sole Verified
+> revenue baseline**. Layer 6 is the intended wedge above that ceiling, but until a pilot
+> signs, it stays a Hypothesis and must never be reported as revenue.
