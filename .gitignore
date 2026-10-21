@@ -16,3 +16,4 @@ coverage/
 .orchestrate/
 temp/
 .agents/
+.agentkit/.lock
