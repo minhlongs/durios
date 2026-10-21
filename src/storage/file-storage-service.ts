@@ -31,37 +31,18 @@ export class FileStorageService {
   public storeFile(fileBytes: Uint8Array, _originalFileName?: string, _docId?: string): StoredBlobResult {
     const sha256 = calculateSha256(fileBytes);
     if (!/^[a-f0-9]{64}$/.test(sha256)) throw new Error(`Invalid SHA-256 digest generated: '${sha256}'`);
-
     const relativeStoragePath = `storage/blobs/${sha256}.bin`;
     const targetPath = this.resolveSafePath(relativeStoragePath);
     const targetDir = dirname(targetPath);
     if (!existsSync(targetDir)) mkdirSync(targetDir, { recursive: true });
-
     if (existsSync(targetPath)) {
       const existingBytes = new Uint8Array(readFileSync(targetPath));
-      const isIdentical =
-        calculateSha256(existingBytes) === sha256 &&
-        existingBytes.byteLength === fileBytes.byteLength &&
-        Buffer.compare(Buffer.from(existingBytes), Buffer.from(fileBytes)) === 0;
-      if (!isIdentical) {
-        throw new Error(`Integrity violation: existing blob at '${relativeStoragePath}' does not match SHA-256 '${sha256}'`);
-      }
+      const isIdentical = calculateSha256(existingBytes) === sha256 && existingBytes.byteLength === fileBytes.byteLength && Buffer.compare(Buffer.from(existingBytes), Buffer.from(fileBytes)) === 0;
+      if (!isIdentical) throw new Error(`Integrity violation: existing blob at '${relativeStoragePath}' does not match SHA-256 '${sha256}'`);
       return { storagePath: relativeStoragePath, sha256, createdNew: false };
     }
-
     const tempPath = `${targetPath}.tmp-${process.pid}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-    try {
-      writeFileSync(tempPath, fileBytes);
-      if (calculateSha256(new Uint8Array(readFileSync(tempPath))) !== sha256) {
-        throw new Error(`Atomic write verification failed for '${relativeStoragePath}'`);
-      }
-      renameSync(tempPath, targetPath);
-    } catch (err) {
-      if (existsSync(tempPath)) {
-        try { unlinkSync(tempPath); } catch { /* ignore */ }
-      }
-      throw err;
-    }
+    try { writeFileSync(tempPath, fileBytes); if (calculateSha256(new Uint8Array(readFileSync(tempPath))) !== sha256) throw new Error(`Atomic write verification failed for '${relativeStoragePath}'`); renameSync(tempPath, targetPath); } catch (err) { if (existsSync(tempPath)) { try { unlinkSync(tempPath); } catch { /* ignore */ } } throw err; }
     return { storagePath: relativeStoragePath, sha256, createdNew: true };
   }
 

@@ -36,34 +36,13 @@ export class SqliteAuditLedger {
   ): AuditEvent {
     const timestamp = forcedTimestamp ?? new Date().toISOString();
     const id = `AUD-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`;
-
     return this.client.transaction(() => {
-      const lastRow = this.client.db
-        .query<{ event_hash: string }, []>("SELECT event_hash FROM audit_events ORDER BY sequence_id DESC LIMIT 1")
-        .get();
+      const lastRow = this.client.db.query<{ event_hash: string }, []>("SELECT event_hash FROM audit_events ORDER BY sequence_id DESC LIMIT 1").get();
       const previousHash = lastRow?.event_hash ?? GENESIS_HASH;
-
-      const hashInput = JSON.stringify({
-        id, tenantId: actor.tenantId, dossierId, actorId: actor.id, actorRole: actor.role,
-        eventType, entityType, entityId, payloadBefore, payloadAfter, timestamp, previousHash,
-      });
+      const hashInput = JSON.stringify({ id, tenantId: actor.tenantId, dossierId, actorId: actor.id, actorRole: actor.role, eventType, entityType, entityId, payloadBefore, payloadAfter, timestamp, previousHash });
       const eventHash = calculateSha256(hashInput);
-
-      this.client.db.run(
-        `INSERT INTO audit_events (id, tenant_id, dossier_id, actor_id, actor_name, actor_role, event_type, entity_type, entity_id, payload_before, payload_after, previous_hash, event_hash, created_at)
-         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-        [
-          id, actor.tenantId, dossierId, actor.id, actor.name, actor.role, eventType, entityType, entityId,
-          payloadBefore ? JSON.stringify(payloadBefore) : null,
-          payloadAfter ? JSON.stringify(payloadAfter) : null,
-          previousHash, eventHash, timestamp,
-        ]
-      );
-
-      return Object.freeze({
-        id, tenantId: actor.tenantId, dossierId: dossierId ?? "", actorId: actor.id, actorRole: actor.role,
-        eventType, entityType, entityId, payloadBefore, payloadAfter, timestamp, eventHash, previousHash,
-      });
+      this.client.db.run(`INSERT INTO audit_events (id, tenant_id, dossier_id, actor_id, actor_name, actor_role, event_type, entity_type, entity_id, payload_before, payload_after, previous_hash, event_hash, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [id, actor.tenantId, dossierId, actor.id, actor.name, actor.role, eventType, entityType, entityId, payloadBefore ? JSON.stringify(payloadBefore) : null, payloadAfter ? JSON.stringify(payloadAfter) : null, previousHash, eventHash, timestamp]);
+      return Object.freeze({ id, tenantId: actor.tenantId, dossierId: dossierId ?? "", actorId: actor.id, actorRole: actor.role, eventType, entityType, entityId, payloadBefore, payloadAfter, timestamp, eventHash, previousHash });
     });
   }
 
@@ -84,9 +63,7 @@ export class SqliteAuditLedger {
   }
 
   public verifyIntegrity(): boolean {
-    const rows = this.client.db
-      .query<AuditRow, []>("SELECT * FROM audit_events ORDER BY sequence_id ASC")
-      .all();
+    const rows = this.client.db.query<AuditRow, []>("SELECT * FROM audit_events ORDER BY sequence_id ASC").all();
 
     let expectedPrev = GENESIS_HASH;
     for (const r of rows) {

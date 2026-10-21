@@ -32,61 +32,18 @@ export interface SignedWorkspacePortabilityBundle {
 }
 
 export function exportWorkspacePortabilityBundle(
-  tenantId: string,
-  tenantName: string,
-  tenantType: string,
-  dossiers: readonly ContainerDossier[],
-  auditEvents: readonly AuditEvent[],
-  portabilitySecret?: string,
-  nowIso = new Date().toISOString()
+  tenantId: string, tenantName: string, tenantType: string, dossiers: readonly ContainerDossier[], auditEvents: readonly AuditEvent[], portabilitySecret?: string, nowIso = new Date().toISOString()
 ): SignedWorkspacePortabilityBundle {
-  const profile = compileVerifiedOrganizationProfile(
-    tenantId,
-    tenantName,
-    tenantType,
-    dossiers,
-    nowIso
-  );
-
-  const dossiersSummary = dossiers.map((d) => ({
-    id: d.id,
-    dossierCode: d.dossierCode,
-    containerNumber: d.containerNumber,
-    lifecycleState: d.lifecycleState,
-    isImmutable: d.isImmutable,
-    createdAt: d.createdAt,
-  }));
-
+  const profile = compileVerifiedOrganizationProfile(tenantId, tenantName, tenantType, dossiers, nowIso);
+  const dossiersSummary = dossiers.map((d) => ({ id: d.id, dossierCode: d.dossierCode, containerNumber: d.containerNumber, lifecycleState: d.lifecycleState, isImmutable: d.isImmutable, createdAt: d.createdAt }));
   const eventsConcat = auditEvents.map((e) => e.eventHash).join("|");
   const auditEventsDigestSha256 = calculateSha256(eventsConcat);
-
-  const payload: WorkspacePortabilityPayload = {
-    bundleVersion: "1.0.0",
-    exportedAt: nowIso,
-    tenantId,
-    tenantName,
-    tenantType,
-    profile,
-    dossiersSummary,
-    auditEventsDigestSha256,
-    totalDossiersCount: dossiers.length,
-  };
-
+  const payload: WorkspacePortabilityPayload = { bundleVersion: "1.0.0", exportedAt: nowIso, tenantId, tenantName, tenantType, profile, dossiersSummary, auditEventsDigestSha256, totalDossiersCount: dossiers.length };
   const payloadJson = JSON.stringify(payload);
   const payloadSha256 = calculateSha256(payloadJson);
-
   let hmacSignatureSha256: string | undefined;
-  if (portabilitySecret && portabilitySecret.trim().length >= 16) {
-    hmacSignatureSha256 = createHmac("sha256", portabilitySecret.trim())
-      .update(payloadSha256)
-      .digest("hex");
-  }
-
-  return {
-    payload,
-    payloadSha256,
-    hmacSignatureSha256,
-  };
+  if (portabilitySecret && portabilitySecret.trim().length >= 16) hmacSignatureSha256 = createHmac("sha256", portabilitySecret.trim()).update(payloadSha256).digest("hex");
+  return { payload, payloadSha256, hmacSignatureSha256 };
 }
 
 export function verifyWorkspacePortabilityBundle(

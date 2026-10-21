@@ -1,55 +1,14 @@
 import { generateKeyPairSync, sign, verify } from "node:crypto";
 
 export type DuriosProductEdition = "COMMUNITY_OPEN_CORE" | "PACKHOUSE_PRO_SAAS" | "EXPORTER_ENTERPRISE";
-
-export interface SaasFeatureEntitlements {
-  readonly localDeterministicCompliance: true; readonly localSqliteAndManifestVerifier: true;
-  readonly localDataAccessGuaranteed: true; readonly cloudVisionOcr: boolean;
-  readonly managedZaloZnsRelay: boolean; readonly cloudE2eeBackupVault: boolean;
-  readonly gaccLiveRegistryWatch: boolean; readonly crossBorderBuyerPortal: boolean;
-  readonly multiSiteEnterpriseSync: boolean;
-}
-
-export interface SaasSubscriptionStatus {
-  readonly edition: DuriosProductEdition; readonly licenseValid: boolean;
-  readonly licensedTenantId?: string | undefined; readonly expiresAt?: string | undefined;
-  readonly degradedToCommunityReason?: string | undefined;
-  readonly entitlements: SaasFeatureEntitlements;
-  readonly openSourceLicense: "AGPL-3.0-only (Core) + MIT (Verifier SDK)";
-  readonly upgradePortalUrl?: string | undefined;
-}
-
-export interface SaasLicensePayload {
-  readonly tenantId: string; readonly edition: "PACKHOUSE_PRO_SAAS" | "EXPORTER_ENTERPRISE"; readonly expiresAt: string;
-}
-
+export interface SaasFeatureEntitlements { readonly localDeterministicCompliance: true; readonly localSqliteAndManifestVerifier: true; readonly localDataAccessGuaranteed: true; readonly cloudVisionOcr: boolean; readonly managedZaloZnsRelay: boolean; readonly cloudE2eeBackupVault: boolean; readonly gaccLiveRegistryWatch: boolean; readonly crossBorderBuyerPortal: boolean; readonly multiSiteEnterpriseSync: boolean; }
+export interface SaasSubscriptionStatus { readonly edition: DuriosProductEdition; readonly licenseValid: boolean; readonly licensedTenantId?: string; readonly expiresAt?: string; readonly degradedToCommunityReason?: string; readonly entitlements: SaasFeatureEntitlements; readonly openSourceLicense: "AGPL-3.0-only (Core) + MIT (Verifier SDK)"; readonly upgradePortalUrl?: string; }
+export interface SaasLicensePayload { readonly tenantId: string; readonly edition: "PACKHOUSE_PRO_SAAS" | "EXPORTER_ENTERPRISE"; readonly expiresAt: string; }
 const OPEN_SOURCE_LICENSE_LABEL = "AGPL-3.0-only (Core) + MIT (Verifier SDK)" as const;
+function buildEntitlements(edition: DuriosProductEdition): SaasFeatureEntitlements { const isProOrAbove = edition === "PACKHOUSE_PRO_SAAS" || edition === "EXPORTER_ENTERPRISE"; return { localDeterministicCompliance: true, localSqliteAndManifestVerifier: true, localDataAccessGuaranteed: true, cloudVisionOcr: isProOrAbove, managedZaloZnsRelay: isProOrAbove, cloudE2eeBackupVault: isProOrAbove, gaccLiveRegistryWatch: isProOrAbove, crossBorderBuyerPortal: isProOrAbove, multiSiteEnterpriseSync: edition === "EXPORTER_ENTERPRISE" }; }
+function downgradeToCommunity(reason?: string, upgradePortalUrl?: string, extra?: { licensedTenantId?: string; expiresAt?: string }): SaasSubscriptionStatus { return { edition: "COMMUNITY_OPEN_CORE", licenseValid: false, ...(reason ? { degradedToCommunityReason: reason } : {}), ...(extra?.licensedTenantId ? { licensedTenantId: extra.licensedTenantId } : {}), ...(extra?.expiresAt ? { expiresAt: extra.expiresAt } : {}), entitlements: buildEntitlements("COMMUNITY_OPEN_CORE"), openSourceLicense: OPEN_SOURCE_LICENSE_LABEL, ...(upgradePortalUrl ? { upgradePortalUrl } : {}) }; }
 
-function buildEntitlements(edition: DuriosProductEdition): SaasFeatureEntitlements {
-  const isProOrAbove = edition === "PACKHOUSE_PRO_SAAS" || edition === "EXPORTER_ENTERPRISE";
-  return {
-    localDeterministicCompliance: true, localSqliteAndManifestVerifier: true, localDataAccessGuaranteed: true,
-    cloudVisionOcr: isProOrAbove, managedZaloZnsRelay: isProOrAbove, cloudE2eeBackupVault: isProOrAbove,
-    gaccLiveRegistryWatch: isProOrAbove, crossBorderBuyerPortal: isProOrAbove, multiSiteEnterpriseSync: edition === "EXPORTER_ENTERPRISE",
-  };
-}
-
-function downgradeToCommunity(reason?: string, upgradePortalUrl?: string, extra?: { licensedTenantId?: string; expiresAt?: string }): SaasSubscriptionStatus {
-  return {
-    edition: "COMMUNITY_OPEN_CORE", licenseValid: false,
-    ...(reason ? { degradedToCommunityReason: reason } : {}),
-    ...(extra?.licensedTenantId ? { licensedTenantId: extra.licensedTenantId } : {}),
-    ...(extra?.expiresAt ? { expiresAt: extra.expiresAt } : {}),
-    entitlements: buildEntitlements("COMMUNITY_OPEN_CORE"),
-    openSourceLicense: OPEN_SOURCE_LICENSE_LABEL,
-    ...(upgradePortalUrl ? { upgradePortalUrl } : {}),
-  };
-}
-
-export function generateEphemeralSaasLicenseKeyPair(): {
-  readonly publicKeyPem: string;
-  readonly privateKeyPem: string;
-} {
+export function generateEphemeralSaasLicenseKeyPair(): { readonly publicKeyPem: string; readonly privateKeyPem: string } {
   const { publicKey, privateKey } = generateKeyPairSync("ed25519");
   return {
     publicKeyPem: publicKey.export({ type: "spki", format: "pem" }).toString(),
@@ -57,10 +16,7 @@ export function generateEphemeralSaasLicenseKeyPair(): {
   };
 }
 
-export function createSignedSaasLicenseKey(
-  payload: SaasLicensePayload,
-  signingPrivateKeyPem: string
-): string {
+export function createSignedSaasLicenseKey(payload: SaasLicensePayload, signingPrivateKeyPem: string): string {
   if (!signingPrivateKeyPem || !signingPrivateKeyPem.includes("PRIVATE KEY")) {
     throw new Error("Ed25519 PKCS#8 signingPrivateKeyPem is required to sign a SaaS license key.");
   }
@@ -91,15 +47,11 @@ export function resolveSaasSubscriptionStatus(
   }
 
   let signatureOk = false;
-  try {
-    signatureOk = verify(null, Buffer.from(parts[1], "utf-8"), publicKeyPem, Buffer.from(parts[2], "base64url"));
-  } catch { signatureOk = false; }
+  try { signatureOk = verify(null, Buffer.from(parts[1], "utf-8"), publicKeyPem, Buffer.from(parts[2], "base64url")); } catch { signatureOk = false; }
   if (!signatureOk) return downgradeToCommunity("INVALID_LICENSE_SIGNATURE_GRACEFUL_DOWNGRADE", upgradePortalUrl);
 
   const decodedParts = Buffer.from(parts[1], "base64url").toString("utf-8").split("|");
-  if (decodedParts.length !== 3) {
-    return downgradeToCommunity("CORRUPTED_LICENSE_PAYLOAD_GRACEFUL_DOWNGRADE", upgradePortalUrl);
-  }
+  if (decodedParts.length !== 3) return downgradeToCommunity("CORRUPTED_LICENSE_PAYLOAD_GRACEFUL_DOWNGRADE", upgradePortalUrl);
   const [editionRaw, tenantId, expiresAt] = decodedParts;
   const [parsedExpiry, parsedNow] = [expiresAt ? Date.parse(expiresAt) : Number.NaN, Date.parse(nowIso)];
 

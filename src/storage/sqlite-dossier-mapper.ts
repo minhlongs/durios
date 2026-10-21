@@ -29,56 +29,18 @@ export interface FieldRow {
   readonly verified_by_actor_id: string | null; readonly verified_at: string | null;
 }
 
-function formatLabel(key: string): string {
-  return key.split("_").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-}
+const formatLabel = (key: string): string => key.split("_").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
 
-export function mapRowsToDossier(
-  dossierRow: DossierRow,
-  docRows: readonly DocumentRow[],
-  fieldRows: readonly FieldRow[]
-): ContainerDossier {
+export function mapRowsToDossier(dossierRow: DossierRow, docRows: readonly DocumentRow[], fieldRows: readonly FieldRow[]): ContainerDossier {
   const fieldsByDoc = new Map<string, ExtractedField[]>();
   for (const f of fieldRows) {
     const list = fieldsByDoc.get(f.document_id) ?? [];
-    list.push({
-      id: f.id, documentId: f.document_id, fieldKey: f.field_key, label: formatLabel(f.field_key),
-      rawValue: f.raw_value, normalizedValue: f.confirmed_value ?? f.raw_value,
-      confidenceScore: f.confidence,
-      boundingBox: f.bounding_box ? JSON.parse(f.bounding_box) : { pageNumber: 1, x: 0, y: 0, width: 0, height: 0 },
-      verificationStatus: f.verification_status as FieldVerificationStatus,
-      confirmedValue: f.confirmed_value ?? undefined,
-      verifiedBy: f.verified_by_actor_id ?? undefined,
-      verifiedAt: f.verified_at ?? undefined,
-    });
+    list.push({ id: f.id, documentId: f.document_id, fieldKey: f.field_key, label: formatLabel(f.field_key), rawValue: f.raw_value, normalizedValue: f.confirmed_value ?? f.raw_value, confidenceScore: f.confidence, boundingBox: f.bounding_box ? JSON.parse(f.bounding_box) : { pageNumber: 1, x: 0, y: 0, width: 0, height: 0 }, verificationStatus: f.verification_status as FieldVerificationStatus, confirmedValue: f.confirmed_value ?? undefined, verifiedBy: f.verified_by_actor_id ?? undefined, verifiedAt: f.verified_at ?? undefined });
     fieldsByDoc.set(f.document_id, list);
   }
-
-  const documents: IngestedDocument[] = docRows.map((d) => ({
-    id: d.id, dossierId: d.dossier_id, tenantId: d.tenant_id,
-    documentType: d.document_type as DocumentType, fileName: d.file_name,
-    fileSize: d.file_size_bytes, mimeType: d.mime_type, sha256Hash: d.sha256_hash,
-    storagePath: d.storage_path, uploadedAt: d.uploaded_at,
-    isSuperseded: Boolean(d.is_superseded), extractedFields: fieldsByDoc.get(d.id) ?? [],
-  }));
-
-  const validationResult: ValidationRunResult | undefined = dossierRow.latest_validation_result
-    ? JSON.parse(dossierRow.latest_validation_result)
-    : undefined;
-
-  return {
-    id: dossierRow.id, tenantId: dossierRow.tenant_id, dossierCode: dossierRow.dossier_code,
-    containerNumber: dossierRow.container_number, sealNumber: dossierRow.seal_number,
-    targetMarket: dossierRow.target_market as "CN", borderGate: dossierRow.border_gate,
-    targetTemperatureC: dossierRow.target_temperature_c,
-    declaredNetWeightKg: dossierRow.declared_net_weight_kg ?? undefined,
-    declaredBoxCount: dossierRow.declared_box_count ?? undefined,
-    lifecycleState: dossierRow.lifecycle_state as DossierLifecycleState,
-    isImmutable: Boolean(dossierRow.is_immutable),
-    createdAt: dossierRow.created_at, updatedAt: dossierRow.updated_at,
-    exportSealedAt: dossierRow.export_sealed_at ?? undefined,
-    latestValidationResult: validationResult, documents,
-  };
+  const documents: IngestedDocument[] = docRows.map((d) => ({ id: d.id, dossierId: d.dossier_id, tenantId: d.tenant_id, documentType: d.document_type as DocumentType, fileName: d.file_name, fileSize: d.file_size_bytes, mimeType: d.mime_type, sha256Hash: d.sha256_hash, storagePath: d.storage_path, uploadedAt: d.uploaded_at, isSuperseded: Boolean(d.is_superseded), extractedFields: fieldsByDoc.get(d.id) ?? [] }));
+  const validationResult: ValidationRunResult | undefined = dossierRow.latest_validation_result ? JSON.parse(dossierRow.latest_validation_result) : undefined;
+  return { id: dossierRow.id, tenantId: dossierRow.tenant_id, dossierCode: dossierRow.dossier_code, containerNumber: dossierRow.container_number, sealNumber: dossierRow.seal_number, targetMarket: dossierRow.target_market as "CN", borderGate: dossierRow.border_gate, targetTemperatureC: dossierRow.target_temperature_c, declaredNetWeightKg: dossierRow.declared_net_weight_kg ?? undefined, declaredBoxCount: dossierRow.declared_box_count ?? undefined, lifecycleState: dossierRow.lifecycle_state as DossierLifecycleState, isImmutable: Boolean(dossierRow.is_immutable), createdAt: dossierRow.created_at, updatedAt: dossierRow.updated_at, exportSealedAt: dossierRow.export_sealed_at ?? undefined, latestValidationResult: validationResult, documents };
 }
 
 export function upsertDossierRows(db: Database, dossier: ContainerDossier): void {

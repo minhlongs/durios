@@ -48,34 +48,17 @@ export class LocalHeuristicTextExtractorAdapter implements DocumentExtractorAdap
     const addField = (key: string, label: string, raw: string, confidence: number): void => {
       const cleaned = raw.trim();
       const numericCandidate = Number(cleaned.replace(/,/g, ""));
-      const normalizedValue =
-        cleaned !== "" && !Number.isNaN(numericCandidate) && /^[0-9.,]+$/.test(cleaned)
-          ? numericCandidate
-          : cleaned;
+      const normalizedValue = cleaned !== "" && !Number.isNaN(numericCandidate) && /^[0-9.,]+$/.test(cleaned) ? numericCandidate : cleaned;
       fields.push({
-        id: `${context.documentId}-ocr-${fields.length + 1}`,
-        documentId: context.documentId,
-        fieldKey: key,
-        label,
-        rawValue: cleaned,
-        normalizedValue,
-        confidenceScore: confidence,
-        boundingBox: {
-          pageNumber: 1,
-          x: 80,
-          y: (fields.length + 1) * 45,
-          width: 280,
-          height: 24,
-        },
-        verificationStatus: "DRAFT",
+        id: `${context.documentId}-ocr-${fields.length + 1}`, documentId: context.documentId, fieldKey: key, label,
+        rawValue: cleaned, normalizedValue, confidenceScore: confidence,
+        boundingBox: { pageNumber: 1, x: 80, y: (fields.length + 1) * 45, width: 280, height: 24 }, verificationStatus: "DRAFT",
       });
     };
 
     const matchAndAdd = (regex: RegExp, key: string, label: string, confidence: number): void => {
       const match = textContent.match(regex);
-      if (match?.[1]) {
-        addField(key, label, match[1], confidence);
-      }
+      if (match?.[1]) addField(key, label, match[1], confidence);
     };
 
     if (context.documentType === "PACKING_LIST") {

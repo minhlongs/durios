@@ -3,9 +3,7 @@ import type { AuthenticatedActor, DocumentType } from "../domain/types.js";
 import { assertOwnerOperationalRole, assertValidActor, AccessControlError, isReadOnlyRole } from "../auth/rbac-policy.js";
 import { redactDossierForActor } from "../sharing/dossier-redactor.js";
 import { assertTenantRateLimit } from "./tenant-rate-limiter.js";
-import {
-  errorResponse, jsonResponse, mapDomainErrorToResponse, type VerifyFieldRequestBody,
-} from "./server-types.js";
+import { errorResponse, jsonResponse, mapDomainErrorToResponse, type VerifyFieldRequestBody } from "./server-types.js";
 
 export async function handleUploadDocument(
   workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, dossierId: string, req: Request
@@ -16,23 +14,17 @@ export async function handleUploadDocument(
     if (!rawDossier) return errorResponse(`Dossier '${dossierId}' not found`, 404);
     assertOwnerOperationalRole(actor, rawDossier.tenantId, "uploadDocument");
     assertTenantRateLimit(workspace.sqliteClient, actor.tenantId, "uploadDocument");
-  } catch (err) {
-    return mapDomainErrorToResponse(err, "Unauthorized to upload document");
-  }
-
+  } catch (err) { return mapDomainErrorToResponse(err, "Unauthorized to upload document"); }
   const contentType = req.headers.get("content-type") ?? "";
   let fileBuffer: Uint8Array;
   let fileName = "uploaded_document.pdf";
   let documentType: DocumentType = "PACKING_LIST";
   let fixtureFields: Record<string, { raw: string; confirmed?: string }> | undefined;
-
   try {
     if (contentType.includes("multipart/form-data")) {
       const formData = await req.formData();
       const fileEntry = formData.get("file");
-      if (!fileEntry || typeof fileEntry === "string") {
-        return errorResponse("Missing file in form-data ('file' field required)", 400);
-      }
+      if (!fileEntry || typeof fileEntry === "string") return errorResponse("Missing file in form-data ('file' field required)", 400);
       const fileObj = fileEntry as File;
       fileName = fileObj.name || fileName;
       fileBuffer = new Uint8Array(await fileObj.arrayBuffer());
@@ -44,32 +36,12 @@ export async function handleUploadDocument(
       const body = (await req.json()) as Record<string, unknown>;
       fileName = String(body["fileName"] ?? "document.pdf");
       documentType = (body["documentType"] ?? "PACKING_LIST") as DocumentType;
-      fileBuffer = body["base64Content"] && typeof body["base64Content"] === "string"
-        ? Uint8Array.from(Buffer.from(body["base64Content"], "base64"))
-        : new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x35, 0x0a]);
-      if (body["fixtureFields"]) {
-        fixtureFields = body["fixtureFields"] as Record<string, { raw: string; confidence?: number }>;
-      }
+      fileBuffer = body["base64Content"] && typeof body["base64Content"] === "string" ? Uint8Array.from(Buffer.from(body["base64Content"], "base64")) : new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x35, 0x0a]);
+      if (body["fixtureFields"]) fixtureFields = body["fixtureFields"] as Record<string, { raw: string; confidence?: number }>;
     }
-
-    const { dossier, document } = workspace.uploadDocument(
-      dossierId, fileBuffer, fileName, documentType, actor, fixtureFields
-    );
-
-    return jsonResponse(
-      {
-        success: true,
-        data: {
-          documentId: document.id, fileName: document.fileName, documentType: document.documentType,
-          sha256Hash: document.sha256Hash, fileSize: document.fileSize,
-          extractedFieldsCount: document.extractedFields.length, dossierLifecycleState: dossier.lifecycleState,
-        },
-      },
-      201
-    );
-  } catch (err) {
-    return mapDomainErrorToResponse(err, "Document upload failed");
-  }
+    let { dossier, document } = workspace.uploadDocument(dossierId, fileBuffer, fileName, documentType, actor, fixtureFields);
+    return jsonResponse({ success: true, data: { documentId: document.id, fileName: document.fileName, documentType: document.documentType, sha256Hash: document.sha256Hash, fileSize: document.fileSize, extractedFieldsCount: document.extractedFields.length, dossierLifecycleState: dossier.lifecycleState } }, 201);
+  } catch (err) { return mapDomainErrorToResponse(err, "Document upload failed"); }
 }
 
 export async function handleVerifyField(
@@ -115,8 +87,7 @@ export function handleGetAuditTrail(
     if (!dossier) return errorResponse(`Dossier '${dossierId}' not found`, 404);
     workspace.shareManager.assertPurposeAllowed(dossier, actor, ["AUDIT", "CUSTOMS_INSPECTION"], "audit");
     const events = workspace.auditLedger.getEventsForDossier(dossier.id, dossier.tenantId);
-    const isChainValid = workspace.auditLedger.verifyIntegrity();
-    return jsonResponse({ success: true, data: { count: events.length, isChainValid, events } });
+    return jsonResponse({ success: true, data: { count: events.length, isChainValid: workspace.auditLedger.verifyIntegrity(), events } });
   } catch (err) {
     return mapDomainErrorToResponse(err, "Failed to retrieve audit trail");
   }

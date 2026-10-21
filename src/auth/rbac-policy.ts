@@ -1,6 +1,4 @@
-import type {
-  AuthenticatedActor, ProductPersona, TenantType, UserRole,
-} from "../domain/types.js";
+import type { AuthenticatedActor, ProductPersona, TenantType, UserRole } from "../domain/types.js";
 
 export type AccessErrorCode =
   | "INVALID_IDENTITY_TUPLE"
@@ -11,13 +9,7 @@ export type AccessErrorCode =
 
 export class AccessControlError extends Error {
   public readonly status = 403 as const;
-  constructor(
-    message: string,
-    public readonly code: AccessErrorCode = "INSUFFICIENT_ROLE"
-  ) {
-    super(message);
-    this.name = "AccessControlError";
-  }
+  constructor(message: string, public readonly code: AccessErrorCode = "INSUFFICIENT_ROLE") { super(message); this.name = "AccessControlError"; }
 }
 
 interface AllowedTupleRule {
@@ -38,19 +30,11 @@ export function isValidIdentityTuple(persona: unknown, tenantType: unknown, role
   if (typeof persona !== "string" || typeof tenantType !== "string" || typeof role !== "string") return false;
   const rule = ALLOWED_IDENTITY_TUPLES.find((r) => r.persona === persona);
   if (!rule) return false;
-  return (
-    rule.allowedTenantTypes.includes(tenantType as TenantType) &&
-    rule.allowedRoles.includes(role as UserRole)
-  );
+  return rule.allowedTenantTypes.includes(tenantType as TenantType) && rule.allowedRoles.includes(role as UserRole);
 }
 
 export function assertValidIdentityTuple(persona: unknown, tenantType: unknown, role: unknown): void {
-  if (!isValidIdentityTuple(persona, tenantType, role)) {
-    throw new AccessControlError(
-      `Invalid identity tuple (${String(persona)}, ${String(tenantType)}, ${String(role)}): combination is prohibited and no fallback role is permitted.`,
-      "INVALID_IDENTITY_TUPLE"
-    );
-  }
+  if (!isValidIdentityTuple(persona, tenantType, role)) throw new AccessControlError(`Invalid identity tuple (${String(persona)}, ${String(tenantType)}, ${String(role)}): combination is prohibited and no fallback role is permitted.`, "INVALID_IDENTITY_TUPLE");
 }
 
 export function assertValidActor(actor: AuthenticatedActor | undefined | null): void {
@@ -82,12 +66,7 @@ export function assertOwnerOperationalRole(actor: AuthenticatedActor, dossierTen
   if (isReadOnlyRole(actor.role)) {
     throw new AccessControlError(`Role '${actor.role}' is read-only and prohibited from '${operationName}'.`, "INSUFFICIENT_ROLE");
   }
-  if (actor.tenantId !== dossierTenantId) {
-    throw new AccessControlError(
-      `Cross-tenant '${operationName}' is prohibited: actor belongs to '${actor.tenantId}', dossier belongs to '${dossierTenantId}'.`,
-      "CROSS_TENANT_FORBIDDEN"
-    );
-  }
+  if (actor.tenantId !== dossierTenantId) throw new AccessControlError(`Cross-tenant '${operationName}' is prohibited: actor belongs to '${actor.tenantId}', dossier belongs to '${dossierTenantId}'.`, "CROSS_TENANT_FORBIDDEN");
   if (actor.role !== "CLERK" && actor.role !== "MANAGER" && actor.role !== "ADMIN") {
     throw new AccessControlError(`Role '${actor.role}' is not permitted to execute '${operationName}'.`, "INSUFFICIENT_ROLE");
   }
@@ -95,16 +74,5 @@ export function assertOwnerOperationalRole(actor: AuthenticatedActor, dossierTen
 
 export function assertOwnerManagementRole(actor: AuthenticatedActor, dossierTenantId: string, operationName: string): void {
   assertValidActor(actor);
-  if (actor.tenantId !== dossierTenantId) {
-    throw new AccessControlError(
-      `Cross-tenant '${operationName}' is prohibited: actor belongs to '${actor.tenantId}', dossier belongs to '${dossierTenantId}'.`,
-      "CROSS_TENANT_FORBIDDEN"
-    );
-  }
-  if (actor.role !== "MANAGER" && actor.role !== "ADMIN") {
-    throw new AccessControlError(
-      `Role '${actor.role}' is unauthorized for '${operationName}'; MANAGER or ADMIN of owning tenant required.`,
-      "INSUFFICIENT_ROLE"
-    );
-  }
-}
+  if (actor.tenantId !== dossierTenantId) throw new AccessControlError(`Cross-tenant '${operationName}' is prohibited: actor belongs to '${actor.tenantId}', dossier belongs to '${dossierTenantId}'.`, "CROSS_TENANT_FORBIDDEN");
+  if (actor.role !== "MANAGER" && actor.role !== "ADMIN") throw new AccessControlError(`Role '${actor.role}' is unauthorized for '${operationName}'; MANAGER or ADMIN of owning tenant required.`, "INSUFFICIENT_ROLE");}

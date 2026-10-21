@@ -26,54 +26,24 @@ export function reconcileLegacyBlobsInSqlite(
   resolveSafePath: (relPath: string) => string,
   storeFile: (bytes: Uint8Array, fileName?: string, docId?: string) => StoredBlobResult
 ): LegacyBlobReconciliationReport {
-  const hasDocs = db
-    .query<{ name: string }, []>("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'documents'")
-    .get();
+  const hasDocs = db.query<{ name: string }, []>("SELECT name FROM sqlite_master WHERE type = 'table' AND name = 'documents'").get();
   if (!hasDocs) return { migrated: [], unmigrated: [] };
-
-  const rows = db
-    .query<
-      { id: string; dossier_id: string; file_name: string; sha256_hash: string; storage_path: string },
-      []
-    >("SELECT id, dossier_id, file_name, sha256_hash, storage_path FROM documents ORDER BY uploaded_at ASC, id ASC")
-    .all();
-
+  const rows = db.query<{ id: string; dossier_id: string; file_name: string; sha256_hash: string; storage_path: string }, []>("SELECT id, dossier_id, file_name, sha256_hash, storage_path FROM documents ORDER BY uploaded_at ASC, id ASC").all();
   const migrated: LegacyBlobMigrationItem[] = [];
   const unmigrated: LegacyBlobMigrationItem[] = [];
-
   for (const row of rows) {
     const canonicalRelPath = `storage/blobs/${row.sha256_hash}.bin`;
     if (row.storage_path === canonicalRelPath) {
       const canonicalFull = resolveSafePath(canonicalRelPath);
-      if (existsSync(canonicalFull) && calculateSha256(new Uint8Array(readFileSync(canonicalFull))) === row.sha256_hash) {
-        continue;
-      }
+      if (existsSync(canonicalFull) && calculateSha256(new Uint8Array(readFileSync(canonicalFull))) === row.sha256_hash) continue;
     }
-
     const candidate = findDeterministicLegacyFile(row.id, row.storage_path, storageDir, resolveSafePath);
-    if (candidate.status !== "FOUND") {
-      unmigrated.push({
-        documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path,
-        sha256Hash: row.sha256_hash, reason: candidate.reason,
-      });
-      continue;
-    }
-
+    if (candidate.status !== "FOUND") { unmigrated.push({ documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path, sha256Hash: row.sha256_hash, reason: candidate.reason }); continue; }
     const fileBytes = new Uint8Array(readFileSync(candidate.fullPath));
-    if (calculateSha256(fileBytes) !== row.sha256_hash) {
-      unmigrated.push({
-        documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path,
-        sha256Hash: row.sha256_hash, reason: "SHA256_MISMATCH",
-      });
-      continue;
-    }
-
+    if (calculateSha256(fileBytes) !== row.sha256_hash) { unmigrated.push({ documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path, sha256Hash: row.sha256_hash, reason: "SHA256_MISMATCH" }); continue; }
     const stored = storeFile(fileBytes, row.file_name, row.id);
     db.run("UPDATE documents SET storage_path = ? WHERE id = ?", [stored.storagePath, row.id]);
-    migrated.push({
-      documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path,
-      newStoragePath: stored.storagePath, sha256Hash: row.sha256_hash,
-    });
+    migrated.push({ documentId: row.id, dossierId: row.dossier_id, previousStoragePath: row.storage_path, newStoragePath: stored.storagePath, sha256Hash: row.sha256_hash });
   }
   return { migrated, unmigrated };
 }

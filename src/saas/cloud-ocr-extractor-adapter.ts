@@ -56,62 +56,6 @@ export class CloudVisionOcrExtractorAdapter implements DocumentExtractorAdapter 
     );
   }
 
-  public supports(_docType: DocumentType, mimeType: string): boolean {
-    return (
-      mimeType === "application/pdf" ||
-      mimeType === "image/jpeg" ||
-      mimeType === "image/png"
-    );
-  }
-
-  public extractFields(
-    fileBuffer: Uint8Array,
-    context: ExtractionContext,
-    fixtureOverrides?: FixtureFieldOverrides
-  ): readonly ExtractedField[] {
-    if (!this.isAvailable) {
-      return [];
-    }
-    if (fixtureOverrides && Object.keys(fixtureOverrides).length > 0) {
-      return [];
-    }
-
-    const candidates = this.ocrTransport
-      ? this.ocrTransport(fileBuffer, context)
-      : this.simulatedCloudResponse!;
-
-    const fields: ExtractedField[] = [];
-    let idx = 1;
-    for (const [key, entry] of Object.entries(candidates)) {
-      const cleaned = entry.raw.trim();
-      const numCandidate = Number(cleaned.replace(/,/g, ""));
-      const normalizedValue =
-        cleaned !== "" && !Number.isNaN(numCandidate) && /^[0-9.,]+$/.test(cleaned)
-          ? numCandidate
-          : cleaned;
-
-      fields.push({
-        id: `${context.documentId}-cloud-ocr-${idx}`,
-        documentId: context.documentId,
-        fieldKey: key,
-        label: key
-          .split("_")
-          .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
-          .join(" "),
-        rawValue: cleaned,
-        normalizedValue,
-        confidenceScore: entry.confidence,
-        boundingBox: {
-          pageNumber: 1,
-          x: 60,
-          y: idx * 42,
-          width: 320,
-          height: 26,
-        },
-        verificationStatus: "DRAFT",
-      });
-      idx++;
-    }
-    return fields;
-  }
+  public supports(_docType: DocumentType, mimeType: string): boolean { return mimeType === "application/pdf" || mimeType === "image/jpeg" || mimeType === "image/png"; }
+  public extractFields(fileBuffer: Uint8Array, context: ExtractionContext, fixtureOverrides?: FixtureFieldOverrides): readonly ExtractedField[] { if (!this.isAvailable) return []; if (fixtureOverrides && Object.keys(fixtureOverrides).length > 0) return []; const candidates = this.ocrTransport ? this.ocrTransport(fileBuffer, context) : this.simulatedCloudResponse!; const fields: ExtractedField[] = []; let idx = 1; for (const [key, entry] of Object.entries(candidates)) { const cleaned = entry.raw.trim(); const numCandidate = Number(cleaned.replace(/,/g, "")); const normalizedValue = cleaned !== "" && !Number.isNaN(numCandidate) && /^[0-9.,]+$/.test(cleaned) ? numCandidate : cleaned; fields.push({ id: `${context.documentId}-cloud-ocr-${idx}`, documentId: context.documentId, fieldKey: key, label: key.split("_").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" "), rawValue: cleaned, normalizedValue, confidenceScore: entry.confidence, boundingBox: { pageNumber: 1, x: 60, y: idx * 42, width: 320, height: 26 }, verificationStatus: "DRAFT" }); idx++; } return fields; }
 }

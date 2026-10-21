@@ -1,8 +1,7 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import {
-  compileStandaloneGoLiveDossierPack,
-  verifyPilotGoLiveDossierPackIntegrity,
+  compileStandaloneGoLiveDossierPack, verifyPilotGoLiveDossierPackIntegrity,
 } from "./pilot-dossier-pack-compiler.js";
 import { formatGoLivePackMarkdown } from "./pilot-dossier-pack-formatter.js";
 import type { GoLiveReadinessReport } from "../domain/pilot-dossier-pack-types.js";
@@ -27,45 +26,20 @@ export function runFieldAuditorCli(options: FieldAuditorCliOptions = {}): {
   readonly integrityVerified: boolean;
 } {
   if (options.verifyFilePath) {
-    const rawJson = readFileSync(options.verifyFilePath, "utf-8");
-    const parsed = JSON.parse(rawJson) as GoLiveReadinessReport;
+    const parsed = JSON.parse(readFileSync(options.verifyFilePath, "utf-8")) as GoLiveReadinessReport;
     const integrityVerified = verifyPilotGoLiveDossierPackIntegrity(parsed);
-    return {
-      exitCode: integrityVerified ? 0 : 1,
-      report: parsed,
-      outputFilePath: options.verifyFilePath,
-      integrityVerified,
-    };
+    return { exitCode: integrityVerified ? 0 : 1, report: parsed, outputFilePath: options.verifyFilePath, integrityVerified };
   }
-
-  const report = compileStandaloneGoLiveDossierPack("founder-field-auditor", "AUDITOR", {
-    siteCode: options.siteCode,
-    dbPath: options.dbPath,
-    dataDir: options.dataDir,
-    backupDir: options.backupDir,
-    consentSignedFilePath: options.consentSignedFilePath,
-    env: options.env,
-  });
-
+  const report = compileStandaloneGoLiveDossierPack("founder-field-auditor", "AUDITOR", { siteCode: options.siteCode, dbPath: options.dbPath, dataDir: options.dataDir, backupDir: options.backupDir, consentSignedFilePath: options.consentSignedFilePath, env: options.env });
   let outputFilePath: string | undefined;
   if (options.outputDir) {
     mkdirSync(options.outputDir, { recursive: true });
     outputFilePath = join(options.outputDir, `${report.reportId}.json`);
     writeFileSync(outputFilePath, `${JSON.stringify(report, null, 2)}\n`, "utf-8");
-
-    if (options.markdownReport) {
-      const mdPath = join(options.outputDir, `${report.reportId}.md`);
-      writeFileSync(mdPath, formatGoLivePackMarkdown(report), "utf-8");
-    }
+    if (options.markdownReport) writeFileSync(join(options.outputDir, `${report.reportId}.md`), formatGoLivePackMarkdown(report), "utf-8");
   }
-
   const integrityVerified = verifyPilotGoLiveDossierPackIntegrity(report);
-  return {
-    exitCode: integrityVerified ? 0 : 1,
-    report,
-    outputFilePath,
-    integrityVerified,
-  };
+  return { exitCode: integrityVerified ? 0 : 1, report, outputFilePath, integrityVerified };
 }
 
 function parseCliArgs(argv: readonly string[]): FieldAuditorCliOptions {
@@ -93,15 +67,8 @@ function parseCliArgs(argv: readonly string[]): FieldAuditorCliOptions {
   }
 
   return {
-    verifyFilePath,
-    outputDir,
-    siteCode,
-    dbPath,
-    dataDir,
-    backupDir,
-    consentSignedFilePath,
-    jsonOnly,
-    markdownReport,
+    verifyFilePath, outputDir, siteCode, dbPath, dataDir,
+    backupDir, consentSignedFilePath, jsonOnly, markdownReport,
   };
 }
 

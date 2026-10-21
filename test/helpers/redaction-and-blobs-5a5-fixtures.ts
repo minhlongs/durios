@@ -5,14 +5,12 @@ import type { SqliteClient } from "../../src/storage/sqlite-client.js";
 import type { SqliteDossierRepository } from "../../src/storage/sqlite-dossier-repository.js";
 import type { ContainerDossierWorkspace } from "../../src/workspace/container-dossier-workspace.js";
 import { seedTestPilotActor } from "./auth-test-helper.js";
-
 export interface Redaction5A5Context {
   tempDir: string; dbPath: string; dataDir: string;
   client: SqliteClient; repo: SqliteDossierRepository;
   ledger: SqliteAuditLedger; fileStorage: FileStorageService;
   workspace: ContainerDossierWorkspace;
 }
-
 export interface DossierDocumentFieldPayload { id: string; fieldKey: string; rawValue: string }
 export interface DossierDocumentPayload { id: string; storagePath?: string; extractedFields: DossierDocumentFieldPayload[] }
 export interface DossierPayload {
@@ -21,11 +19,9 @@ export interface DossierPayload {
 }
 export interface DossierDetailResponse { data: DossierPayload }
 export interface DossierListOrDetailResponse { data: DossierPayload | DossierPayload[] }
-
 export function createPdfBytes(tag: string): Uint8Array {
   return new TextEncoder().encode(`%PDF-1.4 Synthetic PDF Content [${tag}]`);
 }
-
 export function makeActor(
   tenantId: string,
   role: "CLERK" | "MANAGER" | "ADMIN" | "AUDITOR" | "VIEWER",
@@ -42,7 +38,6 @@ export function makeActor(
       : "PACKHOUSE_EXPORTER";
   return { id, name: `User ${id}`, tenantId, tenantType, role, persona };
 }
-
 export function seedAndMakeActor(
   ws: ContainerDossierWorkspace,
   tenantId: string,
@@ -55,7 +50,6 @@ export function seedAndMakeActor(
   });
   return { ...seeded, actor };
 }
-
 export function buildValidDossierReadyForValidation(
   ws: ContainerDossierWorkspace,
   actor: AuthenticatedActor,
@@ -66,7 +60,6 @@ export function buildValidDossierReadyForValidation(
     targetMarket: "CN", borderGate: "Huu Nghi", targetTemperatureC: 13.5,
     declaredNetWeightKg: 18000, declaredBoxCount: 900,
   }, actor);
-
   const requiredDocs: Array<{
     type: "PACKING_LIST" | "LAB_TEST_REPORT" | "PHYTOSANITARY_CERTIFICATE";
     fields: Record<string, { raw: string }>;
@@ -92,7 +85,6 @@ export function buildValidDossierReadyForValidation(
       },
     },
   ];
-
   for (const item of requiredDocs) {
     const { document } = ws.uploadDocument(
       dossier.id, createPdfBytes(`${dossierCode}-${item.type}`),

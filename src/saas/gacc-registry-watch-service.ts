@@ -65,37 +65,15 @@ export function issueCrossBorderBuyerVerificationRoom(
   portalBaseUrl?: string
 ): CrossBorderBuyerRoomLink {
   const sub = resolveSaasSubscriptionStatus(env, new Date().toISOString(), manifest.tenantId);
-  if (!sub.entitlements.crossBorderBuyerPortal) {
-    throw new Error(
-      "Managed Cross-Border Buyer Verification Portal requires a PACKHOUSE_PRO_SAAS or EXPORTER_ENTERPRISE subscription."
-    );
-  }
-
+  if (!sub.entitlements.crossBorderBuyerPortal) throw new Error("Managed Cross-Border Buyer Verification Portal requires a PACKHOUSE_PRO_SAAS or EXPORTER_ENTERPRISE subscription.");
   const trimmedGrantId = shareGrantId.trim();
   if (!trimmedGrantId) throw new Error("shareGrantId is required to issue a Cross-Border Buyer Verification Room.");
-
   const parsedExpiry = Date.parse(expiresAt);
-  if (Number.isNaN(parsedExpiry) || parsedExpiry <= Date.now()) {
-    throw new Error("expiresAt must be a valid future ISO timestamp.");
-  }
-
+  if (Number.isNaN(parsedExpiry) || parsedExpiry <= Date.now()) throw new Error("expiresAt must be a valid future ISO timestamp.");
   const baseUrl = (portalBaseUrl ?? env.DURIOS_BUYER_PORTAL_BASE_URL)?.trim();
-  if (
-    !baseUrl ||
-    (!baseUrl.startsWith("https://") && !baseUrl.startsWith("http://127.0.0.1") && !baseUrl.startsWith("http://localhost"))
-  ) {
-    throw new Error(
-      "Explicit buyer portal base URL (https://, http://127.0.0.1, or http://localhost) is required via portalBaseUrl or DURIOS_BUYER_PORTAL_BASE_URL."
-    );
-  }
-
+  if (!baseUrl || (!baseUrl.startsWith("https://") && !baseUrl.startsWith("http://127.0.0.1") && !baseUrl.startsWith("http://localhost"))) throw new Error("Explicit buyer portal base URL (https://, http://127.0.0.1, or http://localhost) is required via portalBaseUrl or DURIOS_BUYER_PORTAL_BASE_URL.");
   const roomId = `ROOM-${manifest.dossierCode}-${trimmedGrantId.slice(-6)}`;
   const revocationTokenHash = calculateSha256(`${roomId}|${manifest.compositeManifestSha256}|${expiresAt}`);
   const cleanBase = baseUrl.replace(/\/+$/, "");
-
-  return {
-    roomId, dossierId: manifest.dossierId, manifestSha256: manifest.compositeManifestSha256,
-    portalUrl: `${cleanBase}/rooms/${roomId}?sig=${revocationTokenHash.slice(0, 24)}`,
-    supportedLocales: ["vi-VN", "zh-CN", "en-US"], expiresAt, revocationTokenHash,
-  };
+  return { roomId, dossierId: manifest.dossierId, manifestSha256: manifest.compositeManifestSha256, portalUrl: `${cleanBase}/rooms/${roomId}?sig=${revocationTokenHash.slice(0, 24)}`, supportedLocales: ["vi-VN", "zh-CN", "en-US"], expiresAt, revocationTokenHash };
 }

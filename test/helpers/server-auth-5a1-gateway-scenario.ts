@@ -2,23 +2,11 @@ import { expect } from "bun:test";
 import { createOtpProviderFromEnv, HttpGatewayOtpProvider } from "../../src/auth/otp-provider.js";
 import { executePilotOpsCommand } from "../../src/auth/pilot-ops-cli.js";
 import { createWorkspaceApp } from "../../src/server/server.js";
-
 interface OtpResponsePayload {
   data: { challengeId: string; providerReference: string; actor: { id: string } };
 }
-
-interface CapturedGatewayBody {
-  challengeId?: string;
-  channel?: string;
-  zaloOaId?: string;
-  otpCode?: string;
-}
-
-export async function runHttpGatewayOtpProviderScenario(
-  testDb: string,
-  testUploads: string,
-  setApp: (app: ReturnType<typeof createWorkspaceApp> | null) => void
-): Promise<void> {
+interface CapturedGatewayBody { challengeId?: string; channel?: string; zaloOaId?: string; otpCode?: string }
+export async function runHttpGatewayOtpProviderScenario(testDb: string, testUploads: string, setApp: (app: ReturnType<typeof createWorkspaceApp> | null) => void): Promise<void> {
   let app: ReturnType<typeof createWorkspaceApp> | null = null;
   try {
     expect(createOtpProviderFromEnv({}).isConfigured).toBe(false);
@@ -30,15 +18,12 @@ export async function runHttpGatewayOtpProviderScenario(
         DURIOS_OTP_SECRET_KEY: "sec-1",
       }).isConfigured
     ).toBe(false);
-
     const capturedRequests: Array<{ url: string; headers: Record<string, string>; body: CapturedGatewayBody }> = [];
     let gatewayShouldFail = false;
-
     const mockFetch = (async (input: string | URL | Request, init?: RequestInit) => {
       const rawBody = (init?.body ? JSON.parse(String(init.body)) : {}) as CapturedGatewayBody;
       const hdrs = (init?.headers ?? {}) as Record<string, string>;
       capturedRequests.push({ url: String(input), headers: hdrs, body: rawBody });
-
       if (gatewayShouldFail) {
         return new Response(JSON.stringify({ CodeResult: "99", ErrorMessage: "Gateway quota exceeded" }), {
           status: 500, headers: { "Content-Type": "application/json" },
@@ -49,7 +34,6 @@ export async function runHttpGatewayOtpProviderScenario(
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
     }) as unknown as typeof fetch;
-
     const envGateway = createOtpProviderFromEnv(
       {
         DURIOS_OTP_PROVIDER: "ESMS",
@@ -64,14 +48,12 @@ export async function runHttpGatewayOtpProviderScenario(
     );
     expect(envGateway.isConfigured).toBe(true);
     expect(envGateway).toBeInstanceOf(HttpGatewayOtpProvider);
-
     app = createWorkspaceApp({ dbPath: testDb, dataDir: testUploads, otpProvider: envGateway });
     executePilotOpsCommand(app.authService, {
       action: "provision-account", id: "ACT-GW-01", username: "cailay.clerk.gw",
       password: "ClerkGwPassword!2026", phoneNumber: "+84905556677", actorName: "Vo Thi Cai Lay",
       tenantId: "TENANT-CAILAY-01", tenantType: "PACKHOUSE_EXPORTER", role: "CLERK", persona: "PACKHOUSE_CLERK",
     });
-
     const zaloRes = await app.handler(
       new Request("http://127.0.0.1/api/auth/otp/request", {
         method: "POST", headers: { "Content-Type": "application/json" },
@@ -84,10 +66,8 @@ export async function runHttpGatewayOtpProviderScenario(
     expect(capturedRequests.length).toBe(1);
     expect(capturedRequests[0]?.body.channel).toBe("ZALO");
     expect(capturedRequests[0]?.body.zaloOaId).toBe("OA-CAILAY-01");
-
     const dispatchedOtp = capturedRequests[0]?.body.otpCode ?? "";
     expect(dispatchedOtp).toMatch(/^\d{6}$/);
-
     const verifyRes = await app.handler(
       new Request("http://127.0.0.1/api/auth/otp/verify", {
         method: "POST", headers: { "Content-Type": "application/json" },
@@ -96,7 +76,6 @@ export async function runHttpGatewayOtpProviderScenario(
     );
     expect(verifyRes.status).toBe(200);
     expect(((await verifyRes.json()) as OtpResponsePayload).data.actor.id).toBe("ACT-GW-01");
-
     gatewayShouldFail = true;
     const failRes = await app.handler(
       new Request("http://127.0.0.1/api/auth/otp/request", {

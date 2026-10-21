@@ -16,51 +16,24 @@ export interface PartnerWebhookIngestionResult {
   readonly candidateFields: readonly ExtractedField[];
 }
 
-function buildCanonicalPartnerWebhookPayload(
-  payload: Omit<PartnerWebhookPayload, "signatureSha256">
-): string {
+function buildCanonicalPartnerWebhookPayload(payload: Omit<PartnerWebhookPayload, "signatureSha256">): string {
   const sortedReportedFields: Record<string, string | number> = {};
-  for (const key of Object.keys(payload.reportedFields).sort()) {
-    sortedReportedFields[key] = payload.reportedFields[key]!;
-  }
-  return JSON.stringify({
-    webhookId: payload.webhookId, idempotencyKey: payload.idempotencyKey,
-    partnerCode: payload.partnerCode, partnerType: payload.partnerType,
-    tenantId: payload.tenantId, dossierId: payload.dossierId,
-    documentId: payload.documentId, documentType: payload.documentType,
-    reportedFields: sortedReportedFields, issuedAt: payload.issuedAt,
-  });
+  for (const key of Object.keys(payload.reportedFields).sort()) sortedReportedFields[key] = payload.reportedFields[key]!;
+  return JSON.stringify({ webhookId: payload.webhookId, idempotencyKey: payload.idempotencyKey, partnerCode: payload.partnerCode, partnerType: payload.partnerType, tenantId: payload.tenantId, dossierId: payload.dossierId, documentId: payload.documentId, documentType: payload.documentType, reportedFields: sortedReportedFields, issuedAt: payload.issuedAt });
 }
 
-export function signPartnerWebhookPayload(
-  payload: Omit<PartnerWebhookPayload, "signatureSha256">,
-  partnerSharedSecret: string
-): string {
+export function signPartnerWebhookPayload(payload: Omit<PartnerWebhookPayload, "signatureSha256">, partnerSharedSecret: string): string {
   const secret = partnerSharedSecret.trim();
   if (secret.length < 16) throw new Error("Partner webhook shared secret must be at least 16 characters.");
-  const canonical = buildCanonicalPartnerWebhookPayload(payload);
-  return createHmac("sha256", secret).update(canonical, "utf-8").digest("hex");
+  return createHmac("sha256", secret).update(buildCanonicalPartnerWebhookPayload(payload), "utf-8").digest("hex");
 }
 
 export class PartnerLabWebhookIngestor {
-  private readonly processedKeys = new Map<
-    string,
-    { readonly payloadDigest: string; readonly result: PartnerWebhookIngestionResult }
-  >();
+  private readonly processedKeys = new Map<string, { readonly payloadDigest: string; readonly result: PartnerWebhookIngestionResult }>();
 
-  public ingestWebhook(
-    payload: PartnerWebhookPayload,
-    partnerSharedSecret: string,
-    env: Record<string, string | undefined> = process.env
-  ): PartnerWebhookIngestionResult {
-    const sub = resolveSaasSubscriptionStatus(
-      env, payload.issuedAt || new Date().toISOString(), payload.tenantId
-    );
-    if (!sub.licenseValid) {
-      throw new Error(
-        "Automated Partner Lab & Logistics Webhook Ingestion requires a PACKHOUSE_PRO_SAAS or EXPORTER_ENTERPRISE subscription."
-      );
-    }
+  public ingestWebhook(payload: PartnerWebhookPayload, partnerSharedSecret: string, env: Record<string, string | undefined> = process.env): PartnerWebhookIngestionResult {
+    const sub = resolveSaasSubscriptionStatus(env, payload.issuedAt || new Date().toISOString(), payload.tenantId);
+    if (!sub.licenseValid) throw new Error("Automated Partner Lab & Logistics Webhook Ingestion requires a PACKHOUSE_PRO_SAAS or EXPORTER_ENTERPRISE subscription.");
 
     const secret = partnerSharedSecret.trim();
     if (secret.length < 16) throw new Error("Partner webhook shared secret must be at least 16 characters.");
@@ -101,10 +74,7 @@ export class PartnerLabWebhookIngestor {
       });
       index++;
     }
-
-    const result: PartnerWebhookIngestionResult = {
-      duplicateIgnored: false, partnerCode: payload.partnerCode, candidateFields,
-    };
+    const result: PartnerWebhookIngestionResult = { duplicateIgnored: false, partnerCode: payload.partnerCode, candidateFields };
     this.processedKeys.set(scopedKey, { payloadDigest, result });
     return result;
   }

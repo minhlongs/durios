@@ -19,13 +19,7 @@ import type { AuditLedgerLike, CreateDossierInput, DossierRepositoryLike } from 
 import type { AuthenticatedActor, ContainerDossier, DocumentType, DossierExportManifest, IngestedDocument, ValidationRunResult } from "../domain/types.js";
 
 export class ContainerDossierWorkspace {
-  public readonly auditLedger: AuditLedgerLike; public readonly hitlService: HitlVerificationService;
-  public readonly ruleEngine: DeterministicRuleEngine; public readonly fileStorage?: FileStorageService | undefined;
-  public readonly legacyBlobReconciliationReport?: LegacyBlobReconciliationReport | undefined;
-  public readonly shareManager: ShareAccessManager; public readonly organicEvidenceManager: OrganicEvidenceManager;
-  public readonly authService: SqliteAuthService; public readonly sqliteClient: SqliteClient;
-  private readonly repo: DossierRepositoryLike;
-
+  public readonly auditLedger: AuditLedgerLike; public readonly hitlService: HitlVerificationService; public readonly ruleEngine: DeterministicRuleEngine; public readonly fileStorage: FileStorageService | undefined; public readonly legacyBlobReconciliationReport: LegacyBlobReconciliationReport | undefined; public readonly shareManager: ShareAccessManager; public readonly organicEvidenceManager: OrganicEvidenceManager; public readonly authService: SqliteAuthService; public readonly sqliteClient: SqliteClient; private readonly repo: DossierRepositoryLike;
   constructor(
     repo?: DossierRepositoryLike, auditLedger?: AuditLedgerLike, fileStorage?: FileStorageService | undefined,
     authService?: SqliteAuthService | undefined, sqliteClient?: SqliteClient | undefined
@@ -46,23 +40,16 @@ export class ContainerDossierWorkspace {
       this.legacyBlobReconciliationReport = this.fileStorage.reconcileLegacyDocumentBlobs(this.repo.client.db);
     }
   }
-
   public createDossier(input: CreateDossierInput, actor: AuthenticatedActor): ContainerDossier {
     assertCanCreateContainerDossier(actor);
     const isoResult = validateIso6346Container(input.containerNumber);
     if (!isoResult.isValid) throw new Error(`Invalid container number: ${isoResult.reason ?? "ISO 6346 check digit failure"}`);
     const [id, now] = [`DOS-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`, new Date().toISOString()];
-    const dossier: ContainerDossier = {
-      id, tenantId: actor.tenantId, dossierCode: input.dossierCode, containerNumber: isoResult.normalized,
-      sealNumber: input.sealNumber.trim(), targetMarket: input.targetMarket, borderGate: input.borderGate,
-      targetTemperatureC: input.targetTemperatureC, declaredNetWeightKg: input.declaredNetWeightKg,
-      declaredBoxCount: input.declaredBoxCount, lifecycleState: "DRAFT", isImmutable: false, createdAt: now, updatedAt: now, documents: [],
-    };
+    const dossier: ContainerDossier = { id, tenantId: actor.tenantId, dossierCode: input.dossierCode, containerNumber: isoResult.normalized, sealNumber: input.sealNumber.trim(), targetMarket: input.targetMarket, borderGate: input.borderGate, targetTemperatureC: input.targetTemperatureC, declaredNetWeightKg: input.declaredNetWeightKg, declaredBoxCount: input.declaredBoxCount, lifecycleState: "DRAFT", isImmutable: false, createdAt: now, updatedAt: now, documents: [] };
     this.repo.save(dossier);
     this.auditLedger.recordEvent(actor, id, "DOSSIER_CREATED", "CONTAINER_DOSSIER", id, null, { dossierCode: input.dossierCode, containerNumber: dossier.containerNumber });
     return dossier;
   }
-
   public uploadDocument(
     dossierId: string, fileBytes: Uint8Array, fileName: string, documentType: DocumentType,
     actor: AuthenticatedActor, fixtureExtractedFields?: Record<string, { raw: string; confidence?: number }>
@@ -78,9 +65,7 @@ export class ContainerDossierWorkspace {
       document = { ...document, storagePath: storedBlob.storagePath };
       updatedDossier = { ...updatedDossier, documents: updatedDossier.documents.map((d) => (d.id === document.id ? document : d)) };
     }
-    try {
-      this.repo.save(updatedDossier);
-    } catch (saveError) {
+    try { this.repo.save(updatedDossier); } catch (saveError) {
       if (this.fileStorage && storedBlob?.createdNew && !(this.repo.hasDocumentReferencingBlob?.(storedBlob.storagePath, storedBlob.sha256) ?? false)) {
         try { this.fileStorage.deleteFile(storedBlob.storagePath); } catch { /* best effort */ }
       }
@@ -92,8 +77,7 @@ export class ContainerDossierWorkspace {
   public verifyField(dossierId: string, documentId: string, verification: HumanVerificationInput, actor: AuthenticatedActor): ContainerDossier {
     assertValidActor(actor);
     const dossier = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor);
-    const hasReadAndVerify = actor.tenantId === dossier.tenantId ||
-      (() => { const acc = this.shareManager.checkAccess(dossier.id, dossier.tenantId, actor.tenantId); return acc.hasAccess && acc.scope === "READ_AND_VERIFY"; })();
+    const hasReadAndVerify = actor.tenantId === dossier.tenantId || (() => { const acc = this.shareManager.checkAccess(dossier.id, dossier.tenantId, actor.tenantId); return acc.hasAccess && acc.scope === "READ_AND_VERIFY"; })();
     assertCanVerifyField(actor, dossier.tenantId, hasReadAndVerify);
     assertDossierMutable(dossier, "verify fields on");
     const docIndex = dossier.documents.findIndex((d) => d.id === documentId && !d.isSuperseded);
@@ -106,14 +90,8 @@ export class ContainerDossierWorkspace {
   }
 
   public runValidation(dossierId: string, actor: AuthenticatedActor): ValidationRunResult { return executeValidation(dossierId, actor, this.repo, this.ruleEngine, this.auditLedger); }
-  public approveForExport(dossierId: string, actor: AuthenticatedActor): ContainerDossier {
-    const d = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor);
-    assertCanApproveOrExport(actor, d.tenantId, "approveForExport"); return executeApproveForExport(dossierId, actor, this.repo, this.auditLedger);
-  }
-  public exportDossier(dossierId: string, actor: AuthenticatedActor): DossierExportManifest {
-    const d = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor);
-    assertCanApproveOrExport(actor, d.tenantId, "exportDossier"); return executeExportDossier(dossierId, actor, this.repo, this.auditLedger);
-  }
+  public approveForExport(dossierId: string, actor: AuthenticatedActor): ContainerDossier { const d = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor); assertCanApproveOrExport(actor, d.tenantId, "approveForExport"); return executeApproveForExport(dossierId, actor, this.repo, this.auditLedger); }
+  public exportDossier(dossierId: string, actor: AuthenticatedActor): DossierExportManifest { const d = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor); assertCanApproveOrExport(actor, d.tenantId, "exportDossier"); return executeExportDossier(dossierId, actor, this.repo, this.auditLedger); }
   public getDossier(dossierId: string, actor: AuthenticatedActor): ContainerDossier | undefined { assertValidActor(actor); return this.repo.findById(dossierId, actor); }
   public getRawDossier(dossierId: string): ContainerDossier | undefined { return this.repo.findRaw?.(dossierId); }
   public listDossiers(actor: AuthenticatedActor): readonly ContainerDossier[] { assertValidActor(actor); return this.repo.listForTenant(actor); }

@@ -3,16 +3,13 @@ import { FakeOtpProvider } from "../../src/auth/otp-provider.js";
 import { runPilotOpsCliArgs } from "../../src/auth/pilot-ops-cli.js";
 import { createWorkspaceApp } from "../../src/server/server.js";
 import { extractSessionCookiePair } from "./auth-test-helper.js";
-
 export type WorkspaceAppInstance = ReturnType<typeof createWorkspaceApp>;
-
 export interface AuthDataPayload {
   data: {
     sessionToken?: string; challengeId?: string; providerReference?: string;
     sessionId?: string; actor?: Record<string, unknown>;
   };
 }
-
 export async function runCookieOtpAndMptUnificationScenario(
   testDb: string,
   testUploads: string,
@@ -33,7 +30,6 @@ export async function runCookieOtpAndMptUnificationScenario(
     app.authService,
     { DURIOS_PILOT_PASSWORD: rawPassword }
   );
-
   process.env.NODE_ENV = "production";
   const pwRes = await app.handler(
     new Request("http://127.0.0.1/api/auth/login", {
@@ -50,7 +46,6 @@ export async function runCookieOtpAndMptUnificationScenario(
   const pwBody = (await pwRes.json()) as AuthDataPayload;
   expect(pwBody.data.sessionToken).toBeUndefined();
   const pwCookiePair = extractSessionCookiePair(pwSetCookie);
-
   restoreNodeEnv();
   const otpReqRes = await app.handler(
     new Request("http://127.0.0.1/api/auth/otp/request", {
@@ -61,7 +56,6 @@ export async function runCookieOtpAndMptUnificationScenario(
   expect(otpReqRes.status).toBe(201);
   const challengeId = ((await otpReqRes.json()) as AuthDataPayload).data.challengeId as string;
   const deliveredOtp = fakeOtp.getLatestForPhone("+84909111222")!;
-
   const otpVerRes = await app.handler(
     new Request("http://127.0.0.1/api/auth/otp/verify", {
       method: "POST", headers: { "Content-Type": "application/json" },
@@ -72,7 +66,6 @@ export async function runCookieOtpAndMptUnificationScenario(
   const otpBody = (await otpVerRes.json()) as AuthDataPayload;
   expect(otpBody.data.sessionToken).toBeUndefined();
   const otpCookiePair = extractSessionCookiePair(otpVerRes.headers.get("set-cookie"));
-
   const issuedMpt = runPilotOpsCliArgs(
     [
       "issue-token", "--account-id", "ACT-CAILAY-MGR-01",
@@ -81,11 +74,9 @@ export async function runCookieOtpAndMptUnificationScenario(
     app.authService
   );
   if (!("rawToken" in issuedMpt)) throw new Error("Expected issued token");
-
   const mePw = (await (await app.handler(new Request("http://127.0.0.1/api/auth/me", { headers: { Cookie: pwCookiePair } }))).json()) as AuthDataPayload;
   const meOtp = (await (await app.handler(new Request("http://127.0.0.1/api/auth/me", { headers: { Cookie: otpCookiePair } }))).json()) as AuthDataPayload;
   const meMpt = (await (await app.handler(new Request("http://127.0.0.1/api/auth/me", { headers: { "x-pilot-token": issuedMpt.rawToken } }))).json()) as AuthDataPayload;
-
   const expectedActor = {
     id: "ACT-CAILAY-MGR-01", name: "Tran Thi B (Packhouse Manager)",
     tenantId: "TENANT-CAILAY-01", tenantType: "PACKHOUSE_EXPORTER",
@@ -94,7 +85,6 @@ export async function runCookieOtpAndMptUnificationScenario(
   expect(mePw.data.actor).toEqual(expectedActor);
   expect(meOtp.data.actor).toEqual(expectedActor);
   expect(meMpt.data.actor).toEqual(expectedActor);
-
   const dbDump = JSON.stringify({
     accounts: app.sqliteClient.db.query("SELECT * FROM pilot_accounts").all(),
     sessions: app.sqliteClient.db.query("SELECT * FROM auth_sessions").all(),

@@ -3,10 +3,7 @@ import type { ShareAccessGrant, SharePurpose, ShareScope } from "../domain/pilot
 import type { AuditLedgerLike } from "../workspace/workspace-types.js";
 import { SqliteClient } from "../storage/sqlite-client.js";
 import { AccessControlError, assertOwnerManagementRole, assertValidActor } from "../auth/rbac-policy.js";
-import {
-  insertShareGrantRow, markShareGrantRevokedRow, queryActiveGrantsForGrantee,
-  queryAllGrantsForOwner, queryShareGrantById,
-} from "./share-grant-store.js";
+import { insertShareGrantRow, markShareGrantRevokedRow, queryActiveGrantsForGrantee, queryAllGrantsForOwner, queryShareGrantById } from "./share-grant-store.js";
 
 export class ShareAccessManager {
   private readonly client: SqliteClient;
@@ -14,63 +11,38 @@ export class ShareAccessManager {
     this.client = client ?? new SqliteClient({ dbPath: ":memory:", inMemory: true });
   }
 
-  public grantAccess(
-    dossier: ContainerDossier, granteeTenantId: string, purpose: SharePurpose,
-    scope: ShareScope, expiresAt: string, actor: AuthenticatedActor, auditLedger?: AuditLedgerLike
-  ): ShareAccessGrant {
+  public grantAccess(dossier: ContainerDossier, granteeTenantId: string, purpose: SharePurpose, scope: ShareScope, expiresAt: string, actor: AuthenticatedActor, auditLedger?: AuditLedgerLike): ShareAccessGrant {
     assertOwnerManagementRole(actor, dossier.tenantId, "grantShare");
     const trimmedGrantee = granteeTenantId?.trim() ?? "";
     if (!trimmedGrantee) throw new Error("Grantee tenant ID is required.");
     if (trimmedGrantee === dossier.tenantId) throw new Error("Cannot share dossier with owning tenant itself.");
     const expiresDate = new Date(expiresAt);
-    if (isNaN(expiresDate.getTime()) || expiresDate <= new Date()) {
-      throw new Error("Expiration date must be a valid future ISO timestamp.");
-    }
+    if (isNaN(expiresDate.getTime()) || expiresDate <= new Date()) throw new Error("Expiration date must be a valid future ISO timestamp.");
     const grantId = `SHR-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
-    const grant: ShareAccessGrant = {
-      id: grantId, dossierId: dossier.id, ownerTenantId: dossier.tenantId,
-      granteeTenantId: trimmedGrantee, purpose, scope, grantedAt: new Date().toISOString(),
-      grantedBy: actor.id, expiresAt: expiresDate.toISOString(), isRevoked: false,
-    };
+    const grant: ShareAccessGrant = { id: grantId, dossierId: dossier.id, ownerTenantId: dossier.tenantId, granteeTenantId: trimmedGrantee, purpose, scope, grantedAt: new Date().toISOString(), grantedBy: actor.id, expiresAt: expiresDate.toISOString(), isRevoked: false };
     this.client.transaction(() => {
       insertShareGrantRow(this.client, dossier, grant);
-      auditLedger?.recordEvent(
-        actor, dossier.id, "SHARE_ACCESS_GRANTED", "CONTAINER_DOSSIER", grantId, null,
-        { granteeTenantId: grant.granteeTenantId, purpose: grant.purpose, scope: grant.scope, expiresAt: grant.expiresAt }
-      );
+      auditLedger?.recordEvent(actor, dossier.id, "SHARE_ACCESS_GRANTED", "CONTAINER_DOSSIER", grantId, null, { granteeTenantId: grant.granteeTenantId, purpose: grant.purpose, scope: grant.scope, expiresAt: grant.expiresAt });
     });
     return grant;
   }
 
-  public revokeAccess(
-    grantId: string, dossier: ContainerDossier, reason: string,
-    actor: AuthenticatedActor, auditLedger?: AuditLedgerLike
-  ): ShareAccessGrant {
+  public revokeAccess(grantId: string, dossier: ContainerDossier, reason: string, actor: AuthenticatedActor, auditLedger?: AuditLedgerLike): ShareAccessGrant {
     assertOwnerManagementRole(actor, dossier.tenantId, "revokeShare");
     const existing = queryShareGrantById(this.client, grantId);
-    if (!existing || existing.dossierId !== dossier.id || existing.ownerTenantId !== dossier.tenantId) {
-      throw new Error(`Share grant '${grantId}' not found for dossier '${dossier.id}'.`);
-    }
+    if (!existing || existing.dossierId !== dossier.id || existing.ownerTenantId !== dossier.tenantId) throw new Error(`Share grant '${grantId}' not found for dossier '${dossier.id}'.`);
     const [now, trimmedReason] = [new Date().toISOString(), reason.trim()];
-    const revokedGrant: ShareAccessGrant = {
-      ...existing, isRevoked: true, revokedAt: now, revokedBy: actor.id, revocationReason: trimmedReason,
-    };
+    const revokedGrant: ShareAccessGrant = { ...existing, isRevoked: true, revokedAt: now, revokedBy: actor.id, revocationReason: trimmedReason };
     this.client.transaction(() => {
       markShareGrantRevokedRow(this.client, grantId, dossier.id, dossier.tenantId, now, actor.id, trimmedReason);
-      auditLedger?.recordEvent(
-        actor, dossier.id, "SHARE_ACCESS_REVOKED", "CONTAINER_DOSSIER", grantId,
-        { isRevoked: false }, { isRevoked: true, revokedAt: now, revocationReason: trimmedReason }
-      );
+      auditLedger?.recordEvent(actor, dossier.id, "SHARE_ACCESS_REVOKED", "CONTAINER_DOSSIER", grantId, { isRevoked: false }, { isRevoked: true, revokedAt: now, revocationReason: trimmedReason });
     });
     return revokedGrant;
   }
 
   public checkAccess(
     dossierId: string, ownerTenantId: string, actorTenantId: string, referenceNow?: Date | string
-  ): {
-    hasAccess: boolean; scope?: ShareScope | undefined;
-    grant?: ShareAccessGrant | undefined; activeGrants?: readonly ShareAccessGrant[] | undefined;
-  } {
+  ): { hasAccess: boolean; scope?: ShareScope; grant?: ShareAccessGrant; activeGrants?: readonly ShareAccessGrant[] } {
     if (ownerTenantId === actorTenantId) return { hasAccess: true, scope: "READ_AND_VERIFY", activeGrants: [] };
     const activeGrants = this.getActiveGrantsForTenant(dossierId, ownerTenantId, actorTenantId, referenceNow);
     if (activeGrants.length === 0) return { hasAccess: false, activeGrants: [] };
@@ -87,21 +59,13 @@ export class ShareAccessManager {
     return queryActiveGrantsForGrantee(this.client, dossierId, ownerTenantId, granteeTenantId, nowIso);
   }
 
-  public assertPurposeAllowed(
-    dossier: ContainerDossier, actor: AuthenticatedActor,
-    allowedPurposes: readonly SharePurpose[], endpointLabel: string, referenceNow?: Date | string
-  ): void {
+  public assertPurposeAllowed(dossier: ContainerDossier, actor: AuthenticatedActor, allowedPurposes: readonly SharePurpose[], endpointLabel: string, referenceNow?: Date | string): void {
     assertValidActor(actor);
     if (actor.tenantId === dossier.tenantId) return;
     const activeGrants = this.getActiveGrantsForTenant(dossier.id, dossier.tenantId, actor.tenantId, referenceNow);
-    if (activeGrants.length === 0) {
-      throw new AccessControlError(`Tenant '${actor.tenantId}' has no active share grant for dossier '${dossier.id}'.`, "CROSS_TENANT_FORBIDDEN");
-    }
+    if (activeGrants.length === 0) throw new AccessControlError(`Tenant '${actor.tenantId}' has no active share grant for dossier '${dossier.id}'.`, "CROSS_TENANT_FORBIDDEN");
     if (!activeGrants.some((g) => allowedPurposes.includes(g.purpose))) {
-      throw new AccessControlError(
-        `Active share grant purpose for tenant '${actor.tenantId}' does not permit access to '${endpointLabel}'. Allowed purposes: ${allowedPurposes.join(", ")}.`,
-        "SHARE_PURPOSE_FORBIDDEN"
-      );
+      throw new AccessControlError(`Active share grant purpose for tenant '${actor.tenantId}' does not permit access to '${endpointLabel}'. Allowed purposes: ${allowedPurposes.join(", ")}.`, "SHARE_PURPOSE_FORBIDDEN");
     }
   }
 

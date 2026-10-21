@@ -1,15 +1,10 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import {
-  evaluateBlueprint25Steps, type Blueprint25StepAuditReport,
-} from "./blueprint-25-step-auditor.js";
+import { evaluateBlueprint25Steps, type Blueprint25StepAuditReport } from "./blueprint-25-step-auditor.js";
+import { evaluateCodebaseModularityDeep, type CodebaseModularityDeepReport } from "./codebase-modularity-deep-introspector.js";
 import { getOpenCoreEditionManifest } from "./open-core-edition-manifest.js";
-import {
-  createSignedSaasLicenseKey, generateEphemeralSaasLicenseKeyPair, resolveSaasSubscriptionStatus,
-} from "./saas-tier-policy.js";
-import {
-  evaluateUiUxDeepBrainstorm, type UiUxDeepBrainstormReport,
-} from "./ui-ux-deep-introspector.js";
+import { createSignedSaasLicenseKey, generateEphemeralSaasLicenseKeyPair, resolveSaasSubscriptionStatus } from "./saas-tier-policy.js";
+import { evaluateUiUxDeepBrainstorm, type UiUxDeepBrainstormReport } from "./ui-ux-deep-introspector.js";
 
 export interface SocraticTurnEvaluation {
   readonly turnNumber: 1 | 2 | 3 | 4 | 5; readonly dimension: string;
@@ -18,57 +13,35 @@ export interface SocraticTurnEvaluation {
 
 export interface OpenCoreDeepBrainstormReport {
   readonly ideaVerdict: "GO_OPEN_CORE_SAAS"; readonly evaluatedAt: string; readonly allTurnsPassed: boolean;
-  readonly blueprintAudit: Blueprint25StepAuditReport; readonly uiUxDeepAudit: UiUxDeepBrainstormReport;
+  readonly blueprintAudit: Blueprint25StepAuditReport; readonly uiUxDeepAudit: UiUxDeepBrainstormReport; readonly modularityDeepAudit: CodebaseModularityDeepReport;
   readonly editionModuleCounts: { readonly communityOpenCore: number; readonly packhouseProSaas: number; readonly exporterEnterprise: number };
-  readonly unitEconomicsVerification: {
-    readonly containerPriceVnd: 150_000; readonly estimatedVariableCogsVnd: 8_000;
-    readonly containerGrossMarginPct: number; readonly pureVietnamSaasCeilingUsd: number;
-    readonly targetArrUsd: number; readonly multiRevenueStackMandatory: boolean;
-  };
+  readonly unitEconomicsVerification: { readonly containerPriceVnd: 150_000; readonly estimatedVariableCogsVnd: 8_000; readonly containerGrossMarginPct: number; readonly pureVietnamSaasCeilingUsd: number; readonly targetArrUsd: number; readonly multiRevenueStackMandatory: boolean; };
   readonly socraticTurns: readonly SocraticTurnEvaluation[];
 }
 
-const MIT_BOUNDARY_FILES: readonly string[] = [
-  "src/domain/iso-6346.ts", "src/ingestion/document-hasher.ts",
-  "src/export/manifest-compiler.ts", "src/export/standalone-manifest-verifier.ts",
-];
+const MIT_BOUNDARY_FILES: readonly string[] = ["src/domain/iso-6346.ts", "src/ingestion/document-hasher.ts", "src/export/manifest-compiler.ts", "src/export/standalone-manifest-verifier.ts"];
+const PUBLIC_GITHUB_GOVERNANCE_FILES: readonly string[] = ["LICENSE", "LICENSE-MIT", "COMMERCIAL-LICENSE.md", "TRADEMARK-POLICY.md", "CONTRIBUTING.md", "SECURITY.md", "README.md"];
+const FORBIDDEN_MIT_IMPORT_SEGMENTS: readonly string[] = ["/auth/", "/storage/", "/saas/", "/server/", "/marketplace/"];
 
-const PUBLIC_GITHUB_GOVERNANCE_FILES: readonly string[] = [
-  "LICENSE", "LICENSE-MIT", "COMMERCIAL-LICENSE.md",
-  "TRADEMARK-POLICY.md", "CONTRIBUTING.md", "SECURITY.md", "README.md",
-];
-
-const FORBIDDEN_MIT_IMPORT_SEGMENTS: readonly string[] = [
-  "/auth/", "/storage/", "/saas/", "/server/", "/marketplace/",
-];
-
-export function evaluateOpenCoreDeepBrainstorm(
-  rootDir = process.cwd(),
-  nowIso = new Date().toISOString()
-): OpenCoreDeepBrainstormReport {
+export function evaluateOpenCoreDeepBrainstorm(rootDir = process.cwd(), nowIso = new Date().toISOString()): OpenCoreDeepBrainstormReport {
   const blueprintAudit = evaluateBlueprint25Steps(rootDir, nowIso);
   const uiUxDeepAudit = evaluateUiUxDeepBrainstorm(rootDir, nowIso);
+  const modularityDeepAudit = evaluateCodebaseModularityDeep(rootDir, nowIso);
   const manifest = getOpenCoreEditionManifest("COMMUNITY_OPEN_CORE");
 
   const mitBoundaryViolations: string[] = [];
   for (const relPath of MIT_BOUNDARY_FILES) {
     const absPath = join(rootDir, relPath);
-    if (!existsSync(absPath)) {
-      mitBoundaryViolations.push(`Missing MIT file: ${relPath}`);
-      continue;
-    }
+    if (!existsSync(absPath)) { mitBoundaryViolations.push(`Missing MIT file: ${relPath}`); continue; }
     const src = readFileSync(absPath, "utf-8");
     for (const seg of FORBIDDEN_MIT_IMPORT_SEGMENTS) {
       if (src.includes(seg)) mitBoundaryViolations.push(`${relPath} imports ${seg}`);
     }
   }
   const turn1Passed = mitBoundaryViolations.length === 0;
-
   const missingGov = PUBLIC_GITHUB_GOVERNANCE_FILES.filter((f) => !existsSync(join(rootDir, f)));
-  const gitignorePath = join(rootDir, ".gitignore");
-  const gitignoreRaw = existsSync(gitignorePath) ? readFileSync(gitignorePath, "utf-8") : "";
-  const turn2Passed =
-    missingGov.length === 0 && gitignoreRaw.includes("data/*.db") && gitignoreRaw.includes(".env");
+  const gitignoreRaw = existsSync(join(rootDir, ".gitignore")) ? readFileSync(join(rootDir, ".gitignore"), "utf-8") : "";
+  const turn2Passed = missingGov.length === 0 && gitignoreRaw.includes("data/*.db") && gitignoreRaw.includes(".env");
 
   const { publicKeyPem, privateKeyPem } = generateEphemeralSaasLicenseKeyPair();
   const validKey = createSignedSaasLicenseKey(
@@ -84,9 +57,7 @@ export function evaluateOpenCoreDeepBrainstorm(
 
   const containerPriceVnd = 150_000 as const;
   const estimatedVariableCogsVnd = 8_000 as const;
-  const containerGrossMarginPct = Number(
-    (((containerPriceVnd - estimatedVariableCogsVnd) / containerPriceVnd) * 100).toFixed(2)
-  );
+  const containerGrossMarginPct = Number((((containerPriceVnd - estimatedVariableCogsVnd) / containerPriceVnd) * 100).toFixed(2));
   const turn4Passed =
     containerGrossMarginPct >= 80 &&
     manifest.economicTruth.pureVietnamSaasCeilingUsd < manifest.economicTruth.targetArrUsd &&
@@ -95,8 +66,7 @@ export function evaluateOpenCoreDeepBrainstorm(
   const communityOpenCore = manifest.modules.filter((m) => m.edition === "COMMUNITY_OPEN_CORE").length;
   const packhouseProSaas = manifest.modules.filter((m) => m.edition === "PACKHOUSE_PRO_SAAS").length;
   const exporterEnterprise = manifest.modules.filter((m) => m.edition === "EXPORTER_ENTERPRISE").length;
-  const turn5Passed =
-    blueprintAudit.overallPassed && communityOpenCore >= 6 && packhouseProSaas >= 4 && exporterEnterprise >= 2;
+  const turn5Passed = blueprintAudit.overallPassed && communityOpenCore >= 6 && packhouseProSaas >= 4 && exporterEnterprise >= 2;
 
   const socraticTurns: readonly SocraticTurnEvaluation[] = [
     { turnNumber: 1, dimension: "MIT Verifier SDK Boundary Isolation", socraticQuestion: "Are the 4 MIT verifier modules 100% isolated from AGPL and Commercial SaaS imports?", passed: turn1Passed, evidenceSummary: turn1Passed ? "4/4 MIT modules clean of AGPL/SaaS imports." : mitBoundaryViolations.join("; ") },
@@ -109,7 +79,7 @@ export function evaluateOpenCoreDeepBrainstorm(
   return {
     ideaVerdict: "GO_OPEN_CORE_SAAS", evaluatedAt: nowIso,
     allTurnsPassed: socraticTurns.every((t) => t.passed),
-    blueprintAudit, uiUxDeepAudit,
+    blueprintAudit, uiUxDeepAudit, modularityDeepAudit,
     editionModuleCounts: { communityOpenCore, packhouseProSaas, exporterEnterprise },
     unitEconomicsVerification: {
       containerPriceVnd, estimatedVariableCogsVnd, containerGrossMarginPct,

@@ -4,7 +4,6 @@ import {
   verifyWorkspacePortabilityBundle,
 } from "../src/saas/workspace-portability-bundle.js";
 import type { ContainerDossier, AuditEvent } from "../src/domain/types.js";
-
 function buildMockDossier(id: string): ContainerDossier {
   return {
     id,
@@ -22,7 +21,6 @@ function buildMockDossier(id: string): ContainerDossier {
     documents: [],
   };
 }
-
 function buildMockAuditEvent(id: string): AuditEvent {
   return {
     id,
@@ -40,14 +38,11 @@ function buildMockAuditEvent(id: string): AuditEvent {
     previousHash: "GENESIS-0000000000000000000000000000000000000000000000000000000000000000",
   };
 }
-
 describe("Step 14: Signed Workspace Portability Funnel (Community -> Pro/Enterprise)", () => {
   const secret = "durios-super-secret-portability-key-2026";
-
   it("exports and verifies a signed workspace portability bundle with HMAC", () => {
     const dossiers = [buildMockDossier("DOS-1"), buildMockDossier("DOS-2")];
     const events = [buildMockAuditEvent("AUD-1")];
-
     const bundle = exportWorkspacePortabilityBundle(
       "TEN-CAILAY-01",
       "Vựa Sầu Riêng Cai Lậy",
@@ -56,21 +51,17 @@ describe("Step 14: Signed Workspace Portability Funnel (Community -> Pro/Enterpr
       events,
       secret
     );
-
     expect(bundle.payload.tenantId).toBe("TEN-CAILAY-01");
     expect(bundle.payload.totalDossiersCount).toBe(2);
     expect(bundle.payload.profile.verifiedShipmentsCount).toBe(2);
     expect(bundle.payload.profile.unresolvedSealMismatches).toBe(0);
     expect(bundle.hmacSignatureSha256).toBeDefined();
-
     const verification = verifyWorkspacePortabilityBundle(bundle, secret);
     expect(verification.valid).toBe(true);
   });
-
   it("rejects bundle if payload is tampered with", () => {
     const dossiers = [buildMockDossier("DOS-1")];
     const events = [buildMockAuditEvent("AUD-1")];
-
     const bundle = exportWorkspacePortabilityBundle(
       "TEN-CAILAY-01",
       "Vựa Sầu Riêng Cai Lậy",
@@ -79,7 +70,6 @@ describe("Step 14: Signed Workspace Portability Funnel (Community -> Pro/Enterpr
       events,
       secret
     );
-
     const tamperedBundle = {
       ...bundle,
       payload: {
@@ -87,16 +77,13 @@ describe("Step 14: Signed Workspace Portability Funnel (Community -> Pro/Enterpr
         totalDossiersCount: 999, // tampered!
       },
     };
-
     const verification = verifyWorkspacePortabilityBundle(tamperedBundle, secret);
     expect(verification.valid).toBe(false);
     expect(verification.error).toContain("SHA-256 hash mismatch");
   });
-
   it("rejects bundle if HMAC signature does not match secret", () => {
     const dossiers = [buildMockDossier("DOS-1")];
     const events = [buildMockAuditEvent("AUD-1")];
-
     const bundle = exportWorkspacePortabilityBundle(
       "TEN-CAILAY-01",
       "Vựa Sầu Riêng Cai Lậy",
@@ -105,7 +92,6 @@ describe("Step 14: Signed Workspace Portability Funnel (Community -> Pro/Enterpr
       events,
       secret
     );
-
     const verification = verifyWorkspacePortabilityBundle(bundle, "wrong-shared-secret-key-12345");
     expect(verification.valid).toBe(false);
     expect(verification.error).toContain("HMAC signature verification failed");

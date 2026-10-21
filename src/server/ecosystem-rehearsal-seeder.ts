@@ -33,24 +33,9 @@ function uploadAndOptionallyVerifyTriad(
   verifyAllFields: boolean
 ): void {
   const docs: ReadonlyArray<{ type: DocumentType; fileName: string; fields: Record<string, { raw: string }> }> = [
-    {
-      type: "PACKING_LIST", fileName: `PackingList-${dossierId}.pdf`,
-      fields: {
-        net_weight_kg: { raw: "18240" }, total_boxes: { raw: "960" },
-        seal_number: { raw: sealInDoc }, PUC: { raw: "VN-TG-ORCHARD-0042" }, PHC: { raw: "VN-TG-PACK-0018" },
-      },
-    },
-    {
-      type: "LAB_TEST_REPORT", fileName: `LabReport-${dossierId}.pdf`,
-      fields: { cadmium_mg_kg: { raw: "0.025" }, sample_code: { raw: `LAB-${dossierId}` }, sampling_date: { raw: "2026-10-10" } },
-    },
-    {
-      type: "PHYTOSANITARY_CERTIFICATE", fileName: `Phyto-${dossierId}.pdf`,
-      fields: {
-        phyto_cert_no: { raw: `VN-PHYTO-${dossierId}` }, inspection_date: { raw: "2026-10-12" },
-        PUC: { raw: "VN-TG-ORCHARD-0042" }, PHC: { raw: "VN-TG-PACK-0018" }, target_temperature_c: { raw: "14" },
-      },
-    },
+    { type: "PACKING_LIST", fileName: `PackingList-${dossierId}.pdf`, fields: { net_weight_kg: { raw: "18240" }, total_boxes: { raw: "960" }, seal_number: { raw: sealInDoc }, PUC: { raw: "VN-TG-ORCHARD-0042" }, PHC: { raw: "VN-TG-PACK-0018" } } },
+    { type: "LAB_TEST_REPORT", fileName: `LabReport-${dossierId}.pdf`, fields: { cadmium_mg_kg: { raw: "0.025" }, sample_code: { raw: `LAB-${dossierId}` }, sampling_date: { raw: "2026-10-10" } } },
+    { type: "PHYTOSANITARY_CERTIFICATE", fileName: `Phyto-${dossierId}.pdf`, fields: { phyto_cert_no: { raw: `VN-PHYTO-${dossierId}` }, inspection_date: { raw: "2026-10-12" }, PUC: { raw: "VN-TG-ORCHARD-0042" }, PHC: { raw: "VN-TG-PACK-0018" }, target_temperature_c: { raw: "14" } } },
   ];
 
   for (const spec of docs) {

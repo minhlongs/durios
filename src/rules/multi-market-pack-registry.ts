@@ -16,72 +16,7 @@ export interface MarketCompliancePackSpec {
   readonly mandatoryDocumentTypes: readonly DocumentType[];
 }
 
-const MARKET_PACKS: Readonly<Record<SupportedExportMarketCode, MarketCompliancePackSpec>> = {
-  CN: {
-    marketCode: "CN",
-    marketNameVi: "Trung Quốc (GACC Nghị định thư Sầu riêng tươi)",
-    authorityCode: "GACC / GB 2762-2022",
-    editionRequired: "COMMUNITY_OPEN_CORE",
-    statutoryVerified: true,
-    cadmiumStatutoryLimitMgKg: 0.05,
-    cadmiumInternalActionThresholdMgKg: 0.04,
-    minTemperatureC: 12,
-    maxTemperatureC: 15,
-    mandatoryDocumentTypes: [
-      "PACKING_LIST",
-      "LAB_TEST_REPORT",
-      "PHYTOSANITARY_CERTIFICATE",
-    ],
-  },
-  JP: {
-    marketCode: "JP",
-    marketNameVi: "Nhật Bản (MAFF & MHLW Positive List)",
-    authorityCode: "MAFF-JP",
-    editionRequired: "PACKHOUSE_PRO_SAAS",
-    statutoryVerified: false,
-    cadmiumStatutoryLimitMgKg: 0.05,
-    cadmiumInternalActionThresholdMgKg: 0.015,
-    minTemperatureC: 13,
-    maxTemperatureC: 15,
-    mandatoryDocumentTypes: [
-      "PACKING_LIST",
-      "LAB_TEST_REPORT",
-      "PHYTOSANITARY_CERTIFICATE",
-    ],
-  },
-  KR: {
-    marketCode: "KR",
-    marketNameVi: "Hàn Quốc (MFDS & QIA Kiểm dịch thực vật)",
-    authorityCode: "MFDS-KR",
-    editionRequired: "PACKHOUSE_PRO_SAAS",
-    statutoryVerified: false,
-    cadmiumStatutoryLimitMgKg: 0.05,
-    cadmiumInternalActionThresholdMgKg: 0.02,
-    minTemperatureC: 12,
-    maxTemperatureC: 15,
-    mandatoryDocumentTypes: [
-      "PACKING_LIST",
-      "LAB_TEST_REPORT",
-      "PHYTOSANITARY_CERTIFICATE",
-    ],
-  },
-  EU: {
-    marketCode: "EU",
-    marketNameVi: "Liên minh Châu Âu (EFSA EC 2023/915)",
-    authorityCode: "EFSA-EU",
-    editionRequired: "PACKHOUSE_PRO_SAAS",
-    statutoryVerified: false,
-    cadmiumStatutoryLimitMgKg: 0.05,
-    cadmiumInternalActionThresholdMgKg: 0.015,
-    minTemperatureC: 12,
-    maxTemperatureC: 15,
-    mandatoryDocumentTypes: [
-      "PACKING_LIST",
-      "LAB_TEST_REPORT",
-      "PHYTOSANITARY_CERTIFICATE",
-    ],
-  },
-};
+const MARKET_PACKS: Readonly<Record<SupportedExportMarketCode, MarketCompliancePackSpec>> = { CN: { marketCode: "CN", marketNameVi: "Trung Quốc (GACC Nghị định thư Sầu riêng tươi)", authorityCode: "GACC / GB 2762-2022", editionRequired: "COMMUNITY_OPEN_CORE", statutoryVerified: true, cadmiumStatutoryLimitMgKg: 0.05, cadmiumInternalActionThresholdMgKg: 0.04, minTemperatureC: 12, maxTemperatureC: 15, mandatoryDocumentTypes: ["PACKING_LIST", "LAB_TEST_REPORT", "PHYTOSANITARY_CERTIFICATE"] }, JP: { marketCode: "JP", marketNameVi: "Nhật Bản (MAFF & MHLW Positive List)", authorityCode: "MAFF-JP", editionRequired: "PACKHOUSE_PRO_SAAS", statutoryVerified: false, cadmiumStatutoryLimitMgKg: 0.05, cadmiumInternalActionThresholdMgKg: 0.015, minTemperatureC: 13, maxTemperatureC: 15, mandatoryDocumentTypes: ["PACKING_LIST", "LAB_TEST_REPORT", "PHYTOSANITARY_CERTIFICATE"] }, KR: { marketCode: "KR", marketNameVi: "Hàn Quốc (MFDS & QIA Kiểm dịch thực vật)", authorityCode: "MFDS-KR", editionRequired: "PACKHOUSE_PRO_SAAS", statutoryVerified: false, cadmiumStatutoryLimitMgKg: 0.05, cadmiumInternalActionThresholdMgKg: 0.02, minTemperatureC: 12, maxTemperatureC: 15, mandatoryDocumentTypes: ["PACKING_LIST", "LAB_TEST_REPORT", "PHYTOSANITARY_CERTIFICATE"] }, EU: { marketCode: "EU", marketNameVi: "Liên minh Châu Âu (EFSA EC 2023/915)", authorityCode: "EFSA-EU", editionRequired: "PACKHOUSE_PRO_SAAS", statutoryVerified: false, cadmiumStatutoryLimitMgKg: 0.05, cadmiumInternalActionThresholdMgKg: 0.015, minTemperatureC: 12, maxTemperatureC: 15, mandatoryDocumentTypes: ["PACKING_LIST", "LAB_TEST_REPORT", "PHYTOSANITARY_CERTIFICATE"] } };
 
 export function getMarketCompliancePack(
   marketCode: SupportedExportMarketCode,

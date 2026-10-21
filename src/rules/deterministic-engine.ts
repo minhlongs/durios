@@ -1,10 +1,5 @@
-import type {
-  ComplianceRule, ContainerDossier, ValidationFinding, ValidationRunResult,
-} from "../domain/types.js";
-import {
-  evaluateCadmiumThreshold, evaluateCadmiumWarningThreshold,
-  evaluateCrossDocFieldDiscrepancy, evaluateIsoChecksum,
-} from "./evaluator-helpers.js";
+import type { ComplianceRule, ContainerDossier, ValidationFinding, ValidationRunResult } from "../domain/types.js";
+import { evaluateCadmiumThreshold, evaluateCadmiumWarningThreshold, evaluateCrossDocFieldDiscrepancy, evaluateIsoChecksum } from "./evaluator-helpers.js";
 
 export class DeterministicRuleEngine {
   constructor(private readonly rules: readonly ComplianceRule[]) {}
@@ -34,7 +29,6 @@ export class DeterministicRuleEngine {
     }
 
     let evaluatedCount = 0;
-
     for (const rule of this.rules) {
       if (!rule.isActive) continue;
 
@@ -66,11 +60,7 @@ export class DeterministicRuleEngine {
     };
   }
 
-  private evaluateIndividualRule(
-    rule: ComplianceRule,
-    dossier: ContainerDossier,
-    findings: ValidationFinding[]
-  ): void {
+  private evaluateIndividualRule(rule: ComplianceRule, dossier: ContainerDossier, findings: ValidationFinding[]): void {
     const activeDocs = dossier.documents.filter((d) => !d.isSuperseded);
 
     if (rule.ruleId === "RUL-DOC-001" && !activeDocs.some((d) => d.documentType === "LAB_TEST_REPORT")) {
@@ -95,6 +85,5 @@ export class DeterministicRuleEngine {
     if (rule.ruleId === "RUL-INT-CD-WARN") evaluateCadmiumWarningThreshold(rule, activeDocs, findings);
     if (rule.ruleId === "RUL-ISO6346-CHK") evaluateIsoChecksum(rule, dossier, findings);
     if (rule.ruleId === "RUL-CROSS-CONT") evaluateCrossDocFieldDiscrepancy("container_number", rule, dossier, activeDocs, findings);
-    if (rule.ruleId === "RUL-CROSS-SEAL") evaluateCrossDocFieldDiscrepancy("seal_number", rule, dossier, activeDocs, findings);
-  }
+    if (rule.ruleId === "RUL-CROSS-SEAL") evaluateCrossDocFieldDiscrepancy("seal_number", rule, dossier, activeDocs, findings);  }
 }

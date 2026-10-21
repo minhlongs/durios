@@ -2,25 +2,14 @@ import { expect } from "bun:test";
 import { SqliteAuthService } from "../../src/auth/sqlite-auth-service.js";
 import { SqliteClient } from "../../src/storage/sqlite-client.js";
 import { seedTestPilotActor } from "./auth-test-helper.js";
-import {
-  createActiveAndRevokedShareGrants, verifyAndRecordOrganicAndSeal,
-} from "./process-restart-sealed-organic-step.js";
-
+import { createActiveAndRevokedShareGrants, verifyAndRecordOrganicAndSeal } from "./process-restart-sealed-organic-step.js";
 export interface SealedRestartActorsHeaders {
-  adminHeaders: Record<string, string>;
-  customsHeaders: Record<string, string>;
-  buyerHeaders: Record<string, string>;
+  adminHeaders: Record<string, string>; customsHeaders: Record<string, string>; buyerHeaders: Record<string, string>;
 }
-
 export interface SealedRestartSetupState extends SealedRestartActorsHeaders {
-  dossierId: string;
-  firstDocPayload: Record<string, unknown>;
-  firstDocId: string;
-  firstFieldId: string;
-  activeGrantId: string;
-  revokedGrantId: string;
+  dossierId: string; firstDocPayload: Record<string, unknown>;
+  firstDocId: string; firstFieldId: string; activeGrantId: string; revokedGrantId: string;
 }
-
 export function seedSealedRestartActors(dbPath: string): SealedRestartActorsHeaders {
   const seedClient = new SqliteClient({ dbPath });
   const seedAuth = new SqliteAuthService(seedClient);
@@ -37,18 +26,13 @@ export function seedSealedRestartActors(dbPath: string): SealedRestartActorsHead
     tenantType: "BUYER_IMPORTER", role: "VIEWER", persona: "BUYER_VIEWER",
   });
   seedClient.close();
-
   return {
     adminHeaders: { "Content-Type": "application/json", Authorization: `Bearer ${ownerAdmin.sessionToken}` },
     customsHeaders: { Authorization: `Bearer ${partnerCustoms.sessionToken}` },
     buyerHeaders: { Authorization: `Bearer ${partnerBuyer.sessionToken}` },
   };
 }
-
-export async function setupSealedDossierBeforeRestart(
-  baseUrl: string,
-  headers: SealedRestartActorsHeaders
-): Promise<SealedRestartSetupState> {
+export async function setupSealedDossierBeforeRestart(baseUrl: string, headers: SealedRestartActorsHeaders): Promise<SealedRestartSetupState> {
   const { adminHeaders } = headers;
   const createRes = await fetch(`${baseUrl}/api/v1/dossiers`, {
     method: "POST", headers: adminHeaders,
@@ -60,7 +44,6 @@ export async function setupSealedDossierBeforeRestart(
   });
   expect(createRes.status).toBe(201);
   const dossierId = ((await createRes.json()) as { data: { id: string } }).data.id;
-
   const docs: Array<Record<string, unknown>> = [
     {
       fileName: "pl_5a6.pdf", documentType: "PACKING_LIST",
@@ -93,14 +76,11 @@ export async function setupSealedDossierBeforeRestart(
     });
     expect(uRes.status).toBe(201);
   }
-
   const detailRes = await fetch(`${baseUrl}/api/v1/dossiers/${dossierId}`, { headers: adminHeaders });
   const detailBeforeVerify = ((await detailRes.json()) as {
     data: { documents: Array<{ id: string; extractedFields: Array<{ id: string; rawValue: string }> }> };
   }).data;
-  const firstDocId = detailBeforeVerify.documents[0]!.id;
-  const firstFieldId = detailBeforeVerify.documents[0]!.extractedFields[0]!.id;
-
+  const [firstDocId, firstFieldId] = [detailBeforeVerify.documents[0]!.id, detailBeforeVerify.documents[0]!.extractedFields[0]!.id];
   for (const doc of detailBeforeVerify.documents) {
     for (const f of doc.extractedFields) {
       const vRes = await fetch(
@@ -110,10 +90,8 @@ export async function setupSealedDossierBeforeRestart(
       expect(vRes.status).toBe(200);
     }
   }
-
   const { activeGrantId, revokedGrantId } = await createActiveAndRevokedShareGrants(baseUrl, dossierId, adminHeaders);
   await verifyAndRecordOrganicAndSeal(baseUrl, dossierId, adminHeaders);
-
   return {
     ...headers, dossierId, firstDocPayload: docs[0]!,
     firstDocId, firstFieldId, activeGrantId, revokedGrantId,

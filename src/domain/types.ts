@@ -1,28 +1,17 @@
 export type UserRole = "CLERK" | "MANAGER" | "ADMIN" | "AUDITOR" | "VIEWER";
 export type TenantType = "ORCHARD_COOP" | "PACKHOUSE_EXPORTER" | "BUYER_IMPORTER" | "INSPECTION_AUDITOR";
-export type ProductPersona =
-  | "ORCHARD_OFFICER" | "PACKHOUSE_CLERK" | "PACKHOUSE_MANAGER" | "BUYER_VIEWER" | "SYSTEM_AUDITOR";
+export type ProductPersona = "ORCHARD_OFFICER" | "PACKHOUSE_CLERK" | "PACKHOUSE_MANAGER" | "BUYER_VIEWER" | "SYSTEM_AUDITOR";
 
 export interface AuthenticatedActor {
   readonly id: string; readonly tenantId: string; readonly role: UserRole;
   readonly name: string; readonly tenantType: TenantType; readonly persona: ProductPersona;
 }
 
-export type DossierLifecycleState =
-  | "DRAFT" | "DOCUMENTS_PENDING" | "PROCESSING" | "HUMAN_VERIFICATION_REQUIRED"
-  | "VALIDATION_BLOCKED" | "REVIEW_REQUIRED" | "READY_FOR_REVIEW"
-  | "APPROVED_FOR_EXPORT" | "EXPORTED" | "CLOSED" | "CANCELLED";
-
-export type DocumentType =
-  | "LAB_TEST_REPORT" | "PACKING_LIST" | "PHYTOSANITARY_CERTIFICATE"
-  | "CUSTOMS_DECLARATION" | "BILL_OF_LADING";
-
+export type DossierLifecycleState = "DRAFT" | "DOCUMENTS_PENDING" | "PROCESSING" | "HUMAN_VERIFICATION_REQUIRED" | "VALIDATION_BLOCKED" | "REVIEW_REQUIRED" | "READY_FOR_REVIEW" | "APPROVED_FOR_EXPORT" | "EXPORTED" | "CLOSED" | "CANCELLED";
+export type DocumentType = "LAB_TEST_REPORT" | "PACKING_LIST" | "PHYTOSANITARY_CERTIFICATE" | "CUSTOMS_DECLARATION" | "BILL_OF_LADING";
 export type FieldVerificationStatus = "DRAFT" | "HUMAN_VERIFIED" | "REJECTED";
 
-export interface BoundingBox {
-  readonly pageNumber: number; readonly x: number; readonly y: number;
-  readonly width: number; readonly height: number;
-}
+export interface BoundingBox { readonly pageNumber: number; readonly x: number; readonly y: number; readonly width: number; readonly height: number; }
 
 export interface ExtractedField {
   readonly id: string; readonly documentId: string; readonly fieldKey: string;
@@ -50,9 +39,7 @@ export interface ComplianceRule {
   readonly statutoryReference: string; readonly isActive: boolean;
   readonly isStatutoryVerified: boolean; readonly fieldKeyRef?: string | undefined;
   readonly threshold?: number | undefined; readonly unit?: string | undefined;
-  readonly evaluationType:
-    | "DOCUMENT_PRESENCE" | "NUMERIC_THRESHOLD" | "ALGORITHMIC_CHECKSUM"
-    | "CROSS_DOCUMENT_EQUALITY" | "CHRONOLOGICAL_SANITY";
+  readonly evaluationType: "DOCUMENT_PRESENCE" | "NUMERIC_THRESHOLD" | "ALGORITHMIC_CHECKSUM" | "CROSS_DOCUMENT_EQUALITY" | "CHRONOLOGICAL_SANITY";
 }
 
 export interface ValidationFinding {
@@ -62,9 +49,7 @@ export interface ValidationFinding {
 }
 
 export interface ValidationRunResult {
-  readonly status:
-    | "PASSED" | "BLOCKED" | "REVIEW_REQUIRED"
-    | "DOCUMENTS_MISSING" | "HUMAN_VERIFICATION_REQUIRED" | "RULE_UNVERIFIED";
+  readonly status: "PASSED" | "BLOCKED" | "REVIEW_REQUIRED" | "DOCUMENTS_MISSING" | "HUMAN_VERIFICATION_REQUIRED" | "RULE_UNVERIFIED";
   readonly criticalBlockers: number; readonly advisoryWarnings: number;
   readonly evaluatedRulesCount: number; readonly findings: readonly ValidationFinding[];
   readonly evaluatedAt: string;
@@ -99,10 +84,7 @@ export interface DossierExportManifest {
   readonly containerNumber: string; readonly sealNumber: string;
   readonly lifecycleState: DossierLifecycleState; readonly isImmutable: boolean;
   readonly exportedAt: string; readonly exportedBy: string; readonly compositeManifestSha256: string;
-  readonly documents: readonly {
-    readonly documentId: string; readonly documentType: DocumentType;
-    readonly fileName: string; readonly sha256Hash: string; readonly verifiedFieldCount: number;
-  }[];
+  readonly documents: readonly { readonly documentId: string; readonly documentType: DocumentType; readonly fileName: string; readonly sha256Hash: string; readonly verifiedFieldCount: number; }[];
   readonly verifiedDataSummary: Record<string, unknown>;
   readonly complianceFindingsCount: { readonly criticalBlockers: number; readonly advisoryWarnings: number };
   readonly regulatoryDisclaimers: readonly string[];

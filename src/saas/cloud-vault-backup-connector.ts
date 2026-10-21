@@ -4,18 +4,10 @@ import { calculateSha256 } from "../ingestion/document-hasher.js";
 import { resolveSaasSubscriptionStatus } from "./saas-tier-policy.js";
 
 export interface EncryptedCloudVaultEnvelope {
-  readonly envelopeVersion: "1.0.0";
-  readonly tenantId: string;
-  readonly algorithm: "AES-256-GCM";
-  readonly kdf: "scrypt-sha256-v1";
-  readonly saltBase64: string;
-  readonly ivBase64: string;
-  readonly authTagBase64: string;
-  readonly aadContext: string;
-  readonly ciphertextBase64: string;
-  readonly plaintextManifestSha256: string;
-  readonly payloadScope: "MANIFEST_METADATA_ONLY_NOT_BLOBS";
-  readonly encryptedAt: string;
+  readonly envelopeVersion: "1.0.0"; readonly tenantId: string; readonly algorithm: "AES-256-GCM";
+  readonly kdf: "scrypt-sha256-v1"; readonly saltBase64: string; readonly ivBase64: string;
+  readonly authTagBase64: string; readonly aadContext: string; readonly ciphertextBase64: string;
+  readonly plaintextManifestSha256: string; readonly payloadScope: "MANIFEST_METADATA_ONLY_NOT_BLOBS"; readonly encryptedAt: string;
 }
 
 export function encryptBackupManifestForCloudVault(

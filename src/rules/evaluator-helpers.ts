@@ -10,20 +10,8 @@ export function evaluateCadmiumThreshold(
   if (!labDoc) return;
   const cdField = labDoc.extractedFields.find((f) => f.fieldKey === "cadmium_mg_kg");
   if (!cdField) return;
-
   const val = Number.parseFloat(String(cdField.confirmedValue ?? cdField.rawValue));
-  if (!Number.isNaN(val) && val > 0.050) {
-    findings.push({
-      ruleId: rule.ruleId,
-      severity: "CRITICAL_BLOCKER",
-      ruleName: rule.name,
-      citation: rule.statutoryReference,
-      observedValue: `${val.toFixed(3)} mg/kg`,
-      thresholdValue: "0.050 mg/kg",
-      messageVi: `Hàm lượng Cadmi (${val.toFixed(3)} mg/kg) vượt ngưỡng pháp định tối đa (0.050 mg/kg).`,
-      messageEn: `Cadmium concentration (${val.toFixed(3)} mg/kg) exceeds statutory limit (0.050 mg/kg).`,
-    });
-  }
+  if (!Number.isNaN(val) && val > 0.050) findings.push({ ruleId: rule.ruleId, severity: "CRITICAL_BLOCKER", ruleName: rule.name, citation: rule.statutoryReference, observedValue: `${val.toFixed(3)} mg/kg`, thresholdValue: "0.050 mg/kg", messageVi: `Hàm lượng Cadmi (${val.toFixed(3)} mg/kg) vượt ngưỡng pháp định tối đa (0.050 mg/kg).`, messageEn: `Cadmium concentration (${val.toFixed(3)} mg/kg) exceeds statutory limit (0.050 mg/kg).` });
 }
 
 export function evaluateCadmiumWarningThreshold(

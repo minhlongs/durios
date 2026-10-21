@@ -6,7 +6,6 @@ import type { ContainerDossierWorkspace } from "../../src/workspace/container-do
 import {
   seedAndMakeActor, type DossierDetailResponse, type DossierListOrDetailResponse,
 } from "./redaction-and-blobs-5a5-fixtures.js";
-
 const FORBIDDEN_COMMERCIAL_KEYS = [
   "invoice_value", "invoiceValue", "unit_price", "unitPrice",
   "buyer_name", "buyerName", "buyer_contact", "buyerContact",
@@ -14,7 +13,6 @@ const FORBIDDEN_COMMERCIAL_KEYS = [
   "exporter_margin", "exporterMargin", "customs_broker_fee", "customsBrokerFee",
   "clerkNote", "clerk_note", "storagePath", "storage_path",
 ];
-
 export function assertNoCommercialLeak(payload: unknown): void {
   const serialized = JSON.stringify(payload);
   for (const key of FORBIDDEN_COMMERCIAL_KEYS) {
@@ -27,7 +25,6 @@ export function assertNoCommercialLeak(payload: unknown): void {
   expect(serialized).not.toContain("SYNTH-CONTRACT-2026-88");
   expect(serialized).not.toContain("L/C 30 Days");
 }
-
 export async function assertSharedGranteeRedaction(
   workspace: ContainerDossierWorkspace,
   dossierId: string,
@@ -56,7 +53,6 @@ export async function assertSharedGranteeRedaction(
     }
   }
 }
-
 export async function verifyMultiGrantRevocationAndRawSafety(
   workspace: ContainerDossierWorkspace,
   currentDossier: ContainerDossier,
@@ -69,7 +65,6 @@ export async function verifyMultiGrantRevocationAndRawSafety(
     currentDossier, "TENANT-BUYER-5A5", "LOGISTICS", "READ_ONLY",
     futureIso, ownerActor, workspace.auditLedger
   );
-
   const multiGrantRes = await routeHttpRequest(
     workspace,
     new Request(`http://localhost:3000/api/dossiers/${currentDossier.id}`, {
@@ -79,11 +74,9 @@ export async function verifyMultiGrantRevocationAndRawSafety(
   const multiGrantJson = (await multiGrantRes.json()) as DossierDetailResponse;
   expect(multiGrantJson.data.declaredNetWeightKg).toBe(18500);
   expect(multiGrantJson.data.declaredBoxCount).toBe(925);
-
   workspace.shareManager.revokeAccess(
     extraLogisticsGrant.id, currentDossier, "Logistics leg finished", ownerActor, workspace.auditLedger
   );
-
   const afterRevokeRes = await routeHttpRequest(
     workspace,
     new Request(`http://localhost:3000/api/dossiers/${currentDossier.id}`, {
@@ -93,7 +86,6 @@ export async function verifyMultiGrantRevocationAndRawSafety(
   const afterRevokeJson = (await afterRevokeRes.json()) as DossierDetailResponse;
   expect("declaredNetWeightKg" in afterRevokeJson.data).toBe(false);
   expect("declaredBoxCount" in afterRevokeJson.data).toBe(false);
-
   const rawAfter = workspace.getRawDossier(currentDossier.id)!;
   expect(rawAfter.declaredNetWeightKg).toBe(18500);
   expect(rawAfter.declaredBoxCount).toBe(925);

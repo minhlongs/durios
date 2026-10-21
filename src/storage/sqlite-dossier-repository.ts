@@ -34,10 +34,9 @@ export class SqliteDossierRepository {
   }
 
   public hasDocumentReferencingBlob(storagePath: string, sha256Hash: string): boolean {
-    const row = this.client.db
-      .query<{ id: string }, [string, string]>("SELECT id FROM documents WHERE storage_path = ? OR sha256_hash = ? LIMIT 1")
-      .get(storagePath, sha256Hash);
-    return Boolean(row);
+    return this.client.db.query<{ id: string }, [string, string]>(
+      "SELECT id FROM documents WHERE storage_path = ? OR sha256_hash = ? LIMIT 1"
+    ).get(storagePath, sha256Hash) !== null;
   }
 
   private hasActiveSqliteShareGrant(dossierId: string, ownerTenantId: string, granteeTenantId: string): boolean {
@@ -54,62 +53,37 @@ export class SqliteDossierRepository {
   public findById(dossierId: string, actor: AuthenticatedActor): ContainerDossier | undefined {
     const raw = this.findRaw(dossierId);
     if (!raw) return undefined;
-    if (
-      raw.tenantId === actor.tenantId ||
-      this.hasActiveSqliteShareGrant(dossierId, raw.tenantId, actor.tenantId) ||
-      Boolean(this.accessChecker?.(dossierId, raw.tenantId, actor.tenantId))
-    ) {
-      return raw;
-    }
+    if (raw.tenantId === actor.tenantId || this.hasActiveSqliteShareGrant(dossierId, raw.tenantId, actor.tenantId) || Boolean(this.accessChecker?.(dossierId, raw.tenantId, actor.tenantId))) return raw;
     return undefined;
   }
 
   public listForTenant(actor: AuthenticatedActor): readonly ContainerDossier[] {
     const dRows = this.client.db
       .query<DossierRow, [string, string, string]>(
-        `SELECT DISTINCT d.*
-         FROM container_dossiers d
-         LEFT JOIN share_grants sg
-           ON sg.dossier_id = d.id AND sg.owner_tenant_id = d.tenant_id
-          AND sg.grantee_tenant_id = ? AND sg.is_revoked = 0 AND sg.expires_at > ?
-         WHERE d.tenant_id = ? OR sg.id IS NOT NULL
-         ORDER BY d.created_at DESC`
+        `SELECT DISTINCT d.* FROM container_dossiers d LEFT JOIN share_grants sg ON sg.dossier_id = d.id AND sg.owner_tenant_id = d.tenant_id AND sg.grantee_tenant_id = ? AND sg.is_revoked = 0 AND sg.expires_at > ? WHERE d.tenant_id = ? OR sg.id IS NOT NULL ORDER BY d.created_at DESC`
       )
       .all(actor.tenantId, new Date().toISOString(), actor.tenantId);
-
     return dRows.map((dRow) => this.hydrateDossier(dRow));
   }
 
   public getOrThrow(dossierId: string, actor: AuthenticatedActor): ContainerDossier {
     const dossier = this.findById(dossierId, actor);
     if (dossier) return dossier;
-    if (this.findRaw(dossierId)) {
-      throw new AccessControlError(`Cross-tenant access prohibited for dossier '${dossierId}'.`, "CROSS_TENANT_FORBIDDEN");
-    }
+    if (this.findRaw(dossierId)) throw new AccessControlError(`Cross-tenant access prohibited for dossier '${dossierId}'.`, "CROSS_TENANT_FORBIDDEN");
     throw new Error(`Dossier '${dossierId}' not found for tenant '${actor.tenantId}'.`);
   }
 
   public saveExportManifest(manifest: DossierExportManifest, actor: AuthenticatedActor): void {
     this.client.db.run(
-      `INSERT INTO export_manifests (id, dossier_id, tenant_id, composite_hash, manifest_json, created_at)
-       VALUES (?, ?, ?, ?, ?, ?)
-       ON CONFLICT(dossier_id) DO UPDATE SET composite_hash = excluded.composite_hash, manifest_json = excluded.manifest_json`,
-      [
-        `MAN-${manifest.dossierId}`, manifest.dossierId, actor.tenantId,
-        manifest.compositeManifestSha256, JSON.stringify(manifest),
-        manifest.exportedAt || new Date().toISOString(),
-      ]
+      `INSERT INTO export_manifests (id, dossier_id, tenant_id, composite_hash, manifest_json, created_at) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(dossier_id) DO UPDATE SET composite_hash = excluded.composite_hash, manifest_json = excluded.manifest_json`,
+      [`MAN-${manifest.dossierId}`, manifest.dossierId, actor.tenantId, manifest.compositeManifestSha256, JSON.stringify(manifest), manifest.exportedAt || new Date().toISOString()]
     );
   }
 
   public getExportManifest(dossierId: string, actor: AuthenticatedActor): DossierExportManifest | undefined {
     const accessible = this.findById(dossierId, actor);
     if (!accessible) return undefined;
-    const row = this.client.db
-      .query<{ manifest_json: string }, [string, string]>(
-        "SELECT manifest_json FROM export_manifests WHERE dossier_id = ? AND tenant_id = ?"
-      )
-      .get(dossierId, accessible.tenantId);
+    const row = this.client.db.query<{ manifest_json: string }, [string, string]>("SELECT manifest_json FROM export_manifests WHERE dossier_id = ? AND tenant_id = ?").get(dossierId, accessible.tenantId);
     return row ? JSON.parse(row.manifest_json) : undefined;
   }
 }

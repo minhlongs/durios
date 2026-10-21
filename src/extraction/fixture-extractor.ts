@@ -5,50 +5,26 @@ export interface SyntheticDocumentFixture {
   readonly documentType: DocumentType;
   readonly fileName: string;
   readonly sha256Hash: string;
-  readonly extractedFields: Record<
-    string,
-    {
-      readonly raw: string;
-      readonly confirmed?: string;
-      readonly status?: string;
-    }
-  >;
+  readonly extractedFields: Record<string, { readonly raw: string; readonly confirmed?: string; readonly status?: string }>;
 }
 
 export function extractSyntheticFields(
-  documentId: string,
-  docType: DocumentType,
-  fixtureData?: Record<string, { raw: string; confirmed?: string }>
+  documentId: string, docType: DocumentType, fixtureData?: Record<string, { raw: string; confirmed?: string }>
 ): readonly ExtractedField[] {
   const fields: ExtractedField[] = [];
   const source = fixtureData ?? getDefaultTemplateFields(docType);
-
   let idx = 1;
   for (const [key, val] of Object.entries(source)) {
     const rawValue = val.raw;
     const num = Number.parseFloat(rawValue);
     const normalizedValue = Number.isNaN(num) ? rawValue : num;
-
     fields.push({
-      id: `${documentId}-fld-${idx}`,
-      documentId,
-      fieldKey: key,
-      label: formatFieldLabel(key),
-      rawValue,
-      normalizedValue,
-      confidenceScore: 0.96,
-      boundingBox: {
-        pageNumber: 1,
-        x: 100,
-        y: 80 * idx,
-        width: 250,
-        height: 25,
-      },
-      verificationStatus: "DRAFT",
+      id: `${documentId}-fld-${idx}`, documentId, fieldKey: key, label: formatFieldLabel(key),
+      rawValue, normalizedValue, confidenceScore: 0.96,
+      boundingBox: { pageNumber: 1, x: 100, y: 80 * idx, width: 250, height: 25 }, verificationStatus: "DRAFT",
     });
     idx++;
   }
-
   return fields;
 }
 

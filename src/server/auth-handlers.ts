@@ -1,6 +1,4 @@
-import {
-  OtpProviderDispatchError, OtpProviderNotConfiguredError, type OtpChannel,
-} from "../auth/otp-provider.js";
+import { OtpProviderDispatchError, OtpProviderNotConfiguredError, type OtpChannel } from "../auth/otp-provider.js";
 import type { SqliteAuthService } from "../auth/sqlite-auth-service.js";
 import { resolveAuthenticatedActor } from "./actor-resolver.js";
 import { errorResponse, jsonResponse, mapDomainErrorToResponse } from "./server-types.js";
@@ -32,47 +30,25 @@ export async function handlePasswordLogin(authService: SqliteAuthService | undef
 
   try {
     const session = authService.loginWithPassword(String(body.username), String(body.password));
-    return sessionResponseWithCookie(
-      {
-        success: true,
-        data: {
-          sessionId: session.sessionId, authMethod: session.authMethod,
-          expiresAt: session.expiresAt, actor: session.actor,
-        },
-      },
-      session.sessionToken, session.expiresAt, req, 200
-    );
+    return sessionResponseWithCookie({
+      success: true,
+      data: { sessionId: session.sessionId, authMethod: session.authMethod, expiresAt: session.expiresAt, actor: session.actor },
+    }, session.sessionToken, session.expiresAt, req, 200);
   } catch (err) {
     return mapDomainErrorToResponse(err, "Password login failed");
   }
 }
 
-export async function handleOtpChallengeRequest(
-  authService: SqliteAuthService | undefined, req: Request
-): Promise<Response> {
+export async function handleOtpChallengeRequest(authService: SqliteAuthService | undefined, req: Request): Promise<Response> {
   if (!authService) return errorResponse("Authentication service unavailable", 503);
   let body: { phoneNumber?: string; channel?: OtpChannel };
-  try {
-    body = (await req.json()) as { phoneNumber?: string; channel?: OtpChannel };
-  } catch {
-    return errorResponse("Invalid JSON payload", 400);
-  }
+  try { body = (await req.json()) as { phoneNumber?: string; channel?: OtpChannel }; } catch { return errorResponse("Invalid JSON payload", 400); }
   if (!body.phoneNumber) return errorResponse("Missing required field: phoneNumber", 400);
 
   const channel: OtpChannel = body.channel === "SMS" ? "SMS" : "ZALO";
   try {
     const challenge = await authService.requestOtpChallenge(String(body.phoneNumber), channel);
-    return jsonResponse(
-      {
-        success: true,
-        data: {
-          challengeId: challenge.challengeId, phoneNumber: challenge.phoneNumber,
-          channel: challenge.channel, expiresAt: challenge.expiresAt,
-          providerReference: challenge.providerReference,
-        },
-      },
-      201
-    );
+    return jsonResponse({ success: true, data: { challengeId: challenge.challengeId, phoneNumber: challenge.phoneNumber, channel: challenge.channel, expiresAt: challenge.expiresAt, providerReference: challenge.providerReference } }, 201);
   } catch (err) {
     if (err instanceof OtpProviderNotConfiguredError) return errorResponse(err.message, 503, err.code);
     if (err instanceof OtpProviderDispatchError) return errorResponse(err.message, 502, err.code);
@@ -85,35 +61,21 @@ export async function handleOtpChallengeVerify(
 ): Promise<Response> {
   if (!authService) return errorResponse("Authentication service unavailable", 503);
   let body: { challengeId?: string; otpCode?: string };
-  try {
-    body = (await req.json()) as { challengeId?: string; otpCode?: string };
-  } catch {
-    return errorResponse("Invalid JSON payload", 400);
-  }
-  if (!body.challengeId || !body.otpCode) {
-    return errorResponse("Missing required fields: challengeId, otpCode", 400);
-  }
+  try { body = (await req.json()) as { challengeId?: string; otpCode?: string }; } catch { return errorResponse("Invalid JSON payload", 400); }
+  if (!body.challengeId || !body.otpCode) return errorResponse("Missing required fields: challengeId, otpCode", 400);
 
   try {
     const session = authService.verifyOtpChallenge(String(body.challengeId), String(body.otpCode));
-    return sessionResponseWithCookie(
-      {
-        success: true,
-        data: {
-          sessionId: session.sessionId, authMethod: session.authMethod,
-          expiresAt: session.expiresAt, actor: session.actor,
-        },
-      },
-      session.sessionToken, session.expiresAt, req, 200
-    );
+    return sessionResponseWithCookie({
+      success: true,
+      data: { sessionId: session.sessionId, authMethod: session.authMethod, expiresAt: session.expiresAt, actor: session.actor },
+    }, session.sessionToken, session.expiresAt, req, 200);
   } catch (err) {
     return mapDomainErrorToResponse(err, "OTP verification failed");
   }
 }
 
-export function handleGetAuthenticatedMe(
-  authService: SqliteAuthService | undefined, req: Request
-): Response {
+export function handleGetAuthenticatedMe(authService: SqliteAuthService | undefined, req: Request): Response {
   try {
     return jsonResponse({ success: true, data: { actor: resolveAuthenticatedActor(req, authService) } });
   } catch (err) {

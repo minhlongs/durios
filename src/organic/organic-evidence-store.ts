@@ -36,28 +36,18 @@ export function mapRowToOrganicEvidence(row: OrganicEvidenceRow): OrganicCertifi
 }
 
 export function insertOrganicEvidenceRow(
-  client: SqliteClient,
-  dossier: ContainerDossier,
-  evidence: OrganicCertificationEvidence
+  client: SqliteClient, dossier: ContainerDossier, evidence: OrganicCertificationEvidence
 ): void {
   ensureDossierRowInSqlite(client, dossier);
-  client.db.run(
-    `INSERT INTO organic_evidence (
-      id, dossier_id, tenant_id, certifier_name, certifier_accreditation_number,
-      certificate_number, standard_code, standard_description, certified_scope,
-      valid_from, valid_to, issuing_date, issuer_claimed_status, durios_record_status,
-      evidence_document_id, source_document_url, regulatory_disclaimer, recorded_at, recorded_by
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [
-      evidence.id, evidence.dossierId, evidence.tenantId, evidence.certifierName,
-      evidence.certifierAccreditationNumber ?? null, evidence.certificateNumber,
-      evidence.standardCode, evidence.standardDescription, evidence.certifiedScope,
-      evidence.validFrom, evidence.validTo, evidence.issuingDate,
-      evidence.issuerClaimedStatus, evidence.duriosRecordStatus,
-      evidence.evidenceDocumentId ?? null, evidence.sourceDocumentUrl ?? null,
-      evidence.regulatoryDisclaimer, evidence.recordedAt, evidence.recordedBy,
-    ]
-  );
+  client.db.run(`INSERT INTO organic_evidence (id, dossier_id, tenant_id, certifier_name, certifier_accreditation_number, certificate_number, standard_code, standard_description, certified_scope, valid_from, valid_to, issuing_date, issuer_claimed_status, durios_record_status, evidence_document_id, source_document_url, regulatory_disclaimer, recorded_at, recorded_by) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
+    evidence.id, evidence.dossierId, evidence.tenantId, evidence.certifierName,
+    evidence.certifierAccreditationNumber ?? null, evidence.certificateNumber,
+    evidence.standardCode, evidence.standardDescription, evidence.certifiedScope,
+    evidence.validFrom, evidence.validTo, evidence.issuingDate,
+    evidence.issuerClaimedStatus, evidence.duriosRecordStatus,
+    evidence.evidenceDocumentId ?? null, evidence.sourceDocumentUrl ?? null,
+    evidence.regulatoryDisclaimer, evidence.recordedAt, evidence.recordedBy,
+  ]);
 }
 
 export function queryOrganicEvidenceByDossier(

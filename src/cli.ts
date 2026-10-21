@@ -36,15 +36,9 @@ async function runDemo(): Promise<void> {
   );
 
   // Step 2 & 3: Upload supported documents with server-side SHA-256
-  const fakePdfHeader1 = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37, 0x01]);
-  const fakePdfHeader2 = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37, 0x02]);
-  const fakePdfHeader3 = new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37, 0x03]);
+  const fakePdf = (n: number) => new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x37, n]);
   const doc1 = workspace.uploadDocument(
-    dossier.id,
-    fakePdfHeader1,
-    "Packing_List_MSKU1234565.pdf",
-    "PACKING_LIST",
-    clerk,
+    dossier.id, fakePdf(1), "Packing_List_MSKU1234565.pdf", "PACKING_LIST", clerk,
     {
       container_number: { raw: "MSKU1234565" },
       seal_number: { raw: "SL-998822" },
@@ -53,11 +47,7 @@ async function runDemo(): Promise<void> {
     }
   );
   const doc2 = workspace.uploadDocument(
-    dossier.id,
-    fakePdfHeader2,
-    "Eurofins_LabReport_E2610.pdf",
-    "LAB_TEST_REPORT",
-    clerk,
+    dossier.id, fakePdf(2), "Eurofins_LabReport_E2610.pdf", "LAB_TEST_REPORT", clerk,
     {
       cadmium_mg_kg: { raw: "0.028" },
       sample_code: { raw: "EF-2026-VN-9081" },
@@ -65,11 +55,7 @@ async function runDemo(): Promise<void> {
     }
   );
   const doc3 = workspace.uploadDocument(
-    dossier.id,
-    fakePdfHeader3,
-    "Phytosanitary_Cert_KDTV.pdf",
-    "PHYTOSANITARY_CERTIFICATE",
-    clerk,
+    dossier.id, fakePdf(3), "Phytosanitary_Cert_KDTV.pdf", "PHYTOSANITARY_CERTIFICATE", clerk,
     {
       container_number: { raw: "MSKU1234565" },
       seal_number: { raw: "SL-998822" },
@@ -93,27 +79,13 @@ async function runDemo(): Promise<void> {
     }
   }
 
-  // Step 7 & 8: Run deterministic completeness and cross-document checks
   const validation = workspace.runValidation(dossier.id, clerk);
-
-  // Step 9: Manager sign-off
   workspace.approveForExport(dossier.id, manager);
-
-  // Step 10: Cryptographic export manifest compilation
   const manifest = workspace.exportDossier(dossier.id, manager);
-
   const isAuditClean = workspace.auditLedger.verifyIntegrity();
   process.stdout.write(
-    `[DuriOS] Local vertical slice completed successfully:\n` +
-      ` - Dossier ID: ${manifest.dossierId}\n` +
-      ` - Status: ${manifest.lifecycleState}\n` +
-      ` - Validation: ${validation.status} (${validation.criticalBlockers} blockers, ${validation.advisoryWarnings} warnings)\n` +
-      ` - Audit Ledger: ${workspace.auditLedger.getAllEvents().length} events recorded, hash-chain integrity verified: ${isAuditClean}\n` +
-      ` - Composite SHA-256: ${manifest.compositeManifestSha256}\n`
+    `[DuriOS] Local vertical slice completed successfully:\n - Dossier ID: ${manifest.dossierId}\n - Status: ${manifest.lifecycleState}\n - Validation: ${validation.status} (${validation.criticalBlockers} blockers, ${validation.advisoryWarnings} warnings)\n - Audit Ledger: ${workspace.auditLedger.getAllEvents().length} events recorded, hash-chain integrity verified: ${isAuditClean}\n - Composite SHA-256: ${manifest.compositeManifestSha256}\n`
   );
 }
 
-runDemo().catch((err) => {
-  process.stderr.write(`Fatal execution error: ${err.message}\n`);
-  process.exit(1);
-});
+runDemo().catch((err) => { process.stderr.write(`Fatal execution error: ${err.message}\n`); process.exit(1); });

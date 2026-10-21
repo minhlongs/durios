@@ -2,11 +2,7 @@ import { assertValidActor } from "../auth/rbac-policy.js";
 import type { AuthenticatedActor } from "../domain/types.js";
 import { getOpenCoreEditionManifest } from "../saas/open-core-edition-manifest.js";
 import { resolveSaasSubscriptionStatus } from "../saas/saas-tier-policy.js";
-import {
-  exportWorkspacePortabilityBundle,
-  verifyWorkspacePortabilityBundle,
-  type SignedWorkspacePortabilityBundle,
-} from "../saas/workspace-portability-bundle.js";
+import { exportWorkspacePortabilityBundle, verifyWorkspacePortabilityBundle, type SignedWorkspacePortabilityBundle } from "../saas/workspace-portability-bundle.js";
 import type { ContainerDossierWorkspace } from "../workspace/container-dossier-workspace.js";
 import { errorResponse, jsonResponse, mapDomainErrorToResponse } from "./server-types.js";
 
@@ -20,34 +16,18 @@ function isSignedBundle(value: unknown): value is SignedWorkspacePortabilityBund
   );
 }
 
-export function handleGetOpenCoreEditionManifest(
-  _workspace: ContainerDossierWorkspace,
-  actor: AuthenticatedActor
-): Response {
+export function handleGetOpenCoreEditionManifest(_workspace: ContainerDossierWorkspace, actor: AuthenticatedActor): Response {
   try {
     assertValidActor(actor);
-    const subscription = resolveSaasSubscriptionStatus(
-      process.env,
-      new Date().toISOString(),
-      actor.tenantId
-    );
+    const subscription = resolveSaasSubscriptionStatus(process.env, new Date().toISOString(), actor.tenantId);
     const manifest = getOpenCoreEditionManifest(subscription.edition);
-    return jsonResponse({
-      success: true,
-      data: {
-        subscription,
-        manifest,
-      },
-    });
+    return jsonResponse({ success: true, data: { subscription, manifest } });
   } catch (err: unknown) {
     return mapDomainErrorToResponse(err, "Failed to retrieve Open-Core edition manifest");
   }
 }
 
-export function handleExportWorkspacePortability(
-  workspace: ContainerDossierWorkspace,
-  actor: AuthenticatedActor
-): Response {
+export function handleExportWorkspacePortability(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor): Response {
   try {
     assertValidActor(actor);
     const dossiers = workspace.listDossiers(actor);
@@ -63,18 +43,8 @@ export function handleExportWorkspacePortability(
       tenantEvents,
       secret
     );
-    const subscription = resolveSaasSubscriptionStatus(
-      process.env,
-      new Date().toISOString(),
-      actor.tenantId
-    );
-    return jsonResponse({
-      success: true,
-      data: {
-        bundle,
-        subscription,
-      },
-    });
+    const subscription = resolveSaasSubscriptionStatus(process.env, new Date().toISOString(), actor.tenantId);
+    return jsonResponse({ success: true, data: { bundle, subscription } });
   } catch (err: unknown) {
     return mapDomainErrorToResponse(err, "Failed to export workspace portability bundle");
   }

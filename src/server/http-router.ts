@@ -67,46 +67,25 @@ export async function routeHttpRequest(
 
   const dossierMatch = routePath.match(/^\/api\/dossiers\/([^/]+)$/);
   if (dossierMatch && method === "GET") return handleGetDossier(workspace, actor, dossierMatch[1]!);
-
   const validateMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/validate$/);
   if (validateMatch && method === "POST") return handleRunValidation(workspace, actor, validateMatch[1]!);
-
   const approveMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/approve$/);
   if (approveMatch && method === "POST") return handleApproveForExport(workspace, actor, approveMatch[1]!);
-
   const exportMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/export$/);
   if (exportMatch && method === "POST") return handleExportDossier(workspace, actor, exportMatch[1]!);
-
   const manifestMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/manifest$/);
   if (manifestMatch && method === "GET") return handleGetExportManifest(workspace, actor, manifestMatch[1]!);
-
   const auditMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/audit$/);
   if (auditMatch && method === "GET") return handleGetAuditTrail(workspace, actor, auditMatch[1]!);
-
   const uploadDocMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/documents$/);
   if (uploadDocMatch && method === "POST") return handleUploadDocument(workspace, actor, uploadDocMatch[1]!, req);
-
   const verifyFieldMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/documents\/([^/]+)\/fields\/([^/]+)\/verify$/);
-  if (verifyFieldMatch && method === "POST") {
-    return handleVerifyField(workspace, actor, verifyFieldMatch[1]!, verifyFieldMatch[2]!, verifyFieldMatch[3]!, req);
-  }
-
+  if (verifyFieldMatch && method === "POST") return handleVerifyField(workspace, actor, verifyFieldMatch[1]!, verifyFieldMatch[2]!, verifyFieldMatch[3]!, req);
   const revokeShareMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/shares\/([^/]+)\/revoke$/);
-  if (revokeShareMatch && method === "POST") {
-    return handleRevokeShare(workspace, actor, revokeShareMatch[1]!, revokeShareMatch[2]!, req);
-  }
-
+  if (revokeShareMatch && method === "POST") return handleRevokeShare(workspace, actor, revokeShareMatch[1]!, revokeShareMatch[2]!, req);
   const sharesMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/shares$/);
-  if (sharesMatch) {
-    if (method === "POST") return handleGrantShare(workspace, actor, sharesMatch[1]!, req);
-    if (method === "GET") return handleListShares(workspace, actor, sharesMatch[1]!);
-  }
-
+  if (sharesMatch) { if (method === "POST") return handleGrantShare(workspace, actor, sharesMatch[1]!, req); if (method === "GET") return handleListShares(workspace, actor, sharesMatch[1]!); }
   const organicMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/organic-evidence$/);
-  if (organicMatch) {
-    if (method === "POST") return handleRecordOrganicEvidence(workspace, actor, organicMatch[1]!, req);
-    if (method === "GET") return handleListOrganicEvidence(workspace, actor, organicMatch[1]!);
-  }
-
+  if (organicMatch) { if (method === "POST") return handleRecordOrganicEvidence(workspace, actor, organicMatch[1]!, req); if (method === "GET") return handleListOrganicEvidence(workspace, actor, organicMatch[1]!); }
   return errorResponse(`Route '${method} ${path}' not found`, 404);
 }

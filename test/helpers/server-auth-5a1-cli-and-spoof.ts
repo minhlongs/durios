@@ -3,36 +3,16 @@ import { runPilotOpsCliArgs } from "../../src/auth/pilot-ops-cli.js";
 import { createWorkspaceApp } from "../../src/server/server.js";
 import { extractSessionCookiePair } from "./auth-test-helper.js";
 import type { WorkspaceAppInstance } from "./server-auth-5a1-auth-flows.js";
-
 interface LoginAndDossierPayload {
   data: { sessionId?: string; actor?: Record<string, unknown>; id: string; tenantId: string };
 }
-
 export async function runCliSecurityAndSpoofedHeadersScenario(
   testDb: string, testUploads: string, setApp: (app: WorkspaceAppInstance) => void
 ): Promise<void> {
   let app = createWorkspaceApp({ dbPath: testDb, dataDir: testUploads });
   setApp(app);
-
-  expect(() =>
-    runPilotOpsCliArgs(
-      [
-        "provision-account", "--username", "bad.cli", "--password", "PlaintextArgvSecret",
-        "--name", "Bad CLI", "--tenant", "TENANT-A", "--tenant-type", "PACKHOUSE_EXPORTER",
-        "--role", "CLERK", "--persona", "PACKHOUSE_CLERK",
-      ],
-      app.authService
-    )
-  ).toThrow(/prohibited/i);
-
-  expect(() =>
-    runPilotOpsCliArgs(
-      ["provision-account", "--username", "missing.role", "--name", "No Role", "--tenant", "TENANT-A"],
-      app.authService,
-      { DURIOS_PILOT_PASSWORD: "ValidPassword#1" }
-    )
-  ).toThrow(/no implicit defaults/i);
-
+  expect(() => runPilotOpsCliArgs(["provision-account", "--username", "bad.cli", "--password", "PlaintextArgvSecret", "--name", "Bad CLI", "--tenant", "TENANT-A", "--tenant-type", "PACKHOUSE_EXPORTER", "--role", "CLERK", "--persona", "PACKHOUSE_CLERK"], app.authService)).toThrow(/prohibited/i);
+  expect(() => runPilotOpsCliArgs(["provision-account", "--username", "missing.role", "--name", "No Role", "--tenant", "TENANT-A"], app.authService, { DURIOS_PILOT_PASSWORD: "ValidPassword#1" })).toThrow(/no implicit defaults/i);
   runPilotOpsCliArgs(
     [
       "provision-account", "--id", "ACT-CLI-01", "--username", "clerk.cli",
@@ -42,7 +22,6 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
     app.authService,
     { DURIOS_PILOT_PASSWORD: "CliPassword#1" }
   );
-
   const loginRes = await app.handler(
     new Request("http://127.0.0.1/api/auth/login", {
       method: "POST", headers: { "Content-Type": "application/json" },
@@ -51,7 +30,6 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
   );
   const cookiePair = extractSessionCookiePair(loginRes.headers.get("set-cookie"));
   const sessionId = ((await loginRes.json()) as LoginAndDossierPayload).data.sessionId as string;
-
   const unauthSpoofRes = await app.handler(
     new Request(
       "http://127.0.0.1/api/dossiers?actorId=ACT-SPOOF&tenantId=TENANT-SPOOF&tenantType=INSPECTION_AUDITOR&role=ADMIN&persona=PACKHOUSE_MANAGER",
@@ -65,7 +43,6 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
     )
   );
   expect(unauthSpoofRes.status).toBe(401);
-
   const meSpoofRes = await app.handler(
     new Request(
       "http://127.0.0.1/api/auth/me?actorId=ACT-SPOOF&tenantId=TENANT-SPOOF&tenantType=BUYER_IMPORTER&role=ADMIN&persona=PACKHOUSE_MANAGER",
@@ -83,7 +60,6 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
     id: "ACT-CLI-01", name: "Le Van Clerk", tenantId: "TENANT-REAL-01",
     tenantType: "PACKHOUSE_EXPORTER", role: "CLERK", persona: "PACKHOUSE_CLERK",
   });
-
   const createWithSpoofRes = await app.handler(
     new Request(
       "http://127.0.0.1/api/dossiers?actorId=ACT-SPOOF&tenantId=TENANT-SPOOF&role=ADMIN",
@@ -110,7 +86,6 @@ export async function runCliSecurityAndSpoofedHeadersScenario(
     .query<{ actor_name: string }, [string]>("SELECT actor_name FROM audit_events WHERE dossier_id = ? LIMIT 1")
     .get(createdSpoofDossier.id);
   expect(rawAuditRow?.actor_name).toBe("Le Van Clerk");
-
   runPilotOpsCliArgs(["revoke-session", "--session-id", sessionId, "--reason", "Shift ended"], app.authService);
   app.sqliteClient.close();
   app = createWorkspaceApp({ dbPath: testDb, dataDir: testUploads });

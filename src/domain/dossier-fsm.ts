@@ -1,6 +1,4 @@
-import type {
-  AuthenticatedActor, ContainerDossier, DossierLifecycleState,
-} from "./types.js";
+import type { AuthenticatedActor, ContainerDossier, DossierLifecycleState } from "./types.js";
 import { assertValidActor } from "../auth/rbac-policy.js";
 
 export type DossierFsmErrorCode =
@@ -27,19 +25,7 @@ export class DossierFsmError extends Error {
   }
 }
 
-const ALLOWED_TRANSITIONS: Readonly<Record<DossierLifecycleState, readonly DossierLifecycleState[]>> = {
-  DRAFT: ["DOCUMENTS_PENDING", "CANCELLED"],
-  DOCUMENTS_PENDING: ["PROCESSING", "DOCUMENTS_PENDING", "CANCELLED"],
-  PROCESSING: ["HUMAN_VERIFICATION_REQUIRED", "CANCELLED"],
-  HUMAN_VERIFICATION_REQUIRED: ["VALIDATION_BLOCKED", "REVIEW_REQUIRED", "READY_FOR_REVIEW", "CANCELLED"],
-  VALIDATION_BLOCKED: ["HUMAN_VERIFICATION_REQUIRED", "CANCELLED"],
-  REVIEW_REQUIRED: ["APPROVED_FOR_EXPORT", "HUMAN_VERIFICATION_REQUIRED", "CANCELLED"],
-  READY_FOR_REVIEW: ["APPROVED_FOR_EXPORT", "HUMAN_VERIFICATION_REQUIRED", "CANCELLED"],
-  APPROVED_FOR_EXPORT: ["EXPORTED", "CANCELLED"],
-  EXPORTED: ["CLOSED"],
-  CLOSED: [],
-  CANCELLED: [],
-};
+const ALLOWED_TRANSITIONS: Readonly<Record<DossierLifecycleState, readonly DossierLifecycleState[]>> = { DRAFT: ["DOCUMENTS_PENDING", "CANCELLED"], DOCUMENTS_PENDING: ["PROCESSING", "DOCUMENTS_PENDING", "CANCELLED"], PROCESSING: ["HUMAN_VERIFICATION_REQUIRED", "CANCELLED"], HUMAN_VERIFICATION_REQUIRED: ["VALIDATION_BLOCKED", "REVIEW_REQUIRED", "READY_FOR_REVIEW", "CANCELLED"], VALIDATION_BLOCKED: ["HUMAN_VERIFICATION_REQUIRED", "CANCELLED"], REVIEW_REQUIRED: ["APPROVED_FOR_EXPORT", "HUMAN_VERIFICATION_REQUIRED", "CANCELLED"], READY_FOR_REVIEW: ["APPROVED_FOR_EXPORT", "HUMAN_VERIFICATION_REQUIRED", "CANCELLED"], APPROVED_FOR_EXPORT: ["EXPORTED", "CANCELLED"], EXPORTED: ["CLOSED"], CLOSED: [], CANCELLED: [] };
 
 export function isDossierSealed(dossier: ContainerDossier): boolean {
   return (
@@ -59,10 +45,7 @@ export function assertDossierMutable(dossier: ContainerDossier, actionLabel = "m
   }
 }
 
-export function canTransition(
-  fromState: DossierLifecycleState,
-  toState: DossierLifecycleState
-): boolean {
+export function canTransition(fromState: DossierLifecycleState, toState: DossierLifecycleState): boolean {
   return ALLOWED_TRANSITIONS[fromState]?.includes(toState) ?? false;
 }
 
@@ -74,9 +57,7 @@ export function assertCanTransition(
   assertValidActor(actor);
 
   if (dossier.tenantId !== actor.tenantId) {
-    throw new DossierFsmError(
-      "Actor tenant does not match dossier tenant.", dossier.lifecycleState, toState, "CROSS_TENANT_FORBIDDEN"
-    );
+    throw new DossierFsmError("Actor tenant does not match dossier tenant.", dossier.lifecycleState, toState, "CROSS_TENANT_FORBIDDEN");
   }
 
   const isPackhouseMgr =
@@ -93,21 +74,15 @@ export function assertCanTransition(
     throw new DossierFsmError(`${label} role is unauthorized to export dossier.`, dossier.lifecycleState, toState, "INSUFFICIENT_ROLE");
   }
   if (actor.role !== "CLERK" && actor.role !== "MANAGER" && actor.role !== "ADMIN") {
-    throw new DossierFsmError(
-      `${actor.role} role is read-only and unauthorized to transition dossier state.`, dossier.lifecycleState, toState, "INSUFFICIENT_ROLE"
-    );
+    throw new DossierFsmError(`${actor.role} role is read-only and unauthorized to transition dossier state.`, dossier.lifecycleState, toState, "INSUFFICIENT_ROLE");
   }
 
   if (dossier.isImmutable && toState !== "CLOSED") {
-    throw new DossierFsmError(
-      "Dossier is cryptographically sealed (WORM locked) and immutable.", dossier.lifecycleState, toState, "DOSSIER_IMMUTABLE"
-    );
+    throw new DossierFsmError("Dossier is cryptographically sealed (WORM locked) and immutable.", dossier.lifecycleState, toState, "DOSSIER_IMMUTABLE");
   }
 
   if (!canTransition(dossier.lifecycleState, toState)) {
-    throw new DossierFsmError(
-      `Illegal transition from '${dossier.lifecycleState}' to '${toState}'.`, dossier.lifecycleState, toState, "ILLEGAL_TRANSITION"
-    );
+    throw new DossierFsmError(`Illegal transition from '${dossier.lifecycleState}' to '${toState}'.`, dossier.lifecycleState, toState, "ILLEGAL_TRANSITION");
   }
 }
 

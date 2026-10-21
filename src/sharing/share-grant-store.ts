@@ -10,15 +10,7 @@ export interface ShareGrantRow {
 }
 
 export function mapRowToShareGrant(row: ShareGrantRow): ShareAccessGrant {
-  return {
-    id: row.id, dossierId: row.dossier_id, ownerTenantId: row.owner_tenant_id,
-    granteeTenantId: row.grantee_tenant_id, purpose: row.purpose, scope: row.scope,
-    grantedAt: row.granted_at, grantedBy: row.granted_by, expiresAt: row.expires_at,
-    isRevoked: row.is_revoked === 1,
-    revokedAt: row.revoked_at ?? undefined,
-    revokedBy: row.revoked_by ?? undefined,
-    revocationReason: row.revocation_reason ?? undefined,
-  };
+  return { id: row.id, dossierId: row.dossier_id, ownerTenantId: row.owner_tenant_id, granteeTenantId: row.grantee_tenant_id, purpose: row.purpose, scope: row.scope, grantedAt: row.granted_at, grantedBy: row.granted_by, expiresAt: row.expires_at, isRevoked: row.is_revoked === 1, revokedAt: row.revoked_at ?? undefined, revokedBy: row.revoked_by ?? undefined, revocationReason: row.revocation_reason ?? undefined };
 }
 
 export function ensureDossierRowInSqlite(client: SqliteClient, dossier: ContainerDossier): void {
@@ -29,15 +21,13 @@ export function ensureDossierRowInSqlite(client: SqliteClient, dossier: Containe
       declared_box_count, lifecycle_state, is_immutable, export_sealed_at,
       latest_validation_result, created_at, updated_at
     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [
-      dossier.id, dossier.tenantId, dossier.dossierCode, dossier.containerNumber,
+    [dossier.id, dossier.tenantId, dossier.dossierCode, dossier.containerNumber,
       dossier.sealNumber, dossier.targetMarket, dossier.borderGate,
       dossier.targetTemperatureC, dossier.declaredNetWeightKg ?? null,
       dossier.declaredBoxCount ?? null, dossier.lifecycleState,
       dossier.isImmutable ? 1 : 0, dossier.exportSealedAt ?? null,
       dossier.latestValidationResult ? JSON.stringify(dossier.latestValidationResult) : null,
-      dossier.createdAt, dossier.updatedAt,
-    ]
+      dossier.createdAt, dossier.updatedAt]
   );
 }
 
@@ -48,14 +38,8 @@ export function insertShareGrantRow(
 ): void {
   ensureDossierRowInSqlite(client, dossier);
   client.db.run(
-    `INSERT INTO share_grants (
-      id, dossier_id, owner_tenant_id, grantee_tenant_id, purpose, scope,
-      granted_at, granted_by, expires_at, is_revoked, revoked_at, revoked_by, revocation_reason
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NULL, NULL, NULL)`,
-    [
-      grant.id, grant.dossierId, grant.ownerTenantId, grant.granteeTenantId,
-      grant.purpose, grant.scope, grant.grantedAt, grant.grantedBy, grant.expiresAt,
-    ]
+    `INSERT INTO share_grants (id, dossier_id, owner_tenant_id, grantee_tenant_id, purpose, scope, granted_at, granted_by, expires_at, is_revoked, revoked_at, revoked_by, revocation_reason) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 0, NULL, NULL, NULL)`,
+    [grant.id, grant.dossierId, grant.ownerTenantId, grant.granteeTenantId, grant.purpose, grant.scope, grant.grantedAt, grant.grantedBy, grant.expiresAt]
   );
 }
 
@@ -75,13 +59,8 @@ export function markShareGrantRevokedRow(
   );
 }
 
-export function queryShareGrantById(
-  client: SqliteClient,
-  grantId: string
-): ShareAccessGrant | undefined {
-  const row = client.db
-    .query<ShareGrantRow, [string]>("SELECT * FROM share_grants WHERE id = ?")
-    .get(grantId);
+export function queryShareGrantById(client: SqliteClient, grantId: string): ShareAccessGrant | undefined {
+  const row = client.db.query<ShareGrantRow, [string]>("SELECT * FROM share_grants WHERE id = ?").get(grantId);
   return row ? mapRowToShareGrant(row) : undefined;
 }
 
@@ -90,12 +69,7 @@ export function queryAllGrantsForOwner(
   dossierId: string,
   ownerTenantId: string
 ): readonly ShareAccessGrant[] {
-  return client.db
-    .query<ShareGrantRow, [string, string]>(
-      "SELECT * FROM share_grants WHERE dossier_id = ? AND owner_tenant_id = ? ORDER BY granted_at ASC, id ASC"
-    )
-    .all(dossierId, ownerTenantId)
-    .map(mapRowToShareGrant);
+  return client.db.query<ShareGrantRow, [string, string]>("SELECT * FROM share_grants WHERE dossier_id = ? AND owner_tenant_id = ? ORDER BY granted_at ASC, id ASC").all(dossierId, ownerTenantId).map(mapRowToShareGrant);
 }
 
 export function queryActiveGrantsForGrantee(

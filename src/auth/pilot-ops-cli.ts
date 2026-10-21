@@ -8,26 +8,18 @@ import {
 } from "./site-backup-manager.js";
 
 export type PilotOpsCommand =
-  | {
-      readonly action: "provision-account"; readonly id?: string | undefined;
-      readonly username: string; readonly password: string; readonly phoneNumber?: string | undefined;
-      readonly actorName: string; readonly tenantId: string; readonly tenantType: TenantType;
-      readonly role: UserRole; readonly persona: ProductPersona;
-    }
-  | { readonly action: "issue-token"; readonly accountId: string; readonly deviceLabel: string; readonly expiresAt: string }
-  | { readonly action: "revoke-token"; readonly tokenId: string; readonly reason?: string | undefined }
-  | { readonly action: "revoke-session"; readonly sessionId: string; readonly reason?: string | undefined };
+  | { action: "provision-account"; id?: string; username: string; password: string; phoneNumber?: string; actorName: string; tenantId: string; tenantType: TenantType; role: UserRole; persona: ProductPersona; }
+  | { action: "issue-token"; accountId: string; deviceLabel: string; expiresAt: string }
+  | { action: "revoke-token"; tokenId: string; reason?: string }
+  | { action: "revoke-session"; sessionId: string; reason?: string };
 
+type RevokedResult = { readonly revoked: true; readonly targetId: string };
 export function executePilotOpsCommand(
-  authService: SqliteAuthService,
-  cmd: PilotOpsCommand
-): PilotAccountRecord | IssuedManagedPilotToken | { readonly revoked: true; readonly targetId: string } {
+  authService: SqliteAuthService, cmd: PilotOpsCommand
+): PilotAccountRecord | IssuedManagedPilotToken | RevokedResult {
   switch (cmd.action) {
     case "provision-account":
-      return authService.provisionPilotAccount({
-        id: cmd.id, username: cmd.username, password: cmd.password, phoneNumber: cmd.phoneNumber,
-        actorName: cmd.actorName, tenantId: cmd.tenantId, tenantType: cmd.tenantType, role: cmd.role, persona: cmd.persona,
-      });
+      return authService.provisionPilotAccount({ id: cmd.id, username: cmd.username, password: cmd.password, phoneNumber: cmd.phoneNumber, actorName: cmd.actorName, tenantId: cmd.tenantId, tenantType: cmd.tenantType, role: cmd.role, persona: cmd.persona });
     case "issue-token":
       return authService.issueManagedPilotToken(cmd.accountId, cmd.deviceLabel, cmd.expiresAt);
     case "revoke-token":
@@ -48,16 +40,10 @@ export function runPilotOpsCliArgs(
   argv: readonly string[],
   authService: SqliteAuthService,
   env: Record<string, string | undefined> = process.env
-):
-  | PilotAccountRecord
-  | IssuedManagedPilotToken
-  | { readonly revoked: true; readonly targetId: string }
-  | SiteBackupManifest
-  | SiteBackupVerificationResult {
+): PilotAccountRecord | IssuedManagedPilotToken | RevokedResult | SiteBackupManifest | SiteBackupVerificationResult {
   if (argv.some((a) => a === "--password" || a.startsWith("--password="))) {
     throw new Error("Security policy violation: passing password via command-line arguments (--password) is prohibited. Supply password via DURIOS_PILOT_PASSWORD environment variable.");
   }
-
   const action = argv[0];
   if (action === "provision-account") {
     const [username, actorName, tenantId] = [getArg(argv, "--username"), getArg(argv, "--name"), getArg(argv, "--tenant")];
@@ -67,10 +53,8 @@ export function runPilotOpsCliArgs(
       throw new Error("Missing required flags for provision-account: --username, --name, --tenant, --tenant-type, --role, and --persona must all be explicitly provided (no implicit defaults).");
     }
     if (!password) throw new Error("Missing required environment variable: DURIOS_PILOT_PASSWORD.");
-    return executePilotOpsCommand(authService, {
-      action: "provision-account", id: getArg(argv, "--id"), username, password,
-      phoneNumber: getArg(argv, "--phone"), actorName, tenantId, tenantType, role, persona,
-    });
+    const phone = getArg(argv, "--phone");
+    return executePilotOpsCommand(authService, { action: "provision-account", id: getArg(argv, "--id"), username, password, phoneNumber: phone, actorName, tenantId, tenantType, role, persona } as PilotOpsCommand);
   }
   if (action === "issue-token") {
     const [accountId, deviceLabel, expiresAt] = [getArg(argv, "--account-id"), getArg(argv, "--device"), getArg(argv, "--expires-at")];
@@ -92,11 +76,7 @@ export function runPilotOpsCliArgs(
     if (!dbPath || !dataDir || !backupDir) throw new Error("Missing required flags for backup-site: --db, --data-dir, --backup-dir");
     return createSiteBackup(dbPath, dataDir, backupDir);
   }
-  if (action === "verify-backup") {
-    const backupDir = getArg(argv, "--backup-dir");
-    if (!backupDir) throw new Error("Missing required flag for verify-backup: --backup-dir");
-    return verifySiteBackup(backupDir);
-  }
+  if (action === "verify-backup") { const backupDir = getArg(argv, "--backup-dir"); if (!backupDir) throw new Error("Missing required flag for verify-backup: --backup-dir"); return verifySiteBackup(backupDir); }
   if (action === "restore-site") {
     const [backupDir, targetDb, targetDataDir] = [getArg(argv, "--backup-dir"), getArg(argv, "--target-db"), getArg(argv, "--target-data-dir")];
     if (!backupDir || !targetDb || !targetDataDir) throw new Error("Missing required flags for restore-site: --backup-dir, --target-db, --target-data-dir");

@@ -4,10 +4,7 @@ import {
 
 export class OtpProviderDispatchError extends Error {
   public readonly code = "OTP_PROVIDER_DISPATCH_FAILED";
-  constructor(message = "OTP provider gateway failed to dispatch the challenge.") {
-    super(message);
-    this.name = "OtpProviderDispatchError";
-  }
+  constructor(message = "OTP provider gateway failed to dispatch the challenge.") { super(message); this.name = "OtpProviderDispatchError"; }
 }
 
 export interface HttpGatewayOtpProviderConfig {
@@ -31,18 +28,13 @@ export class HttpGatewayOtpProvider implements OtpProviderAdapter {
     const parsedUrl = new URL(apiUrl);
     const isLocalhost =
       parsedUrl.hostname === "127.0.0.1" || parsedUrl.hostname === "localhost" || parsedUrl.hostname === "::1";
-    if (parsedUrl.protocol !== "https:" && !(isLocalhost && parsedUrl.protocol === "http:")) {
-      throw new Error("OTP gateway URL must use https:// (or http:// on loopback for local staging).");
-    }
-    this.providerName = providerName;
-    this.apiUrl = apiUrl;
-    this.apiKey = apiKey;
+    if (parsedUrl.protocol !== "https:" && !(isLocalhost && parsedUrl.protocol === "http:")) throw new Error("OTP gateway URL must use https:// (or http:// on loopback for local staging).");
+    [this.providerName, this.apiUrl, this.apiKey] = [providerName, apiUrl, apiKey];
     this.secretKey = config.secretKey?.trim() || undefined;
     this.zaloOaId = config.zaloOaId?.trim() || undefined;
     this.zaloTemplateId = config.zaloTemplateId?.trim() || undefined;
     this.smsBrandname = config.smsBrandname?.trim() || undefined;
-    this.timeoutMs = config.timeoutMs ?? 8000;
-    this.fetchImpl = config.fetchImpl ?? fetch;
+    [this.timeoutMs, this.fetchImpl] = [config.timeoutMs ?? 8000, config.fetchImpl ?? fetch];
   }
 
   public async sendOtp(request: OtpDispatchRequest): Promise<OtpDispatchResult> {
@@ -53,17 +45,8 @@ export class HttpGatewayOtpProvider implements OtpProviderAdapter {
       throw new OtpProviderDispatchError(`SMS Brandname dispatch requires DURIOS_OTP_SMS_BRANDNAME on '${this.providerName}'.`);
     }
 
-    const headers: Record<string, string> = {
-      "Content-Type": "application/json", Accept: "application/json", "X-Api-Key": this.apiKey,
-      ...(this.secretKey ? { "X-Secret-Key": this.secretKey } : {}),
-    };
-    const payload = {
-      challengeId: request.challengeId, phoneNumber: request.phoneNumber,
-      channel: request.channel, otpCode: request.otpCode, expiresAt: request.expiresAt,
-      zaloOaId: request.channel === "ZALO" ? this.zaloOaId : undefined,
-      zaloTemplateId: request.channel === "ZALO" ? this.zaloTemplateId : undefined,
-      smsBrandname: request.channel === "SMS" ? this.smsBrandname : undefined,
-    };
+    const headers = { "Content-Type": "application/json", Accept: "application/json", "X-Api-Key": this.apiKey, ...(this.secretKey ? { "X-Secret-Key": this.secretKey } : {}) };
+    const payload = { challengeId: request.challengeId, phoneNumber: request.phoneNumber, channel: request.channel, otpCode: request.otpCode, expiresAt: request.expiresAt, zaloOaId: request.channel === "ZALO" ? this.zaloOaId : undefined, zaloTemplateId: request.channel === "ZALO" ? this.zaloTemplateId : undefined, smsBrandname: request.channel === "SMS" ? this.smsBrandname : undefined };
 
     let response: Response;
     try {
@@ -83,14 +66,8 @@ export class HttpGatewayOtpProvider implements OtpProviderAdapter {
     }
 
     const codeResult = body["CodeResult"] !== undefined ? String(body["CodeResult"]) : undefined;
-    if (body["delivered"] === false || body["success"] === false || (codeResult !== undefined && codeResult !== "100" && codeResult !== "0")) {
-      throw new OtpProviderDispatchError(`OTP gateway '${this.providerName}' reported delivery failure.`);
-    }
-
-    const providerReference = String(
-      body["providerReference"] ?? body["SMSID"] ?? body["messageId"] ?? body["msgId"] ?? `${this.providerName}-${request.challengeId}`
-    );
-    return { delivered: true, providerReference };
+    if (body["delivered"] === false || body["success"] === false || (codeResult !== undefined && codeResult !== "100" && codeResult !== "0")) throw new OtpProviderDispatchError(`OTP gateway '${this.providerName}' reported delivery failure.`);
+    return { delivered: true, providerReference: String(body["providerReference"] ?? body["SMSID"] ?? body["messageId"] ?? body["msgId"] ?? `${this.providerName}-${request.challengeId}`) };
   }
 }
 

@@ -42,35 +42,25 @@ export function createSiteBackup(dbPath: string, dataDir: string, backupDir: str
     }
 
     const dossierCountRow = backupClient.db.query<{ cnt: number }, []>("SELECT COUNT(*) as cnt FROM container_dossiers").get();
-    const docRows = backupClient.db
-      .query<DocBackupRow, []>("SELECT id, dossier_id, sha256_hash, storage_path, file_size_bytes FROM documents ORDER BY uploaded_at ASC, id ASC")
-      .all();
+    const docRows = backupClient.db.query<DocBackupRow, []>("SELECT id, dossier_id, sha256_hash, storage_path, file_size_bytes FROM documents ORDER BY uploaded_at ASC, id ASC").all();
 
     const backupUploadsDir = join(absBackupDir, "uploads");
     mkdirSync(join(backupUploadsDir, "storage", "blobs"), { recursive: true });
 
     const copiedPaths = new Set<string>();
     const blobEntries: BackupBlobEntry[] = [];
-
     for (const doc of docRows) {
       const relPath = doc.storage_path;
       const srcBlobPath = join(absDataDir, relPath);
-      if (!existsSync(srcBlobPath)) {
-        throw new Error(`Backup failed: missing physical blob '${relPath}' referenced by document '${doc.id}'.`);
-      }
+      if (!existsSync(srcBlobPath)) throw new Error(`Backup failed: missing physical blob '${relPath}' referenced by document '${doc.id}'.`);
       const bytes = new Uint8Array(readFileSync(srcBlobPath));
       const actualSha = calculateSha256(bytes);
-      if (actualSha !== doc.sha256_hash) {
-        throw new Error(`Backup failed: blob SHA-256 mismatch for document '${doc.id}' at '${relPath}' (expected '${doc.sha256_hash}', got '${actualSha}').`);
-      }
-
+      if (actualSha !== doc.sha256_hash) throw new Error(`Backup failed: blob SHA-256 mismatch for document '${doc.id}' at '${relPath}' (expected '${doc.sha256_hash}', got '${actualSha}').`);
       if (!copiedPaths.has(relPath)) {
         const dstBlobPath = join(backupUploadsDir, relPath);
         mkdirSync(dirname(dstBlobPath), { recursive: true });
         writeFileSync(dstBlobPath, bytes);
-        if (calculateSha256(new Uint8Array(readFileSync(dstBlobPath))) !== actualSha) {
-          throw new Error(`Backup write verification failed for blob '${relPath}'.`);
-        }
+        if (calculateSha256(new Uint8Array(readFileSync(dstBlobPath))) !== actualSha) throw new Error(`Backup write verification failed for blob '${relPath}'.`);
         copiedPaths.add(relPath);
         blobEntries.push({ relativePath: relPath, sha256: actualSha, sizeBytes: bytes.byteLength });
       }
@@ -82,12 +72,10 @@ export function createSiteBackup(dbPath: string, dataDir: string, backupDir: str
         if (!fileName.endsWith(".bin")) continue;
         const relPath = `storage/blobs/${fileName}`;
         if (copiedPaths.has(relPath)) continue;
-
         const expectedSha = fileName.slice(0, -4);
         const bytes = new Uint8Array(readFileSync(join(srcBlobsFolder, fileName)));
         const actualSha = calculateSha256(bytes);
         if (actualSha !== expectedSha) throw new Error(`Corrupted blob in source directory '${relPath}'.`);
-
         writeFileSync(join(backupUploadsDir, relPath), bytes);
         blobEntries.push({ relativePath: relPath, sha256: actualSha, sizeBytes: bytes.byteLength });
       }

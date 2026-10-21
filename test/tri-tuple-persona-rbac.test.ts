@@ -1,14 +1,10 @@
 import { describe, expect, it } from "bun:test";
 import {
-  assertCanCreateContainerDossier,
-  assertValidIdentityTuple,
-  isValidIdentityTuple,
+  assertCanCreateContainerDossier, assertValidIdentityTuple, isValidIdentityTuple,
 } from "../src/auth/rbac-policy.js";
 import {
-  assertCanApproveOrExport,
-  assertCanRecordOrganicEvidence,
-  assertCanUploadDocument,
-  assertCanVerifyField,
+  assertCanApproveOrExport, assertCanRecordOrganicEvidence,
+  assertCanUploadDocument, assertCanVerifyField,
 } from "../src/auth/rbac-persona-assertions.js";
 import type { AuthenticatedActor } from "../src/domain/types.js";
 
@@ -18,14 +14,7 @@ function makeActor(
   role: AuthenticatedActor["role"],
   tenantId = "TENANT-TEST-001"
 ): AuthenticatedActor {
-  return {
-    id: `ACTOR-${persona}-${role}`,
-    name: `Test Actor ${persona}`,
-    tenantId,
-    tenantType,
-    role,
-    persona,
-  };
+  return { id: `ACTOR-${persona}-${role}`, name: `Test Actor ${persona}`, tenantId, tenantType, role, persona };
 }
 
 describe("Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole)", () => {
@@ -45,10 +34,7 @@ describe("Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole)
     expect(isValidIdentityTuple("BUYER_VIEWER", "ORCHARD_COOP", "CLERK")).toBe(false);
     expect(isValidIdentityTuple("SYSTEM_AUDITOR", "BUYER_IMPORTER", "AUDITOR")).toBe(false);
     expect(isValidIdentityTuple("ORCHARD_OFFICER", "PACKHOUSE_EXPORTER", "CLERK")).toBe(false);
-
-    expect(() =>
-      assertValidIdentityTuple("PACKHOUSE_CLERK", "PACKHOUSE_EXPORTER", "MANAGER")
-    ).toThrow("Invalid identity tuple");
+    expect(() => assertValidIdentityTuple("PACKHOUSE_CLERK", "PACKHOUSE_EXPORTER", "MANAGER")).toThrow("Invalid identity tuple");
   });
 
   it("enforces dossier creation boundaries by persona and tenant type", () => {
@@ -59,9 +45,7 @@ describe("Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole)
 
     expect(() => assertCanCreateContainerDossier(packhouseClerk)).not.toThrow();
     expect(() => assertCanCreateContainerDossier(packhouseMgr)).not.toThrow();
-    expect(() => assertCanCreateContainerDossier(orchardOfficer)).toThrow(
-      "not permitted to create packhouse container dossiers"
-    );
+    expect(() => assertCanCreateContainerDossier(orchardOfficer)).toThrow("not permitted to create packhouse container dossiers");
     expect(() => assertCanCreateContainerDossier(buyerViewer)).toThrow("read-only and prohibited");
   });
 
@@ -73,9 +57,7 @@ describe("Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole)
 
     expect(() => assertCanUploadDocument(clerk, "TENANT-001")).not.toThrow();
     expect(() => assertCanUploadDocument(otherTenantClerk, "TENANT-001")).toThrow("Cross-tenant");
-    expect(() => assertCanUploadDocument(orchardOfficer, "TENANT-001")).toThrow(
-      "not permitted to upload packhouse export documents"
-    );
+    expect(() => assertCanUploadDocument(orchardOfficer, "TENANT-001")).toThrow("not permitted to upload packhouse export documents");
     expect(() => assertCanUploadDocument(auditor, "TENANT-001")).toThrow("read-only and prohibited");
   });
 
@@ -97,19 +79,11 @@ describe("Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole)
 
     expect(() => assertCanApproveOrExport(mgr, "TENANT-001", "approveForExport")).not.toThrow();
     expect(() => assertCanApproveOrExport(mgr, "TENANT-001", "exportDossier")).not.toThrow();
-    expect(() => assertCanApproveOrExport(clerk, "TENANT-001", "approveForExport")).toThrow(
-      "Clerk role is unauthorized"
-    );
+    expect(() => assertCanApproveOrExport(clerk, "TENANT-001", "approveForExport")).toThrow("Clerk role is unauthorized");
     const nonPackhouseMgr = makeActor("ORCHARD_OFFICER", "PACKHOUSE_EXPORTER" as unknown as AuthenticatedActor["tenantType"], "MANAGER", "TENANT-001");
-    expect(() => assertCanApproveOrExport(nonPackhouseMgr, "TENANT-001", "approveForExport")).toThrow(
-      "Invalid identity tuple"
-    );
-    expect(() => assertCanApproveOrExport(orchardMgr, "TENANT-001", "approveForExport")).toThrow(
-      "not permitted to execute 'approveForExport'"
-    );
-    expect(() => assertCanApproveOrExport(mgr, "TENANT-OTHER", "approveForExport")).toThrow(
-      "Cross-tenant 'approveForExport' is prohibited"
-    );
+    expect(() => assertCanApproveOrExport(nonPackhouseMgr, "TENANT-001", "approveForExport")).toThrow("Invalid identity tuple");
+    expect(() => assertCanApproveOrExport(orchardMgr, "TENANT-001", "approveForExport")).toThrow("not permitted to execute 'approveForExport'");
+    expect(() => assertCanApproveOrExport(mgr, "TENANT-OTHER", "approveForExport")).toThrow("Cross-tenant 'approveForExport' is prohibited");
   });
 
   it("allows both packhouse and orchard co-op actors to record organic evidence", () => {
