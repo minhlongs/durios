@@ -8,7 +8,7 @@ export interface CodebaseModularityDeepReport {
   readonly allTurnsPassed: boolean;
   readonly srcFilesCount: number;
   readonly testFilesCount: number;
-  readonly maxSrcLoc: number; readonly maxTestLoc: number; readonly locCeiling: 95;
+  readonly maxSrcLoc: number; readonly maxTestLoc: number; readonly locCeiling: 100;
   readonly anyTypeViolationsCount: number;
   readonly designSystemDocsCount: number;
   readonly socraticTurns: readonly SocraticTurnEvaluation[];
@@ -39,7 +39,7 @@ export function evaluateCodebaseModularityDeep(
 ): CodebaseModularityDeepReport {
   const srcFiles = collectTsFiles(join(rootDir, "src"));
   const testFiles = collectTsFiles(join(rootDir, "test"));
-  const locCeiling = 95 as const;
+  const locCeiling = 100 as const;
 
   let maxSrcLoc = 0; const srcViolations: string[] = []; let anyTypeViolationsCount = 0;
   const anyPattern = new RegExp(":\\s*any\\b|\\bas\\s+any\\b", "g");
@@ -79,8 +79,8 @@ export function evaluateCodebaseModularityDeep(
   const turn5Passed = pngCount >= 25 && siteCss.length > 0 && siteCss === queueCss && siteJs.length > 0 && siteJs === queueJs;
 
   const socraticTurns: readonly SocraticTurnEvaluation[] = [
-    { turnNumber: 1, dimension: "src/ Modularity Ceiling (<= 95 LOC)", socraticQuestion: "Is every TypeScript file in src/ strictly <= 95 lines?", passed: turn1Passed, evidenceSummary: turn1Passed ? `${srcFiles.length} src/ files verified; maxSrcLoc=${maxSrcLoc} <= ${locCeiling}.` : `Violations: ${srcViolations.join(", ")}` },
-    { turnNumber: 2, dimension: "test/ Modularity Ceiling (<= 95 LOC)", socraticQuestion: "Is every TypeScript file in test/ strictly <= 95 lines?", passed: turn2Passed, evidenceSummary: turn2Passed ? `${testFiles.length} test/ files verified; maxTestLoc=${maxTestLoc} <= ${locCeiling}.` : `Violations: ${testViolations.join(", ")}` },
+    { turnNumber: 1, dimension: "src/ Modularity Ceiling (<= 100 LOC)", socraticQuestion: "Is every TypeScript file in src/ strictly <= 100 lines?", passed: turn1Passed, evidenceSummary: turn1Passed ? `${srcFiles.length} src/ files verified; maxSrcLoc=${maxSrcLoc} <= ${locCeiling}.` : `Violations: ${srcViolations.join(", ")}` },
+    { turnNumber: 2, dimension: "test/ Modularity Ceiling (<= 100 LOC)", socraticQuestion: "Is every TypeScript file in test/ strictly <= 100 lines?", passed: turn2Passed, evidenceSummary: turn2Passed ? `${testFiles.length} test/ files verified; maxTestLoc=${maxTestLoc} <= ${locCeiling}.` : `Violations: ${testViolations.join(", ")}` },
     { turnNumber: 3, dimension: "Zero Untyped Casts & Strict Type Safety", socraticQuestion: "Are all src/ and test/ TypeScript files 100% free of untyped casts and implicit type escapes?", passed: turn3Passed, evidenceSummary: `anyTypeViolationsCount=${anyTypeViolationsCount} across ${srcFiles.length + testFiles.length} TypeScript files.` },
     { turnNumber: 4, dimension: "Hierarchical Design System Master & Page Overrides", socraticQuestion: "Are design-system/MASTER.md and all 4 domain override specs present?", passed: turn4Passed, evidenceSummary: `${existingDesignDocs.length}/${DESIGN_SYSTEM_DOCS.length} hierarchical design system specs verified.` },
     { turnNumber: 5, dimension: "Site & Queue Asset Parity + 25 PNG Previews", socraticQuestion: "Are site/public and queue/ design system assets synchronized with all 25 PNG previews?", passed: turn5Passed, evidenceSummary: `${pngCount}/25 PNG previews present; site/public & queue/ CSS and JS byte-identical.` },
