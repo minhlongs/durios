@@ -213,7 +213,7 @@ Các hạng mục dưới đây là việc kỹ thuật cần làm nhưng **khô
 | Cơ sở đóng gói sầu riêng **đang hoạt động** | 281 | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 tại họp báo Chính phủ thường kỳ tháng 8 (phạm vi: cơ sở đóng gói sầu riêng đang hoạt động trên toàn quốc) — [nguồn](https://baochinhphu.vn/hop-bao-chinh-phu-thuong-ky-thang-8-dai-dien-bo-cong-an-lam-ro-nhieu-van-de-duoc-quan-tam-102260903170016698.htm) |
 | Phê duyệt của GACC (mốc riêng) | 401 vùng trồng, 166 cơ sở đóng gói | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 — **trích dẫn riêng, KHÔNG cộng dồn vào 281 và 1.599** (khác mốc tham chiếu và cách thức đếm) |
 | Kim ngạch xuất khẩu 2025 | ~3,85 tỷ USD | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 |
-| Kim ngạch 8 tháng 2026 | ~1,97 tỷ USD | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 |
+| Kim ngạch 8 tháng 2026 | ~1,95 tỷ USD | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 |
 | Thị phần Trung Quốc | > 95% | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 |
 | Tỷ giá giả định | 25.637 VND/USD | Giả định kế hoạch (không phải tỷ giá niêm yết chính thức) |
 
