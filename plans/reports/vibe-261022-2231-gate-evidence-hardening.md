@@ -58,3 +58,32 @@ need a founder decision, because they change the pilot protocol rather than the 
 2. **Decide the consent-verification option** (A/B/C/D in the blocker report). Option A is shipped as an honest interim.
 3. **Run the two OTP realities**: GATE-02 is now honest that it proves configuration only. A live send rehearsal on staging is still outstanding.
 4. **Consider a `docs/` note** on what the 5 gates now mean, since the wording changed.
+
+## Code review outcome (second pass, after f35c1b9)
+
+| Severity | Count | Disposition |
+|---|---|---|
+| Critical | 1 | **Fixed in f35c1b9** — rehearsal drill attested on an unauthenticated route |
+| Important | 3 | **Fixed in f35c1b9** — CLI had no attestation path; contradictory byte-size comment; sole 5/5 proof was a self-attestation |
+| Minor | 6 | 1 fixed (`3a6cdd1`, test cleanup); 5 recorded and deliberately left, see below |
+
+The Critical finding is worth stating plainly: **the first version of this fix
+reintroduced the bug it was written to remove**, on a route that http-router matches
+before its authentication gate. It was caught by reviewing with fresh context rather
+than by the test suite, and it is why the review step ran before shipping.
+
+Minor findings left as-is, with reasons:
+
+- `sizeOfFile` collapsing "absent" and "unreadable" into the same label — fail-closed
+  direction is right; the message points an operator at the wrong fix only for a rare
+  permission/directory case. Worth a follow-up when an operator hits it for real.
+- `toGateOpts` building through a `Record<string, unknown>` cast — pre-existing pattern;
+  extended only for one field, and it should not be extended further for anything that
+  opens a gate.
+- `consentVerified` and `rehearsalMode` can now drift apart in the pack compiler. Harmless
+  today because no production caller passes either; it should be threaded together if a
+  caller appears.
+- Two tests assert on Vietnamese detail substrings. Brittle to copy edits, but they are
+  the assertions that prove the wording stopped overclaiming, which is the whole point.
+- The strongest test hand-inlines its lookup instead of using the shared helper, because
+  the helper cannot express the attestation flag.
