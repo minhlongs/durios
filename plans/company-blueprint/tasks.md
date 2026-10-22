@@ -67,36 +67,6 @@ doanh thu, khách hàng hay retention — do đó mọi tuyên bố thương m�
   - *Artifacts:* `src/auth/rbac-policy.ts`
   - *Trạng thái thực thi:* `[Đã có code]` — Vai trò và phân quyền đã mã hoá; chưa có measurement chứng minh phân khúc người mua trên dữ liệu thật.
   - *Việc tiếp theo:* Xác nhận ba nhóm persona bằng phỏng vấn site thay vì suy diễn từ vai trò kỹ thuật.
-
-PLACEHOLDER_CONTINUE
-
-**Project:** `~/durios` — Verified Durian Trade Network  
-**Baseline Date:** 2026-10-17  
-**Last Updated:** 2026-10-22 — Revenue Layer 6 (Trade-Finance & Marine Insurance Verified Dossier API) remains `[IN_PROGRESS]`; see `plans/261021-1821-financial-verification-room/`. Binh Pháp mapping and re-verification record at `plans/261021-2345-durios-25-step-binh-phap-accurate/plan.md`: `bun run blueprint:verify-25-steps` reports 25/25 exit 0, `bun run typecheck` exits 0, and `--deep` reports `GO_MODULAR_ZERO_ANY_VERIFIED` with 15/15 turns.
-**Status Key:** `[COMPLETED]` (Hoàn thành trong mã nguồn/tài liệu) | `[IN_PROGRESS]` (Đang thực hiện tại thực địa) | `[BLOCKED_BY_GATE]` (Chờ điều kiện tiên quyết).
-
----
-
-## Phase 1 — Foundation & Open-Core Architecture (Steps 1–5)
-- [x] **Step 1: Open-Core Master Framework** `[COMPLETED]`  
-  *Artifacts:* `src/saas/open-core-edition-manifest.ts`, `src/saas/saas-tier-policy.ts`, `LICENSE`, `LICENSE-MIT`, `COMMERCIAL-LICENSE.md`.
-- [x] **Step 2: 2026 Truthful Plan Refresh** `[COMPLETED]`  
-  *Artifacts:* `docs/product-direction/VALIDATION-AND-ECONOMICS-V2.md` (Số liệu Bộ NN&MT tháng 9/2026: 281 vựa, $658k SaaS ceiling vs $1M ARR).
-- [x] **Step 3: Agentic OS & Human-in-the-Loop Governance** `[COMPLETED]`  
-  *Artifacts:* `AGENTS.md`, `src/auth/rbac-policy.ts`, `src/verification/hitl-service.ts`.
-- [x] **Step 4: Pilot Readiness & Audit Evidence Baseline (`GATE-01` to `GATE-05`)** `[COMPLETED]`  
-  *Artifacts:* `docs/pilot-readiness/01_SINGLE_SITE_READINESS_AND_LAUNCH_GATE.md`, `src/export/field-auditor-cli.ts` (`GATE-01` DPA Consent, `GATE-02` OTP, `GATE-03` On-Prem Security, `GATE-04` Backup, `GATE-05` 5-Container Rehearsal KPI).
-- [x] **Step 5: Conditional 5-Stage Sequencing Roadmap** `[COMPLETED]`  
-  *Artifacts:* `docs/product-direction/PRODUCT-PRD-V2.md` (Stage 0 -> 4 roadmap).
-
----
-
-## Phase 2 — Business Model & Unit Economics (Steps 6–7)
-- [x] **Step 6: Economic Truth First & Multi-Revenue Stack** `[COMPLETED]`  
-  *Artifacts:* `docs/product-direction/VALIDATION-AND-ECONOMICS-V2.md`, `DURIOS-STRATEGY-V2.json`.
-- [x] **Step 7: Tri-Tuple Buyer & Operator Personas** `[COMPLETED]`  
-  *Artifacts:* `src/auth/rbac-policy.ts`, `test/tri-tuple-persona-rbac.test.ts`.
-
 ---
 
 ## Phase 3 — Brand, Open-Source Community & Content (Steps 8–12)
@@ -153,13 +123,13 @@ PLACEHOLDER_CONTINUE
 
 ## Revenue Layer 6 — Trade-Finance & Marine Insurance Verified Dossier API (Open-Core Boundary Expansion)
 
-- [ ] **Layer 6 Phase 1: Signed Single-Use Attestation Token** `[IN_PROGRESS]`  
+- [x] **Layer 6 Phase 1: Signed Single-Use Attestation Token** `[COMPLETED]`  
   *Purpose:* Let a bank or marine insurer verify one sealed dossier with no account, no RBAC change.  
   *Evidence label:* **Verified** (code plan) / **Hypothesis** (that any bank pays).  
-  *Artifacts planned:* `src/saas/financial-attestation-token.ts`, `src/server/financial-verification-handler.ts`.
+  *Artifacts:* `src/saas/financial-attestation-codec.ts`, `src/saas/financial-attestation-token.ts`, `src/saas/financial-attestation-service.ts`, `src/server/financial-verification-request.ts`, `src/server/financial-verification-view.ts`, `src/server/financial-verification-context.ts`, `src/server/financial-verification-handler.ts`, `src/storage/schema-migrations-share-purposes.ts` (migration V6 widens the `share_grants.purpose` CHECK), plus 3 test files.
 - [ ] **Layer 6 Phase 2: `FINANCIAL_INSTITUTION` Tenant + RBAC Tuples** `[BLOCKED_BY_GATE]`  
   *Blocked by:* Phase 1 paying pilot + legal clearance under Luật 91/2025/QH15 + `GATE-01` signed DPA.
-- [ ] **Layer 6 Commercial Module Registration** `[PENDING]`  
+- [x] **Layer 6 Commercial Module Registration** `[COMPLETED]`  
   *Artifacts:* `MOD-ENT-03` in `src/saas/open-core-edition-manifest.ts` (edition `EXPORTER_ENTERPRISE`).
 
 > **Truthfulness guard:** 281 packhouses × 60M VND ≈ $657,643 ARR remains the **sole Verified

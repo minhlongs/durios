@@ -1,7 +1,7 @@
 ---
 title: "Financial Verification Room — Signed Single-Use Attestation (Phase 1)"
 description: "Enable banks & marine insurers to verify a sealed DuriOS dossier via a signed single-use attestation token, without creating bank accounts or expanding RBAC."
-status: ready_for_review
+status: implemented
 priority: P1
 effort: 2h
 branch: main
