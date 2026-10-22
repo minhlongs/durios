@@ -33,8 +33,11 @@ app.workspace, new Request("http://127.0.0.1:3000/api/auth/pilot-rehearsal-boots
           dossiers: ReadonlyArray<{ dossierCode: string; scenario: string }>;
 pilotKpi: { totalContainers: number; blindFaultCount: number; blindFaultsCaught: number }; };
       };
-      expect(bootBody1.success && bootBody1.data.newlyCreatedCount === 5 && bootBody1.data.passedGateCount === 5).toBe(true);
-      expect(bootBody1.data.goLivePack.overallVerdict === "READY_FOR_PILOT_GO_LIVE" && bootBody1.data.goLivePackVerified).toBe(true);
+      // The rehearsal route is unauthenticated and writes a synthetic consent file, so
+      // it cannot attest GATE-01: 4 of 5 gates pass and the pack holds rather than
+      // claiming verified consent.
+      expect(bootBody1.success && bootBody1.data.newlyCreatedCount === 5 && bootBody1.data.passedGateCount === 4).toBe(true);
+      expect(bootBody1.data.goLivePack.overallVerdict === "HOLD_BLOCKERS_REMAIN" && bootBody1.data.goLivePackVerified).toBe(true);
       expect(bootBody1.data.pilotKpi.totalContainers === 5 && bootBody1.data.pilotKpi.blindFaultsCaught === 2).toBe(true);
       const token = bootBody1.data.activePilotToken;
       const seedRes2 = await routeHttpRequest(

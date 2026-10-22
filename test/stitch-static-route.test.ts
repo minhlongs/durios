@@ -68,9 +68,11 @@ expect(socHtml).toContain("Export Deep Brainstorm Contract JSON"); });
     expect(bootFull.status).toBe(200);
     const jsonFull = (await bootFull.json()) as { success: boolean; data: { passedGateCount: number; totalGateCount: number; goLivePack: { overallVerdict: string }; goLivePackVerified: boolean } };
     expect(jsonFull.success).toBe(true);
-    expect(jsonFull.data.passedGateCount).toBe(5);
+    // fullGates exercises GATE-02..05 only. GATE-01 needs an auditor attestation of a
+    // signed paper original, which an unauthenticated route cannot supply, so 4 of 5.
+    expect(jsonFull.data.passedGateCount).toBe(4);
     expect(jsonFull.data.totalGateCount).toBe(5);
-    expect(jsonFull.data.goLivePack.overallVerdict).toBe("READY_FOR_PILOT_GO_LIVE");
+    expect(jsonFull.data.goLivePack.overallVerdict).toBe("HOLD_BLOCKERS_REMAIN");
 expect(jsonFull.data.goLivePackVerified).toBe(true); });
   test("validates live ISO 6346 container and detects 1-byte Cadimi mutation with MANIFEST_HASH_MISMATCH", async () => {
     const validRes = await routeHttpRequest(workspace, new Request("http://127.0.0.1:3000/api/v1/open-core/verify-iso-and-manifest", {

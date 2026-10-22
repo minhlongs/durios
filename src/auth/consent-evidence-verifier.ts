@@ -33,25 +33,27 @@ function incompleteConsent(byteSize: number): ConsentEvidenceReport {
 
 export function verifyConsentEvidence(
   consentPath: string | undefined,
-  consentVerifiedByAuditor = false
+  consentVerifiedByAuditor = false,
+  consentVerifiedByName?: string | undefined
 ): ConsentEvidenceReport {
   if (!consentPath) return { passed: false, statusLabel: "PENDING_SITE_AND_CONSENT_SIGN_OFF", detail: MISSING_CONSENT_DETAIL };
 
   const byteSize = sizeOfFile(consentPath);
   if (byteSize === null) return { passed: false, statusLabel: "PENDING_SITE_AND_CONSENT_SIGN_OFF", detail: MISSING_CONSENT_DETAIL };
 
-  // A hand-signed scanned consent record is never empty, and DuriOS cannot read a
-  // signature out of a scan. So a present file is evidence of a *path*, not of a
-  // signature: it stays incomplete until an auditor confirms the signed original.
-  if (!consentVerifiedByAuditor) return incompleteConsent(byteSize);
-
-  // The attestation vouches for a document, so the document must be there to attest.
+  // A non-empty file is a precondition for both branches: an attestation vouches for
+  // a document, so there must be a document to attest. Anything with no bytes in it
+  // stays incomplete even when attested.
   if (byteSize === 0) return incompleteConsent(byteSize);
+
+  // Without an attestation, a present file is evidence of a path and nothing more:
+  // DuriOS cannot read a signature out of a scan, so the gate stays shut.
+  if (!consentVerifiedByAuditor) return incompleteConsent(byteSize);
 
   return {
     passed: true,
     statusLabel: "PASS",
-    detail: `Kiểm toán viên đã đối chiếu biên bản chấp thuận đã ký (${byteSize} byte) tại '${consentPath}' với bản gốc.`,
+    detail: `Kiểm toán viên ${consentVerifiedByName?.trim() || "(chưa ghi tên)"} đã đối chiếu biên bản chấp thuận đã ký (${byteSize} byte) tại '${consentPath}' với bản gốc.`,
   };
 }
 

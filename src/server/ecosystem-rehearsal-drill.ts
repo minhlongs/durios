@@ -39,10 +39,10 @@ export function setupFullGatesRehearsalOptions(
     dbPath,
     dataDir,
     backupDir,
+    // This is a synthetic rehearsal on an unauthenticated route, so it must not
+    // attest consent: a boolean any anonymous caller can trigger is exactly the
+    // false green GATE-01 exists to prevent. The rehearsal therefore runs 4 of 5.
     consentSignedFilePath: consentPath,
-    // This is a synthetic rehearsal, not a signed DPA. The gate is explicitly
-    // attested so the drill exercises the 5-gate path, while real runs keep it shut.
-    consentVerified: true,
     env: rehearsalEnv,
     rehearsalMode: true,
   };

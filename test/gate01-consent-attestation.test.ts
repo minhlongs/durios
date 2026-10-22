@@ -36,8 +36,7 @@ describe("GATE-02 configuration is not proof of a live channel", () => {
   });
 });
 
-describe("GATE-01 auditor attestation", () => {
-  it("stays closed without an auditor attestation even when a consent file is present", () => {
+describe("GATE-01 auditor attestation", () => {  it("stays closed without an auditor attestation even when a consent file is present", () => {
     mkdirSync(DIR, { recursive: true });
     writeFileSync(CONSENT, "Signed Cai Lay Packhouse Data Consent (91/2025/QH15)", "utf-8");
 
@@ -59,3 +58,16 @@ describe("GATE-01 auditor attestation", () => {
     rmSync(DIR, { recursive: true, force: true });
   });
 });
+
+  it("attributes a PASS to the attesting auditor", () => {
+    mkdirSync(DIR, { recursive: true });
+    writeFileSync(CONSENT, "Signed Cai Lay Packhouse Data Consent (91/2025/QH15)", "utf-8");
+    const report = verifySingleSiteLaunchGates({
+      consentSignedFilePath: CONSENT, consentVerified: true,
+      consentVerifiedByName: "Trần Văn Quản Lý", backupDir: NO_BACKUP,
+    });
+    const g = report.gates.find((x) => x.gateId === "GATE-01");
+    expect(g?.passed).toBe(true);
+    expect(g?.detail).toContain("Trần Văn Quản Lý");
+    rmSync(DIR, { recursive: true, force: true });
+  });

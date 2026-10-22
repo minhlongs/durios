@@ -29,7 +29,10 @@ export interface VerifyLaunchGatesOptions {
    * Set only by an auditor who has compared the file against the signed paper
    * original. File bytes alone can never prove a signature on a scan.
    */
-  readonly consentVerified?: boolean; readonly env?: Record<string, string | undefined>;
+  readonly consentVerified?: boolean;
+  /** Who attested, so a PASS is attributable after the fact. */
+  readonly consentVerifiedByName?: string;
+  readonly env?: Record<string, string | undefined>;
 }
 
 function buildGateReport(
@@ -41,16 +44,14 @@ function buildGateReport(
   const backupDir = options.backupDir ?? env.DURIOS_BACKUP_DIR;
   const consentPath = options.consentSignedFilePath ?? env.DURIOS_GATE01_CONSENT_FILE;
 
-  // GATE-01 must not call a present file "verified consent". The consent form is a
-  // hand-signed paper document, so file bytes cannot prove a signature; the gate
-  // stays open until an auditor confirms the signed original.
-  const consentEvidence = verifyConsentEvidence(consentPath, Boolean(options.consentVerified));
+  // GATE-01 must not call a present file "verified consent": the consent form is a
+  // hand-signed paper document, so file bytes cannot prove a signature.
+  const consentEvidence = verifyConsentEvidence(consentPath, Boolean(options.consentVerified), options.consentVerifiedByName);
   const gate01: GateCheckStatus = { gateId: "GATE-01", title: "Tiếp cận Vựa & Chấp thuận Dữ liệu (Luật DLCN 91/2025/QH15)", passed: consentEvidence.passed, statusLabel: consentEvidence.statusLabel, detail: consentEvidence.detail };
   const otpProvider = createOtpProviderFromEnv(env);
   const gate02Passed = otpProvider.isConfigured;
-  // GATE-02 proves only that the gateway is configured: isConfigured is a static
-  // flag and no OTP is dispatched here. It is not proof that a live Zalo/SMS channel
-  // delivers, so the detail says exactly what was checked.
+  // GATE-02 proves only that the gateway is configured: isConfigured is a static flag
+  // and no OTP is dispatched here, so the detail says exactly what was checked.
   const gate02: GateCheckStatus = { gateId: "GATE-02", title: "Kênh OTP Thật (Zalo ZNS / SMS)", passed: gate02Passed, statusLabel: gate02Passed ? "PASS" : "PENDING_PROVIDER_CREDENTIALS", detail: gate02Passed ? `Đã đọc được cấu hình nhà cung cấp OTP '${otpProvider.providerName}'; chưa chứng minh gửi-nhận OTP thật — cần diễn tập gửi thật trên staging trước khi khai trương.` : "Đang ở chế độ fail-closed (UnconfiguredOtpProvider -> 503). Cần cấu hình DURIOS_OTP_PROVIDER và khóa API." };
 
   let loopbackOk = false;

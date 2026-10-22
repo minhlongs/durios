@@ -14,6 +14,7 @@ export interface FieldAuditorCliOptions {
   readonly dataDir?: string | undefined;
   readonly backupDir?: string | undefined;
   readonly consentSignedFilePath?: string | undefined;
+  readonly consentVerifiedBy?: string | undefined;
   readonly jsonOnly?: boolean | undefined;
   readonly markdownReport?: boolean | undefined;
   readonly env?: Record<string, string | undefined> | undefined;
@@ -30,7 +31,7 @@ export function runFieldAuditorCli(options: FieldAuditorCliOptions = {}): {
     const integrityVerified = verifyPilotGoLiveDossierPackIntegrity(parsed);
     return { exitCode: integrityVerified ? 0 : 1, report: parsed, outputFilePath: options.verifyFilePath, integrityVerified };
   }
-  const report = compileStandaloneGoLiveDossierPack("founder-field-auditor", "AUDITOR", { siteCode: options.siteCode, dbPath: options.dbPath, dataDir: options.dataDir, backupDir: options.backupDir, consentSignedFilePath: options.consentSignedFilePath, env: options.env });
+  const report = compileStandaloneGoLiveDossierPack("founder-field-auditor", "AUDITOR", { siteCode: options.siteCode, dbPath: options.dbPath, dataDir: options.dataDir, backupDir: options.backupDir, consentSignedFilePath: options.consentSignedFilePath, consentVerified: options.consentVerifiedBy !== undefined, consentVerifiedByName: options.consentVerifiedBy, env: options.env });
   let outputFilePath: string | undefined;
   if (options.outputDir) {
     mkdirSync(options.outputDir, { recursive: true });
@@ -50,6 +51,7 @@ function parseCliArgs(argv: readonly string[]): FieldAuditorCliOptions {
   let dataDir: string | undefined;
   let backupDir: string | undefined;
   let consentSignedFilePath: string | undefined;
+  let consentVerifiedBy: string | undefined;
   let jsonOnly = false;
   let markdownReport = false;
 
@@ -64,11 +66,12 @@ function parseCliArgs(argv: readonly string[]): FieldAuditorCliOptions {
     else if (arg === "--data-dir" && argv[i + 1]) dataDir = argv[++i];
     else if (arg === "--backup-dir" && argv[i + 1]) backupDir = argv[++i];
     else if (arg === "--consent-file" && argv[i + 1]) consentSignedFilePath = argv[++i];
+    else if (arg === "--consent-verified-by" && argv[i + 1]) consentVerifiedBy = argv[++i];
   }
 
   return {
     verifyFilePath, outputDir, siteCode, dbPath, dataDir,
-    backupDir, consentSignedFilePath, jsonOnly, markdownReport,
+    backupDir, consentSignedFilePath, consentVerifiedBy, jsonOnly, markdownReport,
   };
 }
 
