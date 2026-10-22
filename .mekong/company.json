@@ -19,28 +19,28 @@
     "blueprint_sync_test": "test/open-core-25-step-blueprint-e2e.test.ts"
   },
   "model": "Open-Core Operating System for Verified Durian Trade: bắt đầu bằng Container Truth Engine cài tại chỗ (Cai Lậy beachhead), tiến hóa qua Verified Organization Profile (Federated Trust) sang Closed Transaction Network và ASEAN Regional Infrastructure",
-  "target_arr": "Mục tiêu 1 triệu USD ARR thông qua Multi-Revenue Stack (vì 281 vựa đang hoạt động tại VN x 60M VND = tối đa ~$657,643 ARR nếu chỉ bán SaaS đơn thuần; bắt buộc kết hợp Verification Modules, Enterprise Multi-Site, Closed Trade Network và mở rộng Malaysia/Thái Lan)",
+  "target_arr": "Mục tiêu dài hạn 1 triệu USD ARR, bắt buộc qua Multi-Revenue Stack (vì toàn bộ 281 cơ sở đóng gói đang hoạt động tại Việt Nam x 60.000.000 VND/năm = tối đa ~$657.643 ARR nếu chỉ bán SaaS đơn thuần; cần 428 cơ sở mới đạt $1M ARR ở mức giá đó, vượt quy mô thị trường trong nước). Doanh thu một lần (phí pilot, phí thiết lập) được ghi riêng, không cộng vào ARR. CAC, LTV và margin thuê bao hiện CHƯA ĐO vì chưa có khách hàng trả tiền.",
   "north_star_metric": "Verified GMV & Revenue per Verified Container",
-  "icp": "Cơ sở đóng gói (281 cơ sở đang hoạt động) và doanh nghiệp xuất khẩu sầu riêng tươi Việt Nam sang Trung Quốc; điểm xuất phát là 01 vựa tại Cai Lậy, Tiền Giang (SITE-CAILAY-TIENGIANG-01)",
+  "icp": "Cơ sở đóng gói sầu riêng xuất khẩu (trên 281 cơ sở đang hoạt động, Bộ NN&MT công bố ngày 03/09/2026) và doanh nghiệp xuất khẩu sầu riêng tươi Việt Nam sang Trung Quốc; người mua là chủ vựa đóng gói chịu trách nhiệm hồ sơ GACC, người vận hành hằng ngày là thủ kho/Cadimi clerk và quản lý vựa. Điểm xuất phát là 01 vựa tại Cai Lậy, Tiền Giang (SITE-CAILAY-TIENGIANG-01), đã được Founder chọn và phê duyệt ngày 17/10/2026.",
   "moat": "6-Tier Moat Ladder: (1) Workflow Moat tại bàn cân -> (2) Tamper-evident SHA-256 Evidence Moat -> (3) Shipment Outcome Moat -> (4) Observed Reputation Moat (Verified Profile) -> (5) Multi-sided Network Moat -> (6) ASEAN Regulatory Adapter Moat (VN_CN, MY_CN, TH_CN, PH_CN)",
   "agents": {
-    "Founder / CEO": "Chịu trách nhiệm về 5 cổng khai trương (GATE-01..05), khảo sát thực địa Cai Lậy, ký DPA, phê duyệt vốn và mọi tuyên bố đối ngoại",
-    "Product and Operations": "Ghi nhận quy trình của vựa, cấu hình pilot, lưu bằng chứng chấp thuận, đo 4 chỉ số giá trị thực địa theo từng container và hỗ trợ khách hàng",
-    "Engineering and Security": "Duy trì Local Core (Bun + SQLite WAL), Merklized Audit Ledger, Ed25519 License Verifier, Workspace Portability Bundle, Open-Core Edition Manifest (/api/v1/open-core/...) và trần <= 179 LOC / 0 any",
-    "Revenue and Customer Discovery": "Triển khai pilot 5 container tại Cai Lậy, kiểm tra thẩm quyền mua và mức giá 60M VND/năm, phụ trách chuyển đổi pilot qua Open-Core Portability Funnel",
-    "Governance and Legal": "Rà soát tuân thủ Luật BVDLCN 91/2025/QH15, Luật TMĐT 122/2025/QH15, Nghị định 52/2024/NĐ-CP (Zero-Custody) và 9 Hard Kill Criteria"
+    "Founder / CEO": "Chịu trách nhiệm về 5 cổng khai trương (GATE-01..05), tiếp cận vựa thực địa Cai Lậy, ký DPA, quyết định điều kiện thương mại sau pilot và phê duyệt mọi tuyên bố đối ngoại",
+    "Product and Operations": "Ghi nhận quy trình của vựa, cấu hình pilot, lưu bằng chứng chấp thuận, đo 4 chỉ số giá trị thực địa theo từng container, ghi nhật ký nhu cầu và hỗ trợ khách hàng",
+    "Engineering and Security": "Duy trì Local Core (Bun + SQLite WAL), Merklized Audit Ledger, Ed25519 License Verifier, Workspace Portability Bundle, Open-Core Edition Manifest (/api/v1/open-core/...) và trần <= 100 LOC / 0 any",
+    "Revenue and Customer Discovery": "Kiểm tra thẩm quyền chi trả (WTP) và giả thuyết giá 5.000.000 VND/5 container, 60.000.000 VND/năm, 10.000.000 VND thiết lập; phụ trách Open-Core Portability Funnel. Chưa có hợp đồng, doanh thu hay dữ liệu retention nào được xác minh",
+    "Governance and Legal": "Rà soát tuân thủ Luật BVDLCN 91/2025/QH15, Luật TMĐT 122/2025/QH15, Nghị định 52/2024/NĐ-CP (Zero-Custody) và 9 Hard Kill Criteria; chặn AI tự phê duyệt xuất khẩu (HITL bắt buộc)"
   },
   "okrs": [
-    "Q4 2026: Vượt qua toàn bộ 5 cổng khai trương (GATE-01..05) cho địa điểm SITE-CAILAY-TIENGIANG-01; ký văn bản DPA; hoàn tất diễn tập 5 container với thời gian đối soát trung bình (Arithmetic Mean) < 5.0 phút và bắt 100% lỗi gài mù",
-    "Q1 2027: Đo lường đầy đủ 4 chỉ số giá trị từ container đầu tiên (minutesSaved, humanTouches, exceptionsDiscovered, expectedLossAvoidedVnd) và ký hợp đồng thương mại đầu tiên (5M VND pilot -> 60M VND/năm)",
-    "Q2-Q4 2027: Xây dựng cụm liên kết dày đặc (Dense Cluster) tại Tiền Giang/ĐBSCL (8 vựa + 3 exporter + 2 lab + 3 logistics) cùng sử dụng chuẩn DuriOS Verified Profile và Workspace Portability Bundle",
-    "2028: Mở phòng giao dịch xác minh kín (DuriOS Verified Trade Rooms) và kiểm chứng tính khả chuyển kiến trúc sang hành lang Malaysia -> Trung Quốc (MY_CN)"
+    "Q4 2026: Xác minh hồ sơ launch gate bằng bằng chứng thật; vượt qua GATE-01 (ký biên bản chấp thuận xử lý dữ liệu/DPA theo Luật 91/2025/QH15) và GATE-02 (gửi và nhận OTP thật qua Zalo ZNS / SMS Brandname) cho địa điểm SITE-CAILAY-TIENGIANG-01. GATE-03 và GATE-04 giữ nguyên trạng thái đã kiểm thử tổng hợp trên staging, chưa phải bằng chứng thực địa. GATE-05 hiện chỉ chứng minh trên dữ liệu mô phỏng (seeded rehearsal), chưa phải diễn tập thực địa.",
+    "Q1 2027: Chuẩn bị đầy đủ phép đo 4 chỉ số giá trị từ container đầu tiên (minutesSavedPerContainer, humanTouchesPerContainer, exceptionsDiscoveredPerContainer, expectedLossAvoidedVnd) kèm nhật ký nhu cầu; chạy diễn tập 5 container thực địa với 2 lỗi gài mù, bắt 100% lỗi và đạt Arithmetic Mean < 5.0 phút; sau đó kiểm tra giả thuyết giá (5.000.000 VND/5 container, 60.000.000 VND/năm, 10.000.000 VND thiết lập). Hợp đồng thương mại đầu tiên chưa được xác minh và phụ thuộc kết quả kiểm tra giá.",
+    "Q2-Q4 2027: Xây dựng cụm liên kết dày đặc (Dense Cluster) tại Tiền Giang/ĐBSCL (8 vựa + 3 exporter + 2 lab + 3 logistics) cùng sử dụng chuẩn DuriOS Verified Profile và Workspace Portability Bundle; đo CAC, LTV và margin thuê bao từ dữ liệu khách hàng thật (hiện chưa có dữ liệu nên chưa đo được).",
+    "2028+: Đánh giá lại điều kiện mở Marketplace B2B / escrow, tài chính thương mại (Revenue Layer 6) và mở rộng ASEAN (MY_CN, TH_CN, PH_CN). Các hướng này tiếp tục bị chặn bởi bằng chứng thực địa và phê duyệt tương ứng; AI không được tự phê duyệt xuất khẩu (HITL bắt buộc)."
   ],
   "next_steps": [
-    "1. Ký biên bản chấp thuận xử lý dữ liệu (DPA) theo Luật 91/2025/QH15 với chủ vựa tại Cai Lậy (GATE-01).",
-    "2. Diễn tập gửi và xác thực OTP thực tế qua Zalo ZNS / SMS Brandname trên môi trường staging (GATE-02).",
-    "3. Thiết lập máy chủ Mini PC on-premise chạy Bun + SQLite WAL trên mạng LAN của vựa kèm ổ cứng sao lưu mã hóa (GATE-03 & GATE-04).",
-    "4. Chạy đối soát 5 container thực địa với 2 lỗi gài mù, đo Arithmetic Mean < 5 phút và xuất báo cáo niêm phong bằng `bun run pilot:audit-pack` (GATE-05).",
-    "5. Chuyển đổi pilot đạt KPI sang hợp đồng thuê bao năm PACKHOUSE_PRO_SAAS (60 triệu VND/năm) và xuất DuriOS Verified Profile đầu tiên qua /api/v1/open-core/portability."
+    "1. Xác minh hồ sơ launch gate: chạy `bun run pilot:audit-pack -- --verify` với thư mục dữ liệu/backup thật và ghi rõ từng cổng GATE-01..05 đạt hay chưa đạt kèm bằng chứng (không suy đoán từ sự tồn tại của tệp).",
+    "2. Hoàn tất chấp thuận dữ liệu (GATE-01): ký biên bản chấp thuận xử lý dữ liệu (DPA) với chủ vựa tại Cai Lậy theo Luật 91/2025/QH15, lưu tại đường dẫn DURIOS_GATE01_CONSENT_FILE, rồi chạy lại bộ kiểm tra cổng để xác nhận PASS.",
+    "3. Xác thực OTP thật (GATE-02): đăng ký và cấu hình nhà cung cấp OTP (Zalo ZNS / SMS Brandname), gửi và nhận thành công OTP thật trên môi trường staging cho tài khoản thật; hiện tại hệ thống fail-closed trả 503 khi chưa cấu hình.",
+    "4. Chuẩn bị phép đo và nhật ký nhu cầu: hoàn thiện phép đo 4 chỉ số giá trị thực địa (minutesSavedPerContainer, humanTouchesPerContainer, exceptionsDiscoveredPerContainer, expectedLossAvoidedVnd) và mở nhật ký ghi nhận nhu cầu cùng mức giá chấp nhận được của chủ vựa để kiểm chứng 3 mức giá giả thuyết.",
+    "5. Chạy pilot sau khi đủ 5 cổng: chỉ nạp dữ liệu khách hàng thật khi goForLiveCustomerData = true (5/5 cổng PASS); chạy đối soát 5 container thực địa với 2 lỗi gài mù, đo Arithmetic Mean < 5.0 phút, bắt 100% lỗi, xuất báo cáo niêm phong SHA-256, rồi mới quyết định điều kiện thương mại và tiếp tục V2."
   ]
 }

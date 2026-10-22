@@ -13,6 +13,7 @@ import { handleExportWorkspacePortability, handleGetOpenCoreEditionManifest, han
 import { handleGetBlueprintStatus } from "./open-core-blueprint-handler.js";
 import { handleBootstrapPilotRehearsal, handleGetEcosystemTelemetry, handleSeedAuthenticatedRehearsal } from "./ecosystem-rehearsal-handler.js";
 import { handleVerifyIsoAndManifest } from "./open-core-verifier-handler.js";
+import { handleMintFinancialAttestation, handleVerifyFinancialAttestation } from "./financial-verification-handler.js";
 
 export async function routeHttpRequest(
   workspace: ContainerDossierWorkspace,
@@ -32,6 +33,9 @@ export async function routeHttpRequest(
   }
   if ((method === "POST" || method === "GET") && (path === "/api/open-core/verify-iso-and-manifest" || path === "/api/v1/open-core/verify-iso-and-manifest")) {
     return handleVerifyIsoAndManifest(req);
+  }
+  if ((method === "POST" || method === "GET") && (path === "/api/open-core/financial-verification" || path === "/api/v1/open-core/financial-verification")) {
+    return handleVerifyFinancialAttestation(workspace, req);
   }
   if (method === "POST" && path === "/api/auth/login") return handlePasswordLogin(workspace.authService, req);
   if (method === "POST" && path === "/api/auth/pilot-rehearsal-bootstrap") return handleBootstrapPilotRehearsal(workspace, req);
@@ -56,6 +60,7 @@ export async function routeHttpRequest(
   if (method === "GET" && routePath === "/api/pilot/go-live-pack") return handleGetPilotGoLivePack(workspace, actor);
   if (method === "POST" && routePath === "/api/pilot/rehearsal/seed") return handleSeedAuthenticatedRehearsal(workspace, actor);
   if (method === "GET" && routePath === "/api/saas/status") return handleGetSaasStatus(workspace, actor);
+  if (method === "POST" && routePath === "/api/open-core/financial-attestation") return handleMintFinancialAttestation(workspace, actor, req);
   if (method === "GET" && routePath === "/api/open-core/edition-manifest") return handleGetOpenCoreEditionManifest(workspace, actor);
   if (method === "GET" && routePath === "/api/open-core/blueprint-status") return handleGetBlueprintStatus(workspace, actor, req);
   if (method === "GET" && routePath === "/api/open-core/ecosystem-telemetry") return handleGetEcosystemTelemetry(workspace, actor);

@@ -64,7 +64,7 @@ export function runV4ToV5MigrationScenario(): void {
     rawDb.run(`INSERT INTO organic_evidence VALUES ('ORG-V4-LEGACY', 'DOS-V4-01', 'TEN-A', 'Demo Bio-Certifier (Synthetic)', 'DEMO-ACC-01', 'SYNTH-CERT-2026-01', 'TCVN_11041', 'Vietnamese Organic Standard', 'Durian Orchard Block A', '2026-01-01T00:00:00.000Z', '2027-06-30T23:59:59.000Z', '2026-01-01', 'IN_CONVERSION', 'DOC-SCAN-99', 'https://synthetic-cert.example/01', ?, ?, 'ACT-CLERK-V4')`, [DURIOS_ORGANIC_DISCLAIMER, now]);
     rawDb.close();
     app = createWorkspaceApp({ dbPath: v4DbPath, dataDir: v4Uploads });
-    expect(app.sqliteClient.db.query<{ v: number }, []>("SELECT MAX(version) as v FROM schema_migrations").get()?.v).toBe(5);
+    expect(app.sqliteClient.db.query<{ v: number }, []>("SELECT MAX(version) as v FROM schema_migrations").get()?.v).toBe(6);
     const cols = app.sqliteClient.db.query<{ name: string }, []>("PRAGMA table_info(organic_evidence)").all().map((c) => c.name);
     expect(cols.includes("issuer_claimed_status") && cols.includes("durios_record_status") && !cols.includes("status")).toBe(true);
     const migratedList = app.workspace.organicEvidenceManager.listEvidenceForDossier("DOS-V4-01", true, "TEN-A");

@@ -2,7 +2,9 @@ export type SharePurpose =
   | "CUSTOMS_INSPECTION"
   | "BUYER_VERIFICATION"
   | "AUDIT"
-  | "LOGISTICS";
+  | "LOGISTICS"
+  | "TRADE_FINANCE"
+  | "MARINE_INSURANCE";
 
 export type ShareScope = "READ_ONLY" | "READ_AND_VERIFY";
 

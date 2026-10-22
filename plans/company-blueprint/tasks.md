@@ -1,5 +1,75 @@
 # DuriOS 25-Step Company Blueprint Task Checklist
 
+- **Dự án / Project:** DuriOS (`durios-core`) — Workspace Hồ Sơ Container cho xuất khẩu nông sản Việt Nam
+- **Baseline Date:** 2026-10-22
+- **Last Updated:** 2026-10-22
+
+**Chú giải trạng thái (Status Key):**
+
+- `[COMPLETED]` — Hạng mục blueprint đã được **soạn thảo** (artifact tồn tại và marker checklist đã được đánh dấu).
+- `[IN_PROGRESS]` — Hạng mục đang được triển khai, chưa đóng.
+- `[BLOCKED_BY_GATE]` — Hạng mục bị chặn bởi một launch gate chưa đạt (GATE-01..05).
+- `[PENDING]` — Hạng mục chưa bắt đầu hoặc chờ điều kiện tiên quyết.
+
+**Cam kết trung thực (Truthfulness Commitment) — ĐỌC TRƯỚC KHI DÙNG FILE NÀY**
+
+Dấu `[x]` trong checklist **chỉ có nghĩa là hạng mục blueprint đã được soạn thảo** — nghĩa là artifact tồn tại và mục
+tASKS.md đã được ghi nhận. Nó **không** có nghĩa là tính năng đã chạy trong production, đã được thử nghiệm thực địa, hoặc
+đã tạo ra doanh thu. Trạng thái thực thi thật được theo dõi **tách biệt** tại `plans/company-blueprint/plan.md`, dùng các
+nhãn: `[Đã có code]` / `[Đã kiểm thử tổng hợp]` / `[Đang chờ điều kiện]` / `[Giả thuyết]` / `[Mục tiêu]` / `[Chưa được xác minh]`.
+Lệnh `bun run blueprint:verify-25-steps` báo cáo 25/25 **chỉ đo mức độ phủ artifact** — cụ thể là ba điều kiện: marker
+heading, marker checklist, và sự tồn tại của file trên đĩa (`existsSync`). Nó **không** chứng minh nội dung, hành vi, hay
+chất lượng của bất kỳ artifact nào. Một file rỗng cũng vẫn PASS. Đừng đọc kết quả 25/25 là bằng chứng sẵn sàng khai thác.
+
+Thông tin nền đã xác minh trong phiên làm việc này: site **SITE-CAILAY-TIENGIANG-01** được Founder phê duyệt ngày
+2026-10-17; tài liệu V1 là baseline đã duyệt (2026-10-14); tài liệu V2 đang ở trạng thái `DRAFT_FOR_FOUNDER_REVIEW`.
+Trạng thái cổng: GATE-01 `PENDING SIGN-OFF`; GATE-02 `ADAPTER READY / PENDING CREDENTIALS` (fail-closed, trả 503); GATE-03
+`RUNBOOK & CONFIG VERIFIED`; GATE-04 `VERIFIED IN STAGING TESTS ONLY`; GATE-05 `PROVEN ONLY ON SEEDED/SYNTHETIC REHEARSAL`
+(`src/auth/pilot-rehearsal-seeder.ts` + `test/pilot-rehearsal-seeder.test.ts`). Hiện **chưa tồn tại** dữ liệu hợp đồng,
+doanh thu, khách hàng hay retention — do đó mọi tuyên bố thương mại mang nhãn `[Chưa được xác minh]`.
+
+## Phase 1 — Foundation & Open-Core Architecture (Bước 1–5)
+
+- [x] **Step 1: Khung Open-Core Master Framework (Open-Core Master Framework)** `[COMPLETED]`
+  - *Artifacts:* `src/saas/open-core-edition-manifest.ts`
+  - *Trạng thái thực thi:* `[Đã có code]` — Bảng edition (`COMMUNITY_OPEN_CORE`, `PACKHOUSE_PRO_SAAS`, `EXPORTER_ENTERPRISE`) và 15 module kiến trúc đã được mã hoá; chưa có phép đo adoption thật.
+  - *Việc tiếp theo:* Đối chiếu 15 module trong manifest với bản đồ dependency thực tế, loại bỏ module không có caller production.
+
+- [x] **Step 2: Làm Mới Kế Hoạch Trung Thực 2026 (2026 Truthful Plan Refresh)** `[COMPLETED]`
+  - *Artifacts:* `docs/product-direction/VALIDATION-AND-ECONOMICS-V2.md`
+  - *Trạng thái thực thi:* `[Đã có code]` — Số liệu Bộ NN&MT và trần ARR đã được ghi; bản thân con số vẫn là giả thuyết giá cho đến khi có khách trả tiền.
+  - *Việc tiếp theo:* Kiểm chứng nguồn gốc báo chí chính thức của con số Bộ NN&MT trước khi dùng trong tài liệu vay/gọi vốn.
+
+- [x] **Step 3: Hệ Điều Hành Agentic & Quản Trị HITL (Agentic OS & HITL Governance)** `[COMPLETED]`
+  - *Artifacts:* `src/verification/hitl-service.ts`
+  - *Trạng thái thực thi:* `[Đã kiểm thử tổng hợp]` — Phê duyệt con người bắt buộc trên các hành động nhạy cảm đã có unit test; chưa có bằng chứng vận hành thực địa.
+  - *Việc tiếp theo:* Chứng minh AI không tự phê duyệt xuất khẩu trong một chuỗi thủ tục đầy đủ trên staging.
+
+- [x] **Step 4: Sẵn Sàng Pilot & Bằng Chứng Kiểm Toán (Pilot Readiness & Audit Evidence)** `[COMPLETED]`
+  - *Artifacts:* `src/export/field-auditor-cli.ts`
+  - *Trạng thái thực thi:* `[Đang chờ điều kiện]` — Bộ lập báo cáo niêm phong SHA-256 đã có, nhưng kết quả GATE-01..05 hiện chỉ suy ra từ sự tồn tại file, chưa chạy trên dữ liệu thật.
+  - *Việc tiếp theo:* Chạy `bun run pilot:audit-pack -- --verify` trên thư mục dữ liệu/backup thật và ghi PASS/FAIL cho từng cổng.
+
+- [x] **Step 5: Lộ Trình Tuần Tự 5 Chặng Có Điều Kiện (Conditional 5-Stage Sequencing Roadmap)** `[COMPLETED]`
+  - *Artifacts:* `docs/product-direction/PRODUCT-PRD-V2.md`
+  - *Trạng thái thực thi:* `[Đã có code]` — Trình tự điều kiện đã được tài liệu hoá; điều kiện tiên quyết của chặng 4–5 phụ thuộc cổng chưa đạt.
+  - *Việc tiếp theo:* Gắn tiêu chí thoát định lượng cho từng chặng thay vì điều kiện định tính.
+
+## Phase 2 — Business Model & Unit Economics (Bước 6–7)
+
+- [x] **Step 6: Sự Thật Kinh Tế Trước & Đống Doanh Thu Đa Lớp (Economic Truth First & Multi-Revenue Stack)** `[COMPLETED]`
+  - *Arction placeholder* — never written
+  - *Artifacts:* `docs/product-direction/DURIOS-STRATEGY-V2.json`
+  - *Trạng thái thực thi:* `[Giả thuyết]` — Trần $657.643 ARR và kết luận bắt buộc đa doanh thu là suy luận đúng trên số liệu công bố, nhưng chưa có bằng chứng giá thị trường chấp nhận.
+  - *Việc tiếp theo:* Mở nhật ký nhu cầu/mức giá chấp nhận được để kiểm chứng 60.000.000 VND/năm và 5.000.000 VND/5 container.
+
+- [x] **Step 7: Ba Nhóm Người Mua & Vận Hành (Tri-Tuple Buyer & Operator Personas)** `[COMPLETED]`
+  - *Artifacts:* `src/auth/rbac-policy.ts`
+  - *Trạng thái thực thi:* `[Đã có code]` — Vai trò và phân quyền đã mã hoá; chưa có measurement chứng minh phân khúc người mua trên dữ liệu thật.
+  - *Việc tiếp theo:* Xác nhận ba nhóm persona bằng phỏng vấn site thay vì suy diễn từ vai trò kỹ thuật.
+
+PLACEHOLDER_CONTINUE
+
 **Project:** `~/durios` — Verified Durian Trade Network  
 **Baseline Date:** 2026-10-17  
 **Last Updated:** 2026-10-22 — Revenue Layer 6 (Trade-Finance & Marine Insurance Verified Dossier API) remains `[IN_PROGRESS]`; see `plans/261021-1821-financial-verification-room/`. Binh Pháp mapping and re-verification record at `plans/261021-2345-durios-25-step-binh-phap-accurate/plan.md`: `bun run blueprint:verify-25-steps` reports 25/25 exit 0, `bun run typecheck` exits 0, and `--deep` reports `GO_MODULAR_ZERO_ANY_VERIFIED` with 15/15 turns.
