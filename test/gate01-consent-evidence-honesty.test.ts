@@ -1,4 +1,4 @@
-import { describe, expect, it } from "bun:test";
+import { afterEach, describe, expect, it } from "bun:test";
 import { mkdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { verifySingleSiteLaunchGates } from "../src/auth/pilot-launch-gate-verifier.js";
@@ -15,6 +15,10 @@ function gate01DetailFor(path: string): { passed: boolean; statusLabel: string; 
 }
 
 describe("GATE-01 consent evidence honesty", () => {
+  afterEach(() => {
+    rmSync(DIR, { recursive: true, force: true });
+  });
+
   it("does not describe a present-but-empty consent file as verified consent", () => {
     mkdirSync(DIR, { recursive: true });
     const emptyPath = join(DIR, "empty-consent.txt");
@@ -65,6 +69,5 @@ describe("GATE-01 consent evidence honesty", () => {
     writeFileSync(p, "x", "utf-8");
     const g = gate01DetailFor(p);
     expect(g.detail).not.toContain("đã ký xác nhận");
-    rmSync(DIR, { recursive: true, force: true });
   });
 });
