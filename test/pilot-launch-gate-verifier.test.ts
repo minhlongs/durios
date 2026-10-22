@@ -52,6 +52,7 @@ describe("Single-Site Launch Gate Verifier (GATE-01..GATE-05)", () => {
       dataDir: TEST_UPLOADS,
       backupDir: TEST_BACKUP,
       consentSignedFilePath: TEST_CONSENT,
+      consentVerified: true,
       env: {
         DURIOS_HOST: "127.0.0.1",
         DURIOS_OTP_PROVIDER: "ESMS",
@@ -63,6 +64,7 @@ describe("Single-Site Launch Gate Verifier (GATE-01..GATE-05)", () => {
         DURIOS_OTP_SMS_BRANDNAME: "DURIOS",
       },
     });
+
 
     expect(report.passedCount).toBe(5);
     expect(report.goForLiveCustomerData).toBe(true);

@@ -51,6 +51,7 @@ export interface CompilePilotGoLivePackOptions {
   readonly dataDir?: string | undefined;
   readonly backupDir?: string | undefined;
   readonly consentSignedFilePath?: string | undefined;
+  readonly consentVerified?: boolean | undefined;
   readonly env?: Record<string, string | undefined> | undefined;
   readonly forcedTimestamp?: string | undefined;
   readonly rehearsalMode?: boolean | undefined;

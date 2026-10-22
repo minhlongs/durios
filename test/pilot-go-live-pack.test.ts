@@ -38,11 +38,17 @@ describe("Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor To
         },
         forcedTimestamp: "2026-10-17T08:00:00.000Z",
       });
-      expect(report.goForLiveCustomerData && report.overallVerdict === "GO_FOR_LIVE_CUSTOMER_DATA").toBe(true);
-      expect(report.passedGateCount === 5 && report.fieldAuditorChecklist.length === 5).toBe(true);
-      expect(report.fieldAuditorChecklist.every((c) => c.status === "VERIFIED_READY")).toBe(true);
+      // GATE-01 is closed by an auditor's confirmation of the signed paper original,
+      // which a written fixture cannot produce. So this pack exercises the compiler and
+      // integrity hash against a 4-of-5 gate run, and asserts that the pack reports the
+      // withheld gate instead of pretending consent was verified.
+      expect(report.goForLiveCustomerData).toBe(false);
+      expect(report.overallVerdict).toBe("HOLD_BLOCKERS_REMAIN");
+      expect(report.passedGateCount === 4 && report.fieldAuditorChecklist.length === 5).toBe(true);
+      expect(report.fieldAuditorChecklist.filter((c) => c.linkedGateId === "GATE-01")[0]?.status).toBe("ACTION_REQUIRED");
       expect(verifyPilotGoLiveDossierPackIntegrity(report)).toBe(true);
-      expect(verifyPilotGoLiveDossierPackIntegrity({ ...report, overallVerdict: "HOLD_BLOCKERS_REMAIN" as const })).toBe(false);
+      const tampered = { ...report, passedGateCount: 5 };
+      expect(verifyPilotGoLiveDossierPackIntegrity(tampered)).toBe(false);
     } finally {
       app.sqliteClient.close();
     }

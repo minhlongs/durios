@@ -40,6 +40,9 @@ export function setupFullGatesRehearsalOptions(
     dataDir,
     backupDir,
     consentSignedFilePath: consentPath,
+    // This is a synthetic rehearsal, not a signed DPA. The gate is explicitly
+    // attested so the drill exercises the 5-gate path, while real runs keep it shut.
+    consentVerified: true,
     env: rehearsalEnv,
     rehearsalMode: true,
   };
