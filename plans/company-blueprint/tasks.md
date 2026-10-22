@@ -2,7 +2,7 @@
 
 - **Dự án / Project:** DuriOS (`durios-core`) — Operating System for Verified Durian Trade
 - **Baseline Date:** 2026-10-22
-- **Last Updated:** 2026-10-22 (làm mới toàn bộ 25 bước theo bằng chứng tại ngày 22/10/2026)
+- **Last Updated:** 2026-10-22 (làm mới toàn bộ 25 bước theo bằng chứng tại ngày 22/10/2026; sửa phép tính Bear/Base/Bull và bổ sung nguồn trích dẫn số liệu thị trường)
 
 **Chú giải trạng thái (Status Key):**
 - `[COMPLETED]` — Hạng mục blueprint đã được **biên soạn** (marker checklist đã đánh dấu và artifact tồn tại).
@@ -187,7 +187,7 @@ Thứ tự dưới đây là ưu tiên sáu tháng tới. Các sửa chữa côn
 
 Các hạng mục dưới đây là việc kỹ thuật cần làm nhưng **không** thuộc năm ưu tiên trên.
 
-- **Khắc phục lỗi import `applyMigrationV6`** trong `src/storage/schema-migrations.ts`: một tái cấu trúc song song đã xoá export trong `src/storage/schema-migrations-pilot.ts` nhưng lời gọi vẫn còn, khiến `bun run typecheck` thất bại và `test/organic-and-purpose-5a4.test.ts` kỳ vọng phiên bản migration 5 nhưng nhận 6. Đây là lỗi **có sẵn trước**, không do thay đổi blueprint gây ra.
+- **Rà soát lại chuỗi migration V4→V6** trong `src/storage/schema-migrations.ts`: tại ngày 22/10/2026, lời gọi `applyMigrationV6` trong `src/storage/schema-migrations-share-purposes.ts` đã được nối đúng, `bun run typecheck` chạy sạch và `test/organic-and-purpose-5a4.test.ts` đạt 3/3 — nên ghi chú lỗi "có sẵn trước" trong bản trước đã lỗi thời và đã được gỡ. Việc cần làm chỉ còn là giữ nguyên thứ tự `V5` rồi `V6` khi thêm migration mới.
 - **Hoàn tất Revenue Layer 6 (Trade-Finance & Marine Insurance Verified Dossier API):** `src/saas/financial-attestation-token.ts`, `src/saas/financial-attestation-service.ts`, `src/saas/financial-attestation-codec.ts`, `src/server/financial-verification-request.ts`, `src/server/financial-verification-view.ts`; đăng ký module `MOD-ENT-03` cho edition `EXPORTER_ENTERPRISE`. Vẫn giữ nhãn `[Giả thuyết]` cho đến khi có pilot trả tiền và phê duyệt pháp lý.
 - **Kiểm chứng OTP và sao lưu/khôi phục trên phần cứng Mini PC thật**: hiện chỉ mô phỏng staging, chưa chạy trên thiết bị tại vựa.
 - **Đo tỷ lệ chuyển đổi Community → Pro**: cần dữ liệu người dùng thật sau pilot.
@@ -210,7 +210,7 @@ Các hạng mục dưới đây là việc kỹ thuật cần làm nhưng **khô
 | Chỉ số | Giá trị | Nguồn & thời điểm |
 |---|---|---|
 | Mã số vùng trồng sầu riêng | 1.599 | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 tại họp báo Chính phủ thường kỳ |
-| Cơ sở đóng gói sầu riêng **đang hoạt động** | 281 | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 tại họp báo Chính phủ thường kỳ (phạm vi: cơ sở đóng gói sầu riêng đang hoạt động trên toàn quốc) |
+| Cơ sở đóng gói sầu riêng **đang hoạt động** | 281 | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 tại họp báo Chính phủ thường kỳ tháng 8 (phạm vi: cơ sở đóng gói sầu riêng đang hoạt động trên toàn quốc) — [nguồn](https://baochinhphu.vn/hop-bao-chinh-phu-thuong-ky-thang-8-dai-dien-bo-cong-an-lam-ro-nhieu-van-de-duoc-quan-tam-102260903170016698.htm) |
 | Phê duyệt của GACC (mốc riêng) | 401 vùng trồng, 166 cơ sở đóng gói | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 — **trích dẫn riêng, KHÔNG cộng dồn vào 281 và 1.599** (khác mốc tham chiếu và cách thức đếm) |
 | Kim ngạch xuất khẩu 2025 | ~3,85 tỷ USD | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 |
 | Kim ngạch 8 tháng 2026 | ~1,97 tỷ USD | Bộ Nông nghiệp & Môi trường, công bố ngày 03/09/2026 |
