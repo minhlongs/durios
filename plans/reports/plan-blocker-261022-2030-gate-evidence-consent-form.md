@@ -38,3 +38,39 @@ current honest `existsSync`, because it manufactures false confidence.
 
 Option A now, Option B as the immediate follow-up. A is honest and tiny; C is the only
 genuinely strong answer but is not YAGNI-justified for one pilot site in Cai Lậy.
+
+## What shipped (Option A, honest interim)
+
+Option A landed on `hardening/launch-gate-evidence` as three commits:
+`4356c6e` (the fix), `f35c1b9` (review corrections), `3a6cdd1` (test hygiene).
+
+**What it achieves:** GATE-01 can no longer report verified consent from a mere path.
+A present file stays `PENDING_SIGNED_CONSENT_INCOMPLETE` until a named auditor attests
+it against the signed paper original, and an empty file cannot be attested open.
+GATE-02 keeps fail-closed semantics but its detail no longer claims delivery was proven,
+since `isConfigured` is a static env check and no OTP is dispatched.
+
+**What it does not achieve — read this before relying on it:**
+
+- **Not an access control.** `consentVerified` is one boolean; any caller can set it.
+  The shipped protection is that a PASS now carries a name (`--consent-verified-by`),
+  so a false PASS is attributable after the fact, instead of silently green.
+- **No binding to content.** `sizeOfFile` runs once. A 1-byte file, a scan of an
+  unsigned or blank form, a photo of the wrong site, or a file swapped after
+  attestation all still yield PASS. There is no hash, no mtime check, no open-fd hold.
+- **TOCTOU window is open.** Attestation and read are separate operations on a path.
+
+**Which options close the remaining gap:**
+
+- **Option B** (recorded SHA-256 of the signed scan) closes the swapped-file and
+  wrong-content cases cheaply: the audit pack already carries SHA-256 machinery.
+  It does not close "attested an unsigned original".
+- **Option C** (Ed25519 over the consent record) closes everything except key custody
+  at a non-technical site and key loss — which for one Cai Lậy pilot is real cost for
+  little gain.
+- **Option D** (consent recorded in the immutable audit ledger, GATE-01 reads that
+  entry) is the strongest fit for this repo: the ledger already exists and gates on it.
+  It needs a writer path for the consent event and a decision on who may append.
+
+**GATE-02 is unchanged in kind:** a syntactic key is still PASS. A live send rehearsal
+against a staging provider remains outstanding and is a human step.
