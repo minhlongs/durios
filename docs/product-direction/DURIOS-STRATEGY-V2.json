@@ -28,7 +28,7 @@
     "vietnam_active_packhouses": 281,
     "vietnam_registered_puc_orchards": 1599,
     "vietnam_durian_export_2025_usd": 3850000000,
-    "vietnam_durian_export_8m_2026_usd": 1970000000,
+    "vietnam_durian_export_8m_2026_usd": 1950000000,
     "china_import_market_2024_usd": 6990000000,
     "thailand_share_of_china_imports_2024_pct": 57,
     "malaysia_approved_fresh_durian_packhouses_2025": 52
@@ -38,8 +38,8 @@
     "saas_price_per_packhouse_vnd_year": 60000000,
     "exchange_rate_vnd_usd": 25637,
     "max_vietnam_saas_arr_usd": 657643,
-    "sites_required_for_one_million_arr_saas_only": 427,
-    "conclusion": "427 vựa > 281 vựa thực tế. Bắt buộc phải là Multi-Revenue Stack (Core + Verification Modules + Network Fee + Transaction Orchestration) hoặc Regional Expansion."
+    "sites_required_for_one_million_arr_saas_only": 428,
+    "conclusion": "ceil(1.000.000 x 25.637 / 60.000.000) = ceil(427,28) = 428 vựa > 281 vựa thực tế (427 vựa chỉ đạt ~$999.337 ARR, chưa đủ $1.000.000). Bắt buộc phải là Multi-Revenue Stack (Core + Verification Modules + Network Fee + Transaction Orchestration) hoặc Regional Expansion."
   },
   "north_star_metrics": [
     "Verified GMV",

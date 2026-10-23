@@ -1,12 +1,13 @@
 import { describe, expect, it } from "bun:test";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import {
   getAseanCorridorProtocol, listSupportedAseanCorridors,
 } from "../src/rules/asean-corridor-adapters.js";
 import { compileVerifiedOrganizationProfile } from "../src/sharing/verified-org-profile.js";
 import { evaluateFirstContainerValueMetrics } from "../src/auth/pilot-kpi-extended-types.js";
 import type { ContainerDossier } from "../src/domain/types.js";
+import {
+  deriveOneMillionArrSiteCeiling, readStrategyV2EconomicTruth,
+} from "./helpers/arr-ceiling-derivation.js";
 
 function buildMockDossier(overrides: Partial<ContainerDossier> = {}): ContainerDossier {
   return {
@@ -73,20 +74,22 @@ describe("Verified Durian Trade Network Primitives", () => {
     expect(metrics.expectedLossAvoidedVnd).toBe(35_000_000);
   });
 
-  it("validates DURIOS-STRATEGY-V2.json economic truth (281 packhouses vs 427 needed for $1M ARR)", () => {
-    const raw = readFileSync(join(process.cwd(), "docs/product-direction/DURIOS-STRATEGY-V2.json"), "utf-8");
-    const strategy = JSON.parse(raw) as {
-      market_facts_official_sep_2026: { vietnam_active_packhouses: number };
-      economic_truth_and_target_arr: {
-        max_vietnam_saas_arr_usd: number;
-        sites_required_for_one_million_arr_saas_only: number;
-      };
-      north_star_metrics: string[];
-    };
+  it("validates DURIOS-STRATEGY-V2.json economic truth matches the 428-site ceiling derivation", () => {
+    const strategy = readStrategyV2EconomicTruth();
+    const truth = strategy.economic_truth_and_target_arr;
 
     expect(strategy.market_facts_official_sep_2026.vietnam_active_packhouses).toBe(281);
-    expect(strategy.economic_truth_and_target_arr.max_vietnam_saas_arr_usd).toBe(657643);
-    expect(strategy.economic_truth_and_target_arr.sites_required_for_one_million_arr_saas_only).toBe(427);
+    expect(strategy.market_facts_official_sep_2026.vietnam_durian_export_8m_2026_usd).toBe(1950000000);
+    expect(truth.max_vietnam_saas_arr_usd).toBe(657643);
+    expect(truth.exchange_rate_vnd_usd).toBe(25637);
     expect(strategy.north_star_metrics).toContain("Verified GMV");
+
+    const ceiling = deriveOneMillionArrSiteCeiling(truth);
+    expect(ceiling.rawSitesNeeded).toBeCloseTo(427.28, 2);
+    expect(Math.floor(ceiling.rawSitesNeeded)).toBe(427);
+    expect(ceiling.sitesRequired).toBe(428);
+    expect(truth.sites_required_for_one_million_arr_saas_only).toBe(ceiling.sitesRequired);
+    expect(ceiling.arrUsdAt427Sites).toBeLessThan(ceiling.targetArrUsd);
+    expect(ceiling.arrUsdAt428Sites).toBeGreaterThanOrEqual(ceiling.targetArrUsd);
   });
 });
