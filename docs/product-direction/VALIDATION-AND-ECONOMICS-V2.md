@@ -11,17 +11,18 @@
 ## 1. Sự Thật Kinh Tế & Bài Toán 1 Triệu USD ARR (Economic Truth First)
 
 ### 1.1. Hiện thực thị trường cơ sở đóng gói tại Việt Nam
-- Theo báo cáo chính thức của **Bộ Nông nghiệp & Môi trường (tháng 9/2026)**:
+- Theo báo cáo chính thức của **Bộ Nông nghiệp & Môi trường**, công bố ngày 03/09/2026 tại họp báo Chính phủ thường kỳ tháng 8 ([nguồn](https://baochinhphu.vn/hop-bao-chinh-phu-thuong-ky-thang-8-dai-dien-bo-cong-an-lam-ro-nhieu-van-de-duoc-quan-tam-102260903170016698.htm)):
   - Cả nước hiện có khoảng **1.599 mã số vùng trồng** và **281 cơ sở đóng gói sầu riêng đang hoạt động**.
-  - Kim ngạch xuất khẩu sầu riêng năm 2025 đạt khoảng **3,85 tỷ USD**; 8 tháng đầu năm 2026 ước đạt **1,97 tỷ USD** (trong đó Trung Quốc chiếm trên 95%).
+  - Kim ngạch xuất khẩu sầu riêng năm 2025 đạt khoảng **3,85 tỷ USD**; 8 tháng đầu năm 2026 ước đạt **1,95 tỷ USD** (trong đó Trung Quốc chiếm khoảng 95%).
 - **Trần doanh thu SaaS thuần túy tại Việt Nam:**
   - Giả định mức giá thương mại: **60.000.000 VND / vựa / năm**.
-  - Tỷ giá Ngân hàng Nhà nước tham khảo: **25.637 VND / USD**.
+  - Tỷ giá giả định kế hoạch: **25.637 VND / USD** (tham chiếu Ngân hàng Nhà nước; là giả định cho mô hình, không phải tỷ giá niêm yết chính thức tại thời điểm tính).
   - Nếu chiếm trọn **100% thị phần** toàn bộ 281 cơ sở đóng gói đang hoạt động:
     $$\text{Max SaaS Revenue} = 281 \times 60.000.000\text{ VND} = 16.860.000.000\text{ VND} \approx \mathbf{\$657.643\text{ ARR}}$$
   - Để đạt được **\$1.000.000 ARR** chỉ bằng tiền bán phần mềm 60 triệu VND/vựa:
-    $$\text{Số vựa cần thiết} = \frac{1.000.000 \times 25.637}{60.000.000} \approx \mathbf{427\text{ vựa}}$$
-  - **Kết luận không thể chối cãi:** $427\text{ vựa} > 281\text{ cơ sở đang hoạt động tại Việt Nam}$. Do đó, **ngay cả khi chiếm 100% thị phần vựa tại Việt Nam, DuriOS vẫn không thể đạt 1 triệu USD ARR chỉ bằng mô hình thuê bao SaaS đơn thuần.**
+    $$\text{Số vựa cần thiết} = \left\lceil \frac{1.000.000 \times 25.637}{60.000.000} \right\rceil = \lceil 427{,}28 \rceil = \mathbf{428\text{ vựa}}$$
+  - Vì không thể bán một phần vựa, 427 vựa (≈ $999.337 ARR) vẫn **chưa đủ** đạt $1.000.000 ARR; chỉ 428 vựa (≈ $1.001.677 ARR) mới đạt.
+  - **Kết luận không thể chối cãi:** $428\text{ vựa} > 281\text{ cơ sở đang hoạt động tại Việt Nam}$. Do đó, **ngay cả khi chiếm 100% thị phần vựa tại Việt Nam, DuriOS vẫn không thể đạt 1 triệu USD ARR chỉ bằng mô hình thuê bao SaaS đơn thuần.**
 
 ### 1.2. Thang đa tầng doanh thu (Multi-Revenue Stack) & Regional Expansion
 Mục tiêu 1 triệu USD ARR bắt buộc phải là **khu vực Đông Nam Á (Thái Lan, Malaysia)** hoặc **kết hợp đa tầng doanh thu**:
