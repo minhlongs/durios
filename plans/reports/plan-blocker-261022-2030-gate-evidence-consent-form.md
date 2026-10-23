@@ -56,8 +56,8 @@ since `isConfigured` is a static env check and no OTP is dispatched.
   The shipped protection is that a PASS now carries a name (`--consent-verified-by`),
   so a false PASS is attributable after the fact, instead of silently green.
 - **No binding to content.** `sizeOfFile` runs once. A 1-byte file, a scan of an
-  unsigned or blank form, a photo of the wrong site, or a file swapped after
-  attestation all still yield PASS. There is no hash, no mtime check, no open-fd hold.
+  unsigned or blank form, or a photo of the wrong site all still yield PASS, since
+  size is not content.
 - **TOCTOU window is open.** Attestation and read are separate operations on a path.
 
 **Which options close the remaining gap:**
@@ -74,3 +74,29 @@ since `isConfigured` is a static env check and no OTP is dispatched.
 
 **GATE-02 is unchanged in kind:** a syntactic key is still PASS. A live send rehearsal
 against a staging provider remains outstanding and is a human step.
+
+## Option B shipped (`69f8d3b`) — what it closed, and what it did not
+
+The attestation now carries the SHA-256 the auditor recorded for the signed
+original, and GATE-01 compares it against the file it reads. This is wired through
+the field-auditor CLI as `--consent-sha256`, and it reuses the repo's existing
+`calculateSha256` rather than adding a second hash path.
+
+**Closed by Option B:**
+- A file **swapped after attestation** now fails, with a detail naming the mismatch.
+- An attestation with **no recorded hash** is refused rather than treated as
+  sufficient, so a bare boolean can no longer open the gate.
+
+**Still open, and Option B cannot close it:**
+- **It is still an attestation of a human act.** If the auditor records the hash of
+  a scan of an *unsigned*, *blank*, or *wrong-site* form, GATE-01 still passes: the
+  hash binds to content but says nothing about whether a signature is on it.
+- **The TOCTOU gap is narrowed but not closed.** The gate hashes the file at
+  evaluation time and still does not hold an open fd between attest and read.
+- **`consentVerified` remains a plain boolean.** No key, no cryptographic proof.
+
+**Remaining decision:** Option D (record consent as an event in the immutable
+audit ledger and read it from there) is the cheapest step that closes the last
+attribution gap, because this repo already has the ledger and already gates on it.
+Option C (Ed25519 over the consent record) closes everything and is still not
+justified for one Cai Lậy pilot, given key custody at a non-technical site.
