@@ -23,13 +23,8 @@ const MANDATORY_DISCLAIMERS: readonly string[] = [
 
 function toGateOpts(opts: CompilePilotGoLivePackOptions): VerifyLaunchGatesOptions {
   const res: Record<string, unknown> = {};
-  if (opts.dbPath !== undefined) res.dbPath = opts.dbPath;
-  if (opts.dataDir !== undefined) res.dataDir = opts.dataDir;
-  if (opts.backupDir !== undefined) res.backupDir = opts.backupDir;
-  if (opts.consentSignedFilePath !== undefined) res.consentSignedFilePath = opts.consentSignedFilePath;
-  if (opts.consentVerified !== undefined) res.consentVerified = opts.consentVerified;
-  if (opts.consentVerifiedByName !== undefined) res.consentVerifiedByName = opts.consentVerifiedByName;
-  if (opts.env !== undefined) res.env = opts.env;
+  const passThrough = ["dbPath", "dataDir", "backupDir", "consentSignedFilePath", "consentVerified", "consentVerifiedByName", "consentAttestedSha256", "env"] as const;
+  for (const key of passThrough) if (opts[key] !== undefined) res[key] = opts[key];
   return res as VerifyLaunchGatesOptions;
 }
 

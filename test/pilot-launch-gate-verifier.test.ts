@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { calculateSha256 } from "../src/ingestion/document-hasher.js";
 import { verifySingleSiteLaunchGates } from "../src/auth/pilot-launch-gate-verifier.js";
 import { seedGate05PilotRehearsal } from "../src/auth/pilot-rehearsal-seeder.js";
 import { createSiteBackup } from "../src/auth/site-backup-manager.js";
@@ -54,6 +55,7 @@ describe("Single-Site Launch Gate Verifier (GATE-01..GATE-05)", () => {
       consentSignedFilePath: TEST_CONSENT,
       consentVerified: true,
       consentVerifiedByName: "Field Auditor",
+      consentAttestedSha256: calculateSha256(readFileSync(TEST_CONSENT)),
       env: {
         DURIOS_HOST: "127.0.0.1",
         DURIOS_OTP_PROVIDER: "ESMS",
@@ -72,6 +74,7 @@ describe("Single-Site Launch Gate Verifier (GATE-01..GATE-05)", () => {
       expect(gate.passed).toBe(true);
       expect(gate.statusLabel).toBe("PASS");
     }
+
 
     const app = createWorkspaceApp({ dbPath: TEST_DB, dataDir: TEST_UPLOADS });
     try {

@@ -1,4 +1,5 @@
-import { statSync } from "node:fs";
+import { readFileSync, statSync } from "node:fs";
+import { calculateSha256 } from "../ingestion/document-hasher.js";
 
 /**
  * GATE-01 evaluates a signed site consent record. The authoritative form is a
@@ -31,10 +32,16 @@ function incompleteConsent(byteSize: number): ConsentEvidenceReport {
   };
 }
 
+/**
+ * @param consentAttestedSha256 Hex digest recorded when the auditor compared the file
+ *   with the signed paper original. An attestation without it is refused: the name alone
+ *   cannot bind the PASS to a specific document, so a swapped file would still pass.
+ */
 export function verifyConsentEvidence(
   consentPath: string | undefined,
   consentVerifiedByAuditor = false,
-  consentVerifiedByName?: string | undefined
+  consentVerifiedByName?: string | undefined,
+  consentAttestedSha256?: string | undefined
 ): ConsentEvidenceReport {
   if (!consentPath) return { passed: false, statusLabel: "PENDING_SITE_AND_CONSENT_SIGN_OFF", detail: MISSING_CONSENT_DETAIL };
 
@@ -50,10 +57,33 @@ export function verifyConsentEvidence(
   // DuriOS cannot read a signature out of a scan, so the gate stays shut.
   if (!consentVerifiedByAuditor) return incompleteConsent(byteSize);
 
+  const attestedBy = consentVerifiedByName?.trim() || "(chưa ghi tên)";
+  const expectedHash = consentAttestedSha256?.trim();
+  if (!expectedHash) {
+    return {
+      passed: false,
+      statusLabel: "PENDING_SIGNED_CONSENT_INCOMPLETE",
+      detail:
+        `Kiểm toán viên ${attestedBy} xác nhận đã đối chiếu nhưng chưa ghi nhận mã băm SHA-256 của biên bản gốc, ` +
+        `nên không thể ràng buộc kết quả này với một tệp cụ thể. Nghiêm cấm nạp dữ liệu khách hàng thật.`,
+    };
+  }
+
+  const actualHash = calculateSha256(readFileSync(consentPath));
+  if (actualHash.toLowerCase() !== expectedHash.toLowerCase()) {
+    return {
+      passed: false,
+      statusLabel: "PENDING_SIGNED_CONSENT_INCOMPLETE",
+      detail:
+        `Mã băm SHA-256 của tệp tại '${consentPath}' không khớp mã băm mà kiểm toán viên ${attestedBy} đã ghi nhận. ` +
+        `Có thể tệp đã bị thay thế sau khi xác nhận. Nghiêm cấm nạp dữ liệu khách hàng thật.`,
+    };
+  }
+
   return {
     passed: true,
     statusLabel: "PASS",
-    detail: `Kiểm toán viên ${consentVerifiedByName?.trim() || "(chưa ghi tên)"} đã đối chiếu biên bản chấp thuận đã ký (${byteSize} byte) tại '${consentPath}' với bản gốc.`,
+    detail: `Kiểm toán viên ${attestedBy} đã đối chiếu biên bản chấp thuận đã ký (${byteSize} byte, SHA-256 khớp) tại '${consentPath}' với bản gốc.`,
   };
 }
 

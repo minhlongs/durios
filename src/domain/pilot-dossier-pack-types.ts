@@ -53,6 +53,7 @@ export interface CompilePilotGoLivePackOptions {
   readonly consentSignedFilePath?: string | undefined;
   readonly consentVerified?: boolean | undefined;
   readonly consentVerifiedByName?: string | undefined;
+  readonly consentAttestedSha256?: string | undefined;
   readonly env?: Record<string, string | undefined> | undefined;
   readonly forcedTimestamp?: string | undefined;
   readonly rehearsalMode?: boolean | undefined;
