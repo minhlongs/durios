@@ -1,10 +1,13 @@
-import { afterEach, describe, expect, it } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { verifyConsentEvidence } from "../src/auth/consent-evidence-verifier.js";
 
-const DIR = join(process.env.TMPDIR ?? "/tmp", "gate01-attestation-hash-test");
+let DIR = "";
+
+beforeEach(() => { DIR = mkdtempSync(join(tmpdir(), "gate01-attestation-hash-test-")); });
 const CONSENT = join(DIR, "signed-consent.pdf");
 const CONTENT = "Signed Cai Lay Packhouse Data Consent (91/2025/QH15)";
 const AUDITOR = "Trần Văn Quản Lý";

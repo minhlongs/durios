@@ -1,10 +1,13 @@
-import { afterEach, describe, expect, it } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { verifySingleSiteLaunchGates } from "../src/auth/pilot-launch-gate-verifier.js";
 
-const DIR = join(process.env.TMPDIR ?? "/tmp", "gate01-attestation-test");
+let DIR = "";
+
+beforeEach(() => { DIR = mkdtempSync(join(tmpdir(), "gate01-attestation-test-")); });
 const NO_BACKUP = join(DIR, "absent-backup-dir");
 const CONSENT = join(DIR, "signed-consent.pdf");
 
