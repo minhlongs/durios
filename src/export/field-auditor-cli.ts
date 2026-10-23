@@ -4,6 +4,7 @@ import {
   compileStandaloneGoLiveDossierPack, verifyPilotGoLiveDossierPackIntegrity,
 } from "./pilot-dossier-pack-compiler.js";
 import { formatGoLivePackMarkdown } from "./pilot-dossier-pack-formatter.js";
+import { recordConsentAttestationEvent } from "../auth/consent-attestation-recorder.js";
 import type { GoLiveReadinessReport } from "../domain/pilot-dossier-pack-types.js";
 
 export interface FieldAuditorCliOptions {
@@ -32,6 +33,7 @@ export function runFieldAuditorCli(options: FieldAuditorCliOptions = {}): {
     const integrityVerified = verifyPilotGoLiveDossierPackIntegrity(parsed);
     return { exitCode: integrityVerified ? 0 : 1, report: parsed, outputFilePath: options.verifyFilePath, integrityVerified };
   }
+  recordConsentAttestationEvent({ dbPath: options.dbPath, attestationSha256: options.consentAttestedSha256, attestedBy: options.consentVerifiedBy ?? "", consentPath: options.consentSignedFilePath, siteCode: options.siteCode });
   const report = compileStandaloneGoLiveDossierPack("founder-field-auditor", "AUDITOR", { siteCode: options.siteCode, dbPath: options.dbPath, dataDir: options.dataDir, backupDir: options.backupDir, consentSignedFilePath: options.consentSignedFilePath, consentVerified: options.consentVerifiedBy !== undefined, consentVerifiedByName: options.consentVerifiedBy, consentAttestedSha256: options.consentAttestedSha256, env: options.env });
   let outputFilePath: string | undefined;
   if (options.outputDir) {

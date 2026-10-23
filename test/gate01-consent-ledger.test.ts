@@ -5,6 +5,7 @@ import { join } from "node:path";
 import { createHash } from "node:crypto";
 import { createWorkspaceApp } from "../src/server/server.js";
 import { verifySingleSiteLaunchGates } from "../src/auth/pilot-launch-gate-verifier.js";
+import { runFieldAuditorCli } from "../src/export/field-auditor-cli.js";
 
 let DIR = "";
 
@@ -80,4 +81,23 @@ describe("GATE-01 reads the attestation from the audit ledger", () => {
     const gate01 = report.gates.find((g) => g.gateId === "GATE-01");
     expect(gate01?.passed).toBe(false);
     expect(gate01?.statusLabel).toBe("PENDING_SIGNED_CONSENT_INCOMPLETE");
+  });
+
+  it("opens the gate after the field-auditor CLI records the attestation", () => {
+    mkdirSync(DIR, { recursive: true });
+    const dbPath = join(DIR, "durios.db");
+    const dataDir = join(DIR, "uploads");
+    const consentPath = join(DIR, "signed-consent.pdf");
+    writeFileSync(consentPath, CONTENT, "utf-8");
+    const attestedSha = shaOf(CONTENT);
+
+    const before = verifySingleSiteLaunchGates({ dbPath, dataDir, consentSignedFilePath: consentPath });
+    expect(before.gates.find((g) => g.gateId === "GATE-01")?.passed).toBe(false);
+
+    runFieldAuditorCli({ dbPath, dataDir, consentSignedFilePath: consentPath, consentVerifiedBy: AUDITOR_NAME, consentAttestedSha256: attestedSha });
+
+    const after = verifySingleSiteLaunchGates({ dbPath, dataDir, consentSignedFilePath: consentPath });
+    const gate01 = after.gates.find((g) => g.gateId === "GATE-01");
+    expect(gate01?.passed).toBe(true);
+    expect(gate01?.detail).toContain(AUDITOR_NAME);
   });
