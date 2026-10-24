@@ -954,10 +954,33 @@
     };
 
     const FIELD_STATUS_META = {
-      DRAFT: { label: "Chưa xác minh", tone: "warning", icon: "clock" },
-      HUMAN_VERIFIED: { label: "Đã xác minh", tone: "success", icon: "check" },
-      REJECTED: { label: "Bị từ chối", tone: "danger", icon: "x" },
+      DRAFT: { label: "Cần rà soát", tone: "warning", icon: "clock" },
+      HUMAN_VERIFIED: { label: "Đã xác nhận dữ liệu", tone: "success", icon: "check" },
+      REJECTED: { label: "Cần đánh giá lại", tone: "danger", icon: "x" },
     };
+    // A field whose value a person entered by hand is a human assertion: it
+    // still shows, separately, the value the document itself carries.
+    const FIELD_MANUAL_EDIT_LABEL = "Đã sửa tay — cần đánh giá lại";
+    /* Review-state rules mirror src/ui/review-state.ts, which is the tested
+       source of truth. Keep the two in step; the test suite checks both. */
+    const REVIEW_STATE_LABEL_VI = {
+      NEEDS_REVIEW: "Cần rà soát",
+      NEEDS_EVIDENCE: "Cần bổ sung bằng chứng",
+      DISCREPANCY: "Có sai lệch",
+      CONFIRMED_DATA: "Đã xác nhận dữ liệu",
+      SOURCE_CHANGED: "Nguồn đã thay đổi",
+      NEEDS_REASSESSMENT: "Cần đánh giá lại",
+    };
+    function REVIEW_STATE_OF(row) {
+      if (row.isSuperseded === true) return "SOURCE_CHANGED";
+      if (row.verificationStatus === "HUMAN_VERIFIED") return "CONFIRMED_DATA";
+      if (row.verificationStatus === "REJECTED") return "NEEDS_REASSESSMENT";
+      const value = row.selectedValue;
+      if (value === null || value === undefined || String(value).trim() === "") return "NEEDS_EVIDENCE";
+      if (row.verificationStatus === "EXTRACTED" || row.verificationStatus === "DRAFT") return "NEEDS_REVIEW";
+      return "NEEDS_REVIEW";
+    }
+
 
     const FIELD_LABELS = {
       cadmium_mg_kg: "Hàm lượng Cadmi (mg/kg)",
@@ -1633,6 +1656,14 @@
         const rows = doc.extractedFields.map((f) => {
           const isVerified = f.verificationStatus === "HUMAN_VERIFIED";
           const meta = FIELD_STATUS_META[f.verificationStatus] || { label: f.verificationStatus, tone: "neutral", icon: "circle" };
+          // The row declares its operational review state explicitly, so the
+          // badge never has to be inferred from the verification enum alone.
+          const superseded = doc.isSuperseded === true;
+          const reviewState = REVIEW_STATE_OF({
+            verificationStatus: f.verificationStatus,
+            selectedValue: f.confirmedValue ?? f.rawValue,
+            isSuperseded: superseded,
+          });
           const currentValue = f.confirmedValue ?? f.rawValue;
           const edited = isVerified && f.confirmedValue !== undefined && f.confirmedValue !== null && String(f.confirmedValue) !== String(f.rawValue);
           const fid = escapeHtml(f.id);
@@ -1660,7 +1691,7 @@
                 ${compare}
               </td>
               <td data-label="Trạng thái">
-                <div style="display:flex;flex-wrap:wrap;gap:var(--space-1);">${badge(meta.label, meta.tone, meta.icon)}${edited ? badge("Đã sửa so với trích xuất", "info", "info") : ""}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:var(--space-1);">${badge(meta.label, meta.tone, meta.icon)}${edited ? badge(FIELD_MANUAL_EDIT_LABEL, "warning", "triangle") : ""}${reviewState === "SOURCE_CHANGED" || reviewState === "NEEDS_EVIDENCE" ? badge(REVIEW_STATE_LABEL_VI[reviewState], reviewState === "SOURCE_CHANGED" ? "danger" : "warning", reviewState === "SOURCE_CHANGED" ? "alert" : "clock") : ""}</div>
                 ${isVerified && f.verifiedBy ? `<span class="cell-sub">${escapeHtml(f.verifiedBy)} · ${timeTag(f.verifiedAt)}</span>` : ""}
               </td>
               <td data-label="Thao tác" class="col-action">
