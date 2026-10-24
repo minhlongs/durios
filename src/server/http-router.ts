@@ -5,6 +5,7 @@ import { errorResponse, jsonResponse, mapDomainErrorToResponse } from "./server-
 import { serveIndexHtml } from "./static-ui.js";
 import { serveStitchStaticAsset } from "./stitch-static-handler.js";
 import { handleListDossiers, handleCreateDossier, handleGetDossier, handleRunValidation, handleApproveForExport, handleExportDossier, handleGetExportManifest } from "./dossier-handlers.js";
+import { handleOverrideBlocker } from "./override-handler.js";
 import { handleUploadDocument, handleVerifyField, handleGetAuditTrail } from "./document-handlers.js";
 import { handleGrantShare, handleListShares, handleRevokeShare, handleRecordOrganicEvidence, handleListOrganicEvidence, handleGetPilotKpi, handleGetPilotGates } from "./pilot-handlers.js";
 import { handleGetPilotGoLivePack } from "./pilot-dossier-pack-handler.js";
@@ -74,6 +75,8 @@ export async function routeHttpRequest(
   if (dossierMatch && method === "GET") return handleGetDossier(workspace, actor, dossierMatch[1]!);
   const validateMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/validate$/);
   if (validateMatch && method === "POST") return handleRunValidation(workspace, actor, validateMatch[1]!);
+  const overrideMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/override$/);
+  if (overrideMatch && method === "POST") return handleOverrideBlocker(workspace, actor, overrideMatch[1]!, req);
   const approveMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/approve$/);
   if (approveMatch && method === "POST") return handleApproveForExport(workspace, actor, approveMatch[1]!);
   const exportMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/export$/);

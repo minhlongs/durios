@@ -86,3 +86,5 @@ export function assertCanRecordOrganicEvidence(actor: AuthenticatedActor): void 
     throw new AccessControlError(`Tenant type '${actor.tenantType}' (${actor.persona}) is not permitted to record organic evidence.`, "INVALID_TENANT_TYPE");
   }
 }
+
+export { assertCanOverrideBlocker } from "./override-authorization.js";

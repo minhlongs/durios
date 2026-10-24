@@ -20,6 +20,11 @@ export interface VerifyFieldRequestBody {
   readonly rejectField?: boolean | undefined;
 }
 
+/** A named quality manager signing past a blocking finding. The reason is required. */
+export interface OverrideBlockerRequestBody {
+  readonly reason: string;
+}
+
 export interface ApiResponse<T = unknown> {
   readonly success: boolean;
   readonly data?: T | undefined;

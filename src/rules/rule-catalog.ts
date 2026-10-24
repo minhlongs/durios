@@ -1,4 +1,5 @@
 import type { ComplianceRule } from "../domain/types.js";
+import { CADMIUM_CONTROL_RULES } from "./cadmium-rule-catalog.js";
 
 export const STATUTORY_COMPLIANCE_RULES: readonly ComplianceRule[] = [
   {
@@ -10,6 +11,7 @@ export const STATUTORY_COMPLIANCE_RULES: readonly ComplianceRule[] = [
     statutoryReference: "Protocol on Phytosanitary Requirements for Vietnamese Durian to China, Article 4",
     isActive: true,
     isStatutoryVerified: true,
+    statutoryClaim: "STATUTORY",
     evaluationType: "DOCUMENT_PRESENCE",
   },
   {
@@ -21,6 +23,7 @@ export const STATUTORY_COMPLIANCE_RULES: readonly ComplianceRule[] = [
     statutoryReference: "Vietnam-China Bilateral Protocol (2022) Article 7",
     isActive: true,
     isStatutoryVerified: true,
+    statutoryClaim: "STATUTORY",
     evaluationType: "DOCUMENT_PRESENCE",
   },
   {
@@ -32,22 +35,9 @@ export const STATUTORY_COMPLIANCE_RULES: readonly ComplianceRule[] = [
     statutoryReference: "GB 2762-2022 Table 1 (Pending authoritative text verification)",
     isActive: false, // DISABLED: Primary legal evidence not present in repository
     isStatutoryVerified: false, // UNVERIFIED
+    statutoryClaim: "STATUTORY",
     fieldKeyRef: "cadmium_mg_kg",
     threshold: 0.050,
-    unit: "mg/kg",
-    evaluationType: "NUMERIC_THRESHOLD",
-  },
-  {
-    ruleId: "RUL-INT-CD-WARN",
-    name: "Internal Packhouse Advisory Cadmium Warning",
-    severity: "ADVISORY_WARNING",
-    description: "Warns when Cadmium level exceeds internal packhouse safety buffer of 0.040 mg/kg.",
-    governingAuthority: "DuriOS Packhouse Internal Standard (Non-statutory)",
-    statutoryReference: "Internal Quality Control Protocol Rev 2.1 (Non-statutory)",
-    isActive: true,
-    isStatutoryVerified: false, // Non-statutory advisory buffer
-    fieldKeyRef: "cadmium_mg_kg",
-    threshold: 0.040,
     unit: "mg/kg",
     evaluationType: "NUMERIC_THRESHOLD",
   },
@@ -60,6 +50,7 @@ export const STATUTORY_COMPLIANCE_RULES: readonly ComplianceRule[] = [
     statutoryReference: "ISO 6346:1995 Freight containers — Coding, identification and marking",
     isActive: true,
     isStatutoryVerified: true,
+    statutoryClaim: "NON_STATUTORY",
     fieldKeyRef: "container_number",
     evaluationType: "ALGORITHMIC_CHECKSUM",
   },
@@ -72,6 +63,7 @@ export const STATUTORY_COMPLIANCE_RULES: readonly ComplianceRule[] = [
     statutoryReference: "GACC Clearance Guideline for Border Land Ports (2023 Revision)",
     isActive: true,
     isStatutoryVerified: true,
+    statutoryClaim: "STATUTORY",
     fieldKeyRef: "container_number",
     evaluationType: "CROSS_DOCUMENT_EQUALITY",
   },
@@ -84,7 +76,9 @@ export const STATUTORY_COMPLIANCE_RULES: readonly ComplianceRule[] = [
     statutoryReference: "GACC Customs Supervision Rules for Sealed Reefers",
     isActive: true,
     isStatutoryVerified: true,
+    statutoryClaim: "STATUTORY",
     fieldKeyRef: "seal_number",
     evaluationType: "CROSS_DOCUMENT_EQUALITY",
   },
+  ...CADMIUM_CONTROL_RULES,
 ];

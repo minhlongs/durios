@@ -1,5 +1,8 @@
-import { assertCanTransition, assertCanValidate } from "../domain/dossier-fsm.js";
+import { assertCanTransition, assertCanValidate, assertDossierMutable } from "../domain/dossier-fsm.js";
 import { compileExportManifest } from "../export/manifest-compiler.js";
+import { assertCanOverrideBlocker } from "../auth/override-authorization.js";
+import { enrichValidationResult } from "../rules/dossier-finding-enricher.js";
+import { STATUTORY_COMPLIANCE_RULES } from "../rules/rule-catalog.js";
 import type { DeterministicRuleEngine } from "../rules/deterministic-engine.js";
 import type { AuditLedgerLike, DossierRepositoryLike } from "./workspace-types.js";
 import type { AuthenticatedActor, ContainerDossier, DossierExportManifest, ValidationRunResult } from "../domain/types.js";
@@ -7,7 +10,10 @@ import type { AuthenticatedActor, ContainerDossier, DossierExportManifest, Valid
 export function executeValidation(dossierId: string, actor: AuthenticatedActor, repo: DossierRepositoryLike, ruleEngine: DeterministicRuleEngine, auditLedger: AuditLedgerLike): ValidationRunResult {
   const dossier = repo.findRaw?.(dossierId) ?? repo.getOrThrow(dossierId, actor);
   assertCanValidate(dossier, actor);
-  const result = ruleEngine.evaluate(dossier);
+  // Tag each finding with its legal basis at the point it is produced, so a result
+  // reloaded from storage later still tells an operator which findings carry weight.
+  // A finding produced before this field existed is tagged on read, not left bare.
+  const result = enrichValidationResult(ruleEngine.evaluate(dossier), STATUTORY_COMPLIANCE_RULES);
   let nextState = dossier.lifecycleState;
   if (result.status === "PASSED") nextState = "READY_FOR_REVIEW";
   else if (result.status === "BLOCKED") nextState = "VALIDATION_BLOCKED";
@@ -46,4 +52,39 @@ export function executeExportDossier(dossierId: string, actor: AuthenticatedActo
   repo.saveExportManifest?.(manifest, actor);
   auditLedger.recordEvent(actor, dossierId, "DOSSIER_SEALED_EXPORTED", "CONTAINER_DOSSIER", dossierId, null, { compositeSha256: manifest.compositeManifestSha256, exportedAt: now });
   return manifest;
+}
+
+/**
+ * A named quality manager signs past a blocking finding so the lot can proceed.
+ *
+ * The blocking finding is deliberately left on the dossier: the override records
+ * a decision, it does not retract the evidence that prompted it. Approval still
+ * requires its own step afterwards, so signing past a blocker never becomes an
+ * approval by accident.
+ */
+export function executeBlockerOverride(
+  dossierId: string,
+  reason: string,
+  actor: AuthenticatedActor,
+  repo: DossierRepositoryLike,
+  auditLedger: AuditLedgerLike
+): ContainerDossier {
+  const trimmedReason = reason.trim();
+  if (trimmedReason.length === 0) {
+    throw new Error("A signed override requires a non-empty reason explaining the decision.");
+  }
+  const dossier = repo.findRaw?.(dossierId) ?? repo.getOrThrow(dossierId, actor);
+  assertCanOverrideBlocker(actor, dossier.tenantId);
+  assertDossierMutable(dossier, "override a blocker on");
+  if (dossier.lifecycleState !== "VALIDATION_BLOCKED") {
+    throw new Error(`Cannot override a blocker from '${dossier.lifecycleState}': only a blocked dossier can be signed past.`);
+  }
+  assertCanTransition(dossier, "REVIEW_REQUIRED", actor);
+  const blockers: readonly string[] = dossier.latestValidationResult?.findings
+    .filter((f) => f.severity === "CRITICAL_BLOCKER")
+    .map((f) => f.ruleId) ?? [];
+  const updatedDossier: ContainerDossier = { ...dossier, lifecycleState: "REVIEW_REQUIRED", updatedAt: new Date().toISOString() };
+  repo.save(updatedDossier);
+  auditLedger.recordEvent(actor, dossierId, "DOSSIER_BLOCKER_OVERRIDDEN", "CONTAINER_DOSSIER", dossierId, { previousState: dossier.lifecycleState, blockers }, { nextState: "REVIEW_REQUIRED", signedBy: actor.name, role: actor.role, reason: trimmedReason });
+  return updatedDossier;
 }

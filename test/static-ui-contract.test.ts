@@ -68,7 +68,7 @@ describe("Static UI contract: index.html", () => {
   it("renders validation findings from fields that exist in the API", () => {
     expect(script).not.toContain("f.message}");
     expect(script).not.toContain("sourceAuthority");
-    for (const key of ["messageVi", "ruleName", "citation", "observedValue", "thresholdValue"]) {
+    for (const key of ["messageVi", "ruleName", "citation", "observedValue", "thresholdValue", "legalBasis"]) {
       expect(script).toContain(`f.${key}`);
     }
   });

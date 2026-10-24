@@ -6,15 +6,17 @@ import { STATUTORY_COMPLIANCE_RULES } from "../rules/rule-catalog.js";
 import { AuditLedger } from "../audit/audit-ledger.js";
 import { DossierRepository } from "./dossier-repository.js";
 import { handleDocumentUpload } from "./document-ingestion-orchestrator.js";
-import { executeValidation, executeApproveForExport, executeExportDossier } from "./dossier-lifecycle-service.js";
+import { executeValidation, executeApproveForExport, executeExportDossier, executeBlockerOverride } from "./dossier-lifecycle-service.js";
+import { buildWorkspaceCollaborators } from "./workspace-collaborators.js";
+import { persistUploadedDocument, persistFieldVerification } from "./document-persistence-flow.js";
 import { ShareAccessManager } from "../sharing/share-access-manager.js";
 import { OrganicEvidenceManager } from "../organic/organic-evidence-manager.js";
 import { SqliteClient } from "../storage/sqlite-client.js";
 import { SqliteDossierRepository } from "../storage/sqlite-dossier-repository.js";
 import { SqliteAuthService } from "../auth/sqlite-auth-service.js";
 import { assertCanCreateContainerDossier, assertValidActor } from "../auth/rbac-policy.js";
-import { assertCanUploadDocument, assertCanVerifyField, assertCanApproveOrExport } from "../auth/rbac-persona-assertions.js";
-import type { FileStorageService, LegacyBlobReconciliationReport, StoredBlobResult } from "../storage/file-storage-service.js";
+import { assertCanUploadDocument, assertCanVerifyField, assertCanApproveOrExport, assertCanOverrideBlocker } from "../auth/rbac-persona-assertions.js";
+import type { FileStorageService, LegacyBlobReconciliationReport } from "../storage/file-storage-service.js";
 import type { AuditLedgerLike, CreateDossierInput, DossierRepositoryLike } from "./workspace-types.js";
 import type { AuthenticatedActor, ContainerDossier, DocumentType, DossierExportManifest, IngestedDocument, ValidationRunResult } from "../domain/types.js";
 
@@ -29,15 +31,14 @@ export class ContainerDossierWorkspace {
     this.hitlService = new HitlVerificationService(this.auditLedger);
     this.ruleEngine = new DeterministicRuleEngine(STATUTORY_COMPLIANCE_RULES);
     this.fileStorage = fileStorage;
-    const repoClient = this.repo instanceof SqliteDossierRepository ? this.repo.client : (this.repo as { client?: unknown }).client;
-    const resolvedSqlite = sqliteClient ?? (repoClient instanceof SqliteClient ? repoClient : new SqliteClient({ dbPath: ":memory:", inMemory: true }));
-    this.sqliteClient = resolvedSqlite;
-    this.shareManager = new ShareAccessManager(resolvedSqlite);
-    this.organicEvidenceManager = new OrganicEvidenceManager(resolvedSqlite);
-    this.authService = authService ?? new SqliteAuthService(resolvedSqlite);
-    this.repo.setAccessChecker?.((dId, oTId, aTId) => this.shareManager.checkAccess(dId, oTId, aTId).hasAccess);
+    const collaborators = buildWorkspaceCollaborators(this.repo, sqliteClient);
+    this.sqliteClient = collaborators.sqliteClient;
+    this.shareManager = collaborators.shareManager;
+    this.organicEvidenceManager = collaborators.organicEvidenceManager;
+    this.authService = authService ?? new SqliteAuthService(collaborators.sqliteClient);
+    this.repo.setAccessChecker?.((dId, oTId, aTId) => collaborators.shareManager.checkAccess(dId, oTId, aTId).hasAccess);
     if (this.fileStorage && this.repo instanceof SqliteDossierRepository) {
-      this.legacyBlobReconciliationReport = this.fileStorage.reconcileLegacyDocumentBlobs(this.repo.client.db);
+      this.legacyBlobReconciliationReport = this.fileStorage.reconcileLegacyDocumentBlobs(collaborators.sqliteClient.db);
     }
   }
   public createDossier(input: CreateDossierInput, actor: AuthenticatedActor): ContainerDossier {
@@ -58,20 +59,8 @@ export class ContainerDossierWorkspace {
     const dossier = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor);
     assertCanUploadDocument(actor, dossier.tenantId);
     assertDossierMutable(dossier, "upload to");
-    let { updatedDossier, document } = handleDocumentUpload(dossier, fileBytes, fileName, documentType, actor, this.auditLedger, fixtureExtractedFields);
-    let storedBlob: StoredBlobResult | undefined;
-    if (this.fileStorage && !dossier.documents.some((d) => d.id === document.id && !d.isSuperseded)) {
-      storedBlob = this.fileStorage.storeFile(fileBytes, fileName, document.id);
-      document = { ...document, storagePath: storedBlob.storagePath };
-      updatedDossier = { ...updatedDossier, documents: updatedDossier.documents.map((d) => (d.id === document.id ? document : d)) };
-    }
-    try { this.repo.save(updatedDossier); } catch (saveError) {
-      if (this.fileStorage && storedBlob?.createdNew && !(this.repo.hasDocumentReferencingBlob?.(storedBlob.storagePath, storedBlob.sha256) ?? false)) {
-        try { this.fileStorage.deleteFile(storedBlob.storagePath); } catch { /* best effort */ }
-      }
-      throw saveError;
-    }
-    return { dossier: updatedDossier, document };
+    const { updatedDossier, document } = handleDocumentUpload(dossier, fileBytes, fileName, documentType, actor, this.auditLedger, fixtureExtractedFields);
+    return persistUploadedDocument(dossier, updatedDossier, document, fileBytes, fileName, this.fileStorage, this.repo);
   }
 
   public verifyField(dossierId: string, documentId: string, verification: HumanVerificationInput, actor: AuthenticatedActor): ContainerDossier {
@@ -80,16 +69,15 @@ export class ContainerDossierWorkspace {
     const hasReadAndVerify = actor.tenantId === dossier.tenantId || (() => { const acc = this.shareManager.checkAccess(dossier.id, dossier.tenantId, actor.tenantId); return acc.hasAccess && acc.scope === "READ_AND_VERIFY"; })();
     assertCanVerifyField(actor, dossier.tenantId, hasReadAndVerify);
     assertDossierMutable(dossier, "verify fields on");
-    const docIndex = dossier.documents.findIndex((d) => d.id === documentId && !d.isSuperseded);
-    if (docIndex === -1) throw new Error(`Active document '${documentId}' not found.`);
-    const updatedDocuments = [...dossier.documents];
-    updatedDocuments[docIndex] = this.hitlService.verifyOrCorrectField(dossier.documents[docIndex]!, verification, actor);
-    const updatedDossier: ContainerDossier = { ...dossier, lifecycleState: "HUMAN_VERIFICATION_REQUIRED", latestValidationResult: undefined, documents: updatedDocuments, updatedAt: new Date().toISOString() };
-    this.repo.save(updatedDossier);
-    return updatedDossier;
+    return persistFieldVerification(dossier, documentId, verification, actor, this.hitlService, this.repo);
   }
 
   public runValidation(dossierId: string, actor: AuthenticatedActor): ValidationRunResult { return executeValidation(dossierId, actor, this.repo, this.ruleEngine, this.auditLedger); }
+  public overrideBlocker(dossierId: string, reason: string, actor: AuthenticatedActor): ContainerDossier {
+    const d = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor);
+    assertCanOverrideBlocker(actor, d.tenantId);
+    return executeBlockerOverride(dossierId, reason, actor, this.repo, this.auditLedger);
+  }
   public approveForExport(dossierId: string, actor: AuthenticatedActor): ContainerDossier { const d = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor); assertCanApproveOrExport(actor, d.tenantId, "approveForExport"); return executeApproveForExport(dossierId, actor, this.repo, this.auditLedger); }
   public exportDossier(dossierId: string, actor: AuthenticatedActor): DossierExportManifest { const d = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor); assertCanApproveOrExport(actor, d.tenantId, "exportDossier"); return executeExportDossier(dossierId, actor, this.repo, this.auditLedger); }
   public getDossier(dossierId: string, actor: AuthenticatedActor): ContainerDossier | undefined { assertValidActor(actor); return this.repo.findById(dossierId, actor); }
