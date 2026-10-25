@@ -56,12 +56,20 @@ export function computeGate05KpiFromDossiers(dossiers: readonly ContainerDossier
   return { evaluatedAt: new Date().toISOString(), totalContainers: metrics.length, reconciledCount: validDeltas.length, meanDeltaSeconds, underFiveMinuteGate, underThreeMinuteTarget, blindFaultCount: blindFaultMetrics.length, blindFaultsCaught, zeroMissGate, gate05Passed: metrics.length >= 5 && underFiveMinuteGate && zeroMissGate, containerMetrics: metrics, firstContainerMetrics, containerValueMetrics, aggregateValueMetrics };
 }
 
-export function evaluateGate05PilotKpi(options: { dbPath?: string; dataDir?: string } = {}): Gate05KpiEvaluationReport {
+export function evaluateGate05PilotKpi(
+  options: { dbPath?: string; dataDir?: string; tenantId?: string } = {}
+): Gate05KpiEvaluationReport {
   const app = createWorkspaceApp(options);
   try {
-    const rows = app.sqliteClient.db
-      .query<{ id: string }, []>("SELECT id FROM container_dossiers ORDER BY created_at ASC, id ASC")
-      .all();
+    const rows = options.tenantId
+      ? app.sqliteClient.db
+          .query<{ id: string }, [string]>(
+            "SELECT id FROM container_dossiers WHERE tenant_id = ? ORDER BY created_at ASC, id ASC"
+          )
+          .all(options.tenantId)
+      : app.sqliteClient.db
+          .query<{ id: string }, []>("SELECT id FROM container_dossiers ORDER BY created_at ASC, id ASC")
+          .all();
     const dossiers: ContainerDossier[] = [];
     for (const r of rows) {
       const raw = app.workspace.getRawDossier(r.id);

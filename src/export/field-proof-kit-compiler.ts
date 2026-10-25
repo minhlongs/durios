@@ -43,7 +43,11 @@ export function compileFieldProofKitBundle(options: CompileFieldProofKitOptions 
   const siteCode = options.siteCode ?? "SITE-CAILAY-TIENGIANG-01";
   const tenantId = options.tenantId ?? "TENANT-CAILAY-01";
   const planCode: OpcCommercialPlanCode = options.planCode ?? "PILOT_30D_5M_VND";
-  const goLiveReadiness = compileStandaloneGoLiveDossierPack("OPC-PROOF-KIT-AUDITOR", "AUDITOR", options);
+  const goLiveReadiness = compileStandaloneGoLiveDossierPack(
+    "OPC-PROOF-KIT-AUDITOR",
+    "AUDITOR",
+    { ...options, tenantId, siteCode }
+  );
   const compiledAt = options.forcedTimestamp ?? goLiveReadiness.compiledAt;
   const exportedManifests = options.manifestsOverride ?? loadExportedManifestsFromDb(tenantId, options.dbPath, options.dataDir);
   const commercialQuote = buildOpcCommercialQuote({ tenantId, siteCode, planCode, issuedAtIso: compiledAt });

@@ -23,7 +23,8 @@ export interface SingleSiteLaunchGateReport {
 
 export interface VerifyLaunchGatesOptions {
   readonly dbPath?: string; readonly dataDir?: string; readonly backupDir?: string;
-  readonly consentSignedFilePath?: string; readonly env?: Record<string, string | undefined>;
+  readonly consentSignedFilePath?: string; readonly tenantId?: string;
+  readonly env?: Record<string, string | undefined>;
 }
 
 function buildGateReport(
@@ -78,7 +79,11 @@ export function verifySingleSiteLaunchGates(options: VerifyLaunchGatesOptions = 
   const dataDir = options.dataDir ?? env.DURIOS_DATA_DIR ?? "./data/uploads";
   const app = createWorkspaceApp({ dbPath, dataDir });
   try {
-    return buildGateReport(app.workspace.auditLedger.verifyIntegrity(), evaluateGate05PilotKpi({ dbPath, dataDir }), options);
+    return buildGateReport(
+      app.workspace.auditLedger.verifyIntegrity(),
+      evaluateGate05PilotKpi({ dbPath, dataDir, ...(options.tenantId ? { tenantId: options.tenantId } : {}) }),
+      options
+    );
   } finally {
     app.sqliteClient.close();
   }
