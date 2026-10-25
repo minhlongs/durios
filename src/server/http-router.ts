@@ -4,6 +4,7 @@ import { handleGetAuthenticatedMe, handleOtpChallengeRequest, handleOtpChallenge
 import { errorResponse, jsonResponse, mapDomainErrorToResponse } from "./server-types.js";
 import { serveIndexHtml } from "./static-ui.js";
 import { serveStitchStaticAsset } from "./stitch-static-handler.js";
+import { handleAeoAndAgentDiscoveryRoutes } from "./aeo-discovery-router.js";
 import { handleListDossiers, handleCreateDossier, handleGetDossier, handleRunValidation, handleApproveForExport, handleExportDossier, handleGetExportManifest } from "./dossier-handlers.js";
 import { handleOverrideBlocker } from "./override-handler.js";
 import { handleUploadDocument, handleVerifyField, handleGetAuditTrail } from "./document-handlers.js";
@@ -25,6 +26,8 @@ export async function routeHttpRequest(
   const method = req.method.toUpperCase();
 
   if (method === "GET" && (path === "/" || path === "/index.html")) return serveIndexHtml();
+  const aeoResp = handleAeoAndAgentDiscoveryRoutes(method, path);
+  if (aeoResp) return aeoResp;
   if (method === "GET" && path.startsWith("/stitch/")) {
     const stitchResp = serveStitchStaticAsset(path);
     if (stitchResp) return stitchResp;
@@ -49,11 +52,7 @@ export async function routeHttpRequest(
     return mapDomainErrorToResponse(err, "Authentication required");
   }
 
-  const isV1Scope =
-    path.startsWith("/api/v1/dossiers") ||
-    path.startsWith("/api/v1/pilot/") ||
-    path.startsWith("/api/v1/saas/") ||
-    path.startsWith("/api/v1/open-core/");
+  const isV1Scope = path.startsWith("/api/v1/dossiers") || path.startsWith("/api/v1/pilot/") || path.startsWith("/api/v1/saas/") || path.startsWith("/api/v1/open-core/");
   const routePath = isV1Scope ? `/api/${path.slice("/api/v1/".length)}` : path;
 
   if (method === "GET" && routePath === "/api/pilot/kpi") return handleGetPilotKpi(workspace, actor);
