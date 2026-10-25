@@ -7,7 +7,14 @@ const ALWAYS_REDACTED_KEYS: ReadonlySet<string> = new Set([
   "commercial_contract_no", "commercialContractNo", "payment_terms", "paymentTerms",
   "exporter_margin", "exporterMargin", "customs_broker_fee", "customsBrokerFee",
   "clerkNote", "clerk_note", "storagePath", "storage_path",
+  "orchard_supplier", "orchardSupplier", "farmgate_price", "farmgatePrice",
 ]);
+
+export const selectiveDisclosure = {
+  alwaysRedactedKeys: ALWAYS_REDACTED_KEYS,
+  quantityKeys: ["declaredNetWeightKg", "declared_net_weight_kg", "declaredBoxCount", "declared_box_count"] as const,
+} as const;
+
 
 const QUANTITY_KEYS: ReadonlySet<string> = new Set([
   "declaredNetWeightKg", "declared_net_weight_kg",

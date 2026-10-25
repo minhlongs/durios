@@ -1,5 +1,6 @@
 import type { ComplianceRule, ContainerDossier, ValidationFinding, ValidationRunResult } from "../domain/types.js";
-import { evaluateCadmiumThreshold, evaluateCadmiumWarningThreshold, evaluateCrossDocFieldDiscrepancy, evaluateIsoChecksum } from "./evaluator-helpers.js";
+import { evaluateCadmiumThreshold, evaluateCadmiumWarningThreshold, evaluateColdChainTemperatureAttestation, evaluateCrossDocFieldDiscrepancy, evaluateIsoChecksum, minTemperatureC } from "./evaluator-helpers.js";
+
 
 export class DeterministicRuleEngine {
   constructor(private readonly rules: readonly ComplianceRule[]) {}
@@ -89,6 +90,7 @@ export class DeterministicRuleEngine {
 
     if (rule.ruleId === "RUL-CD-INTERNAL-BLOCK") evaluateCadmiumThreshold(rule, activeDocs, findings);
     if (rule.ruleId === "RUL-INT-CD-WARN") evaluateCadmiumWarningThreshold(rule, activeDocs, findings);
+    if (rule.ruleId === "RUL-TEMP-WINDOW" && minTemperatureC("VN_CN") > 0) evaluateColdChainTemperatureAttestation(rule, dossier, findings);
     if (rule.ruleId === "RUL-ISO6346-CHK") evaluateIsoChecksum(rule, dossier, findings);
     if (rule.ruleId === "RUL-CROSS-CONT") evaluateCrossDocFieldDiscrepancy("container_number", rule, dossier, activeDocs, findings);
     if (rule.ruleId === "RUL-CROSS-SEAL") evaluateCrossDocFieldDiscrepancy("seal_number", rule, dossier, activeDocs, findings);  }
