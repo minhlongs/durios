@@ -3,6 +3,8 @@ import type { ComplianceRule, ContainerDossier, IngestedDocument, ValidationFind
 
 // The cadmium evaluators outgrew this file and now live in their own module.
 export { evaluateCadmiumThreshold, evaluateCadmiumWarningThreshold } from "./cadmium-evaluators.js";
+export { evaluateColdChainTemperatureAttestation, maxTemperatureC, minTemperatureC } from "./cold-chain-evaluators.js";
+
 
 export function evaluateCrossDocFieldDiscrepancy(
   key: string,

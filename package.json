@@ -15,7 +15,8 @@
     "pilot:verify-gates": "bun run src/auth/pilot-launch-gate-verifier.ts",
     "pilot:audit-pack": "bun run src/export/field-auditor-cli.ts",
     "blueprint:verify-25-steps": "bun run src/saas/blueprint-cli.ts",
-    "verify:manifest": "bun run src/export/standalone-manifest-verifier.ts"
+    "verify:manifest": "bun run src/export/standalone-manifest-verifier.ts",
+    "saas:sign-license": "bun run src/saas/license-signer-cli.ts"
   },
   "keywords": [
     "durios",

@@ -6,6 +6,7 @@ import { assertOwnerManagementRole, assertOwnerOperationalRole, assertValidActor
 import { assertCanRecordOrganicEvidence } from "../auth/rbac-persona-assertions.js";
 import { computeGate05KpiFromDossiers } from "../auth/pilot-kpi-evaluator.js";
 import { evaluateWorkspaceLaunchGates } from "../auth/pilot-launch-gate-verifier.js";
+import { issueCrossBorderBuyerVerificationRoom } from "../saas/gacc-registry-watch-service.js";
 import { errorResponse, jsonResponse, mapDomainErrorToResponse } from "./server-types.js";
 
 export async function handleGrantShare(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, dossierId: string, req: Request): Promise<Response> {
@@ -17,7 +18,10 @@ export async function handleGrantShare(workspace: ContainerDossierWorkspace, act
     const body = (await req.json()) as { granteeTenantId?: string; purpose?: SharePurpose; scope?: ShareScope; expiresAt?: string };
     if (!body.granteeTenantId || !body.purpose || !body.scope || !body.expiresAt) return errorResponse("Missing required fields: granteeTenantId, purpose, scope, expiresAt", 400);
     const grant = workspace.shareManager.grantAccess(dossier, body.granteeTenantId, body.purpose, body.scope, body.expiresAt, actor, workspace.auditLedger);
-    return jsonResponse({ grant }, 201);
+    const manifest = body.purpose === "BUYER_VERIFICATION" ? workspace.getExportManifest(dossierId, actor) : undefined;
+    let buyerRoom;
+    if (manifest) { try { buyerRoom = issueCrossBorderBuyerVerificationRoom(manifest, grant.id, body.expiresAt); } catch { buyerRoom = undefined; } }
+    return jsonResponse(buyerRoom ? { grant, buyerRoom } : { grant }, 201);
   } catch (err: unknown) { return mapDomainErrorToResponse(err, "Failed to grant share access"); }
 }
 
