@@ -11,6 +11,16 @@ export interface FirstContainerValueMetrics {
   readonly actualDurationMinutes: number;
 }
 
+export interface AggregateContainerValueMetrics {
+  readonly evaluatedContainerCount: number;
+  readonly meanMinutesSavedPerContainer: number;
+  readonly totalMinutesSaved: number;
+  readonly meanHumanTouchesPerContainer: number;
+  readonly totalExceptionsDiscovered: number;
+  readonly totalExpectedLossAvoidedVnd: number;
+  readonly perContainerMetrics: readonly FirstContainerValueMetrics[];
+}
+
 export const MANUAL_BASELINE_MINUTES = 35;
 export const PENALTY_AVOIDANCE_VND_PER_CRITICAL_EXCEPTION = 35_000_000;
 
@@ -39,11 +49,9 @@ export function evaluateFirstContainerValueMetrics(
 
   const findings = dossier.latestValidationResult?.findings ?? [];
   const exceptionsDiscoveredPerContainer = findings.length;
-
   const criticalExceptionsCount = findings.filter(
     (f) => f.severity === "CRITICAL_BLOCKER"
   ).length;
-
   const expectedLossAvoidedVnd =
     criticalExceptionsCount * PENALTY_AVOIDANCE_VND_PER_CRITICAL_EXCEPTION;
 
@@ -56,6 +64,25 @@ export function evaluateFirstContainerValueMetrics(
     expectedLossAvoidedVnd,
     baselineManualMinutes: MANUAL_BASELINE_MINUTES,
     actualDurationMinutes,
+  };
+}
+
+export function evaluateAggregateContainerValueMetrics(
+  dossiers: readonly ContainerDossier[]
+): AggregateContainerValueMetrics {
+  const perContainerMetrics = dossiers.map((d) => evaluateFirstContainerValueMetrics(d));
+  const count = perContainerMetrics.length;
+  const totalMinutesSaved = Number(
+    perContainerMetrics.reduce((acc, m) => acc + m.minutesSavedPerContainer, 0).toFixed(1)
+  );
+  const meanMinutesSavedPerContainer = count > 0 ? Number((totalMinutesSaved / count).toFixed(1)) : 0;
+  const totalTouches = perContainerMetrics.reduce((acc, m) => acc + m.humanTouchesPerContainer, 0);
+  const meanHumanTouchesPerContainer = count > 0 ? Number((totalTouches / count).toFixed(1)) : 0;
+  const totalExceptionsDiscovered = perContainerMetrics.reduce((acc, m) => acc + m.exceptionsDiscoveredPerContainer, 0);
+  const totalExpectedLossAvoidedVnd = perContainerMetrics.reduce((acc, m) => acc + m.expectedLossAvoidedVnd, 0);
+  return {
+    evaluatedContainerCount: count, meanMinutesSavedPerContainer, totalMinutesSaved,
+    meanHumanTouchesPerContainer, totalExceptionsDiscovered, totalExpectedLossAvoidedVnd, perContainerMetrics,
   };
 }
 

@@ -14,6 +14,8 @@
     "pilot:evaluate-kpi": "bun run src/auth/pilot-kpi-evaluator.ts",
     "pilot:verify-gates": "bun run src/auth/pilot-launch-gate-verifier.ts",
     "pilot:audit-pack": "bun run src/export/field-auditor-cli.ts",
+    "pilot:proof-kit": "bun run src/export/field-proof-kit-cli.ts",
+    "opc:license": "bun run src/saas/license-generator-cli.ts",
     "blueprint:verify-25-steps": "bun run src/saas/blueprint-cli.ts",
     "verify:manifest": "bun run src/export/standalone-manifest-verifier.ts"
   },
