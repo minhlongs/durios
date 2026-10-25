@@ -1,5 +1,6 @@
 import type { AuthenticatedActor, ContainerDossier } from "../domain/types.js";
 import { AccessControlError } from "../auth/rbac-policy.js";
+import { StaleDossierVersionError } from "../domain/stale-dossier-version-error.js";
 
 export type AccessCheckerFn = (
   dossierId: string,
@@ -15,8 +16,19 @@ export class DossierRepository {
     this.accessChecker = checker;
   }
 
-  public save(dossier: ContainerDossier): void {
-    this.dossiers.set(dossier.id, dossier);
+  /**
+   * Version-aware in the same way the SQLite repository is, so a test that passes
+   * against this repository is not passing against behaviour the shipped path
+   * rejects: a save carrying a stale version throws here too.
+   */
+  public save(dossier: ContainerDossier, expectedVersion?: number): ContainerDossier {
+    const existing = this.dossiers.get(dossier.id);
+    if (existing && expectedVersion !== undefined && expectedVersion !== existing.version) {
+      throw new StaleDossierVersionError(dossier.id, expectedVersion, existing.version);
+    }
+    const persisted: ContainerDossier = { ...dossier, version: existing ? existing.version + 1 : Math.max(1, dossier.version) };
+    this.dossiers.set(dossier.id, persisted);
+    return persisted;
   }
 
   public findRaw(dossierId: string): ContainerDossier | undefined {

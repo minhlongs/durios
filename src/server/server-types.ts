@@ -1,7 +1,9 @@
 import { AuthenticationError } from "../auth/auth-types.js";
+import type { DossierVersionBody } from "./dossier-version-body.js";
 import { AccessControlError } from "../auth/rbac-policy.js";
 import { DossierFsmError } from "../domain/dossier-fsm.js";
 import { InvalidOrganicEvidenceError } from "../organic/organic-evidence-manager.js";
+import { isStaleDossierVersionError } from "../domain/stale-dossier-version-error.js";
 
 export interface CreateDossierRequestBody {
   readonly dossierCode: string;
@@ -21,7 +23,7 @@ export interface VerifyFieldRequestBody {
 }
 
 /** A named quality manager signing past a blocking finding. The reason is required. */
-export interface OverrideBlockerRequestBody {
+export interface OverrideBlockerRequestBody extends DossierVersionBody {
   readonly reason: string;
 }
 
@@ -79,6 +81,9 @@ export function mapDomainErrorToResponse(
   }
   if (err instanceof InvalidOrganicEvidenceError) {
     return errorResponse(err.message, err.status, err.code);
+  }
+  if (isStaleDossierVersionError(err)) {
+    return errorResponse(err.message, 409, "STALE_DOSSIER_VERSION");
   }
   const message = err instanceof Error ? err.message : fallbackMessage;
   return errorResponse(message, 400);

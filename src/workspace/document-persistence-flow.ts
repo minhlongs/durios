@@ -12,22 +12,26 @@ export function persistUploadedDocument(
   fileBytes: Uint8Array,
   fileName: string,
   storage: FileStorageService | undefined,
-  repo: DossierRepositoryLike
+  repo: DossierRepositoryLike,
+  expectedVersion?: number
 ): { dossier: ContainerDossier; document: IngestedDocument } {
+  // The caller's own read supplies the precondition when the route sent none, which
+  // keeps direct workspace callers guarded without every caller threading a version.
+  const precondition = expectedVersion ?? dossier.version;
   if (!storage) {
-    repo.save(updatedDossier);
-    return { dossier: updatedDossier, document };
+    const saved = repo.save(updatedDossier, precondition);
+    return { dossier: saved, document };
   }
   if (dossier.documents.some((d) => d.id === document.id && !d.isSuperseded)) {
-    repo.save(updatedDossier);
-    return { dossier: updatedDossier, document };
+    const saved = repo.save(updatedDossier, precondition);
+    return { dossier: saved, document };
   }
   let storedBlob: StoredBlobResult;
   try {
     storedBlob = storage.storeFile(fileBytes, fileName, document.id);
   } catch {
-    repo.save(updatedDossier);
-    return { dossier: updatedDossier, document };
+    const saved = repo.save(updatedDossier, precondition);
+    return { dossier: saved, document };
   }
   const withPath: IngestedDocument = { ...document, storagePath: storedBlob.storagePath };
   const withDocument: ContainerDossier = {
@@ -35,8 +39,8 @@ export function persistUploadedDocument(
     documents: updatedDossier.documents.map((d) => (d.id === document.id ? withPath : d)),
   };
   try {
-    repo.save(withDocument);
-    return { dossier: withDocument, document: withPath };
+    const saved = repo.save(withDocument, precondition);
+    return { dossier: saved, document: withPath };
   } catch (saveError) {
     if (storedBlob.createdNew && !(repo.hasDocumentReferencingBlob?.(storedBlob.storagePath, storedBlob.sha256) ?? false)) {
       try { storage.deleteFile(storedBlob.storagePath); } catch { /* best effort */ }
@@ -59,6 +63,5 @@ export function persistFieldVerification(
   const updatedDocuments = [...dossier.documents];
   updatedDocuments[docIndex] = hitl.verifyOrCorrectField(dossier.documents[docIndex]!, verification, actor);
   const updatedDossier: ContainerDossier = { ...dossier, lifecycleState: "HUMAN_VERIFICATION_REQUIRED", latestValidationResult: undefined, documents: updatedDocuments, updatedAt: new Date().toISOString() };
-  repo.save(updatedDossier);
-  return updatedDossier;
+  return repo.save(updatedDossier, dossier.version);
 }

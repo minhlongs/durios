@@ -19,6 +19,7 @@ export async function handleUploadDocument(
   let fileBuffer: Uint8Array;
   let fileName = "uploaded_document.pdf";
   let documentType: DocumentType = "PACKING_LIST";
+  let expectedVersion: number | undefined;
   let fixtureFields: Record<string, { raw: string; confirmed?: string }> | undefined;
   try {
     if (contentType.includes("multipart/form-data")) {
@@ -38,9 +39,10 @@ export async function handleUploadDocument(
       documentType = (body["documentType"] ?? "PACKING_LIST") as DocumentType;
       fileBuffer = body["base64Content"] && typeof body["base64Content"] === "string" ? Uint8Array.from(Buffer.from(body["base64Content"], "base64")) : new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31, 0x2e, 0x35, 0x0a]);
       if (body["fixtureFields"]) fixtureFields = body["fixtureFields"] as Record<string, { raw: string; confidence?: number }>;
+      if (typeof body["version"] === "number") expectedVersion = body["version"];
     }
-    let { dossier, document } = workspace.uploadDocument(dossierId, fileBuffer, fileName, documentType, actor, fixtureFields);
-    return jsonResponse({ success: true, data: { documentId: document.id, fileName: document.fileName, documentType: document.documentType, sha256Hash: document.sha256Hash, fileSize: document.fileSize, extractedFieldsCount: document.extractedFields.length, dossierLifecycleState: dossier.lifecycleState } }, 201);
+    let { dossier, document } = workspace.uploadDocument(dossierId, fileBuffer, fileName, documentType, actor, fixtureFields, expectedVersion);
+    return jsonResponse({ success: true, data: { documentId: document.id, fileName: document.fileName, documentType: document.documentType, sha256Hash: document.sha256Hash, fileSize: document.fileSize, extractedFieldsCount: document.extractedFields.length, dossierLifecycleState: dossier.lifecycleState, version: dossier.version } }, 201);
   } catch (err) { return mapDomainErrorToResponse(err, "Document upload failed"); }
 }
 

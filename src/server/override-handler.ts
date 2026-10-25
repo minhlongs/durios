@@ -3,6 +3,7 @@ import type { AuthenticatedActor } from "../domain/types.js";
 import {
   errorResponse, jsonResponse, mapDomainErrorToResponse, type OverrideBlockerRequestBody,
 } from "./server-types.js";
+import { readExpectedVersion } from "./request-version.js";
 
 /**
  * A quality manager signs past a blocking finding.
@@ -27,6 +28,6 @@ export async function handleOverrideBlocker(
     return errorResponse("Missing required field: reason (a signed override must explain the decision)", 400);
   }
   try {
-    return jsonResponse({ success: true, data: workspace.overrideBlocker(dossierId, body.reason, actor) });
+    return jsonResponse({ success: true, data: workspace.overrideBlocker(dossierId, body.reason, actor, readExpectedVersion(body)) });
   } catch (err) { return mapDomainErrorToResponse(err, "Blocker override rejected"); }
 }

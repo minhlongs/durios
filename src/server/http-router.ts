@@ -74,13 +74,13 @@ export async function routeHttpRequest(
   const dossierMatch = routePath.match(/^\/api\/dossiers\/([^/]+)$/);
   if (dossierMatch && method === "GET") return handleGetDossier(workspace, actor, dossierMatch[1]!);
   const validateMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/validate$/);
-  if (validateMatch && method === "POST") return handleRunValidation(workspace, actor, validateMatch[1]!);
+  if (validateMatch && method === "POST") return handleRunValidation(workspace, actor, validateMatch[1]!, req);
   const overrideMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/override$/);
   if (overrideMatch && method === "POST") return handleOverrideBlocker(workspace, actor, overrideMatch[1]!, req);
   const approveMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/approve$/);
-  if (approveMatch && method === "POST") return handleApproveForExport(workspace, actor, approveMatch[1]!);
+  if (approveMatch && method === "POST") return handleApproveForExport(workspace, actor, approveMatch[1]!, req);
   const exportMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/export$/);
-  if (exportMatch && method === "POST") return handleExportDossier(workspace, actor, exportMatch[1]!);
+  if (exportMatch && method === "POST") return handleExportDossier(workspace, actor, exportMatch[1]!, req);
   const manifestMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/manifest$/);
   if (manifestMatch && method === "GET") return handleGetExportManifest(workspace, actor, manifestMatch[1]!);
   const auditMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/audit$/);

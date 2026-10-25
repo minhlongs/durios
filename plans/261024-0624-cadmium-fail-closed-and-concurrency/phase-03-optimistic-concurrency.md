@@ -13,7 +13,7 @@
 
 ## Overview
 
-Priority: P1. Status: pending.
+Priority: P1. Status: completed.
 
 Stop two people from silently overwriting each other's work on one dossier, and
 stop a stale save from erasing the sealed manifest that the human sign-off
@@ -312,3 +312,40 @@ This protects the evidentiary chain the pilot's credibility rests on.
 
 Phases 1 and 2 should be merged before this phase's UI change lands, since phase 2
 also edits `src/server/public/index.html`.
+
+## Delivered
+
+All success criteria verified on the branch:
+
+- `bun test` — 227 pass / 0 fail across 50 files (baseline was 191 / 42).
+- `bun run typecheck` — 0 errors.
+- Stale upload returns 409 through the real router; stale approve returns 409 with
+  `errorCode: "STALE_DOSSIER_VERSION"`. Both asserted in
+  `test/dossier-optimistic-concurrency.test.ts`.
+- Seal and manifest are now one transaction (`src/storage/sqlite-export-manifest.ts`).
+  Tested at the repository level, because the FSM refuses a second export before the
+  route ever reaches the branch where a split write could leave a dossier EXPORTED
+  with no manifest.
+- Migration v7 adds the version column, defaulting to 1 for existing rows.
+- The browser sends the version it holds on every write against the open dossier
+  (`fetchApi` → `isWriteToHeldDossier`), and refreshes it from the response because
+  `refreshAfterMutation` re-fetches the dossier. A 409 surfaces through
+  `notifyStaleDossier`, which tells the operator the dossier changed and to reload.
+
+### Two deviations from this plan
+
+1. **Validation had to return the new version.** Every write bumps the version, so a
+   browser that validates could never legally write again — the version it held was
+   stale the moment validation committed. `runValidation` still returns
+   `ValidationRunResult` for its existing callers; `runValidationOutcome` returns the
+   version alongside it.
+2. **`runAction` was not the right place for the version guard.** It serializes
+   button clicks, but browser state is not a lock: two tabs, or two operators, hold
+   two independent copies. The guard belongs on the request, which is where it now is.
+
+### One regression found and repaired during this phase
+
+An earlier edit to `executeApproveForExport` had replaced the `save` +
+`recordEvent` pair with a bare `return repo.save(...)`, deleting the
+`DOSSIER_APPROVED_FOR_EXPORT` audit event. Restored to the ordered
+save → recordEvent → return form.

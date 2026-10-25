@@ -1157,15 +1157,52 @@
       const role = document.getElementById("actor-role").value;
       const headers = { ...options.headers, "x-actor-role": role };
       if (ui.pilotToken) headers["x-pilot-token"] = ui.pilotToken;
+      // A write against the dossier this browser holds carries the version it holds,
+      // so the server can refuse a stale client instead of silently overwriting the
+      // edit that superseded it. Writes to anything else (auth bootstrap) stay untouched.
+      let requestOptions = options;
+      if (isWriteToHeldDossier(path, options.method)) {
+        const payload = parseJsonBody(options.body);
+        payload.version = ui.dossier.version;
+        headers["Content-Type"] = "application/json";
+        requestOptions = { ...options, headers, body: JSON.stringify(payload) };
+      }
       try {
-        const res = await fetch(path, { ...options, headers, credentials: "same-origin" });
+        const res = await fetch(path, { ...requestOptions, headers, credentials: "same-origin" });
         const body = await res.json().catch(() => null);
+        // A 409 means someone else's write landed first. Say so and stop, rather than
+        // letting the next request fail the same way with no explanation.
+        if (res.status === 409) {
+          notifyStaleDossier(body);
+          return { success: false, error: (body && body.error) || "Hồ sơ đã được người khác cập nhật.", errorCode: "STALE_DOSSIER_VERSION" };
+        }
         if (body && typeof body === "object") return body;
         return { success: false, error: `Phản hồi không hợp lệ từ máy chủ (HTTP ${res.status}).` };
       } catch (_err) {
         setServerStatus(false);
         return { success: false, error: "Không kết nối được máy chủ cục bộ." };
       }
+    }
+
+    /** True for a POST/PUT/PATCH aimed at the dossier this browser has open. */
+    function isWriteToHeldDossier(path, method) {
+      if (!method || method === "GET") return false;
+      if (!ui.dossier || typeof ui.dossier.version !== "number") return false;
+      return path.includes(`/api/dossiers/${encodeURIComponent(currentDossierId)}`)
+        || path.includes(`/api/v1/dossiers/${encodeURIComponent(currentDossierId)}`);
+    }
+
+    /** Parses a request body, falling back to an empty object when it is absent. */
+    function parseJsonBody(raw) {
+      if (!raw) return {};
+      try { return JSON.parse(raw); } catch (_e) { return {}; }
+    }
+
+    /** Tells the operator the dossier moved under them and offers a reload. */
+    function notifyStaleDossier(body) {
+      const detail = (body && body.error) || "Có người khác đã lưu thay đổi vào hồ sơ này.";
+      notify("danger", "Hồ sơ đã thay đổi — cần tải lại", `${detail} Hãy tải lại hồ sơ để xem trạng thái mới nhất trước khi thao tác tiếp.`);
+      announce(`Cảnh báo: ${detail}`);
     }
 
     function openAuthDialog() {

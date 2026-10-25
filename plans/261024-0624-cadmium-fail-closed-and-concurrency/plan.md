@@ -92,17 +92,17 @@ backend is therefore **not** in this plan's scope.
 |---|-------|--------|
 | 1 | [Evaluate Cadmium Without Asserting A Legal Conclusion](./phase-01-cadmium-internal-block.md) | Completed |
 | 2 | [Surface Legal Basis To The Operator](./phase-02-legal-basis-surface.md) | Completed |
-| 3 | [Optimistic Concurrency For Dossier Writes](./phase-03-optimistic-concurrency.md) | Pending |
+| 3 | [Optimistic Concurrency For Dossier Writes](./phase-03-optimistic-concurrency.md) | Completed |
 
 ## Success Criteria
 
-- [ ] A dossier whose lab report reads cadmium 0.900 mg/kg yields a blocking finding naming the 0.050 mg/kg threshold, verifiable by a single `bun test` assertion.
-- [ ] That finding is labelled as an internal food-safety check with no verified statutory basis; no wording anywhere claims a legal conclusion for it.
+- [x] A dossier whose lab report reads cadmium 0.900 mg/kg yields a blocking finding naming the 0.050 mg/kg threshold, verifiable by a single `bun test` assertion.
+- [x] That finding is labelled as an internal food-safety check with no verified statutory basis; no wording anywhere claims a legal conclusion for it.
 - [x] A rule with `isStatutoryVerified: false` and `CRITICAL_BLOCKER` severity is visibly distinguished from a verified rule in the rendered workspace.
-- [ ] A save carrying a client-supplied version older than the stored one fails with HTTP 409; the newer write survives.
+- [x] A save carrying a client-supplied version older than the stored one fails with HTTP 409; the newer write survives.
 - [x] `review-legal-basis.ts` is imported by production code, not only by tests.
-- [ ] `bun test` equals or exceeds the measured pre-change baseline of **191 pass / 0 fail** across 42 files, with no test left failing.
-- [ ] `bun run typecheck` reports 0 errors.
+- [x] `bun test` equals or exceeds the measured pre-change baseline of **191 pass / 0 fail** across 42 files, with no test left failing.
+- [x] `bun run typecheck` reports 0 errors.
 - [ ] No file in `src/` or `test/` exceeds the **100 LOC** ceiling enforced by `test/ecosystem-rehearsal-and-modularity.test.ts:77`; no `:any` type; no `console.log` in production code.
 
 ## Constraints

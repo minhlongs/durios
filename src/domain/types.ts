@@ -84,12 +84,14 @@ export interface ContainerDossier {
   readonly lifecycleState: DossierLifecycleState; readonly isImmutable: boolean;
   readonly createdAt: string; readonly updatedAt: string;
   readonly exportSealedAt?: string | undefined;
+  /**
+   * Monotonic per-dossier counter. A save carrying a version older than the stored
+   * one is refused, so two editors cannot silently overwrite each other's work.
+   */
+  readonly version: number;
   readonly documents: readonly IngestedDocument[];
   readonly latestValidationResult?: ValidationRunResult | undefined;
 }
 
-/**
- * Re-exported so existing deep imports of the manifest type keep resolving from
- * this module; the definition lives in export-manifest-types.ts.
- */
+/** Re-exported so existing deep imports keep resolving; defined in export-manifest-types.ts. */
 export type { DossierExportManifest } from "./export-manifest-types.js";
