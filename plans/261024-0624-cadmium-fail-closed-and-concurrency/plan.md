@@ -103,7 +103,7 @@ backend is therefore **not** in this plan's scope.
 - [x] `review-legal-basis.ts` is imported by production code, not only by tests.
 - [x] `bun test` equals or exceeds the measured pre-change baseline of **191 pass / 0 fail** across 42 files, with no test left failing.
 - [x] `bun run typecheck` reports 0 errors.
-- [ ] No file in `src/` or `test/` exceeds the **100 LOC** ceiling enforced by `test/ecosystem-rehearsal-and-modularity.test.ts:77`; no `:any` type; no `console.log` in production code.
+- [x] No file in `src/` or `test/` exceeds the **100 LOC** ceiling enforced by `test/ecosystem-rehearsal-and-modularity.test.ts:77`; no `:any` type; no `console.log` in production code. (Re-measured at plan close: the longest file in `src/` and `test/` is 99 lines by `wc -l`.)
 
 ## Constraints
 
