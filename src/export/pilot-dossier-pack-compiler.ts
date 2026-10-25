@@ -27,6 +27,7 @@ function toGateOpts(opts: CompilePilotGoLivePackOptions): VerifyLaunchGatesOptio
   if (opts.dataDir !== undefined) res.dataDir = opts.dataDir;
   if (opts.backupDir !== undefined) res.backupDir = opts.backupDir;
   if (opts.consentSignedFilePath !== undefined) res.consentSignedFilePath = opts.consentSignedFilePath;
+  if (opts.tenantId !== undefined) res.tenantId = opts.tenantId;
   if (opts.env !== undefined) res.env = opts.env;
   return res as VerifyLaunchGatesOptions;
 }

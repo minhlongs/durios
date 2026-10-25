@@ -47,6 +47,7 @@ export interface GoLiveReadinessReport {
 
 export interface CompilePilotGoLivePackOptions {
   readonly siteCode?: string | undefined;
+  readonly tenantId?: string | undefined;
   readonly dbPath?: string | undefined;
   readonly dataDir?: string | undefined;
   readonly backupDir?: string | undefined;
