@@ -349,3 +349,26 @@ An earlier edit to `executeApproveForExport` had replaced the `save` +
 `recordEvent` pair with a bare `return repo.save(...)`, deleting the
 `DOSSIER_APPROVED_FOR_EXPORT` audit event. Restored to the ordered
 save → recordEvent → return form.
+
+### Code review outcome
+
+A reviewer subagent was dispatched across the storage, workspace and server layers.
+It ran past 25 minutes and reported nothing, so the review was completed directly.
+One real defect was found, fixed, and proved:
+
+`upsertDossierRows` discarded the result of its guarded write. The version check in
+`save()` and the guarded UPDATE are separate statements, so the `WHERE ... version = ?`
+clause is what actually guarantees atomicity — and a clause that matched no rows
+reported success while writing nothing, returning a dossier claiming a version the
+store never held. It now checks the row count and raises the stale-version error.
+
+`test/dossier-version-guard-in-sql.test.ts` calls the write directly, so what refuses
+the stale save is the SQL guard rather than the check in front of it. Verified by
+reverting the fix and watching the test fail, then restoring it and watching it pass.
+
+Checked and found sound: the seal and its manifest share one transaction and the
+manifest's duplicate refusal rolls back the lifecycle write; the in-memory repository
+mirrors the SQLite contract exactly (same check, same increment from the store, same
+return); no public route or contract changed; `changes === 0` distinguishes a refused
+write from a legitimate one because `version = container_dossiers.version + 1` always
+alters the row on success, and a genuine insert reports one change.
