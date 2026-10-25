@@ -1,7 +1,9 @@
 import { createWorkspaceApp } from "../server/server.js";
 import type { ContainerDossier } from "../domain/types.js";
 import {
-  evaluateFirstContainerValueMetrics, type FirstContainerValueMetrics,
+  evaluateAggregateContainerValueMetrics,
+  type AggregateContainerValueMetrics,
+  type FirstContainerValueMetrics,
 } from "./pilot-kpi-extended-types.js";
 
 export interface ContainerKpiMetric {
@@ -19,6 +21,7 @@ export interface Gate05KpiEvaluationReport {
   readonly containerMetrics: readonly ContainerKpiMetric[];
   readonly firstContainerMetrics?: FirstContainerValueMetrics | undefined;
   readonly containerValueMetrics?: readonly FirstContainerValueMetrics[] | undefined;
+  readonly aggregateValueMetrics?: AggregateContainerValueMetrics | undefined;
 }
 
 function isBlindFaultDossier(d: ContainerDossier): boolean {
@@ -47,9 +50,10 @@ export function computeGate05KpiFromDossiers(dossiers: readonly ContainerDossier
   const zeroMissGate = blindFaultMetrics.length >= 2 && blindFaultsCaught === blindFaultMetrics.length;
   const underFiveMinuteGate = validDeltas.length >= 5 && meanDeltaSeconds < 300;
   const underThreeMinuteTarget = validDeltas.length >= 5 && meanDeltaSeconds < 180;
-  const containerValueMetrics = dossiers.map((d) => evaluateFirstContainerValueMetrics(d));
+  const aggregateValueMetrics = evaluateAggregateContainerValueMetrics(dossiers);
+  const containerValueMetrics = aggregateValueMetrics.perContainerMetrics;
   const firstContainerMetrics = containerValueMetrics[0];
-  return { evaluatedAt: new Date().toISOString(), totalContainers: metrics.length, reconciledCount: validDeltas.length, meanDeltaSeconds, underFiveMinuteGate, underThreeMinuteTarget, blindFaultCount: blindFaultMetrics.length, blindFaultsCaught, zeroMissGate, gate05Passed: metrics.length >= 5 && underFiveMinuteGate && zeroMissGate, containerMetrics: metrics, firstContainerMetrics, containerValueMetrics };
+  return { evaluatedAt: new Date().toISOString(), totalContainers: metrics.length, reconciledCount: validDeltas.length, meanDeltaSeconds, underFiveMinuteGate, underThreeMinuteTarget, blindFaultCount: blindFaultMetrics.length, blindFaultsCaught, zeroMissGate, gate05Passed: metrics.length >= 5 && underFiveMinuteGate && zeroMissGate, containerMetrics: metrics, firstContainerMetrics, containerValueMetrics, aggregateValueMetrics };
 }
 
 export function evaluateGate05PilotKpi(options: { dbPath?: string; dataDir?: string } = {}): Gate05KpiEvaluationReport {
