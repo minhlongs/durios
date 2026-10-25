@@ -372,3 +372,34 @@ mirrors the SQLite contract exactly (same check, same increment from the store, 
 return); no public route or contract changed; `changes === 0` distinguishes a refused
 write from a legitimate one because `version = container_dossiers.version + 1` always
 alters the row on success, and a genuine insert reports one change.
+
+### Post-merge review, and what it changed
+
+The reviewer subagent finished after the merge and reported one defect that held up.
+It is fixed in a follow-up on `main` (`12d9460`, PR #7):
+`executeBlockerOverride` returned the pre-save object, so the caller was handed a
+version the store had already moved past and its next write was refused with a 409
+the operator could not explain. It now returns the object `repo.save` hands back,
+matching its two sibling lifecycle functions. `test/dossier-signed-override.test.ts`
+T-OV-08 asserts the invariant and was verified to fail with the source reverted.
+
+Four other reported findings did not survive checking against the tree:
+
+- *"the guard test is untracked"* — it is committed in `43e98e4`.
+- *"`verifyField` has no version channel, so verification is unusable after a
+  validation"* — the route re-reads the dossier and uses the current version.
+  Verified by driving a full upload-and-validate flow: both a verify carrying the
+  post-validation version and one carrying none return 200.
+- *"`Math.max(1, dossier.version)` makes the returned version unusable"* — unreachable
+  in this app; `createDossier` hardcodes `version: 1`. A real gap for an external
+  caller of the repository contract, but not one this change introduced or the owner
+  asked for.
+- *"`changes === 0` cannot distinguish a refused write from a legitimate one"* —
+  refuted by probe: a successful write always reports one change because
+  `version = container_dossiers.version + 1` always alters the row, and a refused
+  write leaves the row untouched and reports zero.
+
+Two pre-existing gaps were noted and deliberately left, since they predate this work
+and were outside the requested scope: `hasDocumentReferencingBlob` is not scoped by
+tenant in either repository, and the verify route performs its existence check
+before its authorization check. Both are recorded here rather than fixed.
