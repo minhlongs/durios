@@ -16,7 +16,7 @@ function buildMockDossier(overrides: Partial<ContainerDossier> = {}): ContainerD
     borderGate: "Hữu Nghị", targetTemperatureC: 13.5, declaredNetWeightKg: 18500,
     declaredBoxCount: 950, lifecycleState: "EXPORTED", isImmutable: true,
     createdAt: "2026-10-17T08:00:00.000Z", updatedAt: "2026-10-17T08:04:00.000Z",
-    documents: [], ...overrides,
+    version: 1, documents: [], ...overrides,
   };
 }
 

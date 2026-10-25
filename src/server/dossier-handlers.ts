@@ -5,6 +5,7 @@ import { redactDossierForActor, redactDossierListForActor } from "../sharing/dos
 import {
   errorResponse, jsonResponse, mapDomainErrorToResponse, type CreateDossierRequestBody,
 } from "./server-types.js";
+import { readExpectedVersionFromRequest } from "./request-version.js";
 
 export async function handleListDossiers(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor): Promise<Response> {
   try {
@@ -47,24 +48,25 @@ export function handleGetDossier(
   }
 }
 
-export function handleRunValidation(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, dossierId: string): Response {
+export async function handleRunValidation(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, dossierId: string, req: Request): Promise<Response> {
   try {
     if (!workspace.getRawDossier(dossierId)) return errorResponse(`Dossier '${dossierId}' not found`, 404);
-    return jsonResponse({ success: true, data: workspace.runValidation(dossierId, actor) });
+    const outcome = workspace.runValidationOutcome(dossierId, actor, await readExpectedVersionFromRequest(req));
+    return jsonResponse({ success: true, data: { ...outcome.result, version: outcome.version } });
   } catch (err) { return mapDomainErrorToResponse(err, "Validation run failed"); }
 }
 
-export function handleApproveForExport(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, dossierId: string): Response {
+export async function handleApproveForExport(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, dossierId: string, req: Request): Promise<Response> {
   try {
     if (!workspace.getRawDossier(dossierId)) return errorResponse(`Dossier '${dossierId}' not found`, 404);
-    return jsonResponse({ success: true, data: workspace.approveForExport(dossierId, actor) });
+    return jsonResponse({ success: true, data: workspace.approveForExport(dossierId, actor, await readExpectedVersionFromRequest(req)) });
   } catch (err) { return mapDomainErrorToResponse(err, "Export approval rejected"); }
 }
 
-export function handleExportDossier(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, dossierId: string): Response {
+export async function handleExportDossier(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, dossierId: string, req: Request): Promise<Response> {
   try {
     if (!workspace.getRawDossier(dossierId)) return errorResponse(`Dossier '${dossierId}' not found`, 404);
-    return jsonResponse({ success: true, data: workspace.exportDossier(dossierId, actor) });
+    return jsonResponse({ success: true, data: workspace.exportDossier(dossierId, actor, await readExpectedVersionFromRequest(req)) });
   } catch (err) { return mapDomainErrorToResponse(err, "Export compilation failed"); }
 }
 

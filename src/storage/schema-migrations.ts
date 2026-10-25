@@ -2,6 +2,7 @@ import type { Database } from "bun:sqlite";
 import { applyMigrationV2, applyMigrationV3 } from "./schema-migrations-auth.js";
 import { applyMigrationV4, applyMigrationV5 } from "./schema-migrations-pilot.js";
 import { applyMigrationV6 } from "./schema-migrations-share-purposes.js";
+import { applyMigrationV7 } from "./schema-migrations-concurrency.js";
 
 export function runMigrations(db: Database): void {
   db.run(`
@@ -22,6 +23,7 @@ export function runMigrations(db: Database): void {
   if (currentVersion < 4) applyMigrationV4(db);
   if (currentVersion < 5) applyMigrationV5(db);
   if (currentVersion < 6) applyMigrationV6(db);
+  if (currentVersion < 7) applyMigrationV7(db);
 }
 
 function applyMigrationV1(db: Database): void {

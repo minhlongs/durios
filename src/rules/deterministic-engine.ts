@@ -32,7 +32,13 @@ export class DeterministicRuleEngine {
     for (const rule of this.rules) {
       if (!rule.isActive) continue;
 
-      if (!rule.isStatutoryVerified && rule.severity === "CRITICAL_BLOCKER") {
+      // Only a rule that CLAIMS a statutory basis is held here. A rule that makes
+      // no legal claim — an internal food-safety control — must still evaluate, or
+      // a lot over the limit passes unchallenged while appearing to be checked.
+      // An absent claim tier counts as STATUTORY, so a pre-migration rule record
+      // cannot quietly acquire the right to block without legal review.
+      const claimsStatutory = (rule.statutoryClaim ?? "STATUTORY") === "STATUTORY";
+      if (claimsStatutory && !rule.isStatutoryVerified) {
         findings.push({
           ruleId: rule.ruleId, severity: "CRITICAL_BLOCKER", ruleName: rule.name,
           citation: rule.statutoryReference, observedValue: "UNVERIFIED_STATUTORY_RULE",
@@ -81,7 +87,7 @@ export class DeterministicRuleEngine {
       });
     }
 
-    if (rule.ruleId === "RUL-GB2762-CD") evaluateCadmiumThreshold(rule, activeDocs, findings);
+    if (rule.ruleId === "RUL-CD-INTERNAL-BLOCK") evaluateCadmiumThreshold(rule, activeDocs, findings);
     if (rule.ruleId === "RUL-INT-CD-WARN") evaluateCadmiumWarningThreshold(rule, activeDocs, findings);
     if (rule.ruleId === "RUL-ISO6346-CHK") evaluateIsoChecksum(rule, dossier, findings);
     if (rule.ruleId === "RUL-CROSS-CONT") evaluateCrossDocFieldDiscrepancy("container_number", rule, dossier, activeDocs, findings);

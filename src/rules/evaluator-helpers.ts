@@ -1,43 +1,8 @@
 import { validateIso6346Container } from "../domain/iso-6346.js";
 import type { ComplianceRule, ContainerDossier, IngestedDocument, ValidationFinding } from "../domain/types.js";
 
-export function evaluateCadmiumThreshold(
-  rule: ComplianceRule,
-  docs: readonly IngestedDocument[],
-  findings: ValidationFinding[]
-): void {
-  const labDoc = docs.find((d) => d.documentType === "LAB_TEST_REPORT");
-  if (!labDoc) return;
-  const cdField = labDoc.extractedFields.find((f) => f.fieldKey === "cadmium_mg_kg");
-  if (!cdField) return;
-  const val = Number.parseFloat(String(cdField.confirmedValue ?? cdField.rawValue));
-  if (!Number.isNaN(val) && val > 0.050) findings.push({ ruleId: rule.ruleId, severity: "CRITICAL_BLOCKER", ruleName: rule.name, citation: rule.statutoryReference, observedValue: `${val.toFixed(3)} mg/kg`, thresholdValue: "0.050 mg/kg", messageVi: `Hàm lượng Cadmi (${val.toFixed(3)} mg/kg) vượt ngưỡng pháp định tối đa (0.050 mg/kg).`, messageEn: `Cadmium concentration (${val.toFixed(3)} mg/kg) exceeds statutory limit (0.050 mg/kg).` });
-}
-
-export function evaluateCadmiumWarningThreshold(
-  rule: ComplianceRule,
-  docs: readonly IngestedDocument[],
-  findings: ValidationFinding[]
-): void {
-  const labDoc = docs.find((d) => d.documentType === "LAB_TEST_REPORT");
-  if (!labDoc) return;
-  const cdField = labDoc.extractedFields.find((f) => f.fieldKey === "cadmium_mg_kg");
-  if (!cdField) return;
-
-  const val = Number.parseFloat(String(cdField.confirmedValue ?? cdField.rawValue));
-  if (!Number.isNaN(val) && val > 0.040) {
-    findings.push({
-      ruleId: rule.ruleId,
-      severity: "ADVISORY_WARNING",
-      ruleName: rule.name,
-      citation: rule.statutoryReference,
-      observedValue: `${val.toFixed(3)} mg/kg`,
-      thresholdValue: "0.040 mg/kg buffer",
-      messageVi: `CẢNH BÁO NỘI BỘ: Hàm lượng Cadmi (${val.toFixed(3)} mg/kg) vượt ngưỡng kiểm soát nội bộ nhà đóng gói (>0.040 mg/kg). Đây là cảnh báo phòng ngừa nội bộ, không cấu thành vi phạm pháp lý nếu hàm lượng <= 0.050 mg/kg.`,
-      messageEn: `INTERNAL ADVISORY: Cadmium level (${val.toFixed(3)} mg/kg) exceeds packhouse internal safety buffer (>0.040 mg/kg). This is an internal precaution and does not constitute a legal breach if <= 0.050 mg/kg.`,
-    });
-  }
-}
+// The cadmium evaluators outgrew this file and now live in their own module.
+export { evaluateCadmiumThreshold, evaluateCadmiumWarningThreshold } from "./cadmium-evaluators.js";
 
 export function evaluateCrossDocFieldDiscrepancy(
   key: string,

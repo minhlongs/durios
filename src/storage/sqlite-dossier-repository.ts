@@ -2,10 +2,13 @@ import type {
   AuthenticatedActor, ContainerDossier, DossierExportManifest,
 } from "../domain/types.js";
 import { AccessControlError } from "../auth/rbac-policy.js";
+import { StaleDossierVersionError } from "../domain/stale-dossier-version-error.js";
 import type { SqliteClient } from "./sqlite-client.js";
 import {
   type DocumentRow, type DossierRow, type FieldRow, mapRowsToDossier, upsertDossierRows,
 } from "./sqlite-dossier-mapper.js";
+import { hasActiveSqliteShareGrant, listDossierRowsForActor } from "./sqlite-dossier-share-filter.js";
+import { insertExportManifestRow, sealExportWithManifest } from "./sqlite-export-manifest.js";
 
 export class SqliteDossierRepository {
   private accessChecker?: ((dossierId: string, ownerTenantId: string, actorTenantId: string) => boolean) | undefined;
@@ -18,8 +21,23 @@ export class SqliteDossierRepository {
     this.accessChecker = checker;
   }
 
-  public save(dossier: ContainerDossier): void {
-    this.client.transaction(() => { upsertDossierRows(this.client.db, dossier); });
+  /**
+   * Persists the dossier and returns it with the version the store now holds.
+   *
+   * When the caller supplies a version, the write is admitted only if that version is
+   * still current, so a dossier edited behind another actor's back is refused instead
+   * of quietly replacing their work. The returned object is authoritative afterwards:
+   * the caller's copy still carries the version it read at, so a later save from that
+   * copy is refused rather than overwriting the work that superseded it.
+   */
+  public save(dossier: ContainerDossier, expectedVersion?: number): ContainerDossier {
+    const existing = this.client.db.query<{ version: number }, [string]>("SELECT version FROM container_dossiers WHERE id = ?").get(dossier.id);
+    if (existing && expectedVersion !== undefined && expectedVersion !== existing.version) {
+      throw new StaleDossierVersionError(dossier.id, expectedVersion, existing.version);
+    }
+    const nextVersion = existing ? existing.version + 1 : Math.max(1, dossier.version);
+    this.client.transaction(() => { upsertDossierRows(this.client.db, dossier, expectedVersion); });
+    return { ...dossier, version: nextVersion };
   }
 
   private hydrateDossier(dRow: DossierRow): ContainerDossier {
@@ -39,31 +57,15 @@ export class SqliteDossierRepository {
     ).get(storagePath, sha256Hash) !== null;
   }
 
-  private hasActiveSqliteShareGrant(dossierId: string, ownerTenantId: string, granteeTenantId: string): boolean {
-    const row = this.client.db
-      .query<{ id: string }, [string, string, string, string]>(
-        `SELECT id FROM share_grants
-         WHERE dossier_id = ? AND owner_tenant_id = ? AND grantee_tenant_id = ? AND is_revoked = 0 AND expires_at > ?
-         LIMIT 1`
-      )
-      .get(dossierId, ownerTenantId, granteeTenantId, new Date().toISOString());
-    return Boolean(row);
-  }
-
   public findById(dossierId: string, actor: AuthenticatedActor): ContainerDossier | undefined {
     const raw = this.findRaw(dossierId);
     if (!raw) return undefined;
-    if (raw.tenantId === actor.tenantId || this.hasActiveSqliteShareGrant(dossierId, raw.tenantId, actor.tenantId) || Boolean(this.accessChecker?.(dossierId, raw.tenantId, actor.tenantId))) return raw;
+    if (raw.tenantId === actor.tenantId || hasActiveSqliteShareGrant(this.client.db, dossierId, raw.tenantId, actor.tenantId) || Boolean(this.accessChecker?.(dossierId, raw.tenantId, actor.tenantId))) return raw;
     return undefined;
   }
 
   public listForTenant(actor: AuthenticatedActor): readonly ContainerDossier[] {
-    const dRows = this.client.db
-      .query<DossierRow, [string, string, string]>(
-        `SELECT DISTINCT d.* FROM container_dossiers d LEFT JOIN share_grants sg ON sg.dossier_id = d.id AND sg.owner_tenant_id = d.tenant_id AND sg.grantee_tenant_id = ? AND sg.is_revoked = 0 AND sg.expires_at > ? WHERE d.tenant_id = ? OR sg.id IS NOT NULL ORDER BY d.created_at DESC`
-      )
-      .all(actor.tenantId, new Date().toISOString(), actor.tenantId);
-    return dRows.map((dRow) => this.hydrateDossier(dRow));
+    return listDossierRowsForActor(this.client.db, actor).map((dRow) => this.hydrateDossier(dRow));
   }
 
   public getOrThrow(dossierId: string, actor: AuthenticatedActor): ContainerDossier {
@@ -73,17 +75,18 @@ export class SqliteDossierRepository {
     throw new Error(`Dossier '${dossierId}' not found for tenant '${actor.tenantId}'.`);
   }
 
-  public saveExportManifest(manifest: DossierExportManifest, actor: AuthenticatedActor): void {
-    this.client.db.run(
-      `INSERT INTO export_manifests (id, dossier_id, tenant_id, composite_hash, manifest_json, created_at) VALUES (?, ?, ?, ?, ?, ?) ON CONFLICT(dossier_id) DO UPDATE SET composite_hash = excluded.composite_hash, manifest_json = excluded.manifest_json`,
-      [`MAN-${manifest.dossierId}`, manifest.dossierId, actor.tenantId, manifest.compositeManifestSha256, JSON.stringify(manifest), manifest.exportedAt || new Date().toISOString()]
-    );
-  }
-
   public getExportManifest(dossierId: string, actor: AuthenticatedActor): DossierExportManifest | undefined {
     const accessible = this.findById(dossierId, actor);
     if (!accessible) return undefined;
     const row = this.client.db.query<{ manifest_json: string }, [string, string]>("SELECT manifest_json FROM export_manifests WHERE dossier_id = ? AND tenant_id = ?").get(dossierId, accessible.tenantId);
     return row ? JSON.parse(row.manifest_json) : undefined;
+  }
+
+  public saveExportManifest(manifest: DossierExportManifest, actor: AuthenticatedActor): void {
+    insertExportManifestRow(this.client, manifest, actor);
+  }
+
+  public sealExport(dossier: ContainerDossier, manifest: DossierExportManifest, actor: AuthenticatedActor, expectedVersion?: number): ContainerDossier {
+    return sealExportWithManifest(this.client, dossier, manifest, actor, (d, v) => this.save(d, v), expectedVersion);
   }
 }

@@ -5,6 +5,7 @@ import { errorResponse, jsonResponse, mapDomainErrorToResponse } from "./server-
 import { serveIndexHtml } from "./static-ui.js";
 import { serveStitchStaticAsset } from "./stitch-static-handler.js";
 import { handleListDossiers, handleCreateDossier, handleGetDossier, handleRunValidation, handleApproveForExport, handleExportDossier, handleGetExportManifest } from "./dossier-handlers.js";
+import { handleOverrideBlocker } from "./override-handler.js";
 import { handleUploadDocument, handleVerifyField, handleGetAuditTrail } from "./document-handlers.js";
 import { handleGrantShare, handleListShares, handleRevokeShare, handleRecordOrganicEvidence, handleListOrganicEvidence, handleGetPilotKpi, handleGetPilotGates } from "./pilot-handlers.js";
 import { handleGetPilotGoLivePack } from "./pilot-dossier-pack-handler.js";
@@ -73,11 +74,13 @@ export async function routeHttpRequest(
   const dossierMatch = routePath.match(/^\/api\/dossiers\/([^/]+)$/);
   if (dossierMatch && method === "GET") return handleGetDossier(workspace, actor, dossierMatch[1]!);
   const validateMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/validate$/);
-  if (validateMatch && method === "POST") return handleRunValidation(workspace, actor, validateMatch[1]!);
+  if (validateMatch && method === "POST") return handleRunValidation(workspace, actor, validateMatch[1]!, req);
+  const overrideMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/override$/);
+  if (overrideMatch && method === "POST") return handleOverrideBlocker(workspace, actor, overrideMatch[1]!, req);
   const approveMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/approve$/);
-  if (approveMatch && method === "POST") return handleApproveForExport(workspace, actor, approveMatch[1]!);
+  if (approveMatch && method === "POST") return handleApproveForExport(workspace, actor, approveMatch[1]!, req);
   const exportMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/export$/);
-  if (exportMatch && method === "POST") return handleExportDossier(workspace, actor, exportMatch[1]!);
+  if (exportMatch && method === "POST") return handleExportDossier(workspace, actor, exportMatch[1]!, req);
   const manifestMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/manifest$/);
   if (manifestMatch && method === "GET") return handleGetExportManifest(workspace, actor, manifestMatch[1]!);
   const auditMatch = routePath.match(/^\/api\/dossiers\/([^/]+)\/audit$/);

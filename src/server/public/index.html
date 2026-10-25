@@ -492,6 +492,7 @@
     .finding__meta { display: grid; grid-template-columns: max-content 1fr; gap: 2px var(--space-3); margin-top: var(--space-2); font-size: var(--text-xs); color: var(--color-text-muted); }
     .finding__meta dt { font-weight: 600; }
     .finding__meta dd { color: var(--color-text); word-break: break-word; }
+    .finding__claim { margin-top: var(--space-2); padding: var(--space-2); border-left: 3px solid var(--color-danger-border); background: var(--color-danger-bg); border-radius: var(--radius-sm); font-size: var(--text-xs); color: var(--color-danger); }
 
     /* Audit */
     .audit-scroll { max-height: 360px; overflow-y: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
@@ -954,10 +955,30 @@
     };
 
     const FIELD_STATUS_META = {
-      DRAFT: { label: "Chưa xác minh", tone: "warning", icon: "clock" },
-      HUMAN_VERIFIED: { label: "Đã xác minh", tone: "success", icon: "check" },
-      REJECTED: { label: "Bị từ chối", tone: "danger", icon: "x" },
+      DRAFT: { label: "Cần rà soát", tone: "warning", icon: "clock" },
+      HUMAN_VERIFIED: { label: "Đã xác nhận dữ liệu", tone: "success", icon: "check" },
+      REJECTED: { label: "Cần đánh giá lại", tone: "danger", icon: "x" },
     };
+    // A field whose value a person entered by hand is a human assertion: it
+    // still shows, separately, the value the document itself carries.
+    const FIELD_MANUAL_EDIT_LABEL = "Đã sửa tay — cần đánh giá lại";
+    /* Injected at serve time from src/ui/review-state.ts and
+       src/ui/legal-basis-labels.ts, which are the tested source of truth.
+       REVIEW_STATE_OF below stays local on purpose: it classifies from the row
+       fields the browser receives, which is a narrower input than the module's
+       classifyField, so it must not be swapped for it silently. */
+    /*__REVIEW_STATE_VOCABULARY__*/
+
+    function REVIEW_STATE_OF(row) {
+      if (row.isSuperseded === true) return "SOURCE_CHANGED";
+      if (row.verificationStatus === "HUMAN_VERIFIED") return "CONFIRMED_DATA";
+      if (row.verificationStatus === "REJECTED") return "NEEDS_REASSESSMENT";
+      const value = row.selectedValue;
+      if (value === null || value === undefined || String(value).trim() === "") return "NEEDS_EVIDENCE";
+      if (row.verificationStatus === "EXTRACTED" || row.verificationStatus === "DRAFT") return "NEEDS_REVIEW";
+      return "NEEDS_REVIEW";
+    }
+
 
     const FIELD_LABELS = {
       cadmium_mg_kg: "Hàm lượng Cadmi (mg/kg)",
@@ -1130,21 +1151,58 @@
        4. API
        ========================================================== */
     let currentDossierId = null;
-    const ui = { dossiers: [], dossier: null, audit: null, manifest: null, manifestError: null, integrityCheck: null, listLoaded: false, pilotToken: "", actor: null, organicEvidence: [], shareGrants: [], pilotKpi: null, pilotGates: null };
+    const ui = { dossiers: [], dossier: null, audit: null, manifest: null, manifestError: null, integrityCheck: null, listLoaded: false, pilotToken: "", actor: null, organicEvidence: [], shareGrants: [], pilotKpi: null, pilotGates: null, confirmOverride: false };
 
     async function fetchApi(path, options = {}) {
       const role = document.getElementById("actor-role").value;
       const headers = { ...options.headers, "x-actor-role": role };
       if (ui.pilotToken) headers["x-pilot-token"] = ui.pilotToken;
+      // A write against the dossier this browser holds carries the version it holds,
+      // so the server can refuse a stale client instead of silently overwriting the
+      // edit that superseded it. Writes to anything else (auth bootstrap) stay untouched.
+      let requestOptions = options;
+      if (isWriteToHeldDossier(path, options.method)) {
+        const payload = parseJsonBody(options.body);
+        payload.version = ui.dossier.version;
+        headers["Content-Type"] = "application/json";
+        requestOptions = { ...options, headers, body: JSON.stringify(payload) };
+      }
       try {
-        const res = await fetch(path, { ...options, headers, credentials: "same-origin" });
+        const res = await fetch(path, { ...requestOptions, headers, credentials: "same-origin" });
         const body = await res.json().catch(() => null);
+        // A 409 means someone else's write landed first. Say so and stop, rather than
+        // letting the next request fail the same way with no explanation.
+        if (res.status === 409) {
+          notifyStaleDossier(body);
+          return { success: false, error: (body && body.error) || "Hồ sơ đã được người khác cập nhật.", errorCode: "STALE_DOSSIER_VERSION" };
+        }
         if (body && typeof body === "object") return body;
         return { success: false, error: `Phản hồi không hợp lệ từ máy chủ (HTTP ${res.status}).` };
       } catch (_err) {
         setServerStatus(false);
         return { success: false, error: "Không kết nối được máy chủ cục bộ." };
       }
+    }
+
+    /** True for a POST/PUT/PATCH aimed at the dossier this browser has open. */
+    function isWriteToHeldDossier(path, method) {
+      if (!method || method === "GET") return false;
+      if (!ui.dossier || typeof ui.dossier.version !== "number") return false;
+      return path.includes(`/api/dossiers/${encodeURIComponent(currentDossierId)}`)
+        || path.includes(`/api/v1/dossiers/${encodeURIComponent(currentDossierId)}`);
+    }
+
+    /** Parses a request body, falling back to an empty object when it is absent. */
+    function parseJsonBody(raw) {
+      if (!raw) return {};
+      try { return JSON.parse(raw); } catch (_e) { return {}; }
+    }
+
+    /** Tells the operator the dossier moved under them and offers a reload. */
+    function notifyStaleDossier(body) {
+      const detail = (body && body.error) || "Có người khác đã lưu thay đổi vào hồ sơ này.";
+      notify("danger", "Hồ sơ đã thay đổi — cần tải lại", `${detail} Hãy tải lại hồ sơ để xem trạng thái mới nhất trước khi thao tác tiếp.`);
+      announce(`Cảnh báo: ${detail}`);
     }
 
     function openAuthDialog() {
@@ -1265,7 +1323,15 @@
       else if (chainValid === null) exportReason = "Chưa xác định được trạng thái chuỗi băm kiểm toán.";
       const canExport = !exportReason;
 
-      const ctx = { state, sealed, finished, activeDocs, supersededDocs, missingSamples, fields, verified, unverified, val, chainValid, approvable, isManager, canApprove, approveReason, canExport, exportReason };
+      const blockedCount = val ? val.criticalBlockers : 0;
+      let overrideReason = "";
+      if (sealed) overrideReason = "Hồ sơ đã niêm phong — không thể ký bỏ lỗi chặn.";
+      else if (state !== "VALIDATION_BLOCKED") overrideReason = "Chỉ hồ sơ đang bị chặn mới cần ký xác nhận.";
+      else if (blockedCount === 0) overrideReason = "Không còn lỗi chặn nào để ký xác nhận.";
+      else if (role !== "MANAGER") overrideReason = "Chỉ vai trò Quản lý chất lượng (MANAGER) được ký bỏ lỗi chặn.";
+      const canOverride = !overrideReason;
+
+      const ctx = { state, sealed, finished, activeDocs, supersededDocs, missingSamples, fields, verified, unverified, val, chainValid, approvable, isManager, canApprove, approveReason, canExport, exportReason, blockedCount, canOverride, overrideReason };
       ctx.steps = buildSteps(ctx);
       const firstOpen = ctx.steps.find((s) => s.status === "current" || s.status === "blocked");
       ctx.currentStepId = firstOpen ? firstOpen.id : null;
@@ -1633,6 +1699,14 @@
         const rows = doc.extractedFields.map((f) => {
           const isVerified = f.verificationStatus === "HUMAN_VERIFIED";
           const meta = FIELD_STATUS_META[f.verificationStatus] || { label: f.verificationStatus, tone: "neutral", icon: "circle" };
+          // The row declares its operational review state explicitly, so the
+          // badge never has to be inferred from the verification enum alone.
+          const superseded = doc.isSuperseded === true;
+          const reviewState = REVIEW_STATE_OF({
+            verificationStatus: f.verificationStatus,
+            selectedValue: f.confirmedValue ?? f.rawValue,
+            isSuperseded: superseded,
+          });
           const currentValue = f.confirmedValue ?? f.rawValue;
           const edited = isVerified && f.confirmedValue !== undefined && f.confirmedValue !== null && String(f.confirmedValue) !== String(f.rawValue);
           const fid = escapeHtml(f.id);
@@ -1660,7 +1734,7 @@
                 ${compare}
               </td>
               <td data-label="Trạng thái">
-                <div style="display:flex;flex-wrap:wrap;gap:var(--space-1);">${badge(meta.label, meta.tone, meta.icon)}${edited ? badge("Đã sửa so với trích xuất", "info", "info") : ""}</div>
+                <div style="display:flex;flex-wrap:wrap;gap:var(--space-1);">${badge(meta.label, meta.tone, meta.icon)}${edited ? badge(FIELD_MANUAL_EDIT_LABEL, "warning", "triangle") : ""}${reviewState === "SOURCE_CHANGED" || reviewState === "NEEDS_EVIDENCE" ? badge(REVIEW_STATE_LABEL_VI[reviewState].vi, reviewState === "SOURCE_CHANGED" ? "danger" : "warning", reviewState === "SOURCE_CHANGED" ? "alert" : "clock") : ""}</div>
                 ${isVerified && f.verifiedBy ? `<span class="cell-sub">${escapeHtml(f.verifiedBy)} · ${timeTag(f.verifiedAt)}</span>` : ""}
               </td>
               <td data-label="Thao tác" class="col-action">
@@ -1711,6 +1785,13 @@
 
     function renderFinding(f, kind) {
       const isBlock = kind === "danger";
+      // An unverified blocker must never read as a violation: the system states the
+      // food-safety threshold and stops for a human decision, it does not conclude.
+      const basisMeta = LEGAL_BASIS_LABEL[f.legalBasis];
+      const basisBadge = basisMeta ? badge(basisMeta.vi, basisMeta.tone, basisMeta.tone === "danger" ? "shieldAlert" : "shield") : "";
+      const claimNote = f.legalBasis === "unverified"
+        ? `<p class="finding__claim">Hệ thống không đưa ra kết luận pháp lý cho phát hiện này. Trạng thái chờ là kiểm tra an toàn thực phẩm nội bộ; cần người ký ghi nhận quyết định.</p>`
+        : "";
       return `
         <li class="finding finding--${kind}">
           ${icon(isBlock ? "octagon" : "triangle")}
@@ -1719,6 +1800,7 @@
               <span class="badge badge--${kind}">${isBlock ? "CHẶN" : "CẢNH BÁO"}</span>
               <span class="finding__name">${escapeHtml(f.ruleName)}</span>
               ${codeTag(f.ruleId)}
+              ${basisBadge}
             </div>
             <p class="finding__msg">${escapeHtml(f.messageVi || f.messageEn)}</p>
             <dl class="finding__meta">
@@ -1726,6 +1808,7 @@
               <dt>Ngưỡng / yêu cầu</dt><dd>${escapeHtml(f.thresholdValue)}</dd>
               <dt>Căn cứ</dt><dd>${escapeHtml(f.citation)}</dd>
             </dl>
+            ${claimNote}
           </div>
         </li>`;
     }
@@ -1875,6 +1958,31 @@
           ${actionButton({ action: "approve", label: approvedOk ? "Đã phê duyệt" : "Phê duyệt xuất", busyLabel: "Đang phê duyệt…", variant: "primary", iconName: "check", disabled: !ctx.canApprove, reasonId: ctx.approveReason ? "approve-reason" : "", focusKey: "approve" })}
           ${ctx.approveReason ? `<p class="action-card__reason" id="approve-reason">${escapeHtml(ctx.approveReason)}</p>` : ""}
         </div>`;
+      let overrideCard = "";
+      if (ctx.blockedCount > 0) {
+        overrideCard = ui.confirmOverride
+          ? `<div class="callout callout--warning" id="override-confirm" role="region" aria-labelledby="override-confirm-title">
+              ${icon("triangle")}
+              <div class="callout__body">
+                <p class="callout__title" id="override-confirm-title">Quản lý chất lượng ký xác nhận bỏ ${ctx.blockedCount} lỗi chặn?</p>
+                <p id="override-confirm-desc">Lỗi chặn vẫn được giữ trong hồ sơ. Chữ ký của bạn và lý do sẽ vào nhật ký kiểm toán, sau đó hồ sơ cần được phê duyệt xuất như bình thường.</p>
+                <label class="field" for="inp-override-reason">
+                  <span class="field__label">Lý do ký xác nhận (bắt buộc)</span>
+                  <input class="input" type="text" id="inp-override-reason" maxlength="500" autocomplete="off" spellcheck="false" placeholder="VD: Chứng chỉ của nhà cung cấp đã kiểm tra tại chỗ" aria-describedby="override-confirm-desc">
+                </label>
+                <div class="panel__actions" style="margin-top:var(--space-2);">
+                  ${actionButton({ action: "confirm-override", label: "Ký xác nhận", busyLabel: "Đang ký…", variant: "danger", iconName: "shieldAlert", focusKey: "confirm-override", reasonId: "override-confirm-desc" })}
+                  <button type="button" class="btn btn--secondary" data-action="cancel-override">Huỷ</button>
+                </div>
+              </div>
+            </div>`
+          : `<div class="action-card">
+              <h3 class="action-card__title">Ký xác nhận lỗi chặn</h3>
+              <p class="muted">Hồ sơ đang bị ${ctx.blockedCount} lỗi chặn. Quản lý chất lượng có thể ký xác nhận để tiếp tục, kèm lý do ghi vào nhật ký kiểm toán.</p>
+              ${actionButton({ action: "request-override", label: "Ký bỏ lỗi chặn", busyLabel: "Đang mở…", variant: "secondary", iconName: "shieldAlert", disabled: !ctx.canOverride, reasonId: ctx.overrideReason ? "override-reason" : "", focusKey: "override" })}
+              ${ctx.overrideReason ? `<p class="action-card__reason" id="override-reason">${escapeHtml(ctx.overrideReason)}</p>` : ""}
+            </div>`;
+      }
 
       let exportControls;
       if (ui.confirmExport && ctx.canExport) {
@@ -1913,7 +2021,7 @@
 
       return renderSection("sec-export", 5, "Phê duyệt và xuất hồ sơ niêm phong",
         "Phê duyệt cần vai trò Quản lý. Xuất hồ sơ bị từ chối nếu chuỗi băm kiểm toán không toàn vẹn.",
-        "", `${gates}<div class="action-grid">${approveCard}${exportCard}</div>${renderManifestReceipt()}${disclaimer}`);
+        "", `${gates}<div class="action-grid">${approveCard}${overrideCard}${exportCard}</div>${renderManifestReceipt()}${disclaimer}`);
     }
 
     function renderOrganicSection(d, ctx) {
@@ -2111,6 +2219,7 @@
       const d = ui.dossier;
       const ctx = buildContext(d, ui.audit, currentRole());
       if (!ctx.canExport) ui.confirmExport = false;
+      if (ctx.blockedCount === 0 || !ctx.canOverride) ui.confirmOverride = false;
       const saved = ui.dossierPaintedId === d.id ? collectUnsavedInputs() : {};
       const activeTab = ui.activeContextTab || "audit";
 
@@ -2415,6 +2524,39 @@
       }
     }
 
+    function requestBlockerOverride() {
+      ui.confirmOverride = true;
+      ui.pendingFocus = { key: "confirm-override", fallback: "#sec-export-title" };
+      announce("Mở biểu mẫu ký xác nhận bỏ lỗi chặn.");
+      paintWorkspace();
+    }
+
+    function cancelBlockerOverride() {
+      ui.confirmOverride = false;
+      ui.pendingFocus = { key: "request-override", fallback: "#sec-export-title" };
+      announce("Đã huỷ thao tác ký xác nhận.");
+      paintWorkspace();
+    }
+
+    async function confirmBlockerOverride() {
+      const input = document.getElementById("inp-override-reason");
+      const reason = input ? String(input.value || "").trim() : "";
+      if (!reason) {
+        notifyError("Chưa nhập lý do", "Lý do ký xác nhận là bắt buộc và sẽ được ghi vào nhật ký kiểm toán.");
+        if (input) input.focus();
+        return;
+      }
+      const res = await fetchApi(`/api/dossiers/${encodeURIComponent(currentDossierId)}/override`, { method: "POST", body: JSON.stringify({ reason }) });
+      ui.confirmOverride = false;
+      if (res.success) {
+        notify("warning", "Đã ký xác nhận bỏ lỗi chặn", "Lỗi chặn vẫn được giữ trong hồ sơ. Bước tiếp theo: phê duyệt xuất.");
+        await refreshAfterMutation();
+      } else {
+        notifyError("Ký xác nhận bị từ chối", res.error);
+        await renderWorkspace();
+      }
+    }
+
     async function exportDossier() {
       const res = await fetchApi(`/api/dossiers/${encodeURIComponent(currentDossierId)}/export`, { method: "POST" });
       ui.confirmExport = false;
@@ -2688,6 +2830,15 @@
         case "approve":
           runAction(el, approveExport, "#sec-export-title");
           break;
+        case "request-override":
+          requestBlockerOverride();
+          break;
+        case "cancel-override":
+          cancelBlockerOverride();
+          break;
+        case "confirm-override":
+          runAction(el, confirmBlockerOverride, "#sec-export-title");
+          break;
         case "request-export":
           ui.confirmExport = true;
           ui.pendingFocus = { key: "confirm-export", fallback: "#sec-export-title" };
@@ -2743,6 +2894,11 @@
         ui.pendingFocus = { key: "request-export", fallback: "#sec-export-title" };
         announce("Đã huỷ thao tác xuất hồ sơ.");
         paintWorkspace();
+        return;
+      }
+      if (e.key === "Escape" && ui.confirmOverride) {
+        e.preventDefault();
+        cancelBlockerOverride();
         return;
       }
       if (e.key === "Enter" && e.target.matches && e.target.matches("input[data-field-input]")) {
