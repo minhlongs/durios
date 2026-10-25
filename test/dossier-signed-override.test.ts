@@ -61,4 +61,16 @@ describe("Signed override past a cadmium blocker", () => {
 
     expect(() => ws.overrideBlocker(dossierId, "Second attempt", OVERRIDE_MANAGER)).toThrow();
   });
+
+  /**
+   * The override bumps the version like every other write. Returning the pre-save
+   * object hands back a version the store has already moved past, so the operator's
+   * next write is refused — proven here by using the returned version immediately.
+   */
+  it("T-OV-08: the override returns the version the store now holds", () => {
+    const { ws, dossierId } = buildBlockedDossier();
+    const updated = ws.overrideBlocker(dossierId, "Signed past the cadmium blocker", OVERRIDE_MANAGER);
+
+    expect(updated.version).toBe(ws.getRawDossier(dossierId)!.version);
+  });
 });

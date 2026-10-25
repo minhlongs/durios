@@ -89,7 +89,10 @@ export function executeBlockerOverride(
     .filter((f) => f.severity === "CRITICAL_BLOCKER")
     .map((f) => f.ruleId) ?? [];
   const updatedDossier: ContainerDossier = { ...dossier, lifecycleState: "REVIEW_REQUIRED", updatedAt: new Date().toISOString() };
-  repo.save(updatedDossier, expectedVersion ?? dossier.version);
+  const saved = repo.save(updatedDossier, expectedVersion ?? dossier.version);
   auditLedger.recordEvent(actor, dossierId, "DOSSIER_BLOCKER_OVERRIDDEN", "CONTAINER_DOSSIER", dossierId, { previousState: dossier.lifecycleState, blockers }, { nextState: "REVIEW_REQUIRED", signedBy: actor.name, role: actor.role, reason: trimmedReason });
-  return updatedDossier;
+  // The save takes the version forward, so the object it returns is the one whose
+  // version is current. Returning the pre-save object would hand the operator a
+  // version the store has already moved past, and their next write would be refused.
+  return saved;
 }
