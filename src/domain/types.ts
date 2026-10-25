@@ -95,3 +95,5 @@ export interface ContainerDossier {
 
 /** Re-exported so existing deep imports keep resolving; defined in export-manifest-types.ts. */
 export type { DossierExportManifest } from "./export-manifest-types.js";
+export type { Lot, Organization, Permission, ProductionSource, TestEvidence } from "./traceability-entities.js";
+

@@ -17,7 +17,8 @@
     "pilot:proof-kit": "bun run src/export/field-proof-kit-cli.ts",
     "opc:license": "bun run src/saas/license-generator-cli.ts",
     "blueprint:verify-25-steps": "bun run src/saas/blueprint-cli.ts",
-    "verify:manifest": "bun run src/export/standalone-manifest-verifier.ts"
+    "verify:manifest": "bun run src/export/standalone-manifest-verifier.ts",
+    "saas:sign-license": "bun run src/saas/license-signer-cli.ts"
   },
   "keywords": [
     "durios",
