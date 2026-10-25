@@ -80,5 +80,12 @@ describe("Field Proof Kit Bundler & Cryptographic Verification", () => {
       commercialQuote: { ...bundle.commercialQuote, amountVnd: 1_000 },
     };
     expect(verifyFieldProofKitBundle(tampered).valid).toBe(false);
+
+    const dbOnlyBundle = compileFieldProofKitBundle({
+      siteCode: "SITE-CAILAY-TIENGIANG-01", tenantId: "TENANT-CAILAY-01",
+      dbPath: join(testDir, "proofkit.db"), dataDir: join(testDir, "uploads"),
+      forcedTimestamp: "2026-10-25T09:00:00.000Z",
+    });
+    expect(dbOnlyBundle.exportedManifests).toEqual([]);
   });
 });
