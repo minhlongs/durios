@@ -13,12 +13,13 @@ export const DUAL_VIEW_SURFACE_CSS = `
   bottom: 18px;
   right: 18px;
   z-index: 99999;
+  min-height: 44px;
   display: flex;
   align-items: center;
   gap: 8px;
   background: #1e293b;
   color: #ffffff;
-  padding: 8px 14px;
+  padding: 10px 16px;
   border-radius: 9999px;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
   font-family: var(--durios-font-sans, system-ui, -apple-system, sans-serif);
@@ -33,12 +34,16 @@ export const DUAL_VIEW_SURFACE_CSS = `
   transform: translateY(-2px);
   border-color: #38bdf8;
 }
+#durios-dual-view-toggle:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
 #durios-agent-inspector-modal {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 99998;
-  background: rgba(15, 23, 42, 0.75);
+  background: rgba(15, 23, 42, 0.78);
   backdrop-filter: blur(6px);
   padding: 24px;
   align-items: center;
