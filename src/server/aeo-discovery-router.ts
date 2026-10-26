@@ -33,18 +33,18 @@ Allow: /
 Sitemap: https://durios.vn/sitemap.xml
 `;
 
-const SITEMAP_XML = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://durios.vn/</loc><priority>1.0</priority></url>
-  <url><loc>https://durios.vn/llms.txt</loc><priority>0.9</priority></url>
-  <url><loc>https://durios.vn/llms-full.txt</loc><priority>0.9</priority></url>
-  <url><loc>https://durios.vn/.well-known/agent.json</loc><priority>0.9</priority></url>
-  <url><loc>https://durios.vn/stitch/auditor.html</loc><priority>0.8</priority></url>
-  <url><loc>https://durios.vn/stitch/buyer.html</loc><priority>0.8</priority></url>
-  <url><loc>https://durios.vn/stitch/dossiers.html</loc><priority>0.8</priority></url>
-  <url><loc>https://durios.vn/stitch/field-proven.html</loc><priority>0.8</priority></url>
-</urlset>
-`;
+const SITEMAP_PATHS: readonly string[] = [
+  "/", "/llms.txt", "/llms-full.txt", "/.well-known/agent.json",
+  "/stitch/index.html", "/stitch/dossiers.html", "/stitch/auditor.html", "/stitch/buyer.html",
+  "/stitch/cluster.html", "/stitch/portability.html", "/stitch/upgrade.html", "/stitch/styleguide.html",
+  "/stitch/paper-canvas.html", "/stitch/excel-grid.html", "/stitch/zalo-bot.html", "/stitch/mobile-weighbridge.html",
+  "/stitch/field-proven.html", "/stitch/socratic-introspector.html", "/stitch/rehearsal-command.html", "/stitch/mit-verifier-lab.html",
+  "/stitch/foundry.html", "/stitch/security-vault.html", "/stitch/organic-escrow-guard.html", "/stitch/corridors.html",
+  "/stitch/subscription-lifecycle.html", "/stitch/immutable-audit-ledger.html", "/stitch/blueprint-25-steps.html",
+  "/stitch/cloud-ocr-vault.html", "/stitch/ed25519-downgrade-simulator.html", "/stitch/gallery.html",
+];
+
+const SITEMAP_XML = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${SITEMAP_PATHS.map((p, i) => `  <url><loc>https://durios.vn${p}</loc><priority>${i === 0 ? "1.0" : i < 4 ? "0.9" : "0.8"}</priority></url>`).join("\n")}\n</urlset>\n`;
 
 export function handleAeoAndAgentDiscoveryRoutes(method: string, path: string): Response | undefined {
   if (method !== "GET") return undefined;

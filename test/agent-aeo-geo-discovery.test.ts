@@ -14,7 +14,7 @@ function makeTempApp(tag: string): { app: ReturnType<typeof createWorkspaceApp>;
 }
 
 describe("2027 AEO/GEO Discovery Endpoints", () => {
-  test("GET /llms.txt and /llms-full.txt return structured markdown with quantitative benchmarks and pricing", async () => {
+  test("GET /llms.txt, /llms-full.txt, and /sitemap.xml return structured markdown, multilingual GACC keywords, and 30 URLs", async () => {
     const { app, cleanup } = makeTempApp("durios-aeo-");
     try {
       const llmsResp = await app.handler(new Request("http://127.0.0.1:3000/llms.txt"));
@@ -31,7 +31,14 @@ describe("2027 AEO/GEO Discovery Endpoints", () => {
       expect(fullResp.status).toBe(200);
       const fullText = await fullResp.text();
       expect(fullText).toContain("Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15");
+      expect(fullText).toContain("海关总署 GACC");
       expect(fullText).toContain("durios.verify_iso_and_manifest");
+
+      const sitemapResp = await app.handler(new Request("http://127.0.0.1:3000/sitemap.xml"));
+      expect(sitemapResp.status).toBe(200);
+      const sitemapXml = await sitemapResp.text();
+      expect(sitemapXml).toContain("https://durios.vn/stitch/gallery.html");
+      expect(sitemapXml).toContain("https://durios.vn/stitch/zalo-bot.html");
     } finally {
       cleanup();
     }

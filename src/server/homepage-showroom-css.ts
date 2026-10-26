@@ -21,7 +21,7 @@ export const HOMEPAGE_SHOWROOM_CSS = `
   background: var(--color-primary, #0f6b4f); color: var(--color-on-primary, #ffffff);
   box-shadow: 0 2px 6px rgba(15, 107, 79, 0.25);
 }
-.durios-mode-tab:focus-visible, .durios-cta-btn:focus-visible {
+.durios-mode-tab:focus-visible, .durios-cta-btn:focus-visible, .durios-roi-tab:focus-visible {
   outline: 2px solid #38bdf8; outline-offset: 2px;
 }
 #durios-home-showroom {
@@ -74,8 +74,14 @@ export const HOMEPAGE_SHOWROOM_CSS = `
   background: var(--color-surface-muted, #f0f2f5); border: 1px solid var(--color-border, #d5dae1);
   border-radius: 10px; padding: 14px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px;
 }
-.durios-svg { width: 16px; height: 16px; flex-shrink: 0; vertical-align: middle; }
+.durios-roi-tabs { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+.durios-roi-tab {
+  min-height: 44px; padding: 8px 14px; border-radius: 8px; font-size: 12px; font-weight: 700;
+  border: 1px solid var(--color-border, #d5dae1); background: var(--color-surface-muted, #f0f2f5);
+  color: var(--color-text, #1f2937); cursor: pointer; transition: background-color 180ms ease, color 180ms ease;
+}
+.durios-roi-tab.active { background: var(--color-primary, #0f6b4f); color: #ffffff; border-color: var(--color-primary, #0f6b4f); }
 @media (prefers-reduced-motion: reduce) {
-  .durios-mode-tab, .durios-cta-btn, #durios-dual-view-toggle { transition: none !important; transform: none !important; }
+  .durios-mode-tab, .durios-cta-btn, .durios-roi-tab, #durios-dual-view-toggle { transition: none !important; transform: none !important; }
 }
 `;
