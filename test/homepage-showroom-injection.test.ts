@@ -17,7 +17,7 @@ function tempApp(tag: string): { handler: (r: Request) => Promise<Response>; clo
 }
 
 describe("2027 3-in-1 Homepage Showroom & 1-Click Workspace Switcher", () => {
-  test("GET / serves the Marketing Hero, 3 PLG CTAs, Live ISO 6346 Verifier, 4-Pillar Hub, and 4-Tier Pricing", async () => {
+  test("GET / serves the Marketing Hero, 3 PLG CTAs, Live ISO 6346 Verifier, ROI Calculator, Battlecard, 4-Pillar Hub, and 4-Tier Pricing", async () => {
     const { handler, close } = tempApp("durios-home-3in1-");
     try {
       const resp = await handler(new Request("http://127.0.0.1:3000/"));
@@ -45,6 +45,12 @@ describe("2027 3-in-1 Homepage Showroom & 1-Click Workspace Switcher", () => {
       expect(html).toContain('id="durios-live-iso-verifier"');
       expect(html).toContain("MSKU9070323");
       expect(html).toContain("MSKU9070320");
+
+      // Interactive ROI & Loss-Avoidance Calculator + Head-to-Head Battlecard
+      expect(html).toContain('id="durios-roi-calculator"');
+      expect(html).toContain("350.000.000 VNĐ");
+      expect(html).toContain('id="durios-battlecard"');
+      expect(html).toContain("Làm tay thủ công (Excel + Zalo)");
 
       // 4-Pillar 25-Screen Showroom Hub
       expect(html).toContain('id="durios-showroom-pillars"');
