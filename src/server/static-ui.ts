@@ -2,6 +2,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { join } from "node:path";
 import { injectReviewVocabularies } from "./review-state-injection.js";
 import { injectAgentAeoSurface } from "./agent-aeo-injector.js";
+import { injectHomepageShowroom } from "./homepage-showroom-injector.js";
 
 let cachedHtml: string | null = null;
 
@@ -20,7 +21,10 @@ export function serveIndexHtml(): Response {
     const raw = existsSync(htmlPath)
       ? readFileSync(htmlPath, "utf-8")
       : "<html><body><h1>DuriOS Server Running</h1><p>index.html not found</p></body></html>";
-    cachedHtml = injectAgentAeoSurface(injectReviewVocabularies(raw), "/");
+    cachedHtml = injectAgentAeoSurface(
+      injectHomepageShowroom(injectReviewVocabularies(raw)),
+      "/",
+    );
   }
 
   return new Response(cachedHtml, {
