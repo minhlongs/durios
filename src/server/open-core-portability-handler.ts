@@ -1,4 +1,5 @@
 import { assertValidActor } from "../auth/rbac-policy.js";
+import { selectOwnTenantDossiers } from "../auth/pilot-kpi-evaluator.js";
 import type { AuthenticatedActor } from "../domain/types.js";
 import { getOpenCoreEditionManifest } from "../saas/open-core-edition-manifest.js";
 import { resolveSaasSubscriptionStatus } from "../saas/saas-tier-policy.js";
@@ -30,7 +31,7 @@ export function handleGetOpenCoreEditionManifest(_workspace: ContainerDossierWor
 export function handleExportWorkspacePortability(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor): Response {
   try {
     assertValidActor(actor);
-    const dossiers = workspace.listDossiers(actor);
+    const dossiers = selectOwnTenantDossiers(workspace.listDossiers(actor), actor.tenantId);
     const tenantEvents = workspace.auditLedger
       .getAllEvents()
       .filter((e) => e.tenantId === actor.tenantId);

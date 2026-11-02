@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
 import { errorResponse } from "./server-types.js";
+import { injectAgentAeoSurface } from "./agent-aeo-injector.js";
 
 const MIME_MAP: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
@@ -36,8 +37,21 @@ export function serveStitchStaticAsset(pathname: string): Response | undefined {
 
   const ext = safeFilename.slice(safeFilename.lastIndexOf(".")).toLowerCase();
   const contentType = MIME_MAP[ext] ?? "application/octet-stream";
-  const fileBytes = readFileSync(fullPath);
 
+  if (ext === ".html") {
+    const rawHtml = readFileSync(fullPath, "utf-8");
+    const enrichedHtml = injectAgentAeoSurface(rawHtml, pathname);
+    return new Response(enrichedHtml, {
+      status: 200,
+      headers: {
+        "Content-Type": contentType,
+        "Cache-Control": "public, max-age=3600",
+        "X-DuriOS-Stitch-Static": "true",
+      },
+    });
+  }
+
+  const fileBytes = readFileSync(fullPath);
   return new Response(fileBytes, {
     status: 200,
     headers: {

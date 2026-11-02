@@ -55,9 +55,14 @@ export function handleBootstrapPilotRehearsal(
   }
 }
 
-export function handleSeedAuthenticatedRehearsal(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor): Response {
+export function handleSeedAuthenticatedRehearsal(
+  workspace: ContainerDossierWorkspace,
+  actor: AuthenticatedActor,
+  env: Record<string, string | undefined> = process.env
+): Response {
   try {
     assertValidActor(actor);
+    assertRehearsalBootstrapEnabled(env);
     const { newlyCreatedCount, dossiers } = seedRehearsalDossiersForActor(workspace, actor);
     const pilotKpi = computeGate05KpiFromDossiers(selectOwnTenantDossiers(workspace.listDossiers(actor), actor.tenantId));
     const pilotGates = evaluateWorkspaceLaunchGates(workspace, actor);

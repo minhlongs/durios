@@ -4,6 +4,7 @@ import { handleGetAuthenticatedMe, handleOtpChallengeRequest, handleOtpChallenge
 import { errorResponse, jsonResponse, mapDomainErrorToResponse } from "./server-types.js";
 import { serveIndexHtml } from "./static-ui.js";
 import { serveStitchStaticAsset } from "./stitch-static-handler.js";
+import { handleAeoAndAgentDiscoveryRoutes } from "./aeo-discovery-router.js";
 import { handleListDossiers, handleCreateDossier, handleGetDossier, handleRunValidation, handleApproveForExport, handleExportDossier } from "./dossier-handlers.js";
 import { handleGetExportManifest } from "./export-manifest-handler.js";
 import { handleOverrideBlocker } from "./override-handler.js";
@@ -17,15 +18,14 @@ import { handleBootstrapPilotRehearsal, handleGetEcosystemTelemetry, handleSeedA
 import { handleVerifyIsoAndManifest } from "./open-core-verifier-handler.js";
 import { handleMintFinancialAttestation, handleVerifyFinancialAttestation } from "./financial-verification-handler.js";
 
-export async function routeHttpRequest(
-  workspace: ContainerDossierWorkspace,
-  req: Request
-): Promise<Response> {
+export async function routeHttpRequest(workspace: ContainerDossierWorkspace, req: Request): Promise<Response> {
   const url = new URL(req.url);
   const path = url.pathname;
   const method = req.method.toUpperCase();
 
   if (method === "GET" && (path === "/" || path === "/index.html")) return serveIndexHtml();
+  const aeoResp = handleAeoAndAgentDiscoveryRoutes(method, path);
+  if (aeoResp) return aeoResp;
   if (method === "GET" && path.startsWith("/stitch/")) {
     const stitchResp = serveStitchStaticAsset(path);
     if (stitchResp) return stitchResp;

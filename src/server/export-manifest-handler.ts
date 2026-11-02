@@ -13,12 +13,11 @@ export function handleGetExportManifest(workspace: ContainerDossierWorkspace, ac
     const manifest = workspace.getExportManifest(dossierId, actor);
     if (!manifest) return errorResponse(`No sealed export manifest found for dossier '${dossierId}'`, 404);
     const dossier = workspace.getDossier(dossierId, actor);
+    if (!dossier) return errorResponse(`Dossier '${dossierId}' not found`, 404);
     // A manifest is the artifact a buyer or inspector is handed, so it is released only
     // for purposes that justify holding it — a LOGISTICS or TRADE_FINANCE grant, which
     // exists for movement and financing, does not carry the sealed verification record.
-    if (dossier) {
-      workspace.shareManager.assertPurposeAllowed(dossier, actor, [...MANIFEST_PURPOSES], "manifest");
-    }
+    workspace.shareManager.assertPurposeAllowed(dossier, actor, [...MANIFEST_PURPOSES], "manifest");
     if (manifest.tenantId === actor.tenantId) return jsonResponse({ success: true, data: manifest });
     const safe = redactExportManifestForActor(manifest, actor, workspace.shareManager);
     return jsonResponse({
