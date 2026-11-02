@@ -9,6 +9,7 @@ import { handleDocumentUpload } from "./document-ingestion-orchestrator.js";
 import { executeValidation, executeApproveForExport, executeExportDossier, executeBlockerOverride } from "./dossier-lifecycle-service.js";
 import { buildWorkspaceCollaborators } from "./workspace-collaborators.js";
 import { persistUploadedDocument, persistFieldVerification } from "./document-persistence-flow.js";
+import { assertPilotQuotaOnCreate, type PilotWorkspaceQuotaPolicy } from "./pilot-quota-guard.js";
 import { ShareAccessManager } from "../sharing/share-access-manager.js";
 import { OrganicEvidenceManager } from "../organic/organic-evidence-manager.js";
 import { SqliteClient } from "../storage/sqlite-client.js";
@@ -21,7 +22,7 @@ import type { AuditLedgerLike, CreateDossierInput, DossierRepositoryLike, Valida
 import type { AuthenticatedActor, ContainerDossier, DocumentType, DossierExportManifest, IngestedDocument, ValidationRunResult } from "../domain/types.js";
 
 export class ContainerDossierWorkspace {
-  public readonly auditLedger: AuditLedgerLike; public readonly hitlService: HitlVerificationService; public readonly ruleEngine: DeterministicRuleEngine; public readonly fileStorage: FileStorageService | undefined; public readonly legacyBlobReconciliationReport: LegacyBlobReconciliationReport | undefined; public readonly shareManager: ShareAccessManager; public readonly organicEvidenceManager: OrganicEvidenceManager; public readonly authService: SqliteAuthService; public readonly sqliteClient: SqliteClient; private readonly repo: DossierRepositoryLike;
+  public readonly auditLedger: AuditLedgerLike; public readonly hitlService: HitlVerificationService; public readonly ruleEngine: DeterministicRuleEngine; public readonly fileStorage: FileStorageService | undefined; public readonly legacyBlobReconciliationReport: LegacyBlobReconciliationReport | undefined; public readonly shareManager: ShareAccessManager; public readonly organicEvidenceManager: OrganicEvidenceManager; public readonly authService: SqliteAuthService; public readonly sqliteClient: SqliteClient; private readonly repo: DossierRepositoryLike; private pilotQuotaPolicy: PilotWorkspaceQuotaPolicy | undefined;
   constructor(
     repo?: DossierRepositoryLike, auditLedger?: AuditLedgerLike, fileStorage?: FileStorageService | undefined,
     authService?: SqliteAuthService | undefined, sqliteClient?: SqliteClient | undefined
@@ -41,8 +42,11 @@ export class ContainerDossierWorkspace {
       this.legacyBlobReconciliationReport = this.fileStorage.reconcileLegacyDocumentBlobs(collaborators.sqliteClient.db);
     }
   }
+  public setPilotQuotaPolicy(policy: PilotWorkspaceQuotaPolicy | undefined): void { this.pilotQuotaPolicy = policy; }
+  public getPilotQuotaPolicy(): PilotWorkspaceQuotaPolicy | undefined { return this.pilotQuotaPolicy; }
   public createDossier(input: CreateDossierInput, actor: AuthenticatedActor): ContainerDossier {
     assertCanCreateContainerDossier(actor);
+    assertPilotQuotaOnCreate(this.repo, this.auditLedger, input, actor, this.pilotQuotaPolicy);
     const isoResult = validateIso6346Container(input.containerNumber);
     if (!isoResult.isValid) throw new Error(`Invalid container number: ${isoResult.reason ?? "ISO 6346 check digit failure"}`);
     const [id, now] = [`DOS-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 7)}`, new Date().toISOString()];
@@ -51,11 +55,7 @@ export class ContainerDossierWorkspace {
     this.auditLedger.recordEvent(actor, id, "DOSSIER_CREATED", "CONTAINER_DOSSIER", id, null, { dossierCode: input.dossierCode, containerNumber: dossier.containerNumber });
     return dossier;
   }
-  public uploadDocument(
-    dossierId: string, fileBytes: Uint8Array, fileName: string, documentType: DocumentType,
-    actor: AuthenticatedActor, fixtureExtractedFields?: Record<string, { raw: string; confidence?: number }>,
-    expectedVersion?: number
-  ): { dossier: ContainerDossier; document: IngestedDocument } {
+  public uploadDocument(dossierId: string, fileBytes: Uint8Array, fileName: string, documentType: DocumentType, actor: AuthenticatedActor, fixtureExtractedFields?: Record<string, { raw: string; confidence?: number }>, expectedVersion?: number): { dossier: ContainerDossier; document: IngestedDocument } {
     assertValidActor(actor);
     const dossier = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor);
     assertCanUploadDocument(actor, dossier.tenantId);
@@ -63,7 +63,6 @@ export class ContainerDossierWorkspace {
     const { updatedDossier, document } = handleDocumentUpload(dossier, fileBytes, fileName, documentType, actor, this.auditLedger, fixtureExtractedFields);
     return persistUploadedDocument(dossier, updatedDossier, document, fileBytes, fileName, this.fileStorage, this.repo, expectedVersion);
   }
-
   public verifyField(dossierId: string, documentId: string, verification: HumanVerificationInput, actor: AuthenticatedActor): ContainerDossier {
     assertValidActor(actor);
     const dossier = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor);
@@ -72,15 +71,9 @@ export class ContainerDossierWorkspace {
     assertDossierMutable(dossier, "verify fields on");
     return persistFieldVerification(dossier, documentId, verification, actor, this.hitlService, this.repo);
   }
-
   public runValidation(dossierId: string, actor: AuthenticatedActor, expectedVersion?: number): ValidationRunResult { return executeValidation(dossierId, actor, this.repo, this.ruleEngine, this.auditLedger, expectedVersion).result; }
-  /** Validates and reports the new version, which the caller needs for its next write. */
   public runValidationOutcome(dossierId: string, actor: AuthenticatedActor, expectedVersion?: number): ValidationRunOutcome { return executeValidation(dossierId, actor, this.repo, this.ruleEngine, this.auditLedger, expectedVersion); }
-  public overrideBlocker(dossierId: string, reason: string, actor: AuthenticatedActor, expectedVersion?: number): ContainerDossier {
-    const d = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor);
-    assertCanOverrideBlocker(actor, d.tenantId);
-    return executeBlockerOverride(dossierId, reason, actor, this.repo, this.auditLedger, expectedVersion);
-  }
+  public overrideBlocker(dossierId: string, reason: string, actor: AuthenticatedActor, expectedVersion?: number): ContainerDossier { const d = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor); assertCanOverrideBlocker(actor, d.tenantId); return executeBlockerOverride(dossierId, reason, actor, this.repo, this.auditLedger, expectedVersion); }
   public approveForExport(dossierId: string, actor: AuthenticatedActor, expectedVersion?: number): ContainerDossier { const d = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor); assertCanApproveOrExport(actor, d.tenantId, "approveForExport"); return executeApproveForExport(dossierId, actor, this.repo, this.auditLedger, expectedVersion); }
   public exportDossier(dossierId: string, actor: AuthenticatedActor, expectedVersion?: number): DossierExportManifest { const d = this.repo.findRaw?.(dossierId) ?? this.repo.getOrThrow(dossierId, actor); assertCanApproveOrExport(actor, d.tenantId, "exportDossier"); return executeExportDossier(dossierId, actor, this.repo, this.auditLedger, expectedVersion); }
   public getDossier(dossierId: string, actor: AuthenticatedActor): ContainerDossier | undefined { assertValidActor(actor); return this.repo.findById(dossierId, actor); }

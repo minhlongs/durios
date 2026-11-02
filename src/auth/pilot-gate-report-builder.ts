@@ -8,6 +8,7 @@ import type {
 } from "./pilot-gate-types.js";
 import { GATE_MACHINE_CRITERIA, withGateEvidenceSplit } from "./pilot-gate-evidence.js";
 import { resolveCohortProvenance } from "./gate-cohort-provenance.js";
+import { evaluatePilotLifecyclePolicy } from "./pilot-lifecycle-policy.js";
 import type { AuditEvent } from "../domain/types.js";
 
 export function buildGateReport(
@@ -19,19 +20,12 @@ export function buildGateReport(
   const env = options.env ?? process.env;
   const backupDir = options.backupDir ?? env.DURIOS_BACKUP_DIR;
   const consentPath = options.consentSignedFilePath ?? env.DURIOS_GATE01_CONSENT_FILE;
-  // Provenance comes from the hash-chained ledger (SYNTHETIC_DOCUMENT_INGESTED) plus the legacy
-  // rehearsal dossier-code prefix, so renaming a row cannot turn synthetic containers into an
-  // operational cohort. Deleting those events breaks verifyIntegrity() and fails GATE-03.
   const cohortProvenance = resolveCohortProvenance(kpiSummary.containerMetrics, auditEvents);
   const syntheticCohort = options.rehearsalMode === true || cohortProvenance.synthetic;
-  // Third attack on provenance: erase the ledger rows that record it. The chain then fails to
-  // verify, and a run that cannot prove what it measured records evidence for no gate at all.
   const rehearsalMode = syntheticCohort || !auditChainValid;
   const evidenceProvenance: GateEvidenceProvenance = syntheticCohort
     ? "SYNTHETIC_REHEARSAL"
     : auditChainValid ? "OPERATIONAL" : "UNPROVEN_LEDGER_INTEGRITY";
-  // A gate that passed on drill-fabricated evidence is reported as such rather than
-  // as a plain PASS, so the label cannot be quoted out of context as site sign-off.
   const passLabel = syntheticCohort ? "PASS_SYNTHETIC_REHEARSAL" : auditChainValid ? "PASS" : "PASS_LEDGER_INTEGRITY_UNPROVEN";
   const rehearsalNote = syntheticCohort
     ? " [DIỄN TẬP TỔNG HỢP] Bằng chứng của cổng này do chính lệnh diễn tập tạo ra, không phải xác nhận thực địa; không có giá trị phê duyệt nạp dữ liệu khách hàng thật."
@@ -61,20 +55,22 @@ export function buildGateReport(
   const gate05: MachineGateCheck = { machineCheck: { passed: kpiSummary.gate05Passed, criteria: GATE_MACHINE_CRITERIA["GATE-05"] }, gateId: "GATE-05", title: "Diễn tập 5 Container & Bắt 100% Lỗi Gài Mù (< 5 phút/container)", passed: kpiSummary.gate05Passed, statusLabel: kpiSummary.gate05Passed ? passLabel : "REHEARSAL_INCOMPLETE", detail: `Containers=${kpiSummary.totalContainers}/5, Mean=${kpiSummary.meanDeltaSeconds}s, BlindFaults=${kpiSummary.blindFaultsCaught}/${kpiSummary.blindFaultCount}. Nguồn thời gian=${kpiSummary.timingEvidenceSource}: khoảng thời gian lấy từ dấu thời gian hệ thống, KHÔNG thay thế biên bản bấm giờ của người vận hành theo GATE-05.${rehearsalNote}` };
 
   const machineGates = [gate01, gate02, gate03, gate04, gate05];
-  // GATE-05 also counts a human timing sheet as recorded evidence when the KPI says so.
   const extras = kpiSummary.timingEvidenceSource === "HUMAN_STOPWATCH_ATTESTED"
     ? { "GATE-05": ["timingEvidenceSource = HUMAN_STOPWATCH_ATTESTED (biên bản bấm giờ của người vận hành)"] }
     : {};
-  const gates = withGateEvidenceSplit(machineGates, env, options.gateEvidence, extras, rehearsalMode) as readonly
+  const mergedOverrides = {
+    ...options.gateEvidence,
+    ...(!options.gateEvidence?.["GATE-05"] && options.gateEvidence?.["GATE-05B"] ? { "GATE-05": options.gateEvidence["GATE-05B"] } : {}),
+  };
+  const gates = withGateEvidenceSplit(machineGates, env, mergedOverrides, extras, rehearsalMode) as readonly
     [GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus];
   const machineChecksPassedCount = machineGates.filter((g) => g.machineCheck.passed).length;
   const operationalGatesEvidencedCount = gates.filter((g) => g.gateVerdict === "EVIDENCED_FOR_LAUNCH").length;
+  const lifecycle = evaluatePilotLifecyclePolicy(auditChainValid, syntheticCohort, gates, kpiSummary, options, auditEvents);
   return {
     evaluatedAt: new Date().toISOString(),
-    // A launch gate opens only on a passed machine check AND evidence a human recorded.
-    // Passing all five machine checks - on rehearsal evidence, or on an operational database
-    // nobody has signed off - is reported as MACHINE_CHECK_ONLY and never authorises live data.
-    goForLiveCustomerData: operationalGatesEvidencedCount === 5 && !rehearsalMode,
+    goForLiveCustomerData: lifecycle.pilotLifecycleState === "PILOT_COMPLETED" && operationalGatesEvidencedCount === 5 && !rehearsalMode,
+    ...lifecycle,
     passedCount: machineChecksPassedCount, machineChecksPassedCount, operationalGatesEvidencedCount,
     totalGates: 5, gates, kpiSummary, evidenceProvenance, cohortProvenance, ledgerIntegrityVerified: auditChainValid,
   };

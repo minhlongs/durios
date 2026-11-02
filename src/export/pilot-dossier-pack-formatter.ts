@@ -9,8 +9,10 @@ export function formatGoLivePackMarkdown(report: GoLiveReadinessReport): string 
   lines.push(`- **Địa điểm kiểm toán:** \`${report.siteCode}\``);
   lines.push(`- **Thời điểm lập:** \`${report.compiledAt}\``);
   lines.push(`- **Kiểm toán viên:** \`${report.compiledByActorId}\` (${report.compiledByActorRole})`);
+  lines.push(`- **Trạng thái vòng đời Pilot:** \`${report.pilotLifecycleState}\` (\`${report.policyStatus}\`)`);
+  lines.push(`- **Cho phép Pilot giới hạn 5 container đầu tiên:** **${report.canStartLimitedFiveContainerPilot ? "ĐƯỢC PHÉP (LIMITED 5-CONTAINER)" : "CHƯA MỞ KHÓA"}**`);
   lines.push(`- **Kết luận:** **${report.overallVerdict}**`);
-  lines.push(`- **Quyết định nạp dữ liệu khách hàng thật:** **${report.goForLiveCustomerData ? "ĐƯỢC PHÉP (GO)" : "TẠM GIỮ (HOLD)"}**`);
+  lines.push(`- **Quyết định nạp dữ liệu khách hàng thật đại trà:** **${report.goForLiveCustomerData ? "ĐƯỢC PHÉP (GO)" : "TẠM GIỮ (HOLD)"}**`);
   lines.push(`- **Mã băm niêm phong SHA-256:** \`${report.reportSha256}\`\n`);
 
   lines.push(`## 1. Kết Quả Kiểm Tra 5 Cổng Khai Trương (Launch Gates)\n`);
@@ -20,6 +22,8 @@ export function formatGoLivePackMarkdown(report: GoLiveReadinessReport): string 
     const statusText = g.passed ? "✅ ĐẠT" : "❌ CHƯA ĐẠT";
     lines.push(`| **${g.gateId}** | ${g.title} | ${statusText} | ${g.detail} |`);
   }
+  lines.push(`| **GATE-05A** | ${report.gate05Split.gate05A.title} | ${report.gate05Split.gate05A.passed ? "✅ ĐẠT" : "❌ CHƯA ĐẠT"} | ${report.gate05Split.gate05A.detail} |`);
+  lines.push(`| **GATE-05B** | ${report.gate05Split.gate05B.title} | ${report.gate05Split.gate05B.passed ? "✅ ĐẠT" : "❌ CHƯA ĐẠT"} | ${report.gate05Split.gate05B.detail} |`);
 
   lines.push(`\n## 2. Danh Mục Kiểm Tra Thực Địa (Field Auditor Checklist)\n`);
   lines.push(`| Mã | Hạng mục kiểm tra | Quy chuẩn pháp lý | Kết quả | Chi tiết |`);
@@ -30,7 +34,7 @@ export function formatGoLivePackMarkdown(report: GoLiveReadinessReport): string 
   }
 
   lines.push(`\n## 3. Tóm Tắt Chỉ Số Đo Lường Diễn Tập (GATE-05 KPI Snapshot)\n`);
-  lines.push(`- **Tổng số container diễn tập:** ${report.kpiSnapshot.totalContainers}`);
+  lines.push(`- **Tổng số container:** ${report.kpiSnapshot.totalContainers} (Hạn ngạch pilot: ${report.liveContainerQuota.usedContainers}/${report.liveContainerQuota.maxContainers})`);
   const meanMins = (report.kpiSnapshot.meanDeltaSeconds / 60).toFixed(2);
   lines.push(`- **Thời gian đối soát trung bình:** ${meanMins} phút/container (Quy định: < 5.0 phút)`);
   lines.push(`- **Tỷ lệ chặn lỗi gài mù:** ${report.kpiSnapshot.blindFaultsCaught}/${report.kpiSnapshot.blindFaultCount} (100% bắt buộc)`);

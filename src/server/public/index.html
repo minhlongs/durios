@@ -2123,12 +2123,20 @@
       if (!k) return "";
       const evidenced = g && typeof g.operationalGatesEvidencedCount === "number" ? g.operationalGatesEvidencedCount : 0;
       const machine = g ? (typeof g.machineChecksPassedCount === "number" ? g.machineChecksPassedCount : g.passedCount) : null;
-      const gateTone = g && g.goForLiveCustomerData ? "success" : "warning";
+      const gateTone = g && g.goForLiveCustomerData ? "success" : (g && g.canStartLimitedFiveContainerPilot ? "info" : "warning");
+      const lifecycleLabel = g && g.pilotLifecycleState ? ` · VÒNG ĐỜI: ${g.pilotLifecycleState} (${g.policyStatus || "PREREQUISITES_INCOMPLETE"})` : "";
       const gateLabel = g
-        ? `LAUNCH GATE: ${evidenced}/${g.totalGates} cổng đủ bằng chứng · MÁY CHẤM: ${machine === null ? "?" : machine}/${g.totalGates}`
+        ? `LAUNCH GATE: ${evidenced}/${g.totalGates} cổng đủ bằng chứng · MÁY CHẤM: ${machine === null ? "?" : machine}/${g.totalGates}${lifecycleLabel}`
         : (k.gate05Passed ? "GATE-05: máy chấm đạt — thiếu bằng chứng vận hành" : "GATE-05: CHƯA ĐỦ ĐIỀU KIỆN");
+      const splitHtml = g && g.gate05Split && g.gate05Split.gate05A && g.gate05Split.gate05B
+        ? `<div style="margin-top:var(--space-2);padding:6px 10px;border:1px dashed var(--border-subtle);border-radius:var(--radius-sm);font-size:12px;">
+            <div><strong>${escapeHtml(g.gate05Split.gate05A.subGateId)} (${g.gate05Split.gate05A.passed ? "PASS" : "BLOCKED"}):</strong> ${escapeHtml(g.gate05Split.gate05A.title)} — <span class="text-muted">${escapeHtml(g.gate05Split.gate05A.detail)}</span></div>
+            <div style="margin-top:4px;"><strong>${escapeHtml(g.gate05Split.gate05B.subGateId)} (${g.gate05Split.gate05B.passed ? "PASS" : "BLOCKED"}):</strong> ${escapeHtml(g.gate05Split.gate05B.title)} — <span class="text-muted">${escapeHtml(g.gate05Split.gate05B.detail)}</span></div>
+            ${g.founderAuthorization ? `<div style="margin-top:4px;"><strong>Ủy quyền Founder (5 container):</strong> <span class="mono">${escapeHtml(String(g.founderAuthorization.status))}</span> — <span class="text-muted">${escapeHtml(String(g.founderAuthorization.reason || ""))}</span></div>` : ""}
+          </div>`
+        : "";
       const gatesHtml = g && Array.isArray(g.gates)
-        ? `<div style="margin-top:var(--space-3);display:flex;flex-direction:column;gap:6px;">${g.gates.map((it) => `<div style="padding:6px 10px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);font-size:12px;"><strong>${escapeHtml(it.gateId)} (${escapeHtml(it.statusLabel)}):</strong> ${escapeHtml(it.title)} — <span class="text-muted">${escapeHtml(it.detail)}</span>${it.gateVerdict ? ` <span class="text-muted">[Máy chấm: ${it.machineCheck && it.machineCheck.passed ? "PASS" : "FAIL"} · Bằng chứng vận hành: ${escapeHtml(String((it.externalEvidence || {}).status || "PENDING_OPERATOR_EVIDENCE"))} · Kết luận: ${escapeHtml(String(it.gateVerdict))}]${it.gateVerdict !== "EVIDENCED_FOR_LAUNCH" && it.externalEvidence && Array.isArray(it.externalEvidence.required) && it.externalEvidence.required.length ? ` · Còn thiếu: ${escapeHtml(String(it.externalEvidence.required[0]))}` : ""}</span>` : ""}</div>`).join("")}</div>`
+        ? `<div style="margin-top:var(--space-3);display:flex;flex-direction:column;gap:6px;">${g.gates.map((it) => `<div style="padding:6px 10px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);font-size:12px;"><strong>${escapeHtml(it.gateId)} (${escapeHtml(it.statusLabel)}):</strong> ${escapeHtml(it.title)} — <span class="text-muted">${escapeHtml(it.detail)}</span>${it.gateVerdict ? ` <span class="text-muted">[Máy chấm: ${it.machineCheck && it.machineCheck.passed ? "PASS" : "FAIL"} · Bằng chứng vận hành: ${escapeHtml(String((it.externalEvidence || {}).status || "PENDING_OPERATOR_EVIDENCE"))} · Kết luận: ${escapeHtml(String(it.gateVerdict))}]${it.gateVerdict !== "EVIDENCED_FOR_LAUNCH" && it.externalEvidence && Array.isArray(it.externalEvidence.required) && it.externalEvidence.required.length ? ` · Còn thiếu: ${escapeHtml(String(it.externalEvidence.required[0]))}` : ""}</span>` : ""}</div>`).join("")}${splitHtml}</div>`
         : "";
       return renderSection("sec-pilot-kpi", 8, "Chỉ số diễn tập Pilot 5 Container & 5 Cổng Khai Trương (GATE-01..GATE-05)",
         "Đo thời gian đối soát trung bình (< 300s), tỷ lệ chặn lỗi gài mù (2/2) và trạng thái 5 cổng chặn trước khi nạp dữ liệu thật.",
