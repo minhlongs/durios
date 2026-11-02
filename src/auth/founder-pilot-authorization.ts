@@ -53,7 +53,7 @@ export function resolveFounderPilotAuthorization(input: EvaluateFounderAuthInput
   if (record.siteCode !== input.expectedSiteCode || record.tenantId !== input.expectedTenantId) {
     return { status: "INVALID_SCOPE_OR_ARTIFACT", valid: false, reason: `Sai phạm vi ủy quyền: yêu cầu '${input.expectedSiteCode}'/'${input.expectedTenantId}', tệp ghi '${record.siteCode}'/'${record.tenantId}'.`, record, ...artProp };
   }
-  if (record.gate05AEvidenceSha256 && input.gate05AArtifactSha256 && record.gate05AEvidenceSha256 !== input.gate05AArtifactSha256) {
+  if (isNonEmptyString(record.gate05AEvidenceSha256) && record.gate05AEvidenceSha256 !== input.gate05AArtifactSha256) {
     return { status: "INVALID_SCOPE_OR_ARTIFACT", valid: false, reason: "Mã băm SHA-256 của biên bản GATE-05A không khớp với tệp quyết định Founder.", record, ...artProp };
   }
   const nowMs = Date.parse(input.nowIso ?? new Date().toISOString());
