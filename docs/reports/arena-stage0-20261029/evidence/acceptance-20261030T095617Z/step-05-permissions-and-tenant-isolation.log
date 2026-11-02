@@ -1,0 +1,166 @@
+# STEP 5 — permissions-and-tenant-isolation
+# tree              : /tmp/arena-tree
+# tree fingerprint  : b997a68b492994da715d55d234feca161c8fb9e8f8b1f3dcdcfcdcbbbe5f730a
+# work dir          : /tmp/durios-acceptance-qTf0KM
+# started (UTC)     : 2026-10-30T09:56:44Z
+# EXPECTED RESULT   : drill-stage0.ts exits 0 (55 checks incl. 404 for an ungranted tenant, 403 for a TRADE_FINANCE grantee, grantee redaction); permission-tenant-isolation.sh exits 0 with every tenant-scoped expectation met.
+
+
+================ STEP 5 — permissions-and-tenant-isolation ================
+expected: drill-stage0.ts exits 0 (55 checks incl. 404 for an ungranted tenant, 403 for a TRADE_FINANCE grantee, grantee redaction); permission-tenant-isolation.sh exits 0 with every tenant-scoped expectation met.
+
+### CMD: bash -c cd '/tmp/arena-tree' && DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true bun '/tmp/arena-tree/docs/reports/arena-stage0-20261029/evidence/drill-stage0.ts'
+== S1 synthetic environment == root=/tmp/drill-stage0-W7pDyy db=/tmp/drill-stage0-W7pDyy/durios.db
+PASS | repository ./data untouched by the drill
+== S1 repository root resolved from this file == /tmp/arena-tree
+== S2 actors == manager=user_tenant-drill-a-manager-obfb clerk=user_tenant-drill-a-clerk-k0jg buyer=user_tenant-drill-b-viewer-qayz intruder=user_tenant-drill-c-manager-0u71
+== S3 valid dossier == id=DOS-mvussgq2-hrq5w validation=PASSED blockers=0
+PASS | clean synthetic dossier validates PASSED | status=PASSED
+PASS | manager can approve and export; clerk-approved export is not used here | exportStatus=200
+PASS | sealed manifest is immutable and carries both hashes
+PASS | standalone verifier accepts the untouched manifest | errors=[]
+== S4 manifest tamper drills ==
+PASS | tamper detected: complianceFindingsCount rewritten (advisory warnings inflated) | errors=["Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '42a1e93c6628967a5adc92639ef879444fd3ab224ee9d26ea99b5b39eb975d8c', recomputed 'ca75370c06358a08ad5f151d709e421b31f540aae0ef882bd1dd530ed4102265')."]
+PASS | tamper detected: disclaimers replaced by a clearance claim | errors=["Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '42a1e93c6628967a5adc92639ef879444fd3ab224ee9d26ea99b5b39eb975d8c', recomputed '8a9c68713576250c97fc30ac680a98c54548a6abec80aa144e733cc50d317f4d')."]
+PASS | tamper detected: exportedBy rewritten | errors=["Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '42a1e93c6628967a5adc92639ef879444fd3ab224ee9d26ea99b5b39eb975d8c', recomputed '9766688b5f65c3181816099d4bcbc3ccaa2a0fc5f0bc7abbbb30af990170fafe')."]
+PASS | tamper detected: exportedAt rewritten | errors=["Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '42a1e93c6628967a5adc92639ef879444fd3ab224ee9d26ea99b5b39eb975d8c', recomputed '5de7b06224ade2cca6181fca0abe6af77b19251326385905a8dfec161f97efff')."]
+PASS | tamper detected: verifiedDataSummary cadmium value rewritten | errors=["Composite SHA-256 mismatch: expected '2d87c0df3104c353235a4fc6c21e6b44b314e71c61237a6c31d3331d0c5bf2b6', recomputed '9e8e497ca8fa1cf0948d20d5ec569f7a78f6dfdc6a3f663b24e82d5150d09502'.","Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '42a1e93c6628967a5adc92639ef879444fd3ab224ee9d26ea99b5b39eb975d8c', recomputed 'b36e3cc420d03ba8d1b0c923eef64d2b4f5ce63bad66308f38ac8e248d4d3c23')."]
+PASS | tamper detected: containerNumber rewritten (control: composite hash) | errors=["Composite SHA-256 mismatch: expected '2d87c0df3104c353235a4fc6c21e6b44b314e71c61237a6c31d3331d0c5bf2b6', recomputed 'e7304171aca283b685e35ceacc93d64e2dc1ff6a7c89e4b88bfbea89aeaa0b4a'.","Container number 'MSKU0000000' failed ISO 6346 check-digit validation.","Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '42a1e93c6628967a5adc92639ef879444fd3ab224ee9d26ea99b5b39eb975d8c', recomputed '58303d9b6338f8410b9990037a8ae029b3933436bd77425e0be66bf8c2db4ede')."]
+PASS | tamper detected: lifecycleState reverted to DRAFT | errors=["Manifest dossier is not in a sealed, immutable EXPORTED state.","Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '42a1e93c6628967a5adc92639ef879444fd3ab224ee9d26ea99b5b39eb975d8c', recomputed '7116e175354a3ba5d85122f9d47d265781b701deb3045bfec8024b1af2a9fa5c')."]
+PASS | legacy manifest without the integrity field still verifies but reports PARTIAL_LEGACY | coverage=PARTIAL_LEGACY
+== S5 failure drills ==
+PASS | seal mismatch across documents blocks the lot | status=BLOCKED findings=["RUL-CROSS-SEAL"]
+PASS | blocked dossier cannot be approved | status=400
+PASS | missing mandatory documents block the lot | findings=["RUL-DOC-001","RUL-DOC-002"]
+PASS | document replacement against a sealed dossier is refused | status=409 error=Cannot upload to sealed dossier: Dossier is sealed and immutable; mutations and re-evaluations are prohibited on immutable or closed dossiers.
+PASS | replacing a document after validation clears the validation result | state=HUMAN_VERIFICATION_REQUIRED latestValidationResult=null
+PASS | approval is refused until the new document is verified and revalidated | status=400
+== S6 authorization drills ==
+PASS | ungranted tenant cannot read the dossier | status=404
+PASS | ungranted tenant cannot read the manifest | status=404
+PASS | ungranted tenant list contains no foreign dossier
+PASS | clerk cannot approve for export | status=403
+PASS | outside buyer cannot upload documents | status=403
+PASS | client-supplied x-actor-role without a session is rejected | status=401
+== S7 grantee manifest redaction ==
+PASS | owner can grant BUYER_VERIFICATION read-only access | status=201
+PASS | grantee manifest hides commercial terms and declared quantities | summary={"containerNumber":"CSQU3054383","sealNumber":"VN-SEAL-9001","targetMarket":"CN","borderGate":"Hữu Nghị","targetTemperatureC":14,"packing_list":{"container_number":"CSQU3054383","seal_number":"VN-SEAL-9001","box_count":"960","net_weight_kg":"18240"},"lab_test_report":{"cadmium_mg_kg":"0.025","sample_code":"LAB-DRILL-01"},"phytosanitary_certificate":{"container_number":"CSQU3054383","seal_number":"VN-SEAL-9001","phyto_cert_number":"KDTV-2026-VN-09931"}}
+PASS | grantee manifest keeps reconcilable identity and states the redaction
+PASS | TRADE_FINANCE grant does not carry the sealed manifest | status=403
+== S8 tenant-scoped pilot KPI and gates ==
+PASS | grantee KPI counts no container and leaks no foreign identifier | totalContainers=0
+PASS | owner KPI counts its own 4 dossiers | totalContainers=4
+PASS | owner KPI labels timings as system timestamps and value metrics as assumptions
+PASS | grantee gate report cannot be satisfied by a shared dossier | passed=1
+== S9 rehearsal bootstrap guard ==
+PASS | unauthenticated rehearsal bootstrap is refused by default | status=403
+PASS | refused bootstrap minted no token and seeded no dossier
+PASS | opted-in rehearsal reaches 5/5 mechanical gates | passed=5
+PASS | rehearsal never authorises live customer data | verdict=READY_FOR_PILOT_GO_LIVE
+PASS | every rehearsal gate is labelled PASS_SYNTHETIC_REHEARSAL and carries the disclaimer
+PASS | rehearsal data stays in its own tenant and does not pollute the drill tenant
+== S10 extraction and missing-data drills ==
+PASS | image scans yield zero extracted fields instead of invented values | fields=0
+PASS | unreadable documents block validation | findings=["RUL-DOC-UNREADABLE","RUL-DOC-UNREADABLE","RUL-DOC-UNREADABLE","RUL-CD-INTERNAL-BLOCK"]
+PASS | lab report without a cadmium result blocks instead of passing | status=BLOCKED observed=NOT_EXTRACTED
+PASS | missing-data finding stays an internal control and never cites the quarantined legal rule
+PASS | cadmium above the internal limit blocks the lot | status=BLOCKED
+PASS | manager override is accepted with a signed reason | status=200 error=
+PASS | override-exported manifest keeps the blocker count | criticalBlockers=1
+PASS | zeroing that blocker count is now detected by the verifier | errors=["Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '8ccd5a14c80228b0c2f36a347c4967661006aec0f6b774c9a97ff6c8c5de5e75', recomputed 'cd6fb7aaa0f3cf0a57b8acd2d3c02217d4257a7524cd85ca3518b75a26dd6ae2')."]
+== S11 backup / restore drill ==
+backup: dossiers=12 docs=35 blobs=32 dbSha=e6fb34941b9625b5
+PASS | backup verifies twice with identical results (idempotent) | errors=[]
+PASS | restore reports valid
+PASS | restored database hash equals the backup manifest hash | e6fb34941b9625b5 vs e6fb34941b9625b5
+PASS | post-restore: sealed dossier and manifest are readable
+PASS | post-restore: audit hash chain verifies
+PASS | post-restore: manifest still passes the standalone verifier
+PASS | post-restore: every blob re-hashed to its recorded SHA-256 (32 blobs)
+PASS | flipping one byte in a stored blob is detected by backup verification | errors=["Corrupted blob for document 'DOC-mvussgq7-hls3' at 'storage/blobs/b5f126eb880fb3a067e4c01d7d69202c7e1e84bf6614e208c79faca953074561.bin': expected 'b5f126eb880fb3a067e4c01d7d69202c7e1e84bf6614e208c79faca953074561', got '6817c4312a903bd57179abcb8728c045fe257c71fac4f89eccb5633b703a7d0a'.","Corrupted blob for document 'DOC-mvussgs5-62er' at 'storage/blobs/b5f126eb880fb3a067e4c01d7d69202c7e1e84bf6614e208c79faca953074561.bin': expected 'b5f126eb880fb3a067e4c01d7d69202c7e1e84bf6614e208c79faca953074561', got '6817c4312a903bd57179abcb8728c045fe257c71fac4f89eccb5633b703a7d0a'.","Manifest blob integrity mismatch at 'storage/blobs/b5f126eb880fb3a067e4c01d7d69202c7e1e84bf6614e208c79faca953074561.bin'."]
+== summary == checks=55 failures=0
+artifacts kept at /tmp/drill-stage0-W7pDyy (manifest-good.json, drill-log.txt)
+### EXIT=0
+  ran: drill-stage0.ts (S1-S11, synthetic rehearsal declared explicitly) → exit 0
+PASS | stage 0 drill (exit 0 as expected)
+PASS | drill artifacts kept at /tmp/drill-stage0-W7pDyy (needed by steps 9 and 10)
+PASS | ungranted tenant gets 404 on another tenant's manifest
+PASS | TRADE_FINANCE grant does not carry the sealed manifest (403)
+PASS | grantee manifest redacts commercial terms and declared quantities
+PASS | grantee manifest states the redaction instead of hiding it
+
+### CMD: bash /tmp/arena-tree/docs/reports/arena-stage0-20261029/evidence/permission-tenant-isolation.sh /tmp/drill-stage0-W7pDyy
+# permission & tenant isolation — 2026-10-30T09:56:45Z
+# drill database: /tmp/drill-stage0-W7pDyy/durios.db (synthetic tenants TENANT-DRILL-A/B/C/D)
+
+################ A. the exporter tenant sees its own two manifests, and only its own
+
+### CMD: bun src/export/field-proof-kit-cli.ts --tenant-id TENANT-DRILL-A --db-path /tmp/drill-stage0-W7pDyy/durios.db --data-dir /tmp/drill-stage0-W7pDyy/uploads
+### EXIT=1 (expected 1)
+PASS | pilot:proof-kit for TENANT-DRILL-A exits 1 as expected
+### summary: {"tenantId": "TENANT-DRILL-A", "exportedManifests": 2, "dossierCodes": ["DOS-DRILL-HICD", "DOS-DRILL-OK"], "manifestTenants": ["TENANT-DRILL-A"], "goLiveVerdict": "HOLD_BLOCKERS_REMAIN", "machineChecks": 2, "gatesEvidenced": 0, "evidenceProvenance": "SYNTHETIC_REHEARSAL", "goForLiveCustomerData": false, "proofKitSha256": "5242df1d7e40b3f3..."}
+PASS | TENANT-DRILL-A exportedManifests count = 2
+PASS | TENANT-DRILL-A dossierCodes = ["DOS-DRILL-HICD", "DOS-DRILL-OK"]
+PASS | TENANT-DRILL-A manifest tenants (no other tenant's manifest leaks in) = ["TENANT-DRILL-A"]
+PASS | TENANT-DRILL-A every bundled manifest is sealed immutable = true
+PASS | TENANT-DRILL-A the override-exported manifest still carries its critical blocker = 1
+PASS | TENANT-DRILL-A the clean manifest carries no critical blocker = 0
+PASS | TENANT-DRILL-A go-live verdict is HOLD_BLOCKERS_REMAIN = "HOLD_BLOCKERS_REMAIN"
+PASS | TENANT-DRILL-A goForLiveCustomerData = false
+PASS | TENANT-DRILL-A launch gates evidenced = 0
+PASS | TENANT-DRILL-A the drill cohort is recognised as a synthetic rehearsal = "SYNTHETIC_REHEARSAL"
+
+################ B. a buyer granted READ_ONLY on one dossier gets no exporter manifests
+
+### CMD: bun src/export/field-proof-kit-cli.ts --tenant-id TENANT-DRILL-B --db-path /tmp/drill-stage0-W7pDyy/durios.db --data-dir /tmp/drill-stage0-W7pDyy/uploads
+### EXIT=0 (expected 0)
+PASS | pilot:proof-kit for TENANT-DRILL-B exits 0 as expected
+### summary: {"tenantId": "TENANT-DRILL-B", "exportedManifests": 0, "dossierCodes": [], "manifestTenants": [], "goLiveVerdict": "HOLD_BLOCKERS_REMAIN", "machineChecks": 1, "gatesEvidenced": 0, "evidenceProvenance": "OPERATIONAL", "goForLiveCustomerData": false, "proofKitSha256": "2064db867e8ec508..."}
+PASS | TENANT-DRILL-B exportedManifests count = 0
+PASS | TENANT-DRILL-B dossierCodes = []
+
+################ C. an unrelated MANAGER of another tenant sees nothing (role alone grants no data)
+
+### CMD: bun src/export/field-proof-kit-cli.ts --tenant-id TENANT-DRILL-C --db-path /tmp/drill-stage0-W7pDyy/durios.db --data-dir /tmp/drill-stage0-W7pDyy/uploads
+### EXIT=0 (expected 0)
+PASS | pilot:proof-kit for TENANT-DRILL-C exits 0 as expected
+### summary: {"tenantId": "TENANT-DRILL-C", "exportedManifests": 0, "dossierCodes": [], "manifestTenants": [], "goLiveVerdict": "HOLD_BLOCKERS_REMAIN", "machineChecks": 1, "gatesEvidenced": 0, "evidenceProvenance": "OPERATIONAL", "goForLiveCustomerData": false, "proofKitSha256": "9ce86d7e9f711512..."}
+PASS | TENANT-DRILL-C exportedManifests count = 0
+PASS | TENANT-DRILL-C goForLiveCustomerData = false
+
+################ D. a TRADE_FINANCE grantee is scoped the same way as a buyer
+
+### CMD: bun src/export/field-proof-kit-cli.ts --tenant-id TENANT-DRILL-D --db-path /tmp/drill-stage0-W7pDyy/durios.db --data-dir /tmp/drill-stage0-W7pDyy/uploads
+### EXIT=0 (expected 0)
+PASS | pilot:proof-kit for TENANT-DRILL-D exits 0 as expected
+### summary: {"tenantId": "TENANT-DRILL-D", "exportedManifests": 0, "dossierCodes": [], "manifestTenants": [], "goLiveVerdict": "HOLD_BLOCKERS_REMAIN", "machineChecks": 1, "gatesEvidenced": 0, "evidenceProvenance": "OPERATIONAL", "goForLiveCustomerData": false, "proofKitSha256": "a0c032faa564e8c3..."}
+PASS | TENANT-DRILL-D exportedManifests count = 0
+
+################ E. site-level KPI CLI is a machine-administrator surface, not a tenant surface
+### CMD: DURIOS_DB_PATH=/tmp/drill-stage0-W7pDyy/durios.db DURIOS_DATA_DIR=/tmp/drill-stage0-W7pDyy/uploads bun run pilot:evaluate-kpi
+### EXIT=0
+PASS | pilot:evaluate-kpi exits 0 on the drill database
+PASS | site-wide KPI sees containers from more than one tenant (documented, admin-only surface) = true
+### site-wide KPI: {"totalContainers": 12, "reconciledCount": 12, "meanDeltaSeconds": 0.02, "gate05Passed": true, "timingEvidenceSource": "SYSTEM_TIMESTAMPS"}
+
+################ F. the regression tests that hold permissions, tenant isolation and redaction
+### CMD: bun test test/rbac-and-tuples-5a2.test.ts test/tri-tuple-persona-rbac.test.ts test/multi-tenant-pilot.test.ts test/manifest-redaction-and-tenant-kpi.test.ts test/field-proof-kit.test.ts test/security-and-export.test.ts test/redaction-storage-v1-5a5.test.ts test/sqlite-sharing-and-evidence-5a3.test.ts test/adversarial-verification.test.ts
+(pass) Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole) > allows both packhouse and orchard co-op actors to record organic evidence [0.07ms]
+
+ 48 pass
+ 0 fail
+ 2409 expect() calls
+Ran 48 tests across 9 files. [6.69s]
+### EXIT=0
+PASS | permission/tenant-isolation test files exit 0
+PASS | no failing assertion in those files: 48pass / 0 fail
+
+== summary == checks=23 failures=0
+### EXIT=0
+  ran: permission-tenant-isolation.sh on the drill database → exit 0
+PASS | permission & tenant isolation checks (exit 0 as expected)
+PASS | no other tenant's manifest leaks into an exporter's proof kit
+PASS | an unrelated MANAGER of another tenant sees no dossiers
+PASS | a signed override never launders a critical blocker
+PASS | the permission regression tests all pass
+  → STEP 5 result: PASS

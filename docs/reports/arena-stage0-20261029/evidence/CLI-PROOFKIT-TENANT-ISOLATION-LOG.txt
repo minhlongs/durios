@@ -1,0 +1,57 @@
+# pilot:proof-kit tenant isolation — captured stdout
+# Fresh sandbox (bun 1.4.4). Source database: /tmp/drill-stage0-1WZgZR/durios.db — the drill database holding 4 synthetic tenants
+# (TENANT-DRILL-A owner of 2 exported dossiers, TENANT-DRILL-B granted a BUYER_VERIFICATION share on DOS-DRILL-OK, TENANT-DRILL-C unrelated).
+
+### CMD: bun run pilot:proof-kit -- --tenant-id TENANT-DRILL-A --db-path /tmp/drill-stage0-1WZgZR/durios.db --data-dir /tmp/drill-stage0-1WZgZR/uploads
+{
+  "tenantId": "TENANT-DRILL-A",
+  "exportedManifestCount": 2,
+  "dossierCodes": [
+    "DOS-DRILL-OK",
+    "DOS-DRILL-HICD"
+  ],
+  "manifestTenants": [
+    "TENANT-DRILL-A"
+  ],
+  "goLiveVerdict": "HOLD_BLOCKERS_REMAIN",
+  "goForLiveCustomerData": false,
+  "evidenceProvenance": "OPERATIONAL",
+  "commercialQuotePlan": "PILOT_30D_5M_VND"
+}
+
+### CMD: bun run pilot:proof-kit -- --tenant-id TENANT-DRILL-B --db-path /tmp/drill-stage0-1WZgZR/durios.db --data-dir /tmp/drill-stage0-1WZgZR/uploads
+{
+  "tenantId": "TENANT-DRILL-B",
+  "exportedManifestCount": 0,
+  "dossierCodes": [],
+  "manifestTenants": [],
+  "goLiveVerdict": "HOLD_BLOCKERS_REMAIN",
+  "goForLiveCustomerData": false,
+  "evidenceProvenance": "OPERATIONAL",
+  "commercialQuotePlan": "PILOT_30D_5M_VND"
+}
+
+### CMD: bun run pilot:proof-kit -- --tenant-id TENANT-DRILL-C --db-path /tmp/drill-stage0-1WZgZR/durios.db --data-dir /tmp/drill-stage0-1WZgZR/uploads
+{
+  "tenantId": "TENANT-DRILL-C",
+  "exportedManifestCount": 0,
+  "dossierCodes": [],
+  "manifestTenants": [],
+  "goLiveVerdict": "HOLD_BLOCKERS_REMAIN",
+  "goForLiveCustomerData": false,
+  "evidenceProvenance": "OPERATIONAL",
+  "commercialQuotePlan": "PILOT_30D_5M_VND"
+}
+
+### CMD: bun run pilot:proof-kit -- --tenant-id TENANT-DRILL-D --db-path /tmp/drill-stage0-1WZgZR/durios.db --data-dir /tmp/drill-stage0-1WZgZR/uploads
+{
+  "tenantId": "TENANT-DRILL-D",
+  "exportedManifestCount": 0,
+  "dossierCodes": [],
+  "manifestTenants": [],
+  "goLiveVerdict": "HOLD_BLOCKERS_REMAIN",
+  "goForLiveCustomerData": false,
+  "evidenceProvenance": "OPERATIONAL",
+  "commercialQuotePlan": "PILOT_30D_5M_VND"
+}
+

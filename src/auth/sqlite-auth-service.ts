@@ -6,12 +6,11 @@ import { AuthenticationError, type IssuedAuthSession, type IssuedManagedPilotTok
 import { consumeVerifiedOtpChallenge, createOtpChallengeRecord } from "./otp-challenge-store.js";
 import { assertValidIdentityTuple } from "./rbac-policy.js";
 import { assertRateLimitAllowed, clearRateLimitBucket, PASSWORD_LOGIN_LIMIT_POLICY, recordRateLimitAttempt } from "./rate-limit-store.js";
+import { assertRehearsalAccountAllowedInCurrentMode } from "./rehearsal-account-guard.js";
 interface AccountRow { id: string; username: string; phone_number: string | null; password_hash: string; password_salt: string; actor_name: string; tenant_id: string; tenant_type: TenantType; role: UserRole; persona: ProductPersona; is_active: number; created_at: string; }
 
-const rowToActor = (r: AccountRow): AuthenticatedActor => {
-  assertValidIdentityTuple(r.persona, r.tenant_type, r.role);
-  return { id: r.id, name: r.actor_name, tenantId: r.tenant_id, tenantType: r.tenant_type, role: r.role, persona: r.persona };
-};
+const rowToActor = (r: AccountRow): AuthenticatedActor => { assertValidIdentityTuple(r.persona, r.tenant_type, r.role); return { id: r.id, name: r.actor_name, tenantId: r.tenant_id, tenantType: r.tenant_type, role: r.role, persona: r.persona }; };
+const guardRehearsalRow = (r: AccountRow | null | undefined, phone?: string | null): void => { assertRehearsalAccountAllowedInCurrentMode({ id: r?.id, username: r?.username, phoneNumber: r?.phone_number ?? phone }); };
 
 export class SqliteAuthService {
   private otpProvider: OtpProviderAdapter;
@@ -24,11 +23,13 @@ export class SqliteAuthService {
     assertValidIdentityTuple(input.persona, input.tenantType, input.role);
     const id = input.id?.trim() || `ACT-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`;
     const [now, salt, phone] = [new Date().toISOString(), generateSaltHex(), input.phoneNumber?.trim() || null];
+    assertRehearsalAccountAllowedInCurrentMode({ id, username, phoneNumber: phone });
     this.client.db.run(`INSERT INTO pilot_accounts (id, username, phone_number, password_hash, password_salt, actor_name, tenant_id, tenant_type, role, persona, is_active, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)`, [id, username, phone, hashSecretWithSalt(input.password, salt), salt, actorName, tenantId, input.tenantType, input.role, input.persona, now, now]);
     return { id, username, phoneNumber: phone ?? undefined, actorName, tenantId, tenantType: input.tenantType, role: input.role, persona: input.persona, isActive: true, createdAt: now };
   }
   public loginWithPassword(username: string, password: string, ttlMs = 12 * 3600 * 1000): IssuedAuthSession {
     const normalizedUser = username.trim();
+    assertRehearsalAccountAllowedInCurrentMode({ username: normalizedUser });
     const [bucketKey, lockMsg] = [`pw_login:${normalizedUser.toLowerCase()}`, "Too many failed password login attempts. Account login is temporarily locked."];
     assertRateLimitAllowed(this.client, bucketKey, lockMsg);
     const row = this.client.db.query<AccountRow, [string]>("SELECT * FROM pilot_accounts WHERE username = ?").get(normalizedUser);
@@ -36,45 +37,41 @@ export class SqliteAuthService {
       recordRateLimitAttempt(this.client, bucketKey, PASSWORD_LOGIN_LIMIT_POLICY, lockMsg);
       throw new AuthenticationError("Invalid username or password.", "INVALID_CREDENTIALS");
     }
+    guardRehearsalRow(row);
     if (!row.is_active) throw new AuthenticationError("Pilot account is disabled.", "ACCOUNT_DISABLED");
     clearRateLimitBucket(this.client, bucketKey);
     return this.createSession(row, "PASSWORD_SESSION", ttlMs);
   }
-
   public async requestOtpChallenge(phoneNumber: string, channel: OtpChannel = "ZALO", ttlMs = 5 * 60 * 1000): Promise<IssuedOtpChallenge> {
     if (!this.otpProvider.isConfigured) this.otpProvider.sendOtp({ challengeId: "UNCONFIGURED", phoneNumber, otpCode: "000000", channel, expiresAt: new Date().toISOString() });
     const phone = phoneNumber.trim();
     const row = this.client.db.query<AccountRow, [string]>("SELECT * FROM pilot_accounts WHERE phone_number = ?").get(phone);
+    guardRehearsalRow(row, phone);
     return createOtpChallengeRecord(this.client, this.otpProvider, row && row.is_active ? row.id : null, phone, channel, ttlMs);
   }
   public verifyOtpChallenge(challengeId: string, otpCode: string, sessionTtlMs = 12 * 3600 * 1000): IssuedAuthSession {
     const accountId = consumeVerifiedOtpChallenge(this.client, challengeId, otpCode);
     const account = this.client.db.query<AccountRow, [string]>("SELECT * FROM pilot_accounts WHERE id = ?").get(accountId);
+    guardRehearsalRow(account);
     if (!account || !account.is_active) throw new AuthenticationError("Pilot account is disabled or not found.", "ACCOUNT_DISABLED");
     return this.createSession(account, "OTP_SESSION", sessionTtlMs);
   }
-
   public issueManagedPilotToken(accountId: string, deviceLabel: string, expiresAtIso: string): IssuedManagedPilotToken {
     const account = this.client.db.query<AccountRow, [string]>("SELECT * FROM pilot_accounts WHERE id = ?").get(accountId.trim());
+    guardRehearsalRow(account);
     if (!account || !account.is_active) throw new Error(`Active pilot account '${accountId}' not found.`);
     const [actor, expDate] = [rowToActor(account), new Date(expiresAtIso)];
     if (isNaN(expDate.getTime()) || expDate.getTime() <= Date.now()) throw new Error("Managed pilot token expiration must be a valid future ISO timestamp.");
     const [tokenId, rawToken] = [`MPT-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 6)}`, generateOpaqueToken("dpt")];
-    this.client.db.run(
-      `INSERT INTO managed_pilot_tokens (id, token_hash, account_id, device_label, expires_at, revoked_at, revocation_reason, created_at) VALUES (?, ?, ?, ?, ?, NULL, NULL, ?)`,
-      [tokenId, hashOpaqueToken(rawToken), account.id, deviceLabel.trim(), expDate.toISOString(), new Date().toISOString()]
-    );
+    this.client.db.run(`INSERT INTO managed_pilot_tokens (id, token_hash, account_id, device_label, expires_at, revoked_at, revocation_reason, created_at) VALUES (?, ?, ?, ?, ?, NULL, NULL, ?)`, [tokenId, hashOpaqueToken(rawToken), account.id, deviceLabel.trim(), expDate.toISOString(), new Date().toISOString()]);
     return { tokenId, rawToken, accountId: account.id, deviceLabel: deviceLabel.trim(), expiresAt: expDate.toISOString(), actor };
   }
-
   public revokeManagedPilotToken(tokenId: string, reason = "Revoked by operator"): void {
     if (this.client.db.run("UPDATE managed_pilot_tokens SET revoked_at = ?, revocation_reason = ? WHERE id = ?", [new Date().toISOString(), reason.trim(), tokenId.trim()]).changes === 0) throw new Error(`Managed pilot token '${tokenId}' not found.`);
   }
-
   public revokeSession(sessionId: string, reason = "Logged out"): void {
     if (this.client.db.run("UPDATE auth_sessions SET revoked_at = ?, revocation_reason = ? WHERE id = ?", [new Date().toISOString(), reason.trim(), sessionId.trim()]).changes === 0) throw new Error(`Session '${sessionId}' not found.`);
   }
-
   public authenticateToken(rawToken: string): AuthenticatedActor {
     const cleaned = rawToken.trim();
     if (!cleaned) throw new AuthenticationError("Missing authentication token.", "MISSING_CREDENTIALS");
@@ -84,6 +81,7 @@ export class SqliteAuthService {
     if (row.revoked_at) throw new AuthenticationError("Authentication token has been revoked.", isMpt ? "TOKEN_REVOKED" : "SESSION_REVOKED");
     if (new Date(row.expires_at).getTime() <= Date.now()) throw new AuthenticationError("Authentication token has expired.", isMpt ? "TOKEN_EXPIRED" : "SESSION_EXPIRED");
     const account = this.client.db.query<AccountRow, [string]>("SELECT * FROM pilot_accounts WHERE id = ?").get(row.account_id);
+    guardRehearsalRow(account);
     if (!account || !account.is_active) throw new AuthenticationError("Pilot account is disabled or not found.", "ACCOUNT_DISABLED");
     return rowToActor(account);
   }

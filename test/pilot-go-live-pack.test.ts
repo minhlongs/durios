@@ -1,14 +1,15 @@
 import { afterEach, describe, expect, it } from "bun:test";
-import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { compilePilotGoLiveDossierPack, verifyPilotGoLiveDossierPackIntegrity } from "../src/export/pilot-dossier-pack-compiler.js";
 import { runFieldAuditorCli } from "../src/export/field-auditor-cli.js";
 import { seedGate05PilotRehearsal } from "../src/auth/pilot-rehearsal-seeder.js";
-import { createSiteBackup } from "../src/auth/site-backup-manager.js";
 import { createWorkspaceApp } from "../src/server/server.js";
 import { routeHttpRequest } from "../src/server/http-router.js";
 import { seedTestPilotActor } from "./helpers/auth-test-helper.js";
+import { createOperatorEvidence } from "./helpers/gate-operator-evidence.js";
+import { seedOperationalGateSite } from "./helpers/operational-cohort-fixture.js";
 import type { AuthenticatedActor } from "../src/domain/types.js";
 const AUDITOR: AuthenticatedActor = {
   id: "usr-auditor-pack-01", tenantId: "TENANT-CAILAY-PILOT-01", tenantType: "INSPECTION_AUDITOR",
@@ -25,9 +26,10 @@ describe("Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor To
     const [dbPath, dataDir, backupDir, consentFile] = [
       join(rootDir, "durios.db"), join(rootDir, "uploads"), join(rootDir, "backup"), join(rootDir, "consent-91-2025-signed.pdf"),
     ];
-    writeFileSync(consentFile, "%PDF-1.5 Signed Consent 91/2025/QH15", "utf-8");
-    seedGate05PilotRehearsal({ dbPath, dataDir });
-    createSiteBackup(dbPath, dataDir, backupDir);
+    // An operational (non rehearsal-seeded) cohort: a rehearsal database must never be able to
+    // produce GO_FOR_LIVE_CUSTOMER_DATA, however many evidence files someone declares.
+    seedOperationalGateSite({ dbPath, dataDir, backupDir, consentFilePath: consentFile });
+    const operatorEvidence = createOperatorEvidence(join(rootDir, "evidence-artifacts"));
     const app = createWorkspaceApp({ dbPath, dataDir });
     try {
       const report = compilePilotGoLiveDossierPack(app.workspace, AUDITOR, {
@@ -36,10 +38,13 @@ describe("Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor To
           DURIOS_OTP_PROVIDER: "ESMS_VN", DURIOS_OTP_API_URL: "https://otp.example.vn/send",
           DURIOS_OTP_API_KEY: "live-staging-key-001", DURIOS_HOST: "127.0.0.1",
         },
+        gateEvidence: operatorEvidence,
         forcedTimestamp: "2026-10-17T08:00:00.000Z",
       });
       expect(report.goForLiveCustomerData && report.overallVerdict === "GO_FOR_LIVE_CUSTOMER_DATA").toBe(true);
       expect(report.passedGateCount === 5 && report.fieldAuditorChecklist.length === 5).toBe(true);
+      expect(report.machineChecksPassedCount).toBe(5);
+      expect(report.operationalGatesEvidencedCount).toBe(5);
       expect(report.fieldAuditorChecklist.every((c) => c.status === "VERIFIED_READY")).toBe(true);
       expect(verifyPilotGoLiveDossierPackIntegrity(report)).toBe(true);
       expect(verifyPilotGoLiveDossierPackIntegrity({ ...report, overallVerdict: "HOLD_BLOCKERS_REMAIN" as const })).toBe(false);

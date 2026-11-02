@@ -4,6 +4,7 @@ import { AccessControlError } from "../auth/rbac-policy.js";
 import { DossierFsmError } from "../domain/dossier-fsm.js";
 import { InvalidOrganicEvidenceError } from "../organic/organic-evidence-manager.js";
 import { isStaleDossierVersionError } from "../domain/stale-dossier-version-error.js";
+import { SyntheticExtractionDisabledError } from "../extraction/synthetic-extraction-mode.js";
 
 export interface CreateDossierRequestBody {
   readonly dossierCode: string;
@@ -80,6 +81,9 @@ export function mapDomainErrorToResponse(
     return errorResponse(err.message, err.status, err.code);
   }
   if (err instanceof InvalidOrganicEvidenceError) {
+    return errorResponse(err.message, err.status, err.code);
+  }
+  if (err instanceof SyntheticExtractionDisabledError) {
     return errorResponse(err.message, err.status, err.code);
   }
   if (isStaleDossierVersionError(err)) {

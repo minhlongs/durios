@@ -26,13 +26,15 @@ Kết quả chuẩn: **131 / 131 bài kiểm thử PASS** trên 31 bộ test, 0 
 
 | Mục đích vận hành | Câu lệnh thực thi | Kết quả đầu ra |
 |---|---|---|
-| **1. Khởi tạo 5 hồ sơ diễn tập (kèm 2 lỗi gài mù)** | `bun run pilot:seed-rehearsal` | Tạo 5 container mẫu (`DOS-CAILAY-R01..R05`) và tài khoản `clerk.cailay` / `manager.cailay` |
+| **1. Khởi tạo 5 hồ sơ diễn tập (kèm 2 lỗi gài mù)** | `DURIOS_DB_PATH=./data/rehearsal.db DURIOS_DATA_DIR=./data/rehearsal-uploads bun run pilot:seed-rehearsal` | Tạo 5 container mẫu (`DOS-CAILAY-R01..R05`) và tài khoản `clerk.cailay` / `manager.cailay` **vào cơ sở dữ liệu do `DURIOS_DB_PATH` quyết định** (mặc định là `./data/durios.db` — dữ liệu vận hành). Mật khẩu hai tài khoản này cố định và công khai trong mã nguồn, chỉ dùng cho diễn tập. |
 | **2. Đánh giá KPI `GATE-05` (< 5 phút & bắt 100% lỗi)** | `bun run pilot:evaluate-kpi` | Tính Arithmetic Mean thời gian đối soát và 4 chỉ số giá trị từ container đầu tiên |
-| **3. Kiểm tra 5 cổng khai trương (`GATE-01..05`)** | `bun run pilot:verify-gates` | Kiểm tra trạng thái sẵn sàng trước khi nạp dữ liệu khách hàng thật |
-| **4. Xuất Gói Hồ Sơ Kiểm Toán Thực Địa có băm SHA-256** | `bun run pilot:audit-pack -- --verify` | Xuất báo cáo kiểm định 5 cổng có chữ ký SHA-256 |
+| **3. Kiểm tra 5 cổng khai trương (`GATE-01..05`)** | `bun run pilot:verify-gates` | In toàn bộ báo cáo cổng (JSON) kèm `evidenceProvenance` và `goForLiveCustomerData`. **Mã thoát `0` chỉ khi cả 5 cổng đạt trên bằng chứng vận hành; `1` nghĩa là chưa được nạp dữ liệu khách hàng thật.** |
+| **4a. Xuất Gói Hồ Sơ Kiểm Toán Thực Địa có băm SHA-256** | `bun run pilot:audit-pack -- --output-dir <thư-mục> --markdown` | Biên soạn gói mới, ghi `<reportId>.json` (+ `.md`) và tự kiểm tra `reportSha256` |
+| **4b. Kiểm chứng lại một gói đã xuất** | `bun run pilot:audit-pack -- --verify <đường-dẫn-pack.json>` | `--verify` **bắt buộc kèm đường dẫn tệp**; thiếu đường dẫn lệnh sẽ in hướng dẫn sử dụng và thoát mã `2` |
 | **5. Kiểm chứng độc lập gói Manifest xuất khẩu (MIT SDK)** | `bun run verify:manifest <path-to-manifest.json>` | Kiểm tra chữ ký băm SHA-256 và số container chuẩn ISO 6346 |
 | **6. Kiểm định tự động 25 bước Company Blueprint** | `bun run blueprint:verify-25-steps` | Kiểm tra sự hiện diện của 25 tạo tác, 25/25 bước completed và băm composite SHA-256 |
 | **7. Khởi động máy chủ Web UI tại bàn cân (`127.0.0.1:3000`)** | `bun run start:server` | Giao diện đối soát chứng từ song ngữ Việt - Anh |
+| **8. (Chỉ diễn tập) Bật bootstrap không cần đăng nhập** | `DURIOS_ALLOW_PILOT_REHEARSAL_BOOTSTRAP=true bun run start:server` | Nếu không bật cờ này, `POST /api/auth/pilot-rehearsal-bootstrap` trả về `403 FEATURE_DISABLED`. Tuyến đó cấp Pilot Token `MANAGER` mà không cần thông tin đăng nhập nên **cấm bật trên máy có dữ liệu vận hành**. Đường vận hành thật: cấp tài khoản bằng `src/auth/pilot-ops-cli.ts` rồi đăng nhập. |
 
 ---
 

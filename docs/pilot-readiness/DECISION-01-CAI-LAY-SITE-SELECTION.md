@@ -28,5 +28,5 @@
 
 ## 2. Ranh Giới An Toàn Bắt Buộc
 
-- Nghiêm cấm nạp dữ liệu khách hàng thật cho đến khi toàn bộ 5 cổng đều được kiểm toán viên ký xác nhận bằng công cụ CLI `bun run pilot:audit-pack -- --verify`.
+- Nghiêm cấm nạp dữ liệu khách hàng thật cho đến khi toàn bộ 5 cổng đều được kiểm toán viên ký xác nhận bằng công cụ CLI: biên soạn gói `bun run pilot:audit-pack -- --output-dir <thư-mục> --markdown`, sau đó kiểm chứng lại gói bằng `bun run pilot:audit-pack -- --verify <đường-dẫn-pack.json>`. Gói biên soạn ở chế độ diễn tập luôn mang `evidenceProvenance: "SYNTHETIC_REHEARSAL"` và `goForLiveCustomerData: false`, nên không thể dùng làm căn cứ khai trương.
 - Giữ nguyên mô hình **Zero-Custody** (không giữ tiền) và **Local Core** (dữ liệu lưu tại vựa).

@@ -1,5 +1,5 @@
 import type { AuthenticatedActor } from "../domain/types.js";
-import { computeGate05KpiFromDossiers } from "../auth/pilot-kpi-evaluator.js";
+import { computeGate05KpiFromDossiers, selectOwnTenantDossiers } from "../auth/pilot-kpi-evaluator.js";
 import { evaluateWorkspaceLaunchGates } from "../auth/pilot-launch-gate-verifier.js";
 import { assertValidActor } from "../auth/rbac-policy.js";
 import { compilePilotGoLiveDossierPack, verifyPilotGoLiveDossierPackIntegrity } from "../export/pilot-dossier-pack-compiler.js";
@@ -13,13 +13,21 @@ import type { ContainerDossierWorkspace } from "../workspace/container-dossier-w
 import { buildSessionCookieHeader } from "./auth-handlers.js";
 import { seedRehearsalDossiersForActor, type RehearsalDossierSpec } from "./ecosystem-rehearsal-seeder.js";
 import { setupFullGatesRehearsalOptions } from "./ecosystem-rehearsal-drill.js";
+import { assertRehearsalBootstrapEnabled, isRehearsalBootstrapEnabled } from "./rehearsal-bootstrap-guard.js";
 import { assertLoopbackHostname } from "./server.js";
 import { jsonResponse, mapDomainErrorToResponse } from "./server-types.js";
 
 export { seedRehearsalDossiersForActor, type RehearsalDossierSpec };
 
-export function handleBootstrapPilotRehearsal(workspace: ContainerDossierWorkspace, req: Request): Response {
+export function handleBootstrapPilotRehearsal(
+  workspace: ContainerDossierWorkspace,
+  req: Request,
+  env: Record<string, string | undefined> = process.env
+): Response {
   try {
+    // Checked before anything is provisioned: the refusal must not create accounts,
+    // issue tokens or seed dossiers as a side effect of probing the route.
+    assertRehearsalBootstrapEnabled(env);
     const reqUrl = new URL(req.url);
     assertLoopbackHostname(reqUrl.hostname);
     const requestedRole = reqUrl.searchParams.get("role")?.toUpperCase() === "MANAGER" ? "MANAGER" : "CLERK";
@@ -35,12 +43,12 @@ export function handleBootstrapPilotRehearsal(workspace: ContainerDossierWorkspa
     const { newlyCreatedCount, dossiers } = seedRehearsalDossiersForActor(workspace, clerkSession.actor);
     const activeSession = requestedRole === "MANAGER" ? managerSession : clerkSession;
     const activePilotToken = requestedRole === "MANAGER" ? managerToken.rawToken : clerkToken.rawToken;
-    const pilotKpi = computeGate05KpiFromDossiers(workspace.listDossiers(activeSession.actor));
+    const pilotKpi = computeGate05KpiFromDossiers(selectOwnTenantDossiers(workspace.listDossiers(activeSession.actor), activeSession.actor.tenantId));
     const gateOpts = isFullGates ? setupFullGatesRehearsalOptions(workspace) : {};
     const pilotGates = evaluateWorkspaceLaunchGates(workspace, activeSession.actor, gateOpts);
     const goLivePack = compilePilotGoLiveDossierPack(workspace, managerSession.actor, gateOpts);
     const goLivePackVerified = verifyPilotGoLiveDossierPackIntegrity(goLivePack);
-    const payload = { success: true, data: { tenantId, clerkUsername: "clerk.cailay", managerUsername: "manager.cailay", clerkPilotToken: clerkToken.rawToken, managerPilotToken: managerToken.rawToken, activePilotToken, actor: activeSession.actor, newlyCreatedCount, dossiers, pilotKpi, pilotGates, passedGateCount: pilotGates.passedCount, totalGateCount: pilotGates.totalGates, goLivePack, goLivePackVerified } };
+    const payload = { success: true, data: { tenantId, evidenceProvenance: "SYNTHETIC_REHEARSAL" as const, rehearsalBootstrapEnabled: isRehearsalBootstrapEnabled(env), clerkUsername: "clerk.cailay", managerUsername: "manager.cailay", clerkPilotToken: clerkToken.rawToken, managerPilotToken: managerToken.rawToken, activePilotToken, actor: activeSession.actor, newlyCreatedCount, dossiers, pilotKpi, pilotGates, passedGateCount: pilotGates.passedCount, machineChecksPassedCount: pilotGates.machineChecksPassedCount, operationalGatesEvidencedCount: pilotGates.operationalGatesEvidencedCount, totalGateCount: pilotGates.totalGates, goLivePack, goLivePackVerified } };
     return new Response(JSON.stringify(payload), { status: 200, headers: { "Content-Type": "application/json; charset=utf-8", "Cache-Control": "no-store", "Set-Cookie": buildSessionCookieHeader(activeSession.sessionToken, activeSession.expiresAt, req) } });
   } catch (err: unknown) {
     return mapDomainErrorToResponse(err, "Failed to bootstrap Cai Lay pilot rehearsal");
@@ -51,7 +59,7 @@ export function handleSeedAuthenticatedRehearsal(workspace: ContainerDossierWork
   try {
     assertValidActor(actor);
     const { newlyCreatedCount, dossiers } = seedRehearsalDossiersForActor(workspace, actor);
-    const pilotKpi = computeGate05KpiFromDossiers(workspace.listDossiers(actor));
+    const pilotKpi = computeGate05KpiFromDossiers(selectOwnTenantDossiers(workspace.listDossiers(actor), actor.tenantId));
     const pilotGates = evaluateWorkspaceLaunchGates(workspace, actor);
     const goLivePack = compilePilotGoLiveDossierPack(workspace, actor);
     return jsonResponse({ success: true, data: { actor, newlyCreatedCount, dossiers, pilotKpi, pilotGates, goLivePack, goLivePackVerified: verifyPilotGoLiveDossierPackIntegrity(goLivePack) } });
@@ -65,7 +73,7 @@ export function handleGetEcosystemTelemetry(workspace: ContainerDossierWorkspace
     assertValidActor(actor);
     const corridors = listSupportedAseanCorridors();
     const pilotGates = evaluateWorkspaceLaunchGates(workspace, actor);
-    const pilotKpi = computeGate05KpiFromDossiers(workspace.listDossiers(actor));
+    const pilotKpi = computeGate05KpiFromDossiers(selectOwnTenantDossiers(workspace.listDossiers(actor), actor.tenantId));
     const featureUnlocked = isMarketplaceFeatureUnlocked({ goForLiveCustomerData: pilotGates.goForLiveCustomerData });
     const pendingSyncItems = new HybridEdgeSyncQueue({ sqliteClient: workspace.sqliteClient }).listPendingItems(actor.tenantId);
     const subscription = resolveSaasSubscriptionStatus(process.env, new Date().toISOString(), actor.tenantId);

@@ -5,6 +5,13 @@ import {
   type AggregateContainerValueMetrics,
   type FirstContainerValueMetrics,
 } from "./pilot-kpi-extended-types.js";
+import {
+  isApprovalBlockedForFault, isBlindFaultDossier,
+  type TimingEvidenceSource, type ValueMetricsProvenance,
+} from "./pilot-kpi-cohort.js";
+import { parsePilotCliDbOptions } from "./cli-db-args.js";
+
+export { selectOwnTenantDossiers, type TimingEvidenceSource, type ValueMetricsProvenance } from "./pilot-kpi-cohort.js";
 
 export interface ContainerKpiMetric {
   readonly dossierId: string; readonly dossierCode: string; readonly containerNumber: string;
@@ -22,18 +29,15 @@ export interface Gate05KpiEvaluationReport {
   readonly firstContainerMetrics?: FirstContainerValueMetrics | undefined;
   readonly containerValueMetrics?: readonly FirstContainerValueMetrics[] | undefined;
   readonly aggregateValueMetrics?: AggregateContainerValueMetrics | undefined;
+  /** Provenance of the timings behind meanDeltaSeconds — see TimingEvidenceSource. */
+  readonly timingEvidenceSource: TimingEvidenceSource;
+  readonly valueMetricsProvenance: ValueMetricsProvenance;
 }
 
-function isBlindFaultDossier(d: ContainerDossier): boolean {
-  const hasSealMismatchFinding = Boolean(d.latestValidationResult?.findings.some((f) => f.ruleId.includes("SEAL") && f.severity === "CRITICAL_BLOCKER"));
-  const hasUnverifiedFields = d.documents.filter((doc) => !doc.isSuperseded).some((doc) => doc.extractedFields.some((fld) => fld.verificationStatus !== "HUMAN_VERIFIED"));
-  return d.lifecycleState === "VALIDATION_BLOCKED" || d.lifecycleState === "HUMAN_VERIFICATION_REQUIRED" || hasSealMismatchFinding || hasUnverifiedFields;
-}
-function isApprovalBlockedForFault(d: ContainerDossier): boolean {
-  return d.lifecycleState !== "READY_FOR_REVIEW" && d.lifecycleState !== "APPROVED_FOR_EXPORT" && d.lifecycleState !== "EXPORTED" && !d.isImmutable;
-}
-
-export function computeGate05KpiFromDossiers(dossiers: readonly ContainerDossier[]): Gate05KpiEvaluationReport {
+export function computeGate05KpiFromDossiers(
+  dossiers: readonly ContainerDossier[],
+  timingEvidenceSource: TimingEvidenceSource = "SYSTEM_TIMESTAMPS"
+): Gate05KpiEvaluationReport {
   const metrics: ContainerKpiMetric[] = dossiers.map((d) => {
     const tStartMs = new Date(d.createdAt).getTime();
     const tEndIso = d.latestValidationResult?.evaluatedAt ?? d.updatedAt ?? null;
@@ -53,7 +57,12 @@ export function computeGate05KpiFromDossiers(dossiers: readonly ContainerDossier
   const aggregateValueMetrics = evaluateAggregateContainerValueMetrics(dossiers);
   const containerValueMetrics = aggregateValueMetrics.perContainerMetrics;
   const firstContainerMetrics = containerValueMetrics[0];
-  return { evaluatedAt: new Date().toISOString(), totalContainers: metrics.length, reconciledCount: validDeltas.length, meanDeltaSeconds, underFiveMinuteGate, underThreeMinuteTarget, blindFaultCount: blindFaultMetrics.length, blindFaultsCaught, zeroMissGate, gate05Passed: metrics.length >= 5 && underFiveMinuteGate && zeroMissGate, containerMetrics: metrics, firstContainerMetrics, containerValueMetrics, aggregateValueMetrics };
+  return { evaluatedAt: new Date().toISOString(), totalContainers: metrics.length, reconciledCount: validDeltas.length, meanDeltaSeconds, underFiveMinuteGate, underThreeMinuteTarget, blindFaultCount: blindFaultMetrics.length, blindFaultsCaught, zeroMissGate, gate05Passed: metrics.length >= 5 && underFiveMinuteGate && zeroMissGate, containerMetrics: metrics, firstContainerMetrics, containerValueMetrics, aggregateValueMetrics,
+    timingEvidenceSource,
+    // The minutes-saved and loss-avoided figures are derived from hardcoded
+    // assumptions (see VALUE_METRIC_ASSUMPTIONS), never from a measured baseline,
+    // so they are always reported as unvalidated until a field protocol exists.
+    valueMetricsProvenance: "UNVALIDATED_ASSUMPTION" };
 }
 
 export function evaluateGate05PilotKpi(
@@ -82,5 +91,5 @@ export function evaluateGate05PilotKpi(
 }
 
 if (import.meta.main) {
-  process.stdout.write(`${JSON.stringify(evaluateGate05PilotKpi(), null, 2)}\n`);
+  process.stdout.write(`${JSON.stringify(evaluateGate05PilotKpi(parsePilotCliDbOptions(process.argv.slice(2))), null, 2)}\n`);
 }

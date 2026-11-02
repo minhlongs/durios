@@ -713,11 +713,11 @@
           <option value="CLERK">Nhân viên (CLERK)</option>
           <option value="MANAGER">Quản lý (MANAGER)</option>
         </select>
-        <span id="actor-role-hint" class="visually-hidden">Vai trò chỉ mô phỏng cục bộ, không phải đăng nhập thật.</span>
+        <span id="actor-role-hint" class="visually-hidden">Khi chưa đăng nhập, vai trò này chỉ mô phỏng giao diện cục bộ. Sau khi đăng nhập, máy chủ xác định vai trò thật từ phiên đăng nhập và quyền hạn được áp theo vai trò đó.</span>
       </div>
       <button type="button" class="btn btn--primary btn--sm" id="btn-pilot-rehearsal-seed" onclick="runPilotRehearsalBootstrap()">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-        <span>Diễn tập 5 Cont &amp; 5/5 Gates</span>
+        <span>Diễn tập 5 Cont (dữ liệu tổng hợp)</span>
       </button>
       <button type="button" class="btn btn--secondary btn--sm" id="btn-stitch-ecosystem" onclick="openStitchEcosystemDialog()">
         <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
@@ -1154,7 +1154,7 @@
     const ui = { dossiers: [], dossier: null, audit: null, manifest: null, manifestError: null, integrityCheck: null, listLoaded: false, pilotToken: "", actor: null, organicEvidence: [], shareGrants: [], pilotKpi: null, pilotGates: null, confirmOverride: false };
 
     async function fetchApi(path, options = {}) {
-      const role = document.getElementById("actor-role").value;
+      const role = currentRole();
       const headers = { ...options.headers, "x-actor-role": role };
       if (ui.pilotToken) headers["x-pilot-token"] = ui.pilotToken;
       // A write against the dossier this browser holds carries the version it holds,
@@ -1288,7 +1288,18 @@
       }
     }
 
-    function currentRole() { return document.getElementById("actor-role").value; }
+    /* The header select simulates a role for an anonymous visitor. Once a session
+       exists the server resolves the real role from the token, so the UI follows that
+       instead of offering actions the signed-in role cannot perform. */
+    function currentRole() {
+      const select = document.getElementById("actor-role");
+      const serverRole = ui.actor && ui.actor.role ? String(ui.actor.role) : "";
+      if (serverRole && select && select.value !== serverRole) {
+        const hasOption = Array.from(select.options).some((o) => o.value === serverRole);
+        if (hasOption) select.value = serverRole;
+      }
+      return serverRole || (select ? select.value : "CLERK");
+    }
 
     /* ==========================================================
        5. DERIVED STATE (read-only interpretation of API data)
@@ -1459,6 +1470,63 @@
         </div>`;
     }
 
+    /* Every figure on the empty state is derived from the live pilot payload. An
+       unevaluated gate reads CHƯA ĐÁNH GIÁ rather than a number, a rehearsal result is
+       labelled synthetic, and no card states an economic or timing claim the system has
+       not measured. The previous hardcoded card lines asserted an all-gates pass, a
+       sub-3-minute field cycle, a gross-margin figure and immutable storage, none of
+       which any run of this system had produced. */
+    /* The only provenance labels this UI may show. Anything the server does not report as
+       OPERATIONAL is shown as not operational, so a rehearsal or an unverifiable ledger can
+       never be presented as a live-site result by falling through a default branch. */
+    function gateProvenanceLabel(provenance) {
+      if (provenance === "SYNTHETIC_REHEARSAL") return "DIỄN TẬP TỔNG HỢP";
+      if (provenance === "UNPROVEN_LEDGER_INTEGRITY") return "SỔ KIỂM TOÁN KHÔNG XÁC MINH ĐƯỢC";
+      return provenance === "OPERATIONAL" ? "VẬN HÀNH" : "KHÔNG XÁC ĐỊNH";
+    }
+
+    function buildEmptyStateCards() {
+      const g = ui.pilotGates;
+      const k = ui.pilotKpi;
+      const synthetic = !!(g && g.evidenceProvenance === "SYNTHETIC_REHEARSAL");
+      const unprovenLedger = !!(g && g.evidenceProvenance === "UNPROVEN_LEDGER_INTEGRITY");
+      const gate03 = g && Array.isArray(g.gates) ? g.gates.find((x) => x.gateId === "GATE-03") : null;
+      return [
+        {
+          label: "Cổng khai trương GATE-01..05",
+          value: g ? `${g.operationalGatesEvidencedCount ?? 0}/${g.totalGates} CỔNG ĐỦ BẰNG CHỨNG` : "CHƯA ĐÁNH GIÁ",
+          note: !g
+            ? "Chưa tải được trạng thái cổng từ máy chủ"
+            : `Kiểm tra tự động (máy chấm được): ${g.machineChecksPassedCount ?? g.passedCount}/${g.totalGates} tiêu chí. ` + (synthetic
+              ? "Bằng chứng diễn tập tổng hợp — không thay thế xác nhận địa điểm."
+              : unprovenLedger
+                ? "Chuỗi băm kiểm toán không toàn vẹn — không chứng minh được dữ liệu từ đâu tới; phải khôi phục sổ kiểm toán trước."
+                : g.goForLiveCustomerData
+                ? "Cả 5 cổng có bằng chứng vận hành do con người ghi nhận; vẫn cần phê duyệt của Founder."
+                : "Cổng chỉ mở khi máy chấm đạt VÀ con người ghi nhận bằng chứng vận hành; chưa đủ thì cấm nạp dữ liệu khách hàng thật."),
+        },
+        {
+          label: "Chu kỳ đối soát (đo từ hệ thống)",
+          value: k && k.reconciledCount > 0 ? `${k.meanDeltaSeconds}s / cont` : "CHƯA ĐO",
+          note: k && k.timingEvidenceSource === "SYSTEM_TIMESTAMPS"
+            ? "Nguồn: dấu thời gian hệ thống, không thay thế bấm giờ thực địa"
+            : "Chưa có container nào được đối soát trong cơ sở dữ liệu này",
+        },
+        {
+          label: "Trạng thái dữ liệu",
+          value: "TỔNG HỢP (SYNTHETIC)",
+          note: "Stage 0 chưa nạp dữ liệu khách hàng thật; GATE-01 cần biên bản chấp thuận có chữ ký",
+        },
+        {
+          label: "Toàn vẹn sổ cái kiểm toán (máy chấm)",
+          value: gate03 ? (gate03.passed ? "CHUỖI BĂM HỢP LỆ" : "CHƯA XÁC MINH") : "CHƯA ĐÁNH GIÁ",
+          note: "Chuỗi băm SHA-256 nối tiếp trong SQLite; không phải kho lưu trữ bất biến một lần (write-once) ở tầng phần cứng. " +
+            "Đây chỉ là 1 trong 2 tiêu chí MÁY CHẤM của GATE-03; cổng GATE-03 chỉ mở khi có bằng chứng vận hành " +
+            "(reverse proxy HTTPS, giới hạn mạng tại vựa, mã hoá ổ đĩa, secrets 0600) do con người ghi nhận.",
+        },
+      ];
+    }
+
     function renderEmptyWorkspace() {
       document.getElementById("workspace-main").innerHTML = `
         <div class="empty-state panel" style="padding: var(--space-8) var(--space-5);">
@@ -1469,7 +1537,7 @@
               Hệ thống quản lý hồ sơ container sầu riêng xuất khẩu GACC Nghị định 248/249. Bắt đầu ngay bằng cách tạo hồ sơ thực tế hoặc kích hoạt diễn tập 5 container chuẩn bị khai trương.
             </p>
             <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-3);margin-top:var(--space-4);">
-              <button type="button" class="btn btn--primary" onclick="runPilotRehearsalBootstrap()">🚀 Diễn tập 5 Cont &amp; 5/5 Gates</button>
+              <button type="button" class="btn btn--primary" onclick="runPilotRehearsalBootstrap()">🚀 Diễn tập 5 Cont (dữ liệu tổng hợp)</button>
               <button type="button" class="btn btn--secondary" onclick="openCreateDialog()">Tạo hồ sơ đầu tiên (Phím N)</button>
               <a class="btn btn--ghost" href="/stitch/socratic-introspector.html" target="_blank" rel="noopener">🧠 Kiểm toán Socratic 10-Turn ↗</a>
             </div>
@@ -1478,26 +1546,12 @@
             </div>
           </div>
           <div class="kpi-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--space-3);max-width:760px;margin:0 auto;text-align:center;">
+            ${buildEmptyStateCards().map((card) => `
             <div class="panel" style="padding:var(--space-4);background:var(--color-surface-muted);">
-              <div style="font-size:var(--text-xs);color:var(--color-text-muted);font-weight:600;text-transform:uppercase;">Cổng GACC Readiness</div>
-              <div class="num" style="font-size:var(--text-xl);font-weight:700;color:var(--color-primary);margin-top:var(--space-1);">5/5 CỔNG PASS</div>
-              <div style="font-size:11px;color:var(--color-text-subtle);margin-top:2px;">GATE-01..GATE-05 Đạt Chuẩn</div>
-            </div>
-            <div class="panel" style="padding:var(--space-4);background:var(--color-surface-muted);">
-              <div style="font-size:var(--text-xs);color:var(--color-text-muted);font-weight:600;text-transform:uppercase;">Chu kỳ xử lý</div>
-              <div class="num" style="font-size:var(--text-xl);font-weight:700;color:var(--color-primary);margin-top:var(--space-1);">&lt; 3 Phút / Cont</div>
-              <div style="font-size:11px;color:var(--color-text-subtle);margin-top:2px;">Tiến độ thực tế tại vựa</div>
-            </div>
-            <div class="panel" style="padding:var(--space-4);background:var(--color-surface-muted);">
-              <div style="font-size:var(--text-xs);color:var(--color-text-muted);font-weight:600;text-transform:uppercase;">Biên Lợi Nhuận Gộp</div>
-              <div class="num" style="font-size:var(--text-xl);font-weight:700;color:var(--color-primary);margin-top:var(--space-1);">94.67%</div>
-              <div style="font-size:11px;color:var(--color-text-subtle);margin-top:2px;">150k VND thu / 8k COGS</div>
-            </div>
-            <div class="panel" style="padding:var(--space-4);background:var(--color-surface-muted);">
-              <div style="font-size:var(--text-xs);color:var(--color-text-muted);font-weight:600;text-transform:uppercase;">Bảo toàn dữ liệu</div>
-              <div class="num" style="font-size:var(--text-xl);font-weight:700;color:var(--color-primary);margin-top:var(--space-1);">100% SHA-256</div>
-              <div style="font-size:11px;color:var(--color-text-subtle);margin-top:2px;">WORM Audit Hash Chain</div>
-            </div>
+              <div style="font-size:var(--text-xs);color:var(--color-text-muted);font-weight:600;text-transform:uppercase;">${escapeHtml(card.label)}</div>
+              <div class="num" style="font-size:var(--text-xl);font-weight:700;color:var(--color-primary);margin-top:var(--space-1);">${escapeHtml(card.value)}</div>
+              <div style="font-size:11px;color:var(--color-text-subtle);margin-top:2px;">${escapeHtml(card.note)}</div>
+            </div>`).join("")}
           </div>
         </div>`;
     }
@@ -2067,15 +2121,33 @@
       const k = ui.pilotKpi;
       const g = ui.pilotGates;
       if (!k) return "";
-      const gateTone = k.gate05Passed ? "success" : "warning";
-      const gateLabel = k.gate05Passed ? "GATE-05: ĐẠT (PASS)" : "GATE-05: CHƯA ĐỦ ĐIỀU KIỆN";
+      const evidenced = g && typeof g.operationalGatesEvidencedCount === "number" ? g.operationalGatesEvidencedCount : 0;
+      const machine = g ? (typeof g.machineChecksPassedCount === "number" ? g.machineChecksPassedCount : g.passedCount) : null;
+      const gateTone = g && g.goForLiveCustomerData ? "success" : "warning";
+      const gateLabel = g
+        ? `LAUNCH GATE: ${evidenced}/${g.totalGates} cổng đủ bằng chứng · MÁY CHẤM: ${machine === null ? "?" : machine}/${g.totalGates}`
+        : (k.gate05Passed ? "GATE-05: máy chấm đạt — thiếu bằng chứng vận hành" : "GATE-05: CHƯA ĐỦ ĐIỀU KIỆN");
       const gatesHtml = g && Array.isArray(g.gates)
-        ? `<div style="margin-top:var(--space-3);display:flex;flex-direction:column;gap:6px;">${g.gates.map((it) => `<div style="padding:6px 10px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);font-size:12px;"><strong>${escapeHtml(it.gateId)} (${escapeHtml(it.statusLabel)}):</strong> ${escapeHtml(it.title)} — <span class="text-muted">${escapeHtml(it.detail)}</span></div>`).join("")}</div>`
+        ? `<div style="margin-top:var(--space-3);display:flex;flex-direction:column;gap:6px;">${g.gates.map((it) => `<div style="padding:6px 10px;border:1px solid var(--border-subtle);border-radius:var(--radius-sm);font-size:12px;"><strong>${escapeHtml(it.gateId)} (${escapeHtml(it.statusLabel)}):</strong> ${escapeHtml(it.title)} — <span class="text-muted">${escapeHtml(it.detail)}</span>${it.gateVerdict ? ` <span class="text-muted">[Máy chấm: ${it.machineCheck && it.machineCheck.passed ? "PASS" : "FAIL"} · Bằng chứng vận hành: ${escapeHtml(String((it.externalEvidence || {}).status || "PENDING_OPERATOR_EVIDENCE"))} · Kết luận: ${escapeHtml(String(it.gateVerdict))}]${it.gateVerdict !== "EVIDENCED_FOR_LAUNCH" && it.externalEvidence && Array.isArray(it.externalEvidence.required) && it.externalEvidence.required.length ? ` · Còn thiếu: ${escapeHtml(String(it.externalEvidence.required[0]))}` : ""}</span>` : ""}</div>`).join("")}</div>`
         : "";
       return renderSection("sec-pilot-kpi", 8, "Chỉ số diễn tập Pilot 5 Container & 5 Cổng Khai Trương (GATE-01..GATE-05)",
         "Đo thời gian đối soát trung bình (< 300s), tỷ lệ chặn lỗi gài mù (2/2) và trạng thái 5 cổng chặn trước khi nạp dữ liệu thật.",
         `<span class="badge badge--${gateTone}">${escapeHtml(gateLabel)}</span>`,
-        `<div class="meta-grid">
+        `<div class="callout callout--warning" style="margin-bottom:var(--space-3);">
+          <div class="callout__body">
+            <p class="callout__title">Nguồn bằng chứng của các chỉ số bên dưới</p>
+            <p>${escapeHtml(k.timingEvidenceSource === "HUMAN_STOPWATCH_ATTESTED"
+              ? "Thời gian đối soát: đã có biên bản bấm giờ của người vận hành."
+              : "Thời gian đối soát lấy từ dấu thời gian hệ thống (SYSTEM_TIMESTAMPS): đây là thời gian máy xử lý, KHÔNG phải thời gian thao tác của con người và không thay thế biên bản bấm giờ GATE-05.")}</p>
+            <p>${escapeHtml(k.valueMetricsProvenance === "FIELD_MEASURED"
+              ? "Chỉ số giá trị: đã đo tại hiện trường."
+              : "Chỉ số phút tiết kiệm / thiệt hại tránh được tính từ GIẢ ĐỊNH CHƯA KIỂM CHỨNG (35 phút thủ công; 35.000.000 VND mỗi lỗi chặn) — không phải doanh thu hay ROI thực tế.")}</p>
+            ${g ? "<p>Hai con số khác nhau, đừng đọc như một: <strong>máy chấm</strong> là tiêu chí hệ thống tự kiểm tra được (tệp tồn tại, host loopback, backup hợp lệ, ngưỡng KPI); <strong>cổng đủ bằng chứng</strong> đòi hỏi con người ghi nhận bằng chứng vận hành (chữ ký, biên bản, bấm giờ). Chỉ con số thứ hai quyết định việc nạp dữ liệu khách hàng thật.</p>" : ""}
+            ${g && g.evidenceProvenance === "SYNTHETIC_REHEARSAL" ? "<p>Bằng chứng cổng: DIỄN TẬP TỔNG HỢP — do lệnh diễn tập tự tạo, không có giá trị phê duyệt khai trương.</p>" : ""}
+            ${g && g.evidenceProvenance === "UNPROVEN_LEDGER_INTEGRITY" ? "<p>Bằng chứng cổng: SỔ KIỂM TOÁN KHÔNG XÁC MINH ĐƯỢC — chuỗi băm kiểm toán không toàn vẹn nên nguồn gốc dữ liệu không chứng minh được; không cổng nào được ghi nhận bằng chứng.</p>" : ""}
+          </div>
+        </div>
+        <div class="meta-grid">
           <div class="meta-item"><span class="meta-item__label">Tổng số container</span><span class="meta-item__value num">${escapeHtml(String(k.totalContainers))} / 5</span></div>
           <div class="meta-item"><span class="meta-item__label">Thời gian đối soát TB</span><span class="meta-item__value num">${escapeHtml(String(k.meanDeltaSeconds))}s ${k.underFiveMinuteGate ? "(< 300s)" : ""}</span></div>
           <div class="meta-item"><span class="meta-item__label">Lỗi gài mù đã chặn</span><span class="meta-item__value num">${escapeHtml(String(k.blindFaultsCaught))} / ${escapeHtml(String(k.blindFaultCount))}</span></div>
@@ -2156,8 +2228,8 @@
           <div class="workflow-step-pills">
             ${pills.map((p) => `<button type="button" class="workflow-step-pill ${f === p.key ? "active" : ""}" data-step-filter="${p.key}" onclick="switchWorkflowStepFilter('${p.key}')">${escapeHtml(p.label)}</button>`).join("")}
           </div>
-          <div style="display:flex;align-items:center;gap:var(--space-2);">
-            <span class="badge" style="font-family:var(--font-mono);font-size:11px;">⌨️ Phím 1-4 Lọc · 0 Tất cả · N Tạo · R Diễn tập</span>
+          <div style="display:flex;align-items:center;gap:var(--space-2);flex-wrap:wrap;min-width:0;">
+            <span class="badge" style="font-family:var(--font-mono);font-size:11px;white-space:normal;">⌨️ Phím 1-4 Lọc · 0 Tất cả · N Tạo · R Diễn tập</span>
             <button type="button" class="btn btn--ghost btn--sm" onclick="switchWorkflowStepFilter('${escapeHtml(ctx.currentStepId || "all")}')">
               🎯 Tập trung bước hiện tại
             </button>
@@ -2993,16 +3065,18 @@
       const bp = deep && deep.blueprintAudit ? deep.blueprintAudit : (bpRes && bpRes.blueprint ? bpRes.blueprint : null);
       const ed = edRes && edRes.data && edRes.data.manifest ? edRes.data.manifest : (edRes && edRes.manifest ? edRes.manifest : null);
       if (!bp) {
-        box.innerHTML = `<div class="callout callout--info"><div class="callout__body"><p class="callout__title">Danh mục 25 màn hình Google Stitch đã sẵn sàng dưới đường dẫn <code>/stitch/*</code>. Bấm "🚀 Diễn tập 5 Cont &amp; 5/5 Gates" để kích hoạt phiên làm việc và tải dữ liệu kiểm toán trực tiếp.</p></div></div>`;
+        box.innerHTML = `<div class="callout callout--info"><div class="callout__body"><p class="callout__title">Danh mục 25 màn hình Google Stitch đã sẵn sàng dưới đường dẫn <code>/stitch/*</code>. Bấm "🚀 Diễn tập 5 Cont (dữ liệu tổng hợp)" để kích hoạt phiên làm việc và tải dữ liệu kiểm toán trực tiếp.</p></div></div>`;
         return;
       }
-      const marginPct = deep && deep.unitEconomicsVerification ? `${deep.unitEconomicsVerification.containerGrossMarginPct}%` : "94.67%";
-      const verdict = deep && deep.ideaVerdict ? deep.ideaVerdict : "GO_OPEN_CORE_SAAS";
+      // No fabricated fallbacks: when the introspection API returns nothing, the panel
+      // says so instead of showing a margin figure or a GO verdict it did not receive.
+      const marginPct = deep && deep.unitEconomicsVerification ? `${deep.unitEconomicsVerification.containerGrossMarginPct}%` : "CHƯA CÓ DỮ LIỆU";
+      const verdict = deep && deep.ideaVerdict ? deep.ideaVerdict : "CHƯA ĐÁNH GIÁ";
       const uiux = deep && deep.uiUxDeepAudit ? deep.uiUxDeepAudit : null;
-      const uiuxVerdict = uiux && uiux.verdict ? uiux.verdict : "GO_2027_UI_UX_STANDARDIZED";
+      const uiuxVerdict = uiux && uiux.verdict ? uiux.verdict : "CHƯA ĐÁNH GIÁ";
       const openCoreTurns = deep && Array.isArray(deep.socraticTurns) ? deep.socraticTurns : [];
       const uiuxTurns = uiux && Array.isArray(uiux.socraticTurns) ? uiux.socraticTurns : [];
-      const modulesCount = ed && Array.isArray(ed.modules) ? ed.modules.length : 12;
+      const modulesCount = ed && Array.isArray(ed.modules) ? ed.modules.length : 0;
       const renderTurnRows = (turns, prefix) => turns.map((t) => `
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;padding:6px 8px;border:1px solid var(--color-border);border-radius:var(--radius-sm);background:var(--color-surface);font-size:11px;">
           <div>
@@ -3054,10 +3128,19 @@
       if (dialog && dialog.open) {
         await loadStitchEcosystemTelemetry();
       }
+      // The toast reports what this run actually returned, labelled as synthetic. The
+      // previous text asserted a fixed all-gates result whatever the server said.
+      const pack = body.data.goLivePack || {};
+      const gatesPassed = typeof body.data.machineChecksPassedCount === "number"
+        ? body.data.machineChecksPassedCount
+        : (typeof body.data.passedGateCount === "number" ? body.data.passedGateCount : null);
+      const gatesEvidenced = typeof body.data.operationalGatesEvidencedCount === "number" ? body.data.operationalGatesEvidencedCount : 0;
+      const gatesTotal = typeof body.data.totalGateCount === "number" ? body.data.totalGateCount : 5;
+      const provenance = gateProvenanceLabel(body.data.evidenceProvenance);
       notify(
-        "success",
-        `Đã kích hoạt phiên diễn tập Vựa Cai Lậy (${seeded.length} container · 5/5 Gates PASS)`,
-        "Bao gồm 3 container sạch (DOS-CAILAY-R01..R03), 2 container gài lỗi mù (R04: Sai Seal, R05: Chưa xác minh HITL), và 5/5 cổng GATE-01..05."
+        pack.goForLiveCustomerData ? "success" : "warning",
+        `Đã kích hoạt phiên diễn tập Vựa Cai Lậy (${seeded.length} container · máy chấm ${gatesPassed === null ? "chưa rõ" : `${gatesPassed}/${gatesTotal}`} · cổng đủ bằng chứng ${gatesEvidenced}/${gatesTotal} · ${provenance})`,
+        `Kết luận: ${escapeHtml(String(pack.overallVerdict || "KHÔNG XÁC ĐỊNH"))}. Nạp dữ liệu khách hàng thật: ${pack.goForLiveCustomerData ? "ĐƯỢC PHÉP (GO)" : "KHÔNG (HOLD)"}. Hồ sơ và bằng chứng do lệnh diễn tập tự tạo, không phải xác nhận thực địa.`
       );
     }
 

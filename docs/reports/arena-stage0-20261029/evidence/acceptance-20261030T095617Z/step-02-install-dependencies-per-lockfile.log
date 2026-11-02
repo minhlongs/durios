@@ -1,0 +1,25 @@
+# STEP 2 — install-dependencies-per-lockfile
+# tree              : /tmp/arena-tree
+# tree fingerprint  : b997a68b492994da715d55d234feca161c8fb9e8f8b1f3dcdcfcdcbbbe5f730a
+# work dir          : /tmp/durios-acceptance-qTf0KM
+# started (UTC)     : 2026-10-30T09:56:18Z
+# EXPECTED RESULT   : bun.lock exists and 'bun install --frozen-lockfile' exits 0 without changing the lockfile.
+
+
+================ STEP 2 — install-dependencies-per-lockfile ================
+expected: bun.lock exists and 'bun install --frozen-lockfile' exits 0 without changing the lockfile.
+PASS | bun.lock present
+
+### CMD: bash -c cd '/tmp/arena-tree' && bun install --frozen-lockfile
+bun install v1.4.4 (38afee6c8)
+
++ @types/bun@1.4.2
++ @types/node@22.20.5
++ typescript@5.9.3
+
+5 packages installed [5.00ms]
+### EXIT=0
+  ran: bun install --frozen-lockfile (in /tmp/arena-tree) → exit 0
+PASS | dependency install (exit 0 as expected)
+PASS | bun.lock unchanged by the install
+  → STEP 2 result: PASS

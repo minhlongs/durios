@@ -1,0 +1,459 @@
+# STEP 3 — typecheck-and-full-test-suite
+# tree              : /tmp/arena-tree
+# tree fingerprint  : b997a68b492994da715d55d234feca161c8fb9e8f8b1f3dcdcfcdcbbbe5f730a
+# work dir          : /tmp/durios-acceptance-qTf0KM
+# started (UTC)     : 2026-10-30T09:56:18Z
+# EXPECTED RESULT   : 'bun run typecheck' exits 0 and 'bun test' exits 0 with '0 fail'.
+
+
+================ STEP 3 — typecheck-and-full-test-suite ================
+expected: 'bun run typecheck' exits 0 and 'bun test' exits 0 with '0 fail'.
+
+### CMD: bash -c cd '/tmp/arena-tree' && bun run typecheck
+$ tsc --noEmit
+### EXIT=0
+  ran: bun run typecheck → exit 0
+PASS | typecheck (exit 0 as expected)
+
+### CMD: bash -c cd '/tmp/arena-tree' && bun test
+bun test v1.4.4 (38afee6c8)
+
+test/adversarial-verification.test.ts:
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 2: Database and File Consistency > cleans up newly created file when repository metadata save fails, preserving unrelated files [20.15ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 2: Database and File Consistency > sanitizes unsafe filenames and prevents path traversal [12.96ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 2: Database and File Consistency > rejects oversized file uploads beyond configured limit (25MB) [13.41ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 3: Validation Invalidation & Invariants > invalidates previous passing validation and resets lifecycle when field is modified [32.01ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 3: Validation Invalidation & Invariants > prohibits document uploads and field verification on sealed/exported dossiers [32.70ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 4: Regulatory Safety Gate — Cadmium Rules > handles regulatory uncertainty safely: GB 2762-2022 disabled, advisory warning labeled internal [26.78ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 5: Actor and Role Security Boundary > rejects client-controlled headers and resolves role strictly from server-verified tokens [172.22ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 5: Actor and Role Security Boundary > enforces server-side role gate: CLERK cannot approve dossier for export [31.88ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 6: Audit Hash-Chain Integrity & Tamper Detection > detects payload modification in SQLite and fails integrity verification [14.16ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 6: Audit Hash-Chain Integrity & Tamper Detection > detects event deletion and breaks cryptographic chain [13.62ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 6: Audit Hash-Chain Integrity & Tamper Detection > fails closed on export when audit tampering is detected [30.20ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 7: Export Integrity & Provenance > generates manifest with exact SHA-256 hashes and legal disclaimers [31.47ms]
+(pass) Adversarial Verification Suite (Supreme Command #07) > Section 8: API and Local Network Boundary > binds to 127.0.0.1 by default and rejects malformed requests [96.79ms]
+
+test/agent-aeo-dual-view-injection.test.ts:
+(pass) 2027 Dual Human + Agent View surface injection > the workspace root carries tokens, JSON-LD, agent state, and the Dual-View toggle [15.53ms]
+(pass) 2027 Dual Human + Agent View surface injection > a served Stitch screen carries the same Dual-View payload [12.71ms]
+(pass) 2027 Dual Human + Agent View surface injection > robots.txt admits AI crawlers and sitemap.xml lists the AEO endpoints [11.20ms]
+
+test/agent-aeo-geo-discovery.test.ts:
+(pass) 2027 AEO/GEO Discovery Endpoints > GET /llms.txt, /llms-full.txt, and /sitemap.xml return structured markdown, multilingual GACC keywords, and 30 URLs [11.86ms]
+(pass) 2027 AEO/GEO Discovery Endpoints > GET /.well-known/agent.json and /api/open-core/agent-catalog return a Design Studio AI compatible WebMCP catalog [13.07ms]
+
+test/asean-corridor-and-verified-profile.test.ts:
+(pass) Verified Durian Trade Network Primitives > supports ASEAN export corridors (VN_CN, MY_CN, TH_CN, PH_CN) with portable ontology [0.15ms]
+(pass) Verified Durian Trade Network Primitives > compiles DuriOS Verified Organization Profile without leaking commercial secrets [0.33ms]
+(pass) Verified Durian Trade Network Primitives > evaluates the 4 first-container value metrics accurately [0.14ms]
+(pass) Verified Durian Trade Network Primitives > validates DURIOS-STRATEGY-V2.json economic truth matches the 428-site ceiling derivation [0.19ms]
+
+test/audit-integrity.test.ts:
+(pass) Phase E: Audit Hash Chain Tamper Detection > passes integrity check on valid hash chain [3.20ms]
+(pass) Phase E: Audit Hash Chain Tamper Detection > detects modified payload in historical audit event [2.98ms]
+(pass) Phase E: Audit Hash Chain Tamper Detection > detects removed event in historical audit chain [2.93ms]
+(pass) Phase E: Audit Hash Chain Tamper Detection > detects reordered events in audit chain [3.32ms]
+(pass) Phase E: Audit Hash Chain Tamper Detection > detects broken previous_hash reference [2.97ms]
+
+test/blueprint-25-step-auditor.test.ts:
+(pass) 25-Step Blueprint Deep Auditor & HTTP Status Endpoint > evaluates all 25 steps and confirms 100% artifact existence and SHA-256 sealing [1.94ms]
+(pass) 25-Step Blueprint Deep Auditor & HTTP Status Endpoint > serves GET /api/v1/open-core/blueprint-status with 25/25 verified report [100.41ms]
+
+test/dense-cluster-gtm.test.ts:
+(pass) Step 15: Dense Cluster GTM Playbook & Readiness Evaluator > blocks cluster expansion when Cai Lay beachhead GATE-05 or paid conversion is not yet met [0.69ms]
+(pass) Step 15: Dense Cluster GTM Playbook & Readiness Evaluator > authorizes cluster expansion and verifies Mekong Delta targets (8 PH, 3 EXP, 2 LAB, 3 LOG, 5 BUY) [0.20ms]
+(pass) Step 15: Dense Cluster GTM Playbook & Readiness Evaluator > confirms all 25 steps in plans/company-blueprint/tasks.md are marked [x] [COMPLETED] [0.20ms]
+
+test/dossier-export-atomicity-and-race.test.ts:
+(pass) Export seal and its manifest > validates, approves and seals a clean dossier end to end over the real routes [203.43ms]
+
+test/dossier-optimistic-concurrency.test.ts:
+(pass) Optimistic concurrency on dossier writes > refuses a second upload built from a version the first upload superseded [169.60ms]
+(pass) Optimistic concurrency on dossier writes > accepts the version the response returns, so a reload-then-write succeeds [174.46ms]
+(pass) Optimistic concurrency on dossier writes > refuses an approval built from a version a concurrent validation superseded [187.25ms]
+
+test/dossier-seal-manifest-atomicity.test.ts:
+(pass) Sealing a dossier and recording its manifest > rolls the seal back when the manifest write refuses a duplicate [14.33ms]
+
+test/dossier-signed-override.test.ts:
+(pass) Signed override past a cadmium blocker > T-OV-01: a manager moves a blocked dossier to REVIEW_REQUIRED with a reason [5.83ms]
+(pass) Signed override past a cadmium blocker > T-OV-02: the override keeps the cadmium finding as evidence on the dossier [3.84ms]
+(pass) Signed override past a cadmium blocker > T-OV-03: the reason and signing actor land in the audit ledger [3.82ms]
+(pass) Signed override past a cadmium blocker > T-OV-04: a clerk cannot sign past the blocker [3.64ms]
+(pass) Signed override past a cadmium blocker > T-OV-05: an ADMIN with the manager persona is not a valid single signer [3.87ms]
+(pass) Signed override past a cadmium blocker > T-OV-06: an empty or whitespace reason is refused [3.42ms]
+(pass) Signed override past a cadmium blocker > T-OV-07: the override is refused once the dossier is approved and sealed [3.44ms]
+(pass) Signed override past a cadmium blocker > T-OV-08: the override returns the version the store now holds [3.37ms]
+
+test/dossier-version-guard-in-sql.test.ts:
+(pass) The version guard inside the guarded upsert > refuses a write whose precondition no longer matches the stored row [17.44ms]
+(pass) The version guard inside the guarded upsert > admits a write carrying the version the store currently holds [13.19ms]
+
+test/ecosystem-rehearsal-and-modularity.test.ts:
+(pass) Ecosystem Rehearsal Endpoints, ISO/Manifest Verifier & Codebase Modularity Guard > bootstraps Cai Lay pilot rehearsal (including ?fullGates=true), verifies ISO/Manifest mutation, and serves telemetry [334.21ms]
+(pass) Ecosystem Rehearsal Endpoints, ISO/Manifest Verifier & Codebase Modularity Guard > enforces strict codebase modularity across all src/ (<= 100 LOC) and test/ (<= 100 LOC) files [5.68ms]
+
+test/extraction-and-rule-fail-closed.test.ts:
+(pass) Missing and unreadable evidence never validates as PASSED (F-04, F-05) > blocks a lab report whose cadmium result is absent instead of passing it silently [4.29ms]
+(pass) Missing and unreadable evidence never validates as PASSED (F-04, F-05) > extracts nothing from an image this build cannot read [0.28ms]
+(pass) Missing and unreadable evidence never validates as PASSED (F-04, F-05) > blocks a dossier whose documents yielded no extracted fields [3.43ms]
+
+test/field-proof-kit.test.ts:
+(pass) Field Proof Kit Bundler & Cryptographic Verification > compiles, exports to disk, and verifies a Field Proof Kit bundle and detects tampering [17.66ms]
+
+test/financial-attestation-service.test.ts:
+(pass) Financial Attestation Service (mint, single-use replay guard) > mints a verifiable token bound to the dossier and purpose [0.75ms]
+(pass) Financial Attestation Service (mint, single-use replay guard) > burns a nonce on first use and rejects the second presentation (replay) [0.11ms]
+(pass) Financial Attestation Service (mint, single-use replay guard) > refuses non-owning tenants from minting an attestation [0.06ms]
+(pass) Financial Attestation Service (mint, single-use replay guard) > rejects minting for the owning tenant itself as the institution [0.03ms]
+(pass) Financial Attestation Service (mint, single-use replay guard) > tracks burned nonces for observability [0.06ms]
+(pass) Financial Attestation Service (mint, single-use replay guard) > claims each nonce exactly once via consumeNonce [0.03ms]
+(pass) Financial Attestation Service (mint, single-use replay guard) > rejects a constructor secret below the minimum length [0.02ms]
+
+test/financial-attestation-token.test.ts:
+(pass) Financial Attestation Token (mint / verify) > mints a three-segment DURIOS_ATT token that verifies successfully [0.13ms]
+(pass) Financial Attestation Token (mint / verify) > rejects a token signed with a different secret (forgery) [0.09ms]
+(pass) Financial Attestation Token (mint / verify) > rejects a token whose payload was altered after signing (tampering) [0.08ms]
+(pass) Financial Attestation Token (mint / verify) > rejects an expired token [0.06ms]
+(pass) Financial Attestation Token (mint / verify) > rejects a token issued far in the future (clock-skew guard) [0.04ms]
+(pass) Financial Attestation Token (mint / verify) > rejects a token whose expiry precedes its issue time [0.04ms]
+(pass) Financial Attestation Token (mint / verify) > fails closed on malformed tokens and payloads [0.07ms]
+(pass) Financial Attestation Token (mint / verify) > refuses a secret shorter than the minimum length [0.03ms]
+
+test/financial-verification-http.test.ts:
+(pass) Financial Verification Room: mint, public verify, and redacted dossier view > verifies an attestation over public HTTP and returns no commercial fields [102.63ms]
+(pass) Financial Verification Room: mint, public verify, and redacted dossier view > rejects a replayed token with 401 (single-use enforcement) [87.96ms]
+(pass) Financial Verification Room: mint, public verify, and redacted dossier view > fails closed on a forged token without disclosing dossier data [87.30ms]
+(pass) Financial Verification Room: mint, public verify, and redacted dossier view > rejects a mint request from a tenant that does not own the dossier [163.85ms]
+(pass) Financial Verification Room: mint, public verify, and redacted dossier view > registers MOD-ENT-03 in the open-core edition manifest [84.95ms]
+
+test/gate-cohort-provenance.test.ts:
+(pass) Cohort provenance: synthetic containers cannot open a launch gate > classifies a cohort from audit-ledger signals, not from dossier names [0.32ms]
+[DuriOS] pilot:seed-rehearsal enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+(pass) Cohort provenance: synthetic containers cannot open a launch gate > reports a rehearsal-seeded database as SYNTHETIC_REHEARSAL even with all five evidence files declared [236.01ms]
+[DuriOS] pilot:seed-rehearsal enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+(pass) Cohort provenance: synthetic containers cannot open a launch gate > still reports SYNTHETIC_REHEARSAL when operational dossiers are added next to rehearsal ones [337.35ms]
+[DuriOS] pilot:seed-rehearsal enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+(pass) Cohort provenance: synthetic containers cannot open a launch gate > compiles the pack for that database as a rehearsal result, never as GO_FOR_LIVE_CUSTOMER_DATA [238.22ms]
+
+test/gate-evidence-artifact.test.ts:
+(pass) Gate evidence artifacts: recorded, never silently trusted > records an existing file with its true hash and the human who declared it [1.93ms]
+(pass) Gate evidence artifacts: recorded, never silently trusted > keeps a gate PENDING when the declared path is not a file, or when nobody is named [0.34ms]
+(pass) Gate evidence artifacts: recorded, never silently trusted > reads evidence declarations from the server process environment, never from a request [0.19ms]
+(pass) Gate evidence artifacts: recorded, never silently trusted > keeps every gate closed on an otherwise green site when the declared paths are not files [120.30ms]
+(pass) Gate evidence artifacts: recorded, never silently trusted > does not hash an artifact above the limit, but still records the declaration [0.23ms]
+
+test/gate-provenance-adversarial.test.ts:
+[DuriOS] pilot:seed-rehearsal enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+(pass) Adversarial: gates cannot be opened by renaming, mixing or erasing provenance > renaming rehearsal dossier codes to customer-looking codes opens nothing [223.07ms]
+(pass) Adversarial: gates cannot be opened by renaming, mixing or erasing provenance > mixing one synthetic container, with an arbitrary code, into an operational cohort closes the gates again [201.50ms]
+[DuriOS] pilot:seed-rehearsal enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+(pass) Adversarial: gates cannot be opened by renaming, mixing or erasing provenance > erasing the ledger rows that record synthetic origin makes provenance unprovable, not operational [225.54ms]
+
+test/homepage-showroom-injection.test.ts:
+(pass) 2027 3-in-1 Homepage Showroom & 1-Click Workspace Switcher > GET / serves the Marketing Hero, 3 PLG CTAs, Live ISO 6346 Verifier, ROI Calculator, Battlecard, 4-Pillar Hub, and 4-Tier Pricing [13.39ms]
+
+test/http-api.test.ts:
+(pass) Phase B & C: Local HTTP API Integration > serves health status and index html [228.18ms]
+(pass) Phase B & C: Local HTTP API Integration > handles complete dossier lifecycle over HTTP [273.63ms]
+(pass) Phase B & C: Local HTTP API Integration > returns controlled errors for malformed input and unknown routes [229.40ms]
+(pass) Phase B & C: Local HTTP API Integration > allows ADMIN actor to approve and export dossier over HTTP [253.00ms]
+(pass) Phase B & C: Local HTTP API Integration > supports approved /api/v1 route groups and isolates out-of-scope paths [226.08ms]
+
+test/http-override-blocker.test.ts:
+(pass) POST /api/dossiers/:id/override > T-HTTP-OV-01: a manager signs past the blocker and gets REVIEW_REQUIRED [297.70ms]
+(pass) POST /api/dossiers/:id/override > T-HTTP-OV-02: a clerk is refused [255.22ms]
+(pass) POST /api/dossiers/:id/override > T-HTTP-OV-03: a missing reason is refused with 400 and names the field [288.78ms]
+(pass) POST /api/dossiers/:id/override > T-HTTP-OV-04: an override on an unknown dossier is refused with 404 [260.61ms]
+(pass) POST /api/dossiers/:id/override > T-HTTP-OV-05: the ADMIN export role is not the single signer this gate requires [276.68ms]
+
+test/ingestion-and-verification.test.ts:
+(pass) DuriOS Ingestion & HITL Verification Suite > T01: Valid document upload calculates server-side SHA-256 and transitions state [6.13ms]
+(pass) DuriOS Ingestion & HITL Verification Suite > T02: Malformed or unsupported file rejected at ingestion boundary [4.64ms]
+(pass) DuriOS Ingestion & HITL Verification Suite > T03: Server-side SHA-256 calculation matches byte stream hashing identically [0.08ms]
+(pass) DuriOS Ingestion & HITL Verification Suite > T04: Unverified fields block finalized validation run [4.46ms]
+(pass) DuriOS Ingestion & HITL Verification Suite > T05: Human correction preserves original raw value and records audit event [4.59ms]
+
+test/legal-basis-surface.test.ts:
+(pass) Legal basis reaches the operator > tags the cadmium blocker as unverified over the real API [136.88ms]
+(pass) Legal basis reaches the operator > resolves the real catalogue cadmium rule to unverified [0.19ms]
+(pass) Legal basis reaches the operator > keeps a verified rule's finding distinct from the unverified one [0.28ms]
+(pass) Legal basis reaches the operator > never leaves a blocking finding untagged [0.09ms]
+
+test/license-generator-cli.test.ts:
+(pass) Zero-Code Billing & Offline Ed25519 License Generator CLI > builds deterministic commercial quote with zero-custody remittance disclaimer [0.06ms]
+(pass) Zero-Code Billing & Offline Ed25519 License Generator CLI > issues and cryptographically verifies 5M VND pilot license key [0.58ms]
+(pass) Zero-Code Billing & Offline Ed25519 License Generator CLI > issues 60M VND annual Pro and 180M VND Enterprise licenses with correct editions [0.60ms]
+(pass) Zero-Code Billing & Offline Ed25519 License Generator CLI > handles CLI subcommands: --keygen and default issuance [0.65ms]
+
+test/manifest-integrity-tamper.test.ts:
+(pass) Whole-record manifest integrity hash (F-06) > seals every field and verifies a manifest nobody touched [248.81ms]
+(pass) Whole-record manifest integrity hash (F-06) > detects edits to fields the composite hash never covered [200.15ms]
+(pass) Whole-record manifest integrity hash (F-06) > detects an override-sealed manifest whose blocker count was zeroed by hand [4.12ms]
+(pass) Whole-record manifest integrity hash (F-06) > keeps the composite hash as the control for identity tampering [200.76ms]
+(pass) Whole-record manifest integrity hash (F-06) > verifies a legacy manifest without the field but reports partial coverage [206.01ms]
+(pass) Whole-record manifest integrity hash (F-06) > hashes canonically, independent of key order and of its own field [0.13ms]
+
+test/manifest-redaction-and-tenant-kpi.test.ts:
+(pass) Cross-tenant manifest redaction and pilot KPI isolation (F-01, F-02) > serves the owner the full manifest and the grantee a purpose-bound redacted view [199.79ms]
+(pass) Cross-tenant manifest redaction and pilot KPI isolation (F-01, F-02) > keeps declared quantities visible to a customs-inspection grantee [204.53ms]
+(pass) Cross-tenant manifest redaction and pilot KPI isolation (F-01, F-02) > refuses the manifest when the share purpose does not justify holding it [200.38ms]
+(pass) Cross-tenant manifest redaction and pilot KPI isolation (F-01, F-02) > keeps a shared dossier out of the grantee tenant's KPI and launch gates [233.73ms]
+
+test/marketplace-escrow-guard.test.ts:
+(pass) Direction 2: Guarded B2B Marketplace & Non-Custodial Escrow Scaffold (Prompt 6A) > enforces Dual-Lock fail-closed by default when feature flag or pilot gates are not met [0.20ms]
+(pass) Direction 2: Guarded B2B Marketplace & Non-Custodial Escrow Scaffold (Prompt 6A) > rejects any custodial fund-holding or payment credential fields under Nghị định 52/2024/NĐ-CP [0.19ms]
+(pass) Direction 2: Guarded B2B Marketplace & Non-Custodial Escrow Scaffold (Prompt 6A) > coordinates B2B listing, tenant privacy, idempotent bank webhooks, and 100% SHA-256 gated release when unlocked [5.64ms]
+
+test/multi-tenant-pilot.test.ts:
+(pass) Prompt 5A: Closed Multi-Tenant Pilot & Security Invariants > enforces tenant isolation: Tenant B cannot view Tenant A dossier without grant [3.78ms]
+(pass) Prompt 5A: Closed Multi-Tenant Pilot & Security Invariants > permits delegated sharing: grant access, list shared, and immediate revoke [4.18ms]
+(pass) Prompt 5A: Closed Multi-Tenant Pilot & Security Invariants > enforces role allow/deny: CLERK cannot approve/export, only ADMIN/MANAGER can [3.47ms]
+(pass) Prompt 5A: Closed Multi-Tenant Pilot & Security Invariants > blocks modifications on sealed/immutable dossiers [4.38ms]
+(pass) Prompt 5A: Closed Multi-Tenant Pilot & Security Invariants > manages independent organic certification evidence with disclaimer & audit trail [3.52ms]
+(pass) Prompt 5A: Closed Multi-Tenant Pilot & Security Invariants > exposes REST endpoints for sharing and organic evidence over HTTP router [224.91ms]
+
+test/onprem-runbook-gate03.test.ts:
+(pass) GATE-03 On-Premise Runbook & /api/v1/auth/* Contract > enforces loopback-only hostname binding per GATE-03 runbook [1.83ms]
+(pass) GATE-03 On-Premise Runbook & /api/v1/auth/* Contract > routes /api/health, /api/auth/login, /api/auth/me, and /api/v1/dossiers as required by Disaster Recovery SOP [92.93ms]
+
+test/open-core-25-step-blueprint-e2e.test.ts:
+(pass) Open-Core 25-Step Blueprint & Portability API E2E > Step 1 & 13: delivers Open-Core Edition Manifest with truthful economic constraints [96.66ms]
+(pass) Open-Core 25-Step Blueprint & Portability API E2E > Step 14: exports and verifies signed portability bundle with HMAC and detects tampering [87.50ms]
+(pass) Open-Core 25-Step Blueprint & Portability API E2E > Step 10 & 14: enforces strict tenant isolation on workspace portability exports [162.14ms]
+(pass) Open-Core 25-Step Blueprint & Portability API E2E > Step 1-25: validates complete 25-step blueprint synchronization across artifacts [0.54ms]
+
+test/open-core-deep-introspector.test.ts:
+(pass) Deep Brainstorm & 25-Step Open-Core Public GitHub + SaaS Introspector (--deep) > passes all 15 Socratic turns (5 Open-Core + 5 UI/UX + 5 Modularity) and verifies GO_OPEN_CORE_SAAS [13.08ms]
+(pass) Deep Brainstorm & 25-Step Open-Core Public GitHub + SaaS Introspector (--deep) > fails closed on Turn 1 and Turn 2 if MIT boundary or governance files are contaminated/missing [1.25ms]
+(pass) Deep Brainstorm & 25-Step Open-Core Public GitHub + SaaS Introspector (--deep) > exposes GET /api/v1/open-core/blueprint-status?deep=true over HTTP [99.26ms]
+
+test/open-core-saas-monetization.test.ts:
+(pass) Open-Core Public GitHub & SaaS Monetization Suite > defaults to COMMUNITY_OPEN_CORE with full local compliance & verifier access when no SaaS license is set [0.11ms]
+(pass) Open-Core Public GitHub & SaaS Monetization Suite > verifies Ed25519 license keys and fails closed on missing pubkey, invalid signature, tenant mismatch, and expiry [0.59ms]
+(pass) Open-Core Public GitHub & SaaS Monetization Suite > gates CloudVisionOcrExtractorAdapter behind paid SaaS subscription while preserving mandatory DRAFT HITL status [0.60ms]
+(pass) Open-Core Public GitHub & SaaS Monetization Suite > computes non-binding 0 VND estimate when 0 sealed containers exist and scopes GET /api/v1/saas/status to actor.tenantId [97.08ms]
+
+test/open-core-workspace-portability.test.ts:
+(pass) Step 14: Signed Workspace Portability Funnel (Community -> Pro/Enterprise) > exports and verifies a signed workspace portability bundle with HMAC [0.51ms]
+(pass) Step 14: Signed Workspace Portability Funnel (Community -> Pro/Enterprise) > rejects bundle if payload is tampered with [0.12ms]
+(pass) Step 14: Signed Workspace Portability Funnel (Community -> Pro/Enterprise) > rejects bundle if HMAC signature does not match secret [0.09ms]
+
+test/organic-and-purpose-5a4.test.ts:
+(pass) Prompt 5A-4: Two-Layer Organic Status, Validity Gate & SharePurpose Access Control (HTTP + SQLite) > upgrades V4 database with legacy organic_evidence.status to V5 (issuer_claimed_status + durios_record_status) while preserving all fields and disclaimers [30.67ms]
+(pass) Prompt 5A-4: Two-Layer Organic Status, Validity Gate & SharePurpose Access Control (HTTP + SQLite) > enforces two-layer organic status separation and rejects client-supplied duriosRecordStatus, EXPIRED, SUSPENDED, past validTo, and validTo == now with 422 and zero side effects [97.77ms]
+(pass) Prompt 5A-4: Two-Layer Organic Status, Validity Gate & SharePurpose Access Control (HTTP + SQLite) > enforces SharePurpose matrix on /audit and /organic-evidence, multi-grant purpose evaluation, owner-only audit event scoping, and zero empty-200 masking [505.74ms]
+
+test/persistence-and-restart.test.ts:
+(pass) Phase A: Persistence and Restart > persists dossier, document, HITL verification, and audit across client reopen [25.87ms]
+(pass) Phase A: Persistence and Restart > enforces path traversal prevention in FileStorageService [0.24ms]
+(pass) Phase A: Persistence and Restart > rolls back atomic SQLite transaction on error [13.56ms]
+
+test/pilot-gate-evidence-split.test.ts:
+(pass) Machine checks and launch gates are reported as two different things > keeps goForLiveCustomerData false when all 5 machine checks pass but nobody recorded evidence [106.70ms]
+(pass) Machine checks and launch gates are reported as two different things > ignores an evidence file nobody signed for, and accepts it once a recorder is named [129.40ms]
+(pass) Machine checks and launch gates are reported as two different things > never lets rehearsal evidence open a gate, however green the checks are [110.59ms]
+(pass) Machine checks and launch gates are reported as two different things > prints the two counts separately in the operator summary [114.43ms]
+
+test/pilot-go-live-pack.test.ts:
+(pass) Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor Tool > compiles a sealed Go-Live Readiness Report with 5 checklist items and verifies SHA-256 integrity [114.77ms]
+[DuriOS] pilot:seed-rehearsal enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+(pass) Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor Tool > supports CLI --output-dir export and --verify cryptographic verification round-trip [246.15ms]
+(pass) Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor Tool > serves GET /api/v1/pilot/go-live-pack to AUDITOR/MANAGER and blocks CLERK with 403 [180.26ms]
+
+test/pilot-kpi-multi-container.test.ts:
+(pass) Multi-Container KPI Value Metrics Aggregation (5-Container Pilot Cohort) > evaluates and aggregates value metrics across all 5 containers while preserving firstContainerMetrics [0.71ms]
+
+test/pilot-launch-gate-verifier.test.ts:
+(pass) Single-Site Launch Gate Verifier (GATE-01..GATE-05) > fails closed (goForLiveCustomerData: false) when GATE-01 consent or GATE-02 OTP credentials are missing [122.24ms]
+(pass) Single-Site Launch Gate Verifier (GATE-01..GATE-05) > reports goForLiveCustomerData: true only when all 5 gates hold machine checks AND recorded operator evidence [121.85ms]
+
+test/pilot-rehearsal-seeder.test.ts:
+(pass) GATE-05 Pilot Rehearsal Seeder, KPI Evaluator & Company Blueprint > validates .mekong/company.json 25-step zero-stage blueprint and blueprint docs [0.49ms]
+[DuriOS] pilot:seed-rehearsal enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+(pass) GATE-05 Pilot Rehearsal Seeder, KPI Evaluator & Company Blueprint > provisions Cai Lay CLERK/MANAGER accounts, 5 rehearsal dossiers with 2 blind faults, and passes GATE-05 KPI evaluation [227.05ms]
+
+test/pluggable-extractor.test.ts:
+(pass) Direction 3: Pluggable Document Extractor & OCR Adapter Suite > extracts ISO 6346 container, seal, net weight, boxes, PUC, and PHC from UTF-8 PDF stream [0.25ms]
+(pass) Direction 3: Pluggable Document Extractor & OCR Adapter Suite > extracts cadmium level, sample code, and sampling date from LAB_TEST_REPORT stream [0.08ms]
+(pass) Direction 3: Pluggable Document Extractor & OCR Adapter Suite > falls back to subsequent adapter in CompositeExtractorRegistry when primary throws or returns empty [0.67ms]
+(pass) Direction 3: Pluggable Document Extractor & OCR Adapter Suite > integrates LocalHeuristicTextExtractorAdapter seamlessly into ContainerDossierWorkspace.uploadDocument [3.42ms]
+
+test/process-restart-persistence.test.ts:
+(pass) Section 1: True OS Process-Level Restart Persistence Integration Test > proves end-to-end data persistence across full OS process termination and restart [332.62ms]
+(pass) Section 1: True OS Process-Level Restart Persistence Integration Test > persists share grants (active + revoked), organic evidence boundaries, and enforces 409 DOSSIER_IMMUTABLE across real OS process restart [575.66ms]
+(pass) Section 1: True OS Process-Level Restart Persistence Integration Test > completes Single-Site On-Prem Staging Dress Rehearsal: 3 auth methods, blind fault-injection, <3m KPI dossier flow, hot backup, tamper detection, and clean restore [471.79ms]
+
+test/rbac-and-tuples-5a2.test.ts:
+(pass) Prompt 5A-2: Identity Tuple Validation & Server/Domain RBAC Matrix (HTTP + SQLite) > accepts all ratified (ProductPersona, TenantType, UserRole) tuples and rejects invalid or legacy tuples (403) without fallback or session creation [1040.01ms]
+(pass) Prompt 5A-2: Identity Tuple Validation & Server/Domain RBAC Matrix (HTTP + SQLite) > enforces complete 5-role Allow & Deny matrix across all operational and management endpoints over HTTP + SQLite with zero side effects on denied calls [950.00ms]
+
+test/redaction-storage-v1-5a5.test.ts:
+(pass) Prompt 5A-5: Commercial Redaction, Content-Addressed Blob Storage & /api/v1 Alias > gives owner full data while redacting commercial fields and storagePath for shared tenants according to SharePurpose across detail, list,upload/verify, and manifest [412.19ms]
+(pass) Prompt 5A-5: Commercial Redaction, Content-Addressed Blob Storage & /api/v1 Alias > redacts nested commercial camelCase/snake_case properties without mutating stored dossier [161.86ms]
+(pass) Prompt 5A-5: Commercial Redaction, Content-Addressed Blob Storage & /api/v1 Alias > stores physical blobs at ${dataDir}/storage/blobs/{sha256}.bin, records exact relative path in SQLite, hides storagePath on HTTP, and survives restart [92.86ms]
+(pass) Prompt 5A-5: Commercial Redaction, Content-Addressed Blob Storage & /api/v1 Alias > reuses identical existing blob without overwriting, refuses corrupted existing blob, and protects shared blobs when a duplicate upload DB save fails [107.22ms]
+(pass) Prompt 5A-5: Commercial Redaction, Content-Addressed Blob Storage & /api/v1 Alias > blocks parent traversal, absolute paths, and sibling-prefix directory traversal [12.06ms]
+(pass) Prompt 5A-5: Commercial Redaction, Content-Addressed Blob Storage & /api/v1 Alias > migrates legacy files only when deterministically found and hash-verified, reporting unmigrated items without fabricating paths [91.75ms]
+(pass) Prompt 5A-5: Commercial Redaction, Content-Addressed Blob Storage & /api/v1 Alias > supports /api/v1/... alias equivalently across all 7 approved route groups and rejects out-of-scope /api/v1 routes with 404 [273.93ms]
+(pass) Prompt 5A-5: Commercial Redaction, Content-Addressed Blob Storage & /api/v1 Alias > proves strict side-by-side equivalence between /api and /api/v1 across all 7 route groups for allowed and denied requests of owner, shared tenant, and unauthorized actors [1271.91ms]
+
+test/rehearsal-bootstrap-and-provenance.test.ts:
+(pass) Unauthenticated rehearsal bootstrap and gate provenance (F-03, F-07) > is refused by default and provisions no account, token or dossier [3.45ms]
+(pass) Unauthenticated rehearsal bootstrap and gate provenance (F-03, F-07) > runs in a declared rehearsal sandbox and never claims go-live authority [184.96ms]
+(pass) Unauthenticated rehearsal bootstrap and gate provenance (F-03, F-07) > labels an operational gate run OPERATIONAL and keeps its go-live decision honest [77.01ms]
+
+test/rehearsal-seed-target-guard.test.ts:
+(pass) Rehearsal seeder needs a declared destination and refuses foreign data > refuses to pick a database for itself instead of defaulting to ./data/durios.db [0.31ms]
+(pass) Rehearsal seeder needs a declared destination and refuses foreign data > explains why: published credentials must not land in an operational database [0.06ms]
+(pass) Rehearsal seeder needs a declared destination and refuses foreign data > derives the blob directory next to the declared database when it is not given [0.06ms]
+(pass) Rehearsal seeder needs a declared destination and refuses foreign data > refuses a SQLite file that is not a DuriOS database [2.87ms]
+(pass) Rehearsal seeder needs a declared destination and refuses foreign data > refuses a database holding a dossier this seeder did not create [14.61ms]
+[DuriOS] pilot:seed-rehearsal enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+(pass) Rehearsal seeder needs a declared destination and refuses foreign data > accepts its own rehearsal database and declares synthetic extraction while seeding [221.07ms]
+
+test/review-claims-boundary.test.ts:
+(pass) review-state — the product does not claim regulatory clearance > no Vietnamese or English label asserts certification, clearance or export approval [0.10ms]
+(pass) review-state — the product does not claim regulatory clearance > every state has a label distinct from its English gloss (it is a real translation) [0.03ms]
+(pass) review-state — the six operational states an operator must distinguish > has exactly six states, each with a Vietnamese label [0.11ms]
+(pass) review-state — the six operational states an operator must distinguish > uses the exact Vietnamese wording the operator's checklist asks for [0.03ms]
+(pass) review-state — the six operational states an operator must distinguish > returns an empty string for an unknown state rather than a wrong label [0.01ms]
+
+test/review-legal-basis.test.ts:
+(pass) rule legal basis — an unverified statutory rule may never read as clean > an active, statutory-verified rule is verified [0.04ms]
+(pass) rule legal basis — an unverified statutory rule may never read as clean > an active but statutory-unverified blocker is reported unverified, not verified [0.02ms]
+(pass) rule legal basis — an unverified statutory rule may never read as clean > an active advisory warning is advisory, not verified [0.01ms]
+(pass) rule legal basis — an unverified statutory rule may never read as clean > an inactive rule is inactive and never counted as passed [0.01ms]
+(pass) rule legal basis — an unverified statutory rule may never read as clean > a rule record with no severity fails safe to unverified, not advisory [0.01ms]
+(pass) rule legal basis — an unverified statutory rule may never read as clean > ruleCarriesLegalConclusion refuses an unverified blocker and an inactive rule [0.06ms]
+(pass) rule legal basis — an unverified statutory rule may never read as clean > an internal advisory is not refused — it is simply not statutory [0.01ms]
+(pass) review-state — review progress uses the configured checklist denominator > counts only human-confirmed items and reports the denominator it used [0.08ms]
+(pass) review-state — review progress uses the configured checklist denominator > does not invent a denominator when nothing is configured [0.02ms]
+(pass) review-state — review progress uses the configured checklist denominator > never counts a blocked or not-applicable item as confirmed [0.02ms]
+
+test/review-state-injection.test.ts:
+(pass) Served workspace carries the shared review vocabulary > injects the review-state labels the module exports [0.57ms]
+(pass) Served workspace carries the shared review vocabulary > injects a Vietnamese label for every legal basis the helper can return [0.30ms]
+(pass) Served workspace carries the shared review vocabulary > leaves no hand-written label definition on disk to drift from the module [0.43ms]
+(pass) Served workspace carries the shared review vocabulary > labels a basis the helper would produce but the map has not been updated for [0.08ms]
+(pass) Served workspace carries the shared review vocabulary > keeps the injected block parseable as JavaScript [2.10ms]
+(pass) Served workspace carries the shared review vocabulary > does not invent an authority field the API never sends [0.33ms]
+(pass) Served workspace carries the shared review vocabulary > renders the finding's legal basis from the API field [0.32ms]
+
+test/review-state.test.ts:
+(pass) review-state — draft, confirmed and manual values stay distinguishable > an extracted suggestion is Cần rà soát, never Đã xác nhận dữ liệu [0.11ms]
+(pass) review-state — draft, confirmed and manual values stay distinguishable > a person-confirmed value is Đã xác nhận dữ liệu [0.05ms]
+(pass) review-state — draft, confirmed and manual values stay distinguishable > a manual correction still awaiting confirmation is Cần đánh giá lại [0.02ms]
+(pass) review-state — draft, confirmed and manual values stay distinguishable > a manual correction the person then confirmed is Đã xác nhận dữ liệu [0.02ms]
+(pass) review-state — draft, confirmed and manual values stay distinguishable > a rejected field is Cần đánh giá lại and never reads as clean [0.01ms]
+(pass) review-state — disagreement and unreadable evidence stay visible > a cross-document discrepancy is Có sai lệch [0.01ms]
+(pass) review-state — disagreement and unreadable evidence stay visible > a missing or unreadable source is Cần bổ sung bằng chứng [0.03ms]
+(pass) review-state — disagreement and unreadable evidence stay visible > an empty value is Cần bổ sung bằng chứng even when the sources nominally agree [0.02ms]
+(pass) review-state — a superseded source supersedes the confirmation bound to it > a confirmed value on a replaced document becomes Nguồn đã thay đổi [0.01ms]
+(pass) review-state — a superseded source supersedes the confirmation bound to it > SOURCE_CHANGED wins over a genuine discrepancy so the stale confirmation is not hidden [0.01ms]
+(pass) classifyField total function: every state is reachable from some row [0.09ms]
+
+test/rules-and-completeness.test.ts:
+(pass) DuriOS Compliance Rules & Completeness Suite > T06: Missing required document triggers CRITICAL_BLOCKER [3.61ms]
+(pass) DuriOS Compliance Rules & Completeness Suite > T07: Cross-document container identifier mismatch triggers CRITICAL_BLOCKER [3.32ms]
+(pass) DuriOS Compliance Rules & Completeness Suite > T08: Unverified regulatory rule is flagged and blocked from producing legal conclusion [3.14ms]
+
+test/rules-cadmium-internal-block.test.ts:
+(pass) Cadmium food-safety block (internal, unverified statutory basis) > T-CD-01: a lot above 0.050 mg/kg is blocked and names the threshold [5.15ms]
+(pass) Cadmium food-safety block (internal, unverified statutory basis) > T-CD-02: the block is presented as an internal check, never a legal conclusion [5.22ms]
+(pass) Cadmium food-safety block (internal, unverified statutory basis) > T-CD-03: a lot below the limit is not blocked by the new rule [4.20ms]
+(pass) Cadmium food-safety block (internal, unverified statutory basis) > T-CD-04: the legacy unverified statutory rule stays disabled and unrun [3.46ms]
+(pass) Cadmium food-safety block (internal, unverified statutory basis) > T-CD-05: the internal advisory at 0.040 still keeps its own meaning [3.18ms]
+(pass) Statutory-claim discriminator > T-CD-06: a rule claiming statutory authority still fails closed when unverified [3.42ms]
+(pass) Statutory-claim discriminator > T-CD-07: a rule record omitting the discriminator is treated as a statutory claim [3.73ms]
+(pass) Statutory-claim discriminator > T-CD-08: an internal-food-safety rule at blocker severity is evaluated normally [4.44ms]
+
+test/saas-advanced-ecosystem.test.ts:
+(pass) 25-Step Open-Core Ecosystem: ZNS Relay, Partner Webhooks, Hybrid Edge Sync & Multi-Market Packs > Step 7: fails closed when ZNS transport is unconfigured and dispatches with quota tracking when configured [0.88ms]
+(pass) 25-Step Open-Core Ecosystem: ZNS Relay, Partner Webhooks, Hybrid Edge Sync & Multi-Market Packs > Step 15: verifies Partner HMAC before replay lookup, rejects conflicting payloads, and emits DRAFT fields [1.03ms]
+(pass) 25-Step Open-Core Ecosystem: ZNS Relay, Partner Webhooks, Hybrid Edge Sync & Multi-Market Packs > Step 18: persists offline queue in SQLite across restarts and fails closed without transport [15.70ms]
+(pass) 25-Step Open-Core Ecosystem: ZNS Relay, Partner Webhooks, Hybrid Edge Sync & Multi-Market Packs > Step 21: serves CN market pack free in Community Edition and fails closed on unverified JP/KR/EU packs [0.42ms]
+
+test/saas-cloud-connectors.test.ts:
+(pass) 25-Step Open-Core & SaaS Cloud Connectors Suite > verifies sealed DossierExportManifest with MIT standalone verifier and rejects tampering or non-manifest JSON [3.87ms]
+(pass) 25-Step Open-Core & SaaS Cloud Connectors Suite > encrypts and decrypts SiteBackupManifest with scrypt + AAD AES-256-GCM E2EE for Cloud Vault [116.64ms]
+(pass) 25-Step Open-Core & SaaS Cloud Connectors Suite > evaluates GACC PUC/PHC watch with explicit snapshot, buyer rooms with explicit portalBaseUrl, and statutory market packs [5.04ms]
+(pass) 25-Step Open-Core & SaaS Cloud Connectors Suite > anchors AuditLedger head eventHash with local HMAC key and fails closed without signing key [4.26ms]
+
+test/security-and-export.test.ts:
+(pass) DuriOS Security & Export Suite > T09: Cross-tenant data access is isolated and clerk unauthorized sign-off is blocked [3.14ms]
+(pass) DuriOS Security & Export Suite > T10: Export generates immutable sealed manifest with composite SHA-256 and disclaimers [3.48ms]
+(pass) DuriOS Security & Export Suite > T11: Prohibits validation on sealed (EXPORTED, CLOSED, or isImmutable) dossiers without side effects [3.58ms]
+(pass) DuriOS Security & Export Suite > T12: Prohibits CLERK from exporting dossier; MANAGER and ADMIN are authorized [3.92ms]
+
+test/server-auth-5a1.test.ts:
+(pass) Prompt 5A-1 & 5A-1.1: Server-Side Authentication & Hardening (HTTP + SQLite) > authenticates via HttpOnly Cookie (no sessionToken in JSON), sets Secure in production, and unifies all 3 methods into identical AuthenticatedActor [175.31ms]
+(pass) Prompt 5A-1 & 5A-1.1: Server-Side Authentication & Hardening (HTTP + SQLite) > prevents OTP phone enumeration, enforces SQLite-persisted OTP/password rate limits ignoring spoofed IP headers, and rejects unconfigured OTP (503) [375.90ms]
+(pass) Prompt 5A-1 & 5A-1.1: Server-Side Authentication & Hardening (HTTP + SQLite) > enforces CLI security rules (no --password in argv, no implicit defaults, revoke-session CLI) and ignores spoofed headers [87.42ms]
+(pass) Prompt 5A-1 & 5A-1.1: Server-Side Authentication & Hardening (HTTP + SQLite) > upgrades a pre-5A-1.1 legacy V2 database (NOT NULL account_id, missing auth_rate_limits) to V3 while preserving data and persisting OTP rate limits across restart [133.78ms]
+(pass) Prompt 5A-1 & 5A-1.1: Server-Side Authentication & Hardening (HTTP + SQLite) > enforces OTP verification failure rate limit (otp_verify:<phone>), persists lock across SQLite restart, and expires cleanly after lock window [355.22ms]
+(pass) Prompt 5A-1 & 5A-1.1: Server-Side Authentication & Hardening (HTTP + SQLite) > validates HttpGatewayOtpProvider & createOtpProviderFromEnv for ZALO ZNS and SMS with strict credential/timeout/gateway-failure checks [163.48ms]
+
+test/socratic-modal-contract.test.ts:
+(pass) Socratic 15-turn modal & asset parity contract > verifies site/public and queue/ are byte-identical mirrors for both bridge JS and design CSS [0.10ms]
+(pass) Socratic 15-turn modal & asset parity contract > exposes the 3-pillar schema, truthful error/pending notices, and modularity filter in the live bridge [0.19ms]
+(pass) Socratic 15-turn modal & asset parity contract > fails closed on Modularity Turn 5 if site and queue bridge scripts drift [2.49ms]
+
+test/sqlite-sharing-and-evidence-5a3.test.ts:
+(pass) Prompt 5A-3: SQLite Persistence for Share Grants & Organic Evidence (HTTP + SQLite) > creates V4 schema on fresh DB and safely upgrades an existing V3 database while preserving all prior records [41.68ms]
+(pass) Prompt 5A-3: SQLite Persistence for Share Grants & Organic Evidence (HTTP + SQLite) > persists share grants, revocations, and organic evidence across SQLite restarts and enforces list/detail shared visibility, expiry, and multi-grant scope precedence [509.17ms]
+(pass) Prompt 5A-3: SQLite Persistence for Share Grants & Organic Evidence (HTTP + SQLite) > rolls back share_grants and organic_evidence atomically when a multi-step transaction fails and enforces SQLite CHECK constraints [15.94ms]
+
+test/static-ui-contract.test.ts:
+(pass) Static UI contract: index.html > keeps the element IDs used by the workspace script [1.00ms]
+(pass) Static UI contract: index.html > keeps the global workspace functions [2.12ms]
+(pass) Static UI contract: index.html > calls only existing API endpoints [0.63ms]
+(pass) Static UI contract: index.html > has language, viewport, skip link and live regions [0.28ms]
+(pass) Static UI contract: index.html > labels every create-dossier control [0.28ms]
+(pass) Static UI contract: index.html > does not use blocking alert() dialogs [0.69ms]
+(pass) Static UI contract: index.html > renders validation findings from fields that exist in the API [0.81ms]
+(pass) Static UI contract: index.html > escapes API data instead of interpolating IDs into inline handlers [0.15ms]
+
+test/stitch-static-route.test.ts:
+(pass) Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite > serves all 25 Stitch HTML pages and PNG previews under /stitch/* [25.10ms]
+(pass) Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite > preserves fail-closed 2/5 gates without fullGates and unlocks 5/5 gates when fullGates=true [318.80ms]
+(pass) Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite > validates live ISO 6346 container and detects 1-byte Cadimi mutation with MANIFEST_HASH_MISMATCH [0.43ms]
+(pass) Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite > blocks traversal with 403/404 and returns 404 for missing asset [0.15ms]
+
+test/synthetic-extraction-mode.test.ts:
+(pass) Fixture extraction runs only in declared synthetic mode (F-05 residual) > reads text/plain from the bytes themselves, not from a template [0.34ms]
+(pass) Fixture extraction runs only in declared synthetic mode (F-05 residual) > reports NOT_EXTRACTED for an application/pdf whose bytes carry no readable field [0.06ms]
+(pass) Fixture extraction runs only in declared synthetic mode (F-05 residual) > reports NOT_EXTRACTED for an application/json that holds no document field [0.03ms]
+(pass) Fixture extraction runs only in declared synthetic mode (F-05 residual) > reports NOT_EXTRACTED for images in every format the build cannot read [0.16ms]
+(pass) Fixture extraction runs only in declared synthetic mode (F-05 residual) > refuses caller-supplied fixtureFields on an ordinary instance and audits the refusal [3.75ms]
+(pass) Fixture extraction runs only in declared synthetic mode (F-05 residual) > keeps the declared synthetic rehearsal flow working [3.24ms]
+
+test/tenant-rate-limiter.test.ts:
+(pass) TenantRateLimiter > permits requests within allowed quota [3.19ms]
+(pass) TenantRateLimiter > throws RATE_LIMITED when tenant exceeds request limit [3.06ms]
+(pass) TenantRateLimiter > isolates rate limit buckets between different tenants [2.95ms]
+
+test/tri-tuple-persona-rbac.test.ts:
+(pass) Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole) > validates permissible identity tuples according to PRD v1.0 section 5.2.3 [0.06ms]
+(pass) Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole) > strictly rejects forbidden identity tuples with zero fallback [0.08ms]
+(pass) Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole) > enforces dossier creation boundaries by persona and tenant type [0.12ms]
+(pass) Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole) > enforces document upload rights strictly for packhouse actors in owning tenant [0.11ms]
+(pass) Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole) > enforces field verification rights with scope checks [0.12ms]
+(pass) Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole) > restricts export approval and sealing strictly to PACKHOUSE_MANAGER [0.10ms]
+(pass) Tri-Tuple Persona RBAC Matrix (ProductPersona x TenantType x UserRole) > allows both packhouse and orchard co-op actors to record organic evidence [0.06ms]
+
+test/ui-sample-upload.test.ts:
+(pass) UI sample document upload flow > creates three distinct documents and reaches EXPORTED through the UI payloads [221.26ms]
+(pass) UI sample document upload flow > re-uploading the same sample is detected as a duplicate, not a new document [175.34ms]
+
+ 286 pass
+ 0 fail
+ 4484 expect() calls
+Ran 286 tests across 67 files. [20.77s]
+### EXIT=0
+  ran: bun test (whole suite) → exit 0
+PASS | bun test (exit 0 as expected)
+PASS | test suite reports 0 failing tests
+  suite: 286pass / 4484expect()calls
+PASS | suite reported a pass count (286pass)
+  → STEP 3 result: PASS

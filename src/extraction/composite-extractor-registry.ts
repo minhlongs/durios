@@ -5,6 +5,8 @@ import type {
   FixtureFieldOverrides,
 } from "./extractor-types.js";
 import { defaultFixtureExtractor } from "./fixture-extractor.js";
+import { resolveExtractionFallback } from "./extractor-fallback.js";
+import { assertSyntheticFixtureRequestAllowed } from "./synthetic-extraction-mode.js";
 import { LocalHeuristicTextExtractorAdapter } from "./local-text-extractor.js";
 
 export class CompositeExtractorRegistry {
@@ -37,6 +39,7 @@ export class CompositeExtractorRegistry {
     fixtureOverrides?: FixtureFieldOverrides
   ): readonly ExtractedField[] {
     if (fixtureOverrides && Object.keys(fixtureOverrides).length > 0) {
+      assertSyntheticFixtureRequestAllowed();
       return defaultFixtureExtractor.extractFields(fileBuffer, context, fixtureOverrides);
     }
 
@@ -54,7 +57,7 @@ export class CompositeExtractorRegistry {
       }
     }
 
-    return defaultFixtureExtractor.extractFields(fileBuffer, context, fixtureOverrides);
+    return resolveExtractionFallback(fileBuffer, context, fixtureOverrides);
   }
 
   public async extractFields(
@@ -63,6 +66,7 @@ export class CompositeExtractorRegistry {
     fixtureOverrides?: FixtureFieldOverrides
   ): Promise<readonly ExtractedField[]> {
     if (fixtureOverrides && Object.keys(fixtureOverrides).length > 0) {
+      assertSyntheticFixtureRequestAllowed();
       return defaultFixtureExtractor.extractFields(fileBuffer, context, fixtureOverrides);
     }
 
@@ -82,7 +86,7 @@ export class CompositeExtractorRegistry {
       }
     }
 
-    return defaultFixtureExtractor.extractFields(fileBuffer, context, fixtureOverrides);
+    return resolveExtractionFallback(fileBuffer, context, fixtureOverrides);
   }
 }
 

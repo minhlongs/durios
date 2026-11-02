@@ -1,0 +1,76 @@
+# drill-stage0.ts (S1-S11) — captured 2026-10-30T09:51:13Z
+# repo /home/user/durios | branch arena/e0ece0a7-durios | HEAD 2f1538e80ac97dc1efb9d9b52b14782d9bfb2494 | bun 1.4.4 | node v22.22.3
+# DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true (bắt buộc: kịch bản nạp fixtureFields)
+
+### CMD: DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true bun /home/user/durios/docs/reports/arena-stage0-20261029/evidence/drill-stage0.ts
+== S1 synthetic environment == root=/tmp/drill-stage0-PKwyGG db=/tmp/drill-stage0-PKwyGG/durios.db
+PASS | repository ./data untouched by the drill
+== S1 repository root resolved from this file == /home/user/durios
+== S2 actors == manager=user_tenant-drill-a-manager-kp1k clerk=user_tenant-drill-a-clerk-ejch buyer=user_tenant-drill-b-viewer-yz95 intruder=user_tenant-drill-c-manager-7q08
+== S3 valid dossier == id=DOS-mvuslwar-880jk validation=PASSED blockers=0
+PASS | clean synthetic dossier validates PASSED | status=PASSED
+PASS | manager can approve and export; clerk-approved export is not used here | exportStatus=200
+PASS | sealed manifest is immutable and carries both hashes
+PASS | standalone verifier accepts the untouched manifest | errors=[]
+== S4 manifest tamper drills ==
+PASS | tamper detected: complianceFindingsCount rewritten (advisory warnings inflated) | errors=["Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '7b820ef18c42a2b4fe3c9bd3b3ae292c9adbb6f7d756eb84d7a453e98772e04d', recomputed '84cd251c49493885af3f19960168f3ba64bb8623ce61332cdc46e610ad637d90')."]
+PASS | tamper detected: disclaimers replaced by a clearance claim | errors=["Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '7b820ef18c42a2b4fe3c9bd3b3ae292c9adbb6f7d756eb84d7a453e98772e04d', recomputed 'd6dff673db5aaafeff9672543607cec77dbbf98ed43dbf5674ede268da0b448a')."]
+PASS | tamper detected: exportedBy rewritten | errors=["Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '7b820ef18c42a2b4fe3c9bd3b3ae292c9adbb6f7d756eb84d7a453e98772e04d', recomputed 'd86de26431f4a21d13db0b6d30db8c310f998862921f809606a80fc08c6075f5')."]
+PASS | tamper detected: exportedAt rewritten | errors=["Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '7b820ef18c42a2b4fe3c9bd3b3ae292c9adbb6f7d756eb84d7a453e98772e04d', recomputed '88a0c6361501fffb29bcf47af7ad23f35c8754dbc04084b79b6357c172c67cef')."]
+PASS | tamper detected: verifiedDataSummary cadmium value rewritten | errors=["Composite SHA-256 mismatch: expected 'edb416ae51a072306cd70a6d6e13fb91461ee833dfe1c6340728cbfacccf4a88', recomputed '7a86dc5e48201dfb768b71f74c8bc780f348cb7b3ac9b5427a881c18628ad37f'.","Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '7b820ef18c42a2b4fe3c9bd3b3ae292c9adbb6f7d756eb84d7a453e98772e04d', recomputed '9d88c226c6c3fb19128cf220b6c2f61dd4e9ef0c9cca14e2743dd783fae3b571')."]
+PASS | tamper detected: containerNumber rewritten (control: composite hash) | errors=["Composite SHA-256 mismatch: expected 'edb416ae51a072306cd70a6d6e13fb91461ee833dfe1c6340728cbfacccf4a88', recomputed '0ec2cd534df507ca759a481d699d557fdb063e98e5c5740f30a9d85bd5c6a856'.","Container number 'MSKU0000000' failed ISO 6346 check-digit validation.","Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '7b820ef18c42a2b4fe3c9bd3b3ae292c9adbb6f7d756eb84d7a453e98772e04d', recomputed 'aac8ac1f279e7dfbb3f39af3d5178bc1b4ad37e0db8fc5c1ccaf89feec172a91')."]
+PASS | tamper detected: lifecycleState reverted to DRAFT | errors=["Manifest dossier is not in a sealed, immutable EXPORTED state.","Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '7b820ef18c42a2b4fe3c9bd3b3ae292c9adbb6f7d756eb84d7a453e98772e04d', recomputed '4d3e4f9dc328a526434924ba5484f6f700fca9178e4dc8cd8573d145f884dc9d')."]
+PASS | legacy manifest without the integrity field still verifies but reports PARTIAL_LEGACY | coverage=PARTIAL_LEGACY
+== S5 failure drills ==
+PASS | seal mismatch across documents blocks the lot | status=BLOCKED findings=["RUL-CROSS-SEAL"]
+PASS | blocked dossier cannot be approved | status=400
+PASS | missing mandatory documents block the lot | findings=["RUL-DOC-001","RUL-DOC-002"]
+PASS | document replacement against a sealed dossier is refused | status=409 error=Cannot upload to sealed dossier: Dossier is sealed and immutable; mutations and re-evaluations are prohibited on immutable or closed dossiers.
+PASS | replacing a document after validation clears the validation result | state=HUMAN_VERIFICATION_REQUIRED latestValidationResult=null
+PASS | approval is refused until the new document is verified and revalidated | status=400
+== S6 authorization drills ==
+PASS | ungranted tenant cannot read the dossier | status=404
+PASS | ungranted tenant cannot read the manifest | status=404
+PASS | ungranted tenant list contains no foreign dossier
+PASS | clerk cannot approve for export | status=403
+PASS | outside buyer cannot upload documents | status=403
+PASS | client-supplied x-actor-role without a session is rejected | status=401
+== S7 grantee manifest redaction ==
+PASS | owner can grant BUYER_VERIFICATION read-only access | status=201
+PASS | grantee manifest hides commercial terms and declared quantities | summary={"containerNumber":"CSQU3054383","sealNumber":"VN-SEAL-9001","targetMarket":"CN","borderGate":"Hữu Nghị","targetTemperatureC":14,"packing_list":{"container_number":"CSQU3054383","seal_number":"VN-SEAL-9001","box_count":"960","net_weight_kg":"18240"},"lab_test_report":{"cadmium_mg_kg":"0.025","sample_code":"LAB-DRILL-01"},"phytosanitary_certificate":{"container_number":"CSQU3054383","seal_number":"VN-SEAL-9001","phyto_cert_number":"KDTV-2026-VN-09931"}}
+PASS | grantee manifest keeps reconcilable identity and states the redaction
+PASS | TRADE_FINANCE grant does not carry the sealed manifest | status=403
+== S8 tenant-scoped pilot KPI and gates ==
+PASS | grantee KPI counts no container and leaks no foreign identifier | totalContainers=0
+PASS | owner KPI counts its own 4 dossiers | totalContainers=4
+PASS | owner KPI labels timings as system timestamps and value metrics as assumptions
+PASS | grantee gate report cannot be satisfied by a shared dossier | passed=1
+== S9 rehearsal bootstrap guard ==
+PASS | unauthenticated rehearsal bootstrap is refused by default | status=403
+PASS | refused bootstrap minted no token and seeded no dossier
+PASS | opted-in rehearsal reaches 5/5 mechanical gates | passed=5
+PASS | rehearsal never authorises live customer data | verdict=READY_FOR_PILOT_GO_LIVE
+PASS | every rehearsal gate is labelled PASS_SYNTHETIC_REHEARSAL and carries the disclaimer
+PASS | rehearsal data stays in its own tenant and does not pollute the drill tenant
+== S10 extraction and missing-data drills ==
+PASS | image scans yield zero extracted fields instead of invented values | fields=0
+PASS | unreadable documents block validation | findings=["RUL-DOC-UNREADABLE","RUL-DOC-UNREADABLE","RUL-DOC-UNREADABLE","RUL-CD-INTERNAL-BLOCK"]
+PASS | lab report without a cadmium result blocks instead of passing | status=BLOCKED observed=NOT_EXTRACTED
+PASS | missing-data finding stays an internal control and never cites the quarantined legal rule
+PASS | cadmium above the internal limit blocks the lot | status=BLOCKED
+PASS | manager override is accepted with a signed reason | status=200 error=
+PASS | override-exported manifest keeps the blocker count | criticalBlockers=1
+PASS | zeroing that blocker count is now detected by the verifier | errors=["Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '4514ff85191b47000068ced159dde4c57dbabdcb8149e190935eadee639c9bc9', recomputed 'ce441d740e04d4fdaaaa06691ad474726fc37184ed7439ace1a67bbf17617deb')."]
+== S11 backup / restore drill ==
+backup: dossiers=12 docs=35 blobs=32 dbSha=9659ba386717c05a
+PASS | backup verifies twice with identical results (idempotent) | errors=[]
+PASS | restore reports valid
+PASS | restored database hash equals the backup manifest hash | 9659ba386717c05a vs 9659ba386717c05a
+PASS | post-restore: sealed dossier and manifest are readable
+PASS | post-restore: audit hash chain verifies
+PASS | post-restore: manifest still passes the standalone verifier
+PASS | post-restore: every blob re-hashed to its recorded SHA-256 (32 blobs)
+PASS | flipping one byte in a stored blob is detected by backup verification | errors=["Corrupted blob for document 'DOC-mvuslwaw-eo9x' at 'storage/blobs/b5f126eb880fb3a067e4c01d7d69202c7e1e84bf6614e208c79faca953074561.bin': expected 'b5f126eb880fb3a067e4c01d7d69202c7e1e84bf6614e208c79faca953074561', got '6817c4312a903bd57179abcb8728c045fe257c71fac4f89eccb5633b703a7d0a'.","Corrupted blob for document 'DOC-mvuslwcx-cr52' at 'storage/blobs/b5f126eb880fb3a067e4c01d7d69202c7e1e84bf6614e208c79faca953074561.bin': expected 'b5f126eb880fb3a067e4c01d7d69202c7e1e84bf6614e208c79faca953074561', got '6817c4312a903bd57179abcb8728c045fe257c71fac4f89eccb5633b703a7d0a'.","Manifest blob integrity mismatch at 'storage/blobs/b5f126eb880fb3a067e4c01d7d69202c7e1e84bf6614e208c79faca953074561.bin'."]
+== summary == checks=55 failures=0
+artifacts kept at /tmp/drill-stage0-PKwyGG (manifest-good.json, drill-log.txt)
+EXIT=0

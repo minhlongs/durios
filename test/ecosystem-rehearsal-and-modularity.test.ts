@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "bun:test";
+import { afterEach, beforeEach, describe, expect, it } from "bun:test";
 import { mkdtempSync, readdirSync, readFileSync, rmSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -13,6 +13,10 @@ if (statSync(full).isDirectory()) results.push(...collectTsFiles(full)); else if
 return results; }
 describe("Ecosystem Rehearsal Endpoints, ISO/Manifest Verifier & Codebase Modularity Guard", () => {
   const tempDirs: string[] = [];
+  // The rehearsal bootstrap is refused without an explicit rehearsal-sandbox flag,
+  // because it provisions accounts and returns a MANAGER token unauthenticated.
+  beforeEach(() => { process.env.DURIOS_ALLOW_PILOT_REHEARSAL_BOOTSTRAP = "true"; });
+  afterEach(() => { delete process.env.DURIOS_ALLOW_PILOT_REHEARSAL_BOOTSTRAP; });
   afterEach(() => {
 for (const dir of tempDirs.splice(0)) rmSync(dir, { recursive: true, force: true }); });
   it("bootstraps Cai Lay pilot rehearsal (including ?fullGates=true), verifies ISO/Manifest mutation, and serves telemetry", async () => {

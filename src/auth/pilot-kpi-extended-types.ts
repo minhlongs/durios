@@ -1,4 +1,8 @@
 import type { ContainerDossier } from "../domain/types.js";
+import { MANUAL_BASELINE_MINUTES, PENALTY_AVOIDANCE_VND_PER_CRITICAL_EXCEPTION, VALUE_METRIC_ASSUMPTIONS, type ValueMetricAssumption } from "./pilot-kpi-value-assumptions.js";
+
+// Re-exported so existing importers of this module keep resolving them.
+export { MANUAL_BASELINE_MINUTES, PENALTY_AVOIDANCE_VND_PER_CRITICAL_EXCEPTION, VALUE_METRIC_ASSUMPTIONS, type ValueMetricAssumption } from "./pilot-kpi-value-assumptions.js";
 
 export interface FirstContainerValueMetrics {
   readonly dossierId: string;
@@ -19,22 +23,16 @@ export interface AggregateContainerValueMetrics {
   readonly totalExceptionsDiscovered: number;
   readonly totalExpectedLossAvoidedVnd: number;
   readonly perContainerMetrics: readonly FirstContainerValueMetrics[];
+  /** The assumptions every figure above derives from — see VALUE_METRIC_ASSUMPTIONS. */
+  readonly assumptions: readonly ValueMetricAssumption[];
 }
-
-export const MANUAL_BASELINE_MINUTES = 35;
-export const PENALTY_AVOIDANCE_VND_PER_CRITICAL_EXCEPTION = 35_000_000;
 
 export function evaluateFirstContainerValueMetrics(
   dossier: ContainerDossier,
   actualDurationMinutesOverride?: number
 ): FirstContainerValueMetrics {
-  const actualDurationMinutes =
-    actualDurationMinutesOverride ?? calculateActualDuration(dossier);
-
-  const minutesSavedPerContainer = Math.max(
-    0,
-    Number((MANUAL_BASELINE_MINUTES - actualDurationMinutes).toFixed(1))
-  );
+  const actualDurationMinutes = actualDurationMinutesOverride ?? calculateActualDuration(dossier);
+  const minutesSavedPerContainer = Math.max(0, Number((MANUAL_BASELINE_MINUTES - actualDurationMinutes).toFixed(1)));
 
   let humanTouches = 0;
   for (const doc of dossier.documents) {
@@ -83,6 +81,7 @@ export function evaluateAggregateContainerValueMetrics(
   return {
     evaluatedContainerCount: count, meanMinutesSavedPerContainer, totalMinutesSaved,
     meanHumanTouchesPerContainer, totalExceptionsDiscovered, totalExpectedLossAvoidedVnd, perContainerMetrics,
+    assumptions: VALUE_METRIC_ASSUMPTIONS,
   };
 }
 

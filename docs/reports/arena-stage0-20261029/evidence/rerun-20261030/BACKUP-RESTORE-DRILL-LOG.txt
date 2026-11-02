@@ -1,0 +1,23 @@
+# backup-restore-drill.ts — captured 2026-10-30T09:51:13Z
+# repo /home/user/durios | branch arena/e0ece0a7-durios | HEAD 2f1538e80ac97dc1efb9d9b52b14782d9bfb2494 | bun 1.4.4 | node v22.22.3
+# DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true
+
+### CMD: DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true bun /home/user/durios/docs/reports/arena-stage0-20261029/evidence/backup-restore-drill.ts
+[DuriOS] pilot:seed-rehearsal enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+== seeded a synthetic rehearsal database == /tmp/drill-source-zmGS4U
+PASS | repository ./data was not used as the source | repo=/home/user/durios
+== backup created == /tmp/drill-backup-C1Dv3i/backup
+PASS | backup manifest records the database hash and counts | dossiers=5 documents=15 blobs=15 auditChainValid=true
+PASS | backup verifies | errors=[]
+PASS | verification is idempotent (identical result twice)
+== restored into == /tmp/drill-restore-nVsL9B
+PASS | restore reports valid | errors=[]
+PASS | restored database hashes equal to the backup manifest's recorded hash | restored=ceb5fe5079dcf805… manifest=ceb5fe5079dcf805… liveSource=edb33f9d17646ca1…
+PASS | every restored blob re-hashes to its recorded SHA-256 | 15/15 blobs
+PASS | post-restore database is readable | dossiers=5 documents=15 auditEvents=96 firstEvent=DOSSIER_CREATED lastEvent=SYNTHETIC_DOCUMENT_INGESTED
+PASS | post-restore audit hash chain is unbroken | 95/95 links, genesis previous_hash=GENESIS-00000000
+PASS | flipping one byte in a backed-up blob is detected | errors=["Corrupted blob for document 'DOC-mvuslwu6-w8ya' at 'storage/blobs/69d2049aa5c8d058618bbc3a6c0818ff684c4d8d53d99c82c7a5f0bf38bd1252.bin': expected '69d2049aa5c8d058618bbc3a6c0818ff684c4d8d53d99c82c7a5f0bf38bd1252', got 
+PASS | the already-restored copy is unaffected by backup tampering
+== summary == failures=0
+artifacts kept at /tmp/drill-backup-C1Dv3i and /tmp/drill-restore-nVsL9B
+EXIT=0

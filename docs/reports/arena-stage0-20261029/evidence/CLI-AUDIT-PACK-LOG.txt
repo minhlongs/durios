@@ -1,0 +1,47 @@
+# pilot:audit-pack (compile + verify + wrong usage) and verify:manifest — captured stdout
+# Fresh sandbox (bun 1.4.4). Rehearsal DB: /tmp/durios-rehearsal-peYV. Timestamps are UTC.
+
+### CMD: DURIOS_DB_PATH=/tmp/durios-rehearsal-peYV/durios.db DURIOS_DATA_DIR=/tmp/durios-rehearsal-peYV/uploads bun run src/export/field-auditor-cli.ts --output-dir /tmp/durios-rehearsal-peYV/pack --markdown
+[DuriOS Field Auditor] Site=SITE-CAILAY-TIENGIANG-01 Verdict=HOLD_BLOCKERS_REMAIN Gates=2/5 SHA256=11b939e9f5192c725aa7df2f81a48e026ce980c887c3a624c89c6fc3672d2b4e Integrity=true
+[DuriOS Field Auditor] Saved pack to: /tmp/durios-rehearsal-peYV/pack/GOLIVE-SITE-CAILAY-TIENGIANG-01-2026-10-30.json
+
+### pack file: /tmp/durios-rehearsal-peYV/pack/GOLIVE-SITE-CAILAY-TIENGIANG-01-2026-10-30.json
+{
+  "reportVersion": "1.0.0",
+  "reportId": "GOLIVE-SITE-CAILAY-TIENGIANG-01-2026-10-30",
+  "siteCode": "SITE-CAILAY-TIENGIANG-01",
+  "compiledByActorRole": "AUDITOR",
+  "overallVerdict": "HOLD_BLOCKERS_REMAIN",
+  "goForLiveCustomerData": false,
+  "passedGateCount": 2,
+  "totalGateCount": 5,
+  "evidenceProvenance": "OPERATIONAL",
+  "reportSha256": "11b939e9f5192c725aa7df2f81a48e026ce980c887c3a624c89c6fc3672d2b4e"
+}
+gates: [{"id": "GATE-01", "passed": false, "label": "PENDING_SITE_AND_CONSENT_SIGN_OFF"}, {"id": "GATE-02", "passed": false, "label": "PENDING_PROVIDER_CREDENTIALS"}, {"id": "GATE-03", "passed": true, "label": "PASS"}, {"id": "GATE-04", "passed": false, "label": "PENDING_VERIFIED_BACKUP"}, {"id": "GATE-05", "passed": true, "label": "PASS"}]
+kpiSnapshot: {"totalContainers": 6, "meanDeltaSeconds": 0.09, "blindFaultsCaught": 2, "blindFaultCount": 2, "gate05Passed": true, "timingEvidenceSource": "SYSTEM_TIMESTAMPS", "valueMetricsProvenance": "UNVALIDATED_ASSUMPTION"}
+mandatoryDisclaimers: ["Hồ sơ chuẩn bị nội bộ phục vụ kiểm định cổng khai trương pilot tại một vựa; không thay thế quyết định thông quan hoặc chứng nhận nhà nước.", "Nghiêm cấm nạp dữ liệu khách hàng thật trước khi toàn bộ 5 cổng (GATE-01..GATE-05) đều đạt (goForLiveCustomerData === true)."]
+markdownReportWritten: []
+
+### CMD: bun run pilot:audit-pack -- --verify /tmp/durios-rehearsal-peYV/pack/GOLIVE-SITE-CAILAY-TIENGIANG-01-2026-10-30.json
+[DuriOS Field Auditor] Site=SITE-CAILAY-TIENGIANG-01 Verdict=HOLD_BLOCKERS_REMAIN Gates=2/5 SHA256=11b939e9f5192c725aa7df2f81a48e026ce980c887c3a624c89c6fc3672d2b4e Integrity=true
+[DuriOS Field Auditor] Saved pack to: /tmp/durios-rehearsal-peYV/pack/GOLIVE-SITE-CAILAY-TIENGIANG-01-2026-10-30.json
+EXIT=0
+
+### CMD (wrong usage, the form the old docs showed): bun run pilot:audit-pack -- --verify --output-dir /tmp/durios-rehearsal-peYV/pack
+[DuriOS Field Auditor] --verify expects the path of an exported go-live pack JSON file, but '--output-dir' does not exist. Usage: bun run pilot:audit-pack -- --verify <pack.json> [--json]
+EXIT=2 (2 = usage error, readable message instead of a stack trace)
+
+### CMD: bun run verify:manifest <manifest exported by the HTTP walkthrough>
+{
+  "valid": true,
+  "recomputedSha256": "784867c5bab93fd8f705cacd6e0cf03ef94c7d9303ba22cd75f8f1d014cee990",
+  "expectedSha256": "784867c5bab93fd8f705cacd6e0cf03ef94c7d9303ba22cd75f8f1d014cee990",
+  "iso6346ContainerValid": true,
+  "allDocumentsHaveSha256": true,
+  "zeroCriticalBlockers": true,
+  "integrityCoverage": "FULL",
+  "verificationSealBadge": "DuriOS Local Manifest Hash Check Passed (MIT Verifier)",
+  "errors": []
+}
+EXIT=0

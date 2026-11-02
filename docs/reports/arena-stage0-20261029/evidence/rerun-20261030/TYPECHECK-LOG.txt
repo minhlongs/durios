@@ -1,0 +1,6 @@
+# bun run typecheck on the delivered tree — captured 2026-10-30T09:51:13Z
+# repo /home/user/durios | branch arena/e0ece0a7-durios | HEAD 2f1538e80ac97dc1efb9d9b52b14782d9bfb2494 | bun 1.4.4 | node v22.22.3
+
+### CMD: bun run typecheck
+$ tsc --noEmit
+EXIT=0

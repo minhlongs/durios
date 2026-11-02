@@ -1,0 +1,55 @@
+# Manifest tamper recipe from RUNBOOK §4 — captured stdout
+# Source manifest: /tmp/durios-rehearsal-peYV/manifest-only.json (exported over HTTP by the walkthrough, tenant TENANT-CAILAY-PILOT-01).
+# Baseline: bun run verify:manifest <source> -> valid=true, integrityCoverage=FULL (see CLI-AUDIT-PACK-LOG.txt).
+
+### 1) rewrite regulatoryDisclaimers + zero complianceFindingsCount (both OUTSIDE the composite hash)
+tampered file written
+{
+  "valid": false,
+  "recomputedSha256": "784867c5bab93fd8f705cacd6e0cf03ef94c7d9303ba22cd75f8f1d014cee990",
+  "expectedSha256": "784867c5bab93fd8f705cacd6e0cf03ef94c7d9303ba22cd75f8f1d014cee990",
+  "iso6346ContainerValid": true,
+  "allDocumentsHaveSha256": true,
+  "zeroCriticalBlockers": true,
+  "integrityCoverage": "FULL",
+  "verificationSealBadge": "UNVERIFIED_OR_TAMPERED_MANIFEST",
+  "errors": [
+    "Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected 'f83b4d7ce1bd13cda36dfcebd2c1bb9d6944b261feb7213cf630f026d3780e8d', recomputed '3d2317a67f1de1bf9be2c90993bde84c9f0bd15c1e3641ba9869c6f3ec14d533')."
+  ]
+}
+EXIT=1
+
+### 2) rewrite only composite-covered identity (containerNumber check digit)
+tampered file written
+{
+  "valid": false,
+  "recomputedSha256": "b06954da77b0ae407317650f12da88bf3975fbeec922d4f99271e40102681fa8",
+  "expectedSha256": "784867c5bab93fd8f705cacd6e0cf03ef94c7d9303ba22cd75f8f1d014cee990",
+  "iso6346ContainerValid": false,
+  "allDocumentsHaveSha256": true,
+  "zeroCriticalBlockers": true,
+  "integrityCoverage": "FULL",
+  "verificationSealBadge": "UNVERIFIED_OR_TAMPERED_MANIFEST",
+  "errors": [
+    "Composite SHA-256 mismatch: expected '784867c5bab93fd8f705cacd6e0cf03ef94c7d9303ba22cd75f8f1d014cee990', recomputed 'b06954da77b0ae407317650f12da88bf3975fbeec922d4f99271e40102681fa8'.",
+    "Container number 'CSQU3054384' failed ISO 6346 check-digit validation.",
+    "Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected 'f83b4d7ce1bd13cda36dfcebd2c1bb9d6944b261feb7213cf630f026d3780e8d', recomputed '6a59f5d3e09408af10089fcaf1ee594a2032df26e05c562dba2959956d575c78')."
+  ]
+}
+EXIT=1
+
+### 3) strip manifestIntegritySha256 (simulating a pre-fix legacy manifest)
+field removed
+WARNING: this manifest predates manifestIntegritySha256, so only the composite subset (identity, documents, verifiedDataSummary) is hash-covered. Compliance counts and disclaimers are NOT protected.
+{
+  "valid": true,
+  "recomputedSha256": "784867c5bab93fd8f705cacd6e0cf03ef94c7d9303ba22cd75f8f1d014cee990",
+  "expectedSha256": "784867c5bab93fd8f705cacd6e0cf03ef94c7d9303ba22cd75f8f1d014cee990",
+  "iso6346ContainerValid": true,
+  "allDocumentsHaveSha256": true,
+  "zeroCriticalBlockers": true,
+  "integrityCoverage": "PARTIAL_LEGACY",
+  "verificationSealBadge": "DuriOS Local Manifest Hash Check Passed (MIT Verifier)",
+  "errors": []
+}
+EXIT=0 (still valid, but coverage is downgraded and a warning is printed)

@@ -1,0 +1,22 @@
+# Backup -> verify -> restore drill (standalone, self-seeding) — captured stdout
+# Command: bun docs/reports/arena-stage0-20261029/evidence/backup-restore-drill.ts
+# Environment: fresh sandbox (node v22.22.3, bun 1.4.4 reinstalled via 'npm install -g bun', 'bun install' -> 5 packages).
+# Result: 11 checks, 0 failures, exit code 0. The script seeded its own synthetic rehearsal database in a temp dir;
+# the repository ./data directory was never written.
+
+== seeded a synthetic rehearsal database == /tmp/drill-source-CLBVZV
+PASS | repository ./data was not used as the source | repo=/home/user/durios
+== backup created == /tmp/drill-backup-MpTL6q/backup
+PASS | backup manifest records the database hash and counts | dossiers=5 documents=15 blobs=15 auditChainValid=true
+PASS | backup verifies | errors=[]
+PASS | verification is idempotent (identical result twice)
+== restored into == /tmp/drill-restore-DaQmqf
+PASS | restore reports valid | errors=[]
+PASS | restored database hashes equal to the backup manifest's recorded hash | restored=ab06be7ae9c742d6… manifest=ab06be7ae9c742d6… liveSource=a1a5bc5a0236a12c…
+PASS | every restored blob re-hashes to its recorded SHA-256 | 15/15 blobs
+PASS | post-restore database is readable | dossiers=5 documents=15 auditEvents=76 firstEvent=DOSSIER_CREATED lastEvent=DOC_UPLOADED
+PASS | post-restore audit hash chain is unbroken | 75/75 links, genesis previous_hash=GENESIS-00000000
+PASS | flipping one byte in a backed-up blob is detected | errors=["Corrupted blob for document 'DOC-mvucp3qc-x9hk' at 'storage/blobs/3a2f9a4d599cbfe13b0ac21ede3e3c8ffd870f40ed7daa02d68186c03f214c96.bin': expected '3a2f9a4d599cbfe13b0ac21ede3e3c8ffd870f40ed7daa02d68186c03f214c96', got 
+PASS | the already-restored copy is unaffected by backup tampering
+== summary == failures=0
+artifacts kept at /tmp/drill-backup-MpTL6q and /tmp/drill-restore-DaQmqf

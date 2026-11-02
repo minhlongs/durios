@@ -50,8 +50,13 @@
 ### 2. Ngưỡng Nghiệm Thu Thời Gian & Độ Chính Xác
 
 > **Lệnh tự động hóa diễn tập & chấm điểm KPI (`GATE-05`):**
-> - Khởi tạo 5 container diễn tập (gồm 2 ca gài lỗi mù): `bun run pilot:seed-rehearsal`
+> - Khởi tạo 5 container diễn tập (gồm 2 ca gài lỗi mù): `DURIOS_DB_PATH=./data/rehearsal.db DURIOS_DATA_DIR=./data/rehearsal-uploads bun run pilot:seed-rehearsal`
 > - Chấm điểm KPI tự động từ SQLite (`meanDeltaSeconds < 300`, `zeroMissGate === true`): `bun run pilot:evaluate-kpi`
+>
+> **Giới hạn của điểm KPI tự động (bắt buộc đọc trước khi dùng làm bằng chứng `GATE-05`):**
+> - `meanDeltaSeconds` được suy ra từ dấu thời gian hệ thống (`createdAt` → `latestValidationResult.evaluatedAt`), nên báo cáo luôn mang `timingEvidenceSource: "SYSTEM_TIMESTAMPS"`. Một phiên seed bằng kịch bản hoàn tất trong vài phần trăm giây: đó là **thời gian máy xử lý**, không phải thời gian thao tác của Thư ký. `GATE-05` chỉ được coi là đạt khi có biên bản bấm giờ của người vận hành (`HUMAN_STOPWATCH_ATTESTED`) trên 5 container thật.
+> - Các chỉ số giá trị (phút tiết kiệm, thiệt hại tránh được) tính từ hai **giả định chưa kiểm chứng**, được trả về kèm trong `aggregateValueMetrics.assumptions` với `valueMetricsProvenance: "UNVALIDATED_ASSUMPTION"`: `MANUAL_BASELINE_MINUTES = 35` phút/container và `PENALTY_AVOIDANCE_VND_PER_CRITICAL_EXCEPTION = 35.000.000` VND. Không được trích dẫn hai số này như doanh thu, ROI hay thiệt hại tránh được thực tế.
+> - Dữ liệu cần thu thập tại vựa để thay hai giả định trên: (1) bấm giờ quy trình giấy hiện tại cho tối thiểu 10 container (bắt đầu → hoàn tất đối chiếu), ghi rõ ai thực hiện và ngày giờ; (2) số lần chạm tay/người trên mỗi bộ hồ sơ; (3) chi phí thực tế đã phát sinh khi một lô bị giữ hoặc trả lại (phí lưu cont, phí kiểm hóa, chênh lệch giá, thời gian chậm tàu) kèm chứng từ; (4) số lỗi bị bỏ sót trước khi dùng DuriOS, do vựa tự khai và ký xác nhận.
 
 | Chỉ số KPI | Ngưỡng Đạt Pilot (Pass Gate) | Mục Tiêu Hiệu Suất (Target) | Cách xác minh |
 |---|---|---|---|

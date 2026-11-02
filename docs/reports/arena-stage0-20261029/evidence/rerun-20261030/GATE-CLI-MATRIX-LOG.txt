@@ -1,0 +1,184 @@
+# gate CLI matrix (A1-A3 rehearsal cohort, B1-B4 operational fixture cohort) — captured 2026-10-30T09:51:13Z
+# repo /home/user/durios | branch arena/e0ece0a7-durios | HEAD 2f1538e80ac97dc1efb9d9b52b14782d9bfb2494 | bun 1.4.4 | node v22.22.3
+
+### CMD: bash /home/user/durios/docs/reports/arena-stage0-20261029/evidence/gate-cli-matrix.sh
+# gate CLI matrix — 2026-10-30T09:51:39Z, bun 1.4.4, repo /home/user/durios
+# HEAD 2f1538e80ac97dc1efb9d9b52b14782d9bfb2494 on arena/e0ece0a7-durios
+
+=== build site A: rehearsal-seeded database (pilot:seed-rehearsal, published passwords) ===
+seeded dossiers: ['DOS-CAILAY-R01', 'DOS-CAILAY-R02', 'DOS-CAILAY-R03', 'DOS-CAILAY-R04', 'DOS-CAILAY-R05']
+backup written: dossiers=5 blobs=15
+
+=== build site B: operational fixture cohort (test helper, codes DOS-CAILAY-OP*) ===
+{"root":"/tmp/durios-gate-matrix/operational","dbPath":"/tmp/durios-gate-matrix/operational/durios.db","dataDir":"/tmp/durios-gate-matrix/operational/uploads","dossierCodes":["DOS-CAILAY-OP01","DOS-CAILAY-OP02","DOS-CAILAY-OP03","DOS-CAILAY-OP04","DOS-CAILAY-OP05"]}
+site ready at /tmp/durios-gate-matrix/operational (backup=/tmp/durios-gate-matrix/operational/backup)
+
+################ A1 — A1 rehearsal DB, host loopback only, no evidence declared
+### ENV: DURIOS_DB_PATH=/tmp/durios-gate-matrix/rehearsal/durios.db DURIOS_DATA_DIR=/tmp/durios-gate-matrix/rehearsal/uploads DURIOS_HOST=127.0.0.1
+KIỂM TRA TỰ ĐỘNG (máy chấm được): 2/5 tiêu chí đạt
+LAUNCH GATE VẬN HÀNH (đủ bằng chứng hợp lệ): 0/5 cổng được mở
+DỮ LIỆU ĐÁNH GIÁ: TỔNG HỢP/DIỄN TẬP (5 hồ sơ) — tín hiệu: REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R01, REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R02, REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R03, REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R04; chuỗi băm kiểm toán: XÁC MINH ĐẠT
+  GATE-01: CHƯA ĐẠT (máy: FAIL; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Biên bản tiếp cận vựa do chủ vựa xác nhận; Phê duyệt chọn site của Founder; Biểu mẫu chấp thuận dữ liệu (91/2025/QH15) đã ký
+  GATE-02: CHƯA ĐẠT (máy: FAIL; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Quyết định chọn nhà cung cấp OTP của Founder; Biên bản gửi/nhận OTP thật trên staging cho tài khoản thật
+  GATE-03: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Reverse proxy HTTPS với NODE_ENV=production; Giới hạn mạng riêng tại vựa; Mã hóa ổ đĩa và bản sao lưu; Secrets lưu quyền 0600
+  GATE-04: CHƯA ĐẠT (máy: FAIL; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Diễn tập backup/verify/restore trên máy vựa thật; Biên bản diễn tập có người thực hiện ký; Lịch sao lưu định kỳ đã chốt
+  GATE-05: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Biên bản bấm giờ của người vận hành (HUMAN_STOPWATCH_ATTESTED); Tối thiểu 2 ca gài lỗi mù do người khác chuẩn bị; Xác nhận 0 lỗi P0 còn mở
+goForLiveCustomerData: false — CHƯA được nạp dữ liệu khách hàng thật.
+evidenceProvenance: SYNTHETIC_REHEARSAL — bằng chứng do lệnh diễn tập tự tạo, không có giá trị phê duyệt.
+### JSON: {"evidenceProvenance": "SYNTHETIC_REHEARSAL", "machineChecksPassedCount": 2, "operationalGatesEvidencedCount": 0, "totalGates": 5, "goForLiveCustomerData": false}
+### gates: [{"id": "GATE-01", "machine": false, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "PENDING", "label": "PENDING_SITE_AND_CONSENT_SIGN_OFF"}, {"id": "GATE-02", "machine": false, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "PENDING", "label": "PENDING_PROVIDER_CREDENTIALS"}, {"id": "GATE-03", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}, {"id": "GATE-04", "machine": false, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "PENDING", "label": "PENDING_VERIFIED_BACKUP"}, {"id": "GATE-05", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}]
+### EXIT=1
+
+################ A2 — A2 rehearsal DB, every machine check green, NO evidence declared
+### ENV: DURIOS_DB_PATH=/tmp/durios-gate-matrix/rehearsal/durios.db DURIOS_DATA_DIR=/tmp/durios-gate-matrix/rehearsal/uploads DURIOS_HOST=127.0.0.1 DURIOS_GATE01_CONSENT_FILE=/tmp/durios-gate-matrix/rehearsal/consent.pdf DURIOS_BACKUP_DIR=/tmp/durios-gate-matrix/rehearsal/backup DURIOS_OTP_PROVIDER=ESMS_VN DURIOS_OTP_API_URL=https://otp.example.vn/send DURIOS_OTP_API_KEY=fixture-key-not-live
+KIỂM TRA TỰ ĐỘNG (máy chấm được): 5/5 tiêu chí đạt
+LAUNCH GATE VẬN HÀNH (đủ bằng chứng hợp lệ): 0/5 cổng được mở
+DỮ LIỆU ĐÁNH GIÁ: TỔNG HỢP/DIỄN TẬP (5 hồ sơ) — tín hiệu: REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R01, REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R02, REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R03, REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R04; chuỗi băm kiểm toán: XÁC MINH ĐẠT
+  GATE-01: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Biên bản tiếp cận vựa do chủ vựa xác nhận; Phê duyệt chọn site của Founder; Biểu mẫu chấp thuận dữ liệu (91/2025/QH15) đã ký
+  GATE-02: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Quyết định chọn nhà cung cấp OTP của Founder; Biên bản gửi/nhận OTP thật trên staging cho tài khoản thật
+  GATE-03: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Reverse proxy HTTPS với NODE_ENV=production; Giới hạn mạng riêng tại vựa; Mã hóa ổ đĩa và bản sao lưu; Secrets lưu quyền 0600
+  GATE-04: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Diễn tập backup/verify/restore trên máy vựa thật; Biên bản diễn tập có người thực hiện ký; Lịch sao lưu định kỳ đã chốt
+  GATE-05: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Biên bản bấm giờ của người vận hành (HUMAN_STOPWATCH_ATTESTED); Tối thiểu 2 ca gài lỗi mù do người khác chuẩn bị; Xác nhận 0 lỗi P0 còn mở
+goForLiveCustomerData: false — CHƯA được nạp dữ liệu khách hàng thật.
+evidenceProvenance: SYNTHETIC_REHEARSAL — bằng chứng do lệnh diễn tập tự tạo, không có giá trị phê duyệt.
+### JSON: {"evidenceProvenance": "SYNTHETIC_REHEARSAL", "machineChecksPassedCount": 5, "operationalGatesEvidencedCount": 0, "totalGates": 5, "goForLiveCustomerData": false}
+### gates: [{"id": "GATE-01", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}, {"id": "GATE-02", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}, {"id": "GATE-03", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}, {"id": "GATE-04", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}, {"id": "GATE-05", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}]
+### EXIT=1
+
+################ A3 — A3 rehearsal DB, every machine check green, ALL FIVE evidence files declared (synthetic cohort must not open a gate)
+### ENV: DURIOS_DB_PATH=/tmp/durios-gate-matrix/rehearsal/durios.db DURIOS_DATA_DIR=/tmp/durios-gate-matrix/rehearsal/uploads DURIOS_HOST=127.0.0.1 DURIOS_GATE01_CONSENT_FILE=/tmp/durios-gate-matrix/rehearsal/consent.pdf DURIOS_BACKUP_DIR=/tmp/durios-gate-matrix/rehearsal/backup DURIOS_OTP_PROVIDER=ESMS_VN DURIOS_OTP_API_URL=https://otp.example.vn/send DURIOS_OTP_API_KEY=fixture-key-not-live DURIOS_GATE01_EVIDENCE_FILE=/tmp/durios-gate-matrix/rehearsal/evidence/gate-01.pdf DURIOS_GATE02_EVIDENCE_FILE=/tmp/durios-gate-matrix/rehearsal/evidence/gate-02.pdf DURIOS_GATE03_EVIDENCE_FILE=/tmp/durios-gate-matrix/rehearsal/evidence/gate-03.pdf DURIOS_GATE04_EVIDENCE_FILE=/tmp/durios-gate-matrix/rehearsal/evidence/gate-04.pdf DURIOS_GATE05_EVIDENCE_FILE=/tmp/durios-gate-matrix/rehearsal/evidence/gate-05.pdf DURIOS_GATE_EVIDENCE_ATTESTED_BY=Fixture Recorder (gate-cli-matrix.sh — NOT a real attestation)
+KIỂM TRA TỰ ĐỘNG (máy chấm được): 5/5 tiêu chí đạt
+LAUNCH GATE VẬN HÀNH (đủ bằng chứng hợp lệ): 0/5 cổng được mở
+DỮ LIỆU ĐÁNH GIÁ: TỔNG HỢP/DIỄN TẬP (5 hồ sơ) — tín hiệu: REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R01, REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R02, REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R03, REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R04; chuỗi băm kiểm toán: XÁC MINH ĐẠT
+  GATE-01: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 e18781fb36c783e5…)
+    còn thiếu: Biên bản tiếp cận vựa do chủ vựa xác nhận; Phê duyệt chọn site của Founder; Biểu mẫu chấp thuận dữ liệu (91/2025/QH15) đã ký
+  GATE-02: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 9990eca3e65f379c…)
+    còn thiếu: Quyết định chọn nhà cung cấp OTP của Founder; Biên bản gửi/nhận OTP thật trên staging cho tài khoản thật
+  GATE-03: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 e830d72b76dab861…)
+    còn thiếu: Reverse proxy HTTPS với NODE_ENV=production; Giới hạn mạng riêng tại vựa; Mã hóa ổ đĩa và bản sao lưu; Secrets lưu quyền 0600
+  GATE-04: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 c1a8b341cb746e07…)
+    còn thiếu: Diễn tập backup/verify/restore trên máy vựa thật; Biên bản diễn tập có người thực hiện ký; Lịch sao lưu định kỳ đã chốt
+  GATE-05: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 22affdaba2160288…)
+    còn thiếu: Biên bản bấm giờ của người vận hành (HUMAN_STOPWATCH_ATTESTED); Tối thiểu 2 ca gài lỗi mù do người khác chuẩn bị; Xác nhận 0 lỗi P0 còn mở
+goForLiveCustomerData: false — CHƯA được nạp dữ liệu khách hàng thật.
+evidenceProvenance: SYNTHETIC_REHEARSAL — bằng chứng do lệnh diễn tập tự tạo, không có giá trị phê duyệt.
+### JSON: {"evidenceProvenance": "SYNTHETIC_REHEARSAL", "machineChecksPassedCount": 5, "operationalGatesEvidencedCount": 0, "totalGates": 5, "goForLiveCustomerData": false}
+### gates: [{"id": "GATE-01", "machine": true, "evidence": "RECORDED_BY_OPERATOR", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}, {"id": "GATE-02", "machine": true, "evidence": "RECORDED_BY_OPERATOR", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}, {"id": "GATE-03", "machine": true, "evidence": "RECORDED_BY_OPERATOR", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}, {"id": "GATE-04", "machine": true, "evidence": "RECORDED_BY_OPERATOR", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}, {"id": "GATE-05", "machine": true, "evidence": "RECORDED_BY_OPERATOR", "verdict": "MACHINE_CHECK_ONLY", "label": "PASS_SYNTHETIC_REHEARSAL"}]
+### EXIT=1
+
+################ B1 — B1 operational fixture cohort, every machine check green, NO evidence declared
+### ENV: DURIOS_DB_PATH=/tmp/durios-gate-matrix/operational/durios.db DURIOS_DATA_DIR=/tmp/durios-gate-matrix/operational/uploads DURIOS_HOST=127.0.0.1 DURIOS_GATE01_CONSENT_FILE=/tmp/durios-gate-matrix/operational/consent.pdf DURIOS_BACKUP_DIR=/tmp/durios-gate-matrix/operational/backup DURIOS_OTP_PROVIDER=ESMS_VN DURIOS_OTP_API_URL=https://otp.example.vn/send DURIOS_OTP_API_KEY=fixture-key-not-live
+KIỂM TRA TỰ ĐỘNG (máy chấm được): 5/5 tiêu chí đạt
+LAUNCH GATE VẬN HÀNH (đủ bằng chứng hợp lệ): 0/5 cổng được mở
+DỮ LIỆU ĐÁNH GIÁ: VẬN HÀNH (5 hồ sơ) — không có tín hiệu tổng hợp trong sổ kiểm toán; chuỗi băm kiểm toán: XÁC MINH ĐẠT
+  GATE-01: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Biên bản tiếp cận vựa do chủ vựa xác nhận; Phê duyệt chọn site của Founder; Biểu mẫu chấp thuận dữ liệu (91/2025/QH15) đã ký
+  GATE-02: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Quyết định chọn nhà cung cấp OTP của Founder; Biên bản gửi/nhận OTP thật trên staging cho tài khoản thật
+  GATE-03: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Reverse proxy HTTPS với NODE_ENV=production; Giới hạn mạng riêng tại vựa; Mã hóa ổ đĩa và bản sao lưu; Secrets lưu quyền 0600
+  GATE-04: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Diễn tập backup/verify/restore trên máy vựa thật; Biên bản diễn tập có người thực hiện ký; Lịch sao lưu định kỳ đã chốt
+  GATE-05: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Biên bản bấm giờ của người vận hành (HUMAN_STOPWATCH_ATTESTED); Tối thiểu 2 ca gài lỗi mù do người khác chuẩn bị; Xác nhận 0 lỗi P0 còn mở
+goForLiveCustomerData: false — CHƯA được nạp dữ liệu khách hàng thật.
+### JSON: {"evidenceProvenance": "OPERATIONAL", "machineChecksPassedCount": 5, "operationalGatesEvidencedCount": 0, "totalGates": 5, "goForLiveCustomerData": false}
+### gates: [{"id": "GATE-01", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "MACHINE_CHECK_ONLY_PENDING_OPERATOR_EVIDENCE"}, {"id": "GATE-02", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "MACHINE_CHECK_ONLY_PENDING_OPERATOR_EVIDENCE"}, {"id": "GATE-03", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "MACHINE_CHECK_ONLY_PENDING_OPERATOR_EVIDENCE"}, {"id": "GATE-04", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "MACHINE_CHECK_ONLY_PENDING_OPERATOR_EVIDENCE"}, {"id": "GATE-05", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "MACHINE_CHECK_ONLY_PENDING_OPERATOR_EVIDENCE"}]
+### EXIT=1
+
+################ B2 — B2 operational fixture cohort, one gate's evidence declared with a named recorder
+### ENV: DURIOS_DB_PATH=/tmp/durios-gate-matrix/operational/durios.db DURIOS_DATA_DIR=/tmp/durios-gate-matrix/operational/uploads DURIOS_HOST=127.0.0.1 DURIOS_GATE01_CONSENT_FILE=/tmp/durios-gate-matrix/operational/consent.pdf DURIOS_BACKUP_DIR=/tmp/durios-gate-matrix/operational/backup DURIOS_OTP_PROVIDER=ESMS_VN DURIOS_OTP_API_URL=https://otp.example.vn/send DURIOS_OTP_API_KEY=fixture-key-not-live DURIOS_GATE03_EVIDENCE_FILE=/tmp/durios-gate-matrix/operational/evidence/gate-03.pdf DURIOS_GATE_EVIDENCE_ATTESTED_BY=Fixture Recorder (gate-cli-matrix.sh — NOT a real attestation)
+KIỂM TRA TỰ ĐỘNG (máy chấm được): 5/5 tiêu chí đạt
+LAUNCH GATE VẬN HÀNH (đủ bằng chứng hợp lệ): 1/5 cổng được mở
+DỮ LIỆU ĐÁNH GIÁ: VẬN HÀNH (5 hồ sơ) — không có tín hiệu tổng hợp trong sổ kiểm toán; chuỗi băm kiểm toán: XÁC MINH ĐẠT
+  GATE-01: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Biên bản tiếp cận vựa do chủ vựa xác nhận; Phê duyệt chọn site của Founder; Biểu mẫu chấp thuận dữ liệu (91/2025/QH15) đã ký
+  GATE-02: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Quyết định chọn nhà cung cấp OTP của Founder; Biên bản gửi/nhận OTP thật trên staging cho tài khoản thật
+  GATE-03: ĐÃ MỞ (máy đạt + người ghi nhận bằng chứng) (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 e830d72b76dab861…)
+  GATE-04: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Diễn tập backup/verify/restore trên máy vựa thật; Biên bản diễn tập có người thực hiện ký; Lịch sao lưu định kỳ đã chốt
+  GATE-05: CHỈ MÁY ĐẠT — thiếu bằng chứng vận hành (máy: PASS; bằng chứng: PENDING_OPERATOR_EVIDENCE)
+    còn thiếu: Biên bản bấm giờ của người vận hành (HUMAN_STOPWATCH_ATTESTED); Tối thiểu 2 ca gài lỗi mù do người khác chuẩn bị; Xác nhận 0 lỗi P0 còn mở
+goForLiveCustomerData: false — CHƯA được nạp dữ liệu khách hàng thật.
+### JSON: {"evidenceProvenance": "OPERATIONAL", "machineChecksPassedCount": 5, "operationalGatesEvidencedCount": 1, "totalGates": 5, "goForLiveCustomerData": false}
+### gates: [{"id": "GATE-01", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "MACHINE_CHECK_ONLY_PENDING_OPERATOR_EVIDENCE"}, {"id": "GATE-02", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "MACHINE_CHECK_ONLY_PENDING_OPERATOR_EVIDENCE"}, {"id": "GATE-03", "machine": true, "evidence": "RECORDED_BY_OPERATOR", "verdict": "EVIDENCED_FOR_LAUNCH", "label": "PASS"}, {"id": "GATE-04", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "MACHINE_CHECK_ONLY_PENDING_OPERATOR_EVIDENCE"}, {"id": "GATE-05", "machine": true, "evidence": "PENDING_OPERATOR_EVIDENCE", "verdict": "MACHINE_CHECK_ONLY", "label": "MACHINE_CHECK_ONLY_PENDING_OPERATOR_EVIDENCE"}]
+### EXIT=1
+
+################ B3 — B3 operational fixture cohort, evidence declared for a gate whose MACHINE CHECK FAILS (consent file missing)
+### ENV: DURIOS_DB_PATH=/tmp/durios-gate-matrix/operational/durios.db DURIOS_DATA_DIR=/tmp/durios-gate-matrix/operational/uploads DURIOS_HOST=127.0.0.1 DURIOS_GATE01_CONSENT_FILE=/tmp/durios-gate-matrix/operational/does-not-exist.pdf DURIOS_BACKUP_DIR=/tmp/durios-gate-matrix/operational/backup DURIOS_OTP_PROVIDER=ESMS_VN DURIOS_OTP_API_URL=https://otp.example.vn/send DURIOS_OTP_API_KEY=fixture-key-not-live DURIOS_GATE01_EVIDENCE_FILE=/tmp/durios-gate-matrix/operational/evidence/gate-01.pdf DURIOS_GATE02_EVIDENCE_FILE=/tmp/durios-gate-matrix/operational/evidence/gate-02.pdf DURIOS_GATE03_EVIDENCE_FILE=/tmp/durios-gate-matrix/operational/evidence/gate-03.pdf DURIOS_GATE04_EVIDENCE_FILE=/tmp/durios-gate-matrix/operational/evidence/gate-04.pdf DURIOS_GATE05_EVIDENCE_FILE=/tmp/durios-gate-matrix/operational/evidence/gate-05.pdf DURIOS_GATE_EVIDENCE_ATTESTED_BY=Fixture Recorder (gate-cli-matrix.sh — NOT a real attestation)
+KIỂM TRA TỰ ĐỘNG (máy chấm được): 4/5 tiêu chí đạt
+LAUNCH GATE VẬN HÀNH (đủ bằng chứng hợp lệ): 4/5 cổng được mở
+DỮ LIỆU ĐÁNH GIÁ: VẬN HÀNH (5 hồ sơ) — không có tín hiệu tổng hợp trong sổ kiểm toán; chuỗi băm kiểm toán: XÁC MINH ĐẠT
+  GATE-01: CHƯA ĐẠT (máy: FAIL; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 e18781fb36c783e5…)
+    còn thiếu: Biên bản tiếp cận vựa do chủ vựa xác nhận; Phê duyệt chọn site của Founder; Biểu mẫu chấp thuận dữ liệu (91/2025/QH15) đã ký
+  GATE-02: ĐÃ MỞ (máy đạt + người ghi nhận bằng chứng) (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 9990eca3e65f379c…)
+  GATE-03: ĐÃ MỞ (máy đạt + người ghi nhận bằng chứng) (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 e830d72b76dab861…)
+  GATE-04: ĐÃ MỞ (máy đạt + người ghi nhận bằng chứng) (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 c1a8b341cb746e07…)
+  GATE-05: ĐÃ MỞ (máy đạt + người ghi nhận bằng chứng) (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 22affdaba2160288…)
+goForLiveCustomerData: false — CHƯA được nạp dữ liệu khách hàng thật.
+### JSON: {"evidenceProvenance": "OPERATIONAL", "machineChecksPassedCount": 4, "operationalGatesEvidencedCount": 4, "totalGates": 5, "goForLiveCustomerData": false}
+### gates: [{"id": "GATE-01", "machine": false, "evidence": "RECORDED_BY_OPERATOR", "verdict": "PENDING", "label": "PENDING_SITE_AND_CONSENT_SIGN_OFF"}, {"id": "GATE-02", "machine": true, "evidence": "RECORDED_BY_OPERATOR", "verdict": "EVIDENCED_FOR_LAUNCH", "label": "PASS"}, {"id": "GATE-03", "machine": true, "evidence": "RECORDED_BY_OPERATOR", "verdict": "EVIDENCED_FOR_LAUNCH", "label": "PASS"}, {"id": "GATE-04", "machine": true, "evidence": "RECORDED_BY_OPERATOR", "verdict": "EVIDENCED_FOR_LAUNCH", "label": "PASS"}, {"id": "GATE-05", "machine": true, "evidence": "RECORDED_BY_OPERATOR", "verdict": "EVIDENCED_FOR_LAUNCH", "label": "PASS"}]
+### EXIT=1
+
+################ B4 operational fixture cohort, all five machine checks green AND all five evidence files declared
+### NOTE: this is the ONLY case that may print goForLiveCustomerData: true / EXIT=0, and it does so on
+###       FIXTURE containers with FIXTURE evidence files. It demonstrates the mechanism; it is not a
+###       launch decision, and a real run additionally needs Founder sign-off on real site artifacts.
+KIỂM TRA TỰ ĐỘNG (máy chấm được): 5/5 tiêu chí đạt
+LAUNCH GATE VẬN HÀNH (đủ bằng chứng hợp lệ): 5/5 cổng được mở
+DỮ LIỆU ĐÁNH GIÁ: VẬN HÀNH (5 hồ sơ) — không có tín hiệu tổng hợp trong sổ kiểm toán; chuỗi băm kiểm toán: XÁC MINH ĐẠT
+  GATE-01: ĐÃ MỞ (máy đạt + người ghi nhận bằng chứng) (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 e18781fb36c783e5…)
+  GATE-02: ĐÃ MỞ (máy đạt + người ghi nhận bằng chứng) (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 9990eca3e65f379c…)
+  GATE-03: ĐÃ MỞ (máy đạt + người ghi nhận bằng chứng) (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 e830d72b76dab861…)
+  GATE-04: ĐÃ MỞ (máy đạt + người ghi nhận bằng chứng) (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 c1a8b341cb746e07…)
+  GATE-05: ĐÃ MỞ (máy đạt + người ghi nhận bằng chứng) (máy: PASS; bằng chứng: RECORDED_BY_OPERATOR, tệp 52 byte SHA-256 22affdaba2160288…)
+goForLiveCustomerData: true — cả 5 cổng có bằng chứng vận hành được ghi nhận.
+### JSON: {"evidenceProvenance": "OPERATIONAL", "machineChecksPassedCount": 5, "operationalGatesEvidencedCount": 5, "totalGates": 5, "goForLiveCustomerData": true}
+### EXIT=0
+
+################ field auditor CLI (pilot:audit-pack) prints both counts on the same two databases
+### NOTE: this call passes only DURIOS_DB_PATH/DATA_DIR/HOST, so the consent file, the OTP provider
+###       and the backup directory are not in the environment: 2 machine checks pass (GATE-03, GATE-05)
+###       and no launch gate is evidenced. The line format is the point: two counts, never one number.
+### CMD: DURIOS_DB_PATH=/tmp/durios-gate-matrix/rehearsal/durios.db DURIOS_DATA_DIR=/tmp/durios-gate-matrix/rehearsal/uploads bun src/export/field-auditor-cli.ts --output-dir /tmp/durios-gate-matrix/rehearsal/pack
+[DuriOS Field Auditor] Site=SITE-CAILAY-TIENGIANG-01 Verdict=HOLD_BLOCKERS_REMAIN MachineChecks=2/5 LaunchGatesEvidenced=0/5 SHA256=bbed1f0b4df7cccac6245d7947053cea4dc5d0c1220f87436e7d0f7d4fbec6e2 Integrity=true
+[DuriOS Field Auditor] Saved pack to: /tmp/durios-gate-matrix/rehearsal/pack/GOLIVE-SITE-CAILAY-TIENGIANG-01-2026-10-30.json
+### EXIT=0
+PASS | pilot:audit-pack on rehearsal: exit 0, Verdict=HOLD_BLOCKERS_REMAIN, MachineChecks=2/5, LaunchGatesEvidenced=0/5 (expected)
+### CMD: DURIOS_DB_PATH=/tmp/durios-gate-matrix/operational/durios.db DURIOS_DATA_DIR=/tmp/durios-gate-matrix/operational/uploads bun src/export/field-auditor-cli.ts --output-dir /tmp/durios-gate-matrix/operational/pack
+[DuriOS Field Auditor] Site=SITE-CAILAY-TIENGIANG-01 Verdict=HOLD_BLOCKERS_REMAIN MachineChecks=2/5 LaunchGatesEvidenced=0/5 SHA256=18a7e775c29eea2d2152da5a3f2ac9238378a753817c06b4f9c6fc0142a5da16 Integrity=true
+[DuriOS Field Auditor] Saved pack to: /tmp/durios-gate-matrix/operational/pack/GOLIVE-SITE-CAILAY-TIENGIANG-01-2026-10-30.json
+### EXIT=0
+PASS | pilot:audit-pack on operational: exit 0, Verdict=HOLD_BLOCKERS_REMAIN, MachineChecks=2/5, LaunchGatesEvidenced=0/5 (expected)
+
+################ expected-result assertions (this script exits 1 if the matrix drifts)
+### results.tsv (id, exit, machineChecks, gatesEvidenced, evidenceProvenance, goForLiveCustomerData):
+A1 | 1 | 2 | 0 | SYNTHETIC_REHEARSAL | false
+A2 | 1 | 5 | 0 | SYNTHETIC_REHEARSAL | false
+A3 | 1 | 5 | 0 | SYNTHETIC_REHEARSAL | false
+B1 | 1 | 5 | 0 | OPERATIONAL | false
+B2 | 1 | 5 | 1 | OPERATIONAL | false
+B3 | 1 | 4 | 4 | OPERATIONAL | false
+B4 | 0 | 5 | 5 | OPERATIONAL | true
+PASS | case A1: exit=1 machineChecks=2 gatesEvidenced=0 provenance=SYNTHETIC_REHEARSAL goLive=false
+PASS | case A2: exit=1 machineChecks=5 gatesEvidenced=0 provenance=SYNTHETIC_REHEARSAL goLive=false
+PASS | case A3: exit=1 machineChecks=5 gatesEvidenced=0 provenance=SYNTHETIC_REHEARSAL goLive=false
+PASS | case B1: exit=1 machineChecks=5 gatesEvidenced=0 provenance=OPERATIONAL goLive=false
+PASS | case B2: exit=1 machineChecks=5 gatesEvidenced=1 provenance=OPERATIONAL goLive=false
+PASS | case B3: exit=1 machineChecks=4 gatesEvidenced=4 provenance=OPERATIONAL goLive=false
+PASS | case B4: exit=0 machineChecks=5 gatesEvidenced=5 provenance=OPERATIONAL goLive=true
+== summary == cases=7 auditorCalls=2 failures=0
+
+artifacts kept at /tmp/durios-gate-matrix (rehearsal/, operational/, case-*.json, results.tsv)
+EXIT=0

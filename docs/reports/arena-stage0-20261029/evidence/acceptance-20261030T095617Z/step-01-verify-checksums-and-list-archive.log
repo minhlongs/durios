@@ -1,0 +1,387 @@
+# STEP 1 — verify-checksums-and-list-archive
+# tree              : /tmp/arena-tree
+# tree fingerprint  : b997a68b492994da715d55d234feca161c8fb9e8f8b1f3dcdcfcdcbbbe5f730a
+# work dir          : /tmp/durios-acceptance-qTf0KM
+# started (UTC)     : 2026-10-30T09:56:17Z
+# EXPECTED RESULT   : outer SHA-256 of the handover archive verifies, the listing shows the five reports + evidence + package, every inner checksum in CHECKSUMS.txt matches, and package/SHA256SUMS.txt (when present) matches. Exit 0 for every sha256sum -c.
+
+
+================ STEP 1 — verify-checksums-and-list-archive ================
+expected: outer SHA-256 of the handover archive verifies, the listing shows the five reports + evidence + package, every inner checksum in CHECKSUMS.txt matches, and package/SHA256SUMS.txt (when present) matches. Exit 0 for every sha256sum -c.
+archive: /home/user/durios/docs/reports/arena-stage0-20261029/delivery/durios-stage0-handover-20261030.tar.gz
+archive sha256: 50328934475da3201b8f7c236989340a7ada6969ea6ff0a99dce49af07ad800c
+archive bytes : 18777489
+
+### CMD: bash -c cd "/home/user/durios/docs/reports/arena-stage0-20261029/delivery" && sha256sum -c "durios-stage0-handover-20261030.tar.gz.sha256"
+durios-stage0-handover-20261030.tar.gz: OK
+### EXIT=0
+  ran: sha256sum -c on the archive's sidecar file → exit 0
+PASS | outer archive checksum (exit 0 as expected)
+
+### CMD: tar -tzf /home/user/durios/docs/reports/arena-stage0-20261029/delivery/durios-stage0-handover-20261030.tar.gz
+durios-stage0-handover-20261030/
+durios-stage0-handover-20261030/reports/
+durios-stage0-handover-20261030/reports/REPORT.md
+durios-stage0-handover-20261030/reports/FINDINGS.md
+durios-stage0-handover-20261030/reports/GATE-MATRIX.md
+durios-stage0-handover-20261030/reports/VERIFICATION.md
+durios-stage0-handover-20261030/reports/RUNBOOK-STAGE0-REHEARSAL.md
+durios-stage0-handover-20261030/reports/UI-ACCEPTANCE-CHECKLIST.md
+durios-stage0-handover-20261030/README-HANDOVER.md
+durios-stage0-handover-20261030/evidence/
+durios-stage0-handover-20261030/evidence/BACKUP-RESTORE-DRILL-LOG.txt
+durios-stage0-handover-20261030/evidence/rerun-all.sh
+durios-stage0-handover-20261030/evidence/CLI-AUDIT-PACK-LOG.txt
+durios-stage0-handover-20261030/evidence/CLI-KPI-GATES-PROOFKIT-LOG.txt
+durios-stage0-handover-20261030/evidence/CLI-PROOFKIT-TENANT-ISOLATION-LOG.txt
+durios-stage0-handover-20261030/evidence/DRILL-STAGE0-LOG.txt
+durios-stage0-handover-20261030/evidence/HTTP-WALKTHROUGH-LOG.txt
+durios-stage0-handover-20261030/evidence/MANIFEST-TAMPER-LOG.txt
+durios-stage0-handover-20261030/evidence/UI-RENDER-PROBE-LOG.txt
+durios-stage0-handover-20261030/evidence/backup-restore-drill.ts
+durios-stage0-handover-20261030/evidence/drill-stage0.ts
+durios-stage0-handover-20261030/evidence/extraction-mode-demo.ts
+durios-stage0-handover-20261030/evidence/gate-cli-matrix.sh
+durios-stage0-handover-20261030/evidence/gate-cohort-site.ts
+durios-stage0-handover-20261030/evidence/gate-provenance-adversarial.ts
+durios-stage0-handover-20261030/evidence/http-walkthrough.sh
+durios-stage0-handover-20261030/evidence/rerun-20261030/
+durios-stage0-handover-20261030/evidence/rerun-20261030/BACKUP-RESTORE-DRILL-LOG.txt
+durios-stage0-handover-20261030/evidence/rerun-20261030/DRILL-STAGE0-LOG.txt
+durios-stage0-handover-20261030/evidence/rerun-20261030/EXTRACTION-MODE-LOG.txt
+durios-stage0-handover-20261030/evidence/rerun-20261030/GATE-CLI-MATRIX-LOG.txt
+durios-stage0-handover-20261030/evidence/rerun-20261030/GATE-PROVENANCE-ADVERSARIAL-LOG.txt
+durios-stage0-handover-20261030/evidence/rerun-20261030/HTTP-WALKTHROUGH-LOG.txt
+durios-stage0-handover-20261030/evidence/rerun-20261030/MODULARITY-LOG.txt
+durios-stage0-handover-20261030/evidence/rerun-20261030/TEST-SUITE-LOG.txt
+durios-stage0-handover-20261030/evidence/rerun-20261030/TYPECHECK-LOG.txt
+durios-stage0-handover-20261030/evidence/rerun-20261030/UI-RENDER-PROBE-LOG.txt
+durios-stage0-handover-20261030/evidence/ui-render-probe.mjs
+durios-stage0-handover-20261030/evidence/verify-fields.py
+durios-stage0-handover-20261030/evidence/permission-tenant-isolation.sh
+durios-stage0-handover-20261030/evidence/acceptance-harness.sh
+durios-stage0-handover-20261030/package/
+durios-stage0-handover-20261030/package/APPLY-VERIFY-LOG.txt
+durios-stage0-handover-20261030/package/MANIFEST.txt
+durios-stage0-handover-20261030/package/SHA256SUMS.txt
+durios-stage0-handover-20261030/package/base-2f1538e80ac97dc1efb9d9b52b14782d9bfb2494.tar.gz
+durios-stage0-handover-20261030/package/build-package.sh
+durios-stage0-handover-20261030/package/delivered-tree-20261030.tar.gz
+durios-stage0-handover-20261030/package/snapshot/
+durios-stage0-handover-20261030/package/snapshot/README.md
+durios-stage0-handover-20261030/package/snapshot/docs/
+durios-stage0-handover-20261030/package/snapshot/docs/pilot-readiness/
+durios-stage0-handover-20261030/package/snapshot/docs/pilot-readiness/01_SINGLE_SITE_READINESS_AND_LAUNCH_GATE.md
+durios-stage0-handover-20261030/package/snapshot/docs/pilot-readiness/04_DATA_PERMISSION_CONSENT_AND_KPI_PROTOCOL.md
+durios-stage0-handover-20261030/package/snapshot/docs/pilot-readiness/06_OPERATOR_AND_DEVELOPER_ONBOARDING.md
+durios-stage0-handover-20261030/package/snapshot/docs/pilot-readiness/DECISION-01-CAI-LAY-SITE-SELECTION.md
+durios-stage0-handover-20261030/package/snapshot/docs/reports/
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/FINDINGS.md
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/GATE-MATRIX.md
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/README-HANDOVER.md
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/REPORT.md
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/RUNBOOK-STAGE0-REHEARSAL.md
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/UI-ACCEPTANCE-CHECKLIST.md
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/VERIFICATION.md
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/build-handover-archive.sh
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/BACKUP-RESTORE-DRILL-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-all.sh
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/CLI-AUDIT-PACK-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/CLI-KPI-GATES-PROOFKIT-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/CLI-PROOFKIT-TENANT-ISOLATION-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/DRILL-STAGE0-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/HTTP-WALKTHROUGH-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/MANIFEST-TAMPER-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/UI-RENDER-PROBE-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/acceptance-harness.sh
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/backup-restore-drill.ts
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/drill-stage0.ts
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/extraction-mode-demo.ts
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/gate-cli-matrix.sh
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/gate-cohort-site.ts
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/gate-provenance-adversarial.ts
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/http-walkthrough.sh
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/permission-tenant-isolation.sh
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/BACKUP-RESTORE-DRILL-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/DRILL-STAGE0-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/EXTRACTION-MODE-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/GATE-CLI-MATRIX-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/GATE-PROVENANCE-ADVERSARIAL-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/HTTP-WALKTHROUGH-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/MODULARITY-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/TEST-SUITE-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/TYPECHECK-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/UI-RENDER-PROBE-LOG.txt
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/ui-render-probe.mjs
+durios-stage0-handover-20261030/package/snapshot/docs/reports/arena-stage0-20261029/evidence/verify-fields.py
+durios-stage0-handover-20261030/package/snapshot/src/
+durios-stage0-handover-20261030/package/snapshot/src/auth/
+durios-stage0-handover-20261030/package/snapshot/src/auth/pilot-kpi-evaluator.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/rbac-policy.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/pilot-kpi-extended-types.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/pilot-launch-gate-verifier.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/pilot-rehearsal-seeder.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/gate-cohort-provenance.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/gate-criteria.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/gate-evidence-artifact.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/pilot-gate-evidence.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/pilot-gate-report-builder.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/pilot-gate-summary.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/pilot-gate-types.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/pilot-kpi-cohort.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/pilot-kpi-value-assumptions.ts
+durios-stage0-handover-20261030/package/snapshot/src/auth/rehearsal-seed-target-guard.ts
+durios-stage0-handover-20261030/package/snapshot/src/domain/
+durios-stage0-handover-20261030/package/snapshot/src/domain/export-manifest-types.ts
+durios-stage0-handover-20261030/package/snapshot/src/domain/pilot-dossier-pack-types.ts
+durios-stage0-handover-20261030/package/snapshot/src/export/
+durios-stage0-handover-20261030/package/snapshot/src/export/field-auditor-cli.ts
+durios-stage0-handover-20261030/package/snapshot/src/export/manifest-compiler.ts
+durios-stage0-handover-20261030/package/snapshot/src/export/pilot-dossier-pack-compiler.ts
+durios-stage0-handover-20261030/package/snapshot/src/export/standalone-manifest-verifier.ts
+durios-stage0-handover-20261030/package/snapshot/src/export/manifest-integrity.ts
+durios-stage0-handover-20261030/package/snapshot/src/export/pilot-pack-checklist.ts
+durios-stage0-handover-20261030/package/snapshot/src/export/pilot-report-seal.ts
+durios-stage0-handover-20261030/package/snapshot/src/extraction/
+durios-stage0-handover-20261030/package/snapshot/src/extraction/composite-extractor-registry.ts
+durios-stage0-handover-20261030/package/snapshot/src/extraction/fixture-extractor.ts
+durios-stage0-handover-20261030/package/snapshot/src/extraction/extractor-fallback.ts
+durios-stage0-handover-20261030/package/snapshot/src/extraction/fixture-template-fields.ts
+durios-stage0-handover-20261030/package/snapshot/src/extraction/synthetic-extraction-mode.ts
+durios-stage0-handover-20261030/package/snapshot/src/index.ts
+durios-stage0-handover-20261030/package/snapshot/src/rules/
+durios-stage0-handover-20261030/package/snapshot/src/rules/cadmium-evaluators.ts
+durios-stage0-handover-20261030/package/snapshot/src/rules/deterministic-engine.ts
+durios-stage0-handover-20261030/package/snapshot/src/rules/extraction-completeness.ts
+durios-stage0-handover-20261030/package/snapshot/src/server/
+durios-stage0-handover-20261030/package/snapshot/src/server/dossier-handlers.ts
+durios-stage0-handover-20261030/package/snapshot/src/server/http-router.ts
+durios-stage0-handover-20261030/package/snapshot/src/server/ecosystem-rehearsal-handler.ts
+durios-stage0-handover-20261030/package/snapshot/src/server/ecosystem-rehearsal-seeder.ts
+durios-stage0-handover-20261030/package/snapshot/src/server/pilot-handlers.ts
+durios-stage0-handover-20261030/package/snapshot/src/server/public/
+durios-stage0-handover-20261030/package/snapshot/src/server/public/index.html
+durios-stage0-handover-20261030/package/snapshot/src/server/server-types.ts
+durios-stage0-handover-20261030/package/snapshot/src/server/export-manifest-handler.ts
+durios-stage0-handover-20261030/package/snapshot/src/server/rehearsal-bootstrap-guard.ts
+durios-stage0-handover-20261030/package/snapshot/src/sharing/
+durios-stage0-handover-20261030/package/snapshot/src/sharing/dossier-redactor.ts
+durios-stage0-handover-20261030/package/snapshot/src/sharing/redaction-policy.ts
+durios-stage0-handover-20261030/package/snapshot/src/sharing/export-manifest-redactor.ts
+durios-stage0-handover-20261030/package/snapshot/src/workspace/
+durios-stage0-handover-20261030/package/snapshot/src/workspace/document-ingestion-orchestrator.ts
+durios-stage0-handover-20261030/package/snapshot/test/
+durios-stage0-handover-20261030/package/snapshot/test/ecosystem-rehearsal-and-modularity.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/helpers/
+durios-stage0-handover-20261030/package/snapshot/test/helpers/api-v1-equivalence-5a5-normalizer.ts
+durios-stage0-handover-20261030/package/snapshot/test/helpers/gate-operator-evidence.ts
+durios-stage0-handover-20261030/package/snapshot/test/helpers/gate-provenance-fixture.ts
+durios-stage0-handover-20261030/package/snapshot/test/helpers/gate-site-fixture.ts
+durios-stage0-handover-20261030/package/snapshot/test/helpers/operational-cohort-fixture.ts
+durios-stage0-handover-20261030/package/snapshot/test/helpers/two-tenant-sealed-dossier.ts
+durios-stage0-handover-20261030/package/snapshot/test/pilot-go-live-pack.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/pilot-launch-gate-verifier.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/stitch-static-route.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/extraction-and-rule-fail-closed.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/gate-cohort-provenance.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/gate-evidence-artifact.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/gate-provenance-adversarial.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/manifest-integrity-tamper.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/manifest-redaction-and-tenant-kpi.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/pilot-gate-evidence-split.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/preload-synthetic-extraction.ts
+durios-stage0-handover-20261030/package/snapshot/test/rehearsal-bootstrap-and-provenance.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/rehearsal-seed-target-guard.test.ts
+durios-stage0-handover-20261030/package/snapshot/test/synthetic-extraction-mode.test.ts
+durios-stage0-handover-20261030/package/snapshot/bunfig.toml
+durios-stage0-handover-20261030/package/stage0-full.patch
+durios-stage0-handover-20261030/package/verify-package.sh
+durios-stage0-handover-20261030/CHECKSUMS.txt
+### EXIT=0
+  ran: list archive contents (no extraction into the tree) → exit 0
+PASS | archive listing readable
+PASS | archive holds 181 entries (> 100 expected)
+PASS | listing contains README-HANDOVER.md
+PASS | listing contains REPORT.md
+PASS | listing contains VERIFICATION.md
+PASS | listing contains GATE-MATRIX.md
+PASS | listing contains FINDINGS.md
+PASS | listing contains RUNBOOK-STAGE0-REHEARSAL.md
+PASS | listing contains evidence/
+PASS | listing contains package/MANIFEST.txt
+PASS | listing contains package/SHA256SUMS.txt
+PASS | listing contains package/stage0-full.patch
+PASS | listing contains CHECKSUMS.txt
+
+### CMD: tar -xzf /home/user/durios/docs/reports/arena-stage0-20261029/delivery/durios-stage0-handover-20261030.tar.gz -C /tmp/durios-acceptance-qTf0KM/inner-check
+### EXIT=0
+  ran: extract only the archive payload into a scratch dir (/tmp/durios-acceptance-qTf0KM/inner-check), never into the tree → exit 0
+PASS | scratch extraction (exit 0 as expected)
+
+### CMD: bash -c cd '/tmp/durios-acceptance-qTf0KM/inner-check/durios-stage0-handover-20261030' && sha256sum -c CHECKSUMS.txt
+./README-HANDOVER.md: OK
+./evidence/BACKUP-RESTORE-DRILL-LOG.txt: OK
+./evidence/CLI-AUDIT-PACK-LOG.txt: OK
+./evidence/CLI-KPI-GATES-PROOFKIT-LOG.txt: OK
+./evidence/CLI-PROOFKIT-TENANT-ISOLATION-LOG.txt: OK
+./evidence/DRILL-STAGE0-LOG.txt: OK
+./evidence/HTTP-WALKTHROUGH-LOG.txt: OK
+./evidence/MANIFEST-TAMPER-LOG.txt: OK
+./evidence/UI-RENDER-PROBE-LOG.txt: OK
+./evidence/acceptance-harness.sh: OK
+./evidence/backup-restore-drill.ts: OK
+./evidence/drill-stage0.ts: OK
+./evidence/extraction-mode-demo.ts: OK
+./evidence/gate-cli-matrix.sh: OK
+./evidence/gate-cohort-site.ts: OK
+./evidence/gate-provenance-adversarial.ts: OK
+./evidence/http-walkthrough.sh: OK
+./evidence/permission-tenant-isolation.sh: OK
+./evidence/rerun-20261030/BACKUP-RESTORE-DRILL-LOG.txt: OK
+./evidence/rerun-20261030/DRILL-STAGE0-LOG.txt: OK
+./evidence/rerun-20261030/EXTRACTION-MODE-LOG.txt: OK
+./evidence/rerun-20261030/GATE-CLI-MATRIX-LOG.txt: OK
+./evidence/rerun-20261030/GATE-PROVENANCE-ADVERSARIAL-LOG.txt: OK
+./evidence/rerun-20261030/HTTP-WALKTHROUGH-LOG.txt: OK
+./evidence/rerun-20261030/MODULARITY-LOG.txt: OK
+./evidence/rerun-20261030/TEST-SUITE-LOG.txt: OK
+./evidence/rerun-20261030/TYPECHECK-LOG.txt: OK
+./evidence/rerun-20261030/UI-RENDER-PROBE-LOG.txt: OK
+./evidence/rerun-all.sh: OK
+./evidence/ui-render-probe.mjs: OK
+./evidence/verify-fields.py: OK
+./package/APPLY-VERIFY-LOG.txt: OK
+./package/MANIFEST.txt: OK
+./package/SHA256SUMS.txt: OK
+./package/base-2f1538e80ac97dc1efb9d9b52b14782d9bfb2494.tar.gz: OK
+./package/build-package.sh: OK
+./package/delivered-tree-20261030.tar.gz: OK
+./package/snapshot/README.md: OK
+./package/snapshot/bunfig.toml: OK
+./package/snapshot/docs/pilot-readiness/01_SINGLE_SITE_READINESS_AND_LAUNCH_GATE.md: OK
+./package/snapshot/docs/pilot-readiness/04_DATA_PERMISSION_CONSENT_AND_KPI_PROTOCOL.md: OK
+./package/snapshot/docs/pilot-readiness/06_OPERATOR_AND_DEVELOPER_ONBOARDING.md: OK
+./package/snapshot/docs/pilot-readiness/DECISION-01-CAI-LAY-SITE-SELECTION.md: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/FINDINGS.md: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/GATE-MATRIX.md: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/README-HANDOVER.md: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/REPORT.md: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/RUNBOOK-STAGE0-REHEARSAL.md: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/UI-ACCEPTANCE-CHECKLIST.md: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/VERIFICATION.md: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/build-handover-archive.sh: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/BACKUP-RESTORE-DRILL-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/CLI-AUDIT-PACK-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/CLI-KPI-GATES-PROOFKIT-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/CLI-PROOFKIT-TENANT-ISOLATION-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/DRILL-STAGE0-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/HTTP-WALKTHROUGH-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/MANIFEST-TAMPER-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/UI-RENDER-PROBE-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/acceptance-harness.sh: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/backup-restore-drill.ts: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/drill-stage0.ts: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/extraction-mode-demo.ts: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/gate-cli-matrix.sh: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/gate-cohort-site.ts: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/gate-provenance-adversarial.ts: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/http-walkthrough.sh: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/permission-tenant-isolation.sh: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/BACKUP-RESTORE-DRILL-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/DRILL-STAGE0-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/EXTRACTION-MODE-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/GATE-CLI-MATRIX-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/GATE-PROVENANCE-ADVERSARIAL-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/HTTP-WALKTHROUGH-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/MODULARITY-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/TEST-SUITE-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/TYPECHECK-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-20261030/UI-RENDER-PROBE-LOG.txt: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/rerun-all.sh: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/ui-render-probe.mjs: OK
+./package/snapshot/docs/reports/arena-stage0-20261029/evidence/verify-fields.py: OK
+./package/snapshot/src/auth/gate-cohort-provenance.ts: OK
+./package/snapshot/src/auth/gate-criteria.ts: OK
+./package/snapshot/src/auth/gate-evidence-artifact.ts: OK
+./package/snapshot/src/auth/pilot-gate-evidence.ts: OK
+./package/snapshot/src/auth/pilot-gate-report-builder.ts: OK
+./package/snapshot/src/auth/pilot-gate-summary.ts: OK
+./package/snapshot/src/auth/pilot-gate-types.ts: OK
+./package/snapshot/src/auth/pilot-kpi-cohort.ts: OK
+./package/snapshot/src/auth/pilot-kpi-evaluator.ts: OK
+./package/snapshot/src/auth/pilot-kpi-extended-types.ts: OK
+./package/snapshot/src/auth/pilot-kpi-value-assumptions.ts: OK
+./package/snapshot/src/auth/pilot-launch-gate-verifier.ts: OK
+./package/snapshot/src/auth/pilot-rehearsal-seeder.ts: OK
+./package/snapshot/src/auth/rbac-policy.ts: OK
+./package/snapshot/src/auth/rehearsal-seed-target-guard.ts: OK
+./package/snapshot/src/domain/export-manifest-types.ts: OK
+./package/snapshot/src/domain/pilot-dossier-pack-types.ts: OK
+./package/snapshot/src/export/field-auditor-cli.ts: OK
+./package/snapshot/src/export/manifest-compiler.ts: OK
+./package/snapshot/src/export/manifest-integrity.ts: OK
+./package/snapshot/src/export/pilot-dossier-pack-compiler.ts: OK
+./package/snapshot/src/export/pilot-pack-checklist.ts: OK
+./package/snapshot/src/export/pilot-report-seal.ts: OK
+./package/snapshot/src/export/standalone-manifest-verifier.ts: OK
+./package/snapshot/src/extraction/composite-extractor-registry.ts: OK
+./package/snapshot/src/extraction/extractor-fallback.ts: OK
+./package/snapshot/src/extraction/fixture-extractor.ts: OK
+./package/snapshot/src/extraction/fixture-template-fields.ts: OK
+./package/snapshot/src/extraction/synthetic-extraction-mode.ts: OK
+./package/snapshot/src/index.ts: OK
+./package/snapshot/src/rules/cadmium-evaluators.ts: OK
+./package/snapshot/src/rules/deterministic-engine.ts: OK
+./package/snapshot/src/rules/extraction-completeness.ts: OK
+./package/snapshot/src/server/dossier-handlers.ts: OK
+./package/snapshot/src/server/ecosystem-rehearsal-handler.ts: OK
+./package/snapshot/src/server/ecosystem-rehearsal-seeder.ts: OK
+./package/snapshot/src/server/export-manifest-handler.ts: OK
+./package/snapshot/src/server/http-router.ts: OK
+./package/snapshot/src/server/pilot-handlers.ts: OK
+./package/snapshot/src/server/public/index.html: OK
+./package/snapshot/src/server/rehearsal-bootstrap-guard.ts: OK
+./package/snapshot/src/server/server-types.ts: OK
+./package/snapshot/src/sharing/dossier-redactor.ts: OK
+./package/snapshot/src/sharing/export-manifest-redactor.ts: OK
+./package/snapshot/src/sharing/redaction-policy.ts: OK
+./package/snapshot/src/workspace/document-ingestion-orchestrator.ts: OK
+./package/snapshot/test/ecosystem-rehearsal-and-modularity.test.ts: OK
+./package/snapshot/test/extraction-and-rule-fail-closed.test.ts: OK
+./package/snapshot/test/gate-cohort-provenance.test.ts: OK
+./package/snapshot/test/gate-evidence-artifact.test.ts: OK
+./package/snapshot/test/gate-provenance-adversarial.test.ts: OK
+./package/snapshot/test/helpers/api-v1-equivalence-5a5-normalizer.ts: OK
+./package/snapshot/test/helpers/gate-operator-evidence.ts: OK
+./package/snapshot/test/helpers/gate-provenance-fixture.ts: OK
+./package/snapshot/test/helpers/gate-site-fixture.ts: OK
+./package/snapshot/test/helpers/operational-cohort-fixture.ts: OK
+./package/snapshot/test/helpers/two-tenant-sealed-dossier.ts: OK
+./package/snapshot/test/manifest-integrity-tamper.test.ts: OK
+./package/snapshot/test/manifest-redaction-and-tenant-kpi.test.ts: OK
+./package/snapshot/test/pilot-gate-evidence-split.test.ts: OK
+./package/snapshot/test/pilot-go-live-pack.test.ts: OK
+./package/snapshot/test/pilot-launch-gate-verifier.test.ts: OK
+./package/snapshot/test/preload-synthetic-extraction.ts: OK
+./package/snapshot/test/rehearsal-bootstrap-and-provenance.test.ts: OK
+./package/snapshot/test/rehearsal-seed-target-guard.test.ts: OK
+./package/snapshot/test/stitch-static-route.test.ts: OK
+./package/snapshot/test/synthetic-extraction-mode.test.ts: OK
+./package/stage0-full.patch: OK
+./package/verify-package.sh: OK
+./reports/FINDINGS.md: OK
+./reports/GATE-MATRIX.md: OK
+./reports/REPORT.md: OK
+./reports/RUNBOOK-STAGE0-REHEARSAL.md: OK
+./reports/UI-ACCEPTANCE-CHECKLIST.md: OK
+./reports/VERIFICATION.md: OK
+### EXIT=0
+  ran: verify every inner checksum → exit 0
+PASS | inner CHECKSUMS.txt (exit 0 as expected)
+  inner checksums: 156 listed in CHECKSUMS.txt, all verified by sha256sum -c above
+PASS | CHECKSUMS.txt lists 156 files (> 100 expected)
+  note: this tree has no package/ directory (the delivered tree intentionally excludes it); the archive check above is the authoritative one
+  → STEP 1 result: PASS
