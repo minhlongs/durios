@@ -41,7 +41,7 @@ export interface FounderPilotAuthorizationRecord {
   readonly authorizedAt: string;
   readonly expiresAt: string;
   readonly maxContainers: 5;
-  readonly gate05AEvidenceSha256?: string | undefined;
+  readonly gate05AEvidenceSha256: string;
   readonly revoked?: boolean | undefined;
   readonly holdReason?: string | undefined;
   readonly note?: string | undefined;

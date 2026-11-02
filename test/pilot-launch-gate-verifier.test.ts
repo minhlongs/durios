@@ -2,7 +2,7 @@ import { afterEach, describe, expect, it } from "bun:test";
 import { existsSync, rmSync } from "node:fs";
 import { verifySingleSiteLaunchGates } from "../src/auth/pilot-launch-gate-verifier.js";
 import { createWorkspaceApp } from "../src/server/server.js";
-import { createOperatorEvidence, OTP_CONFIGURED_ENV, GATE_EVIDENCE_PENDING_LABEL } from "./helpers/gate-operator-evidence.js";
+import { createOperatorEvidence, createValidFounderAuth, OTP_CONFIGURED_ENV, GATE_EVIDENCE_PENDING_LABEL } from "./helpers/gate-operator-evidence.js";
 import { seedOperationalGateSite } from "./helpers/operational-cohort-fixture.js";
 
 const TEST_ROOT = "./data/test-launch-gates";
@@ -54,7 +54,7 @@ describe("Single-Site Launch Gate Verifier (GATE-01..GATE-05)", () => {
 
     const report = verifySingleSiteLaunchGates({
       dbPath: TEST_DB, dataDir: TEST_UPLOADS, backupDir: TEST_BACKUP,
-      consentSignedFilePath: TEST_CONSENT, gateEvidence: testEvidence, env: { ...OTP_CONFIGURED_ENV },
+      consentSignedFilePath: TEST_CONSENT, gateEvidence: testEvidence, founderAuthorization: createValidFounderAuth(testEvidence["GATE-05"]!.filePath!), env: { ...OTP_CONFIGURED_ENV },
     });
 
     expect(report.passedCount).toBe(5);

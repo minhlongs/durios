@@ -8,7 +8,7 @@ import { createWorkspaceApp } from "../src/server/server.js";
 import { compileStandaloneGoLiveDossierPack, verifyPilotGoLiveDossierPackIntegrity } from "../src/export/pilot-dossier-pack-compiler.js";
 import { formatGoLivePackMarkdown } from "../src/export/pilot-dossier-pack-formatter.js";
 import { buildGateSite } from "./helpers/gate-site-fixture.js";
-import { createOperatorEvidence, OTP_CONFIGURED_ENV } from "./helpers/gate-operator-evidence.js";
+import { createOperatorEvidence, createValidFounderAuth, OTP_CONFIGURED_ENV } from "./helpers/gate-operator-evidence.js";
 import { seedOperationalGate05Cohort } from "./helpers/operational-cohort-fixture.js";
 
 const roots: string[] = [];
@@ -59,11 +59,7 @@ describe("Stage 0 GATE-05A / GATE-05B split and 5-state pilot lifecycle", () => 
     const s = makeCleanOperationalSite();
     const { "GATE-05": gate05Ev, ...gates01To04 } = s.ev;
     const authFile = join(s.root, "founder-auth.json");
-    writeFileSync(authFile, JSON.stringify({
-      authorizationVersion: "1.0.0", authorizationId: "AUTH-CAILAY-001", siteCode: "SITE-CAILAY-TIENGIANG-01",
-      tenantId: "TENANT-CAILAY-PILOT-01", authorizedBy: "Founder Minh Long", authorizedAt: "2026-11-01T00:00:00.000Z",
-      expiresAt: "2027-11-01T00:00:00.000Z", maxContainers: 5,
-    }), "utf-8");
+    writeFileSync(authFile, JSON.stringify(createValidFounderAuth(s.gate05AFile, { authorizationId: "AUTH-CAILAY-001" })), "utf-8");
 
     const limited = verifySingleSiteLaunchGates({
       dbPath: s.dbPath, dataDir: s.dataDir, backupDir: s.backupDir, consentSignedFilePath: s.consentFilePath,
@@ -83,7 +79,7 @@ describe("Stage 0 GATE-05A / GATE-05B split and 5-state pilot lifecycle", () => 
       gateEvidence: { ...gates01To04, "GATE-05A": { filePath: s.gate05AFile, attestedBy: "Auditor" }, "GATE-05B": gate05Ev },
       founderAuthorizationFilePath: authFile, env: { ...OTP_CONFIGURED_ENV },
     });
-    expect([completed.pilotLifecycleState, completed.goForLiveCustomerData, verifyPilotGoLiveDossierPackIntegrity(completed)]).toEqual(["PILOT_COMPLETED", true, true]);
+    expect([completed.pilotLifecycleState, completed.goForLiveCustomerData, completed.kpiSnapshot.timingEvidenceSource, verifyPilotGoLiveDossierPackIntegrity(completed)]).toEqual(["PILOT_COMPLETED", true, "HUMAN_STOPWATCH_ATTESTED", true]);
     expect(formatGoLivePackMarkdown(completed)).toContain("GATE-05A");
   });
 });

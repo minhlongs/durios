@@ -10,6 +10,18 @@ export interface PilotWorkspaceQuotaPolicy {
   readonly allowedTenantId?: string | undefined;
 }
 
+export function shouldEnforceDynamicPilotQuota(env: Readonly<Record<string, string | undefined>> = process.env): boolean {
+  return Boolean(
+    env.DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION !== "true" ||
+    env.DURIOS_ENFORCE_PILOT_QUOTA === "true" ||
+    env.DURIOS_FOUNDER_PILOT_AUTH_FILE ||
+    env.DURIOS_GATE05A_EVIDENCE_FILE ||
+    env.DURIOS_GATE05B_EVIDENCE_FILE ||
+    env.DURIOS_PILOT_HOLD === "true" ||
+    env.DURIOS_PILOT_HOLD_REASON
+  );
+}
+
 export function countUsedPilotContainers(
   repo: DossierRepositoryLike,
   auditLedger: AuditLedgerLike,

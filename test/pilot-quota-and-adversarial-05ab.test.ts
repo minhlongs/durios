@@ -6,7 +6,7 @@ import { validateIso6346Container } from "../src/domain/iso-6346.js";
 import { verifySingleSiteLaunchGates } from "../src/auth/pilot-launch-gate-verifier.js";
 import { createSiteBackup } from "../src/auth/site-backup-manager.js";
 import { createWorkspaceApp } from "../src/server/server.js";
-import { createOperatorEvidence, OTP_CONFIGURED_ENV } from "./helpers/gate-operator-evidence.js";
+import { createOperatorEvidence, createValidFounderAuth, OTP_CONFIGURED_ENV } from "./helpers/gate-operator-evidence.js";
 import { seedTestPilotActor } from "./helpers/auth-test-helper.js";
 
 const roots: string[] = [];
@@ -72,11 +72,9 @@ describe("Pilot 5-container quota enforcement and adversarial Founder authorizat
 
     const expired = verifySingleSiteLaunchGates({
       ...baseOpts,
-      founderAuthorization: {
-        authorizationVersion: "1.0.0", authorizationId: "AUTH-EXP", siteCode: "SITE-CAILAY-TIENGIANG-01",
-        tenantId: "TENANT-CAILAY-PILOT-01", authorizedBy: "Founder", authorizedAt: "2026-01-01T00:00:00.000Z",
-        expiresAt: "2026-02-01T00:00:00.000Z", maxContainers: 5,
-      },
+      founderAuthorization: createValidFounderAuth(gate05AFile, {
+        authorizationId: "AUTH-EXP", authorizedAt: "2026-01-01T00:00:00.000Z", expiresAt: "2026-02-01T00:00:00.000Z",
+      }),
     });
     expect(expired.pilotLifecycleState).toBe("PILOT_HOLD");
     expect(expired.founderAuthorization.status).toBe("EXPIRED");
@@ -84,11 +82,9 @@ describe("Pilot 5-container quota enforcement and adversarial Founder authorizat
 
     const wrongSite = verifySingleSiteLaunchGates({
       ...baseOpts,
-      founderAuthorization: {
-        authorizationVersion: "1.0.0", authorizationId: "AUTH-SITE", siteCode: "SITE-OTHER-99",
-        tenantId: "TENANT-CAILAY-PILOT-01", authorizedBy: "Founder", authorizedAt: "2026-11-01T00:00:00.000Z",
-        expiresAt: "2027-11-01T00:00:00.000Z", maxContainers: 5,
-      },
+      founderAuthorization: createValidFounderAuth(gate05AFile, {
+        authorizationId: "AUTH-SITE", siteCode: "SITE-OTHER-99",
+      }),
     });
     expect(wrongSite.pilotLifecycleState).toBe("PILOT_HOLD");
     expect(wrongSite.founderAuthorization.status).toBe("INVALID_SCOPE_OR_ARTIFACT");
