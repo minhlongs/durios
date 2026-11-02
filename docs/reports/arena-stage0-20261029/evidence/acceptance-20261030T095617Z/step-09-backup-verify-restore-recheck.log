@@ -1,0 +1,39 @@
+# STEP 9 — backup-verify-restore-recheck
+# tree              : /tmp/arena-tree
+# tree fingerprint  : b997a68b492994da715d55d234feca161c8fb9e8f8b1f3dcdcfcdcbbbe5f730a
+# work dir          : /tmp/durios-acceptance-qTf0KM
+# started (UTC)     : 2026-10-30T09:56:54Z
+# EXPECTED RESULT   : backup-restore-drill.ts exits 0 with 0 failures, and the drill's own restore checks pass: restored DB hash equals the backup manifest hash, every blob re-hashes, a one-byte blob flip is detected.
+
+
+================ STEP 9 — backup-verify-restore-recheck ================
+expected: backup-restore-drill.ts exits 0 with 0 failures, and the drill's own restore checks pass: restored DB hash equals the backup manifest hash, every blob re-hashes, a one-byte blob flip is detected.
+
+### CMD: bash -c cd '/tmp/arena-tree' && DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true bun '/tmp/arena-tree/docs/reports/arena-stage0-20261029/evidence/backup-restore-drill.ts'
+[DuriOS] pilot:seed-rehearsal enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+== seeded a synthetic rehearsal database == /tmp/drill-source-GR6lYz
+PASS | repository ./data was not used as the source | repo=/tmp/arena-tree
+== backup created == /tmp/drill-backup-VFqqiV/backup
+PASS | backup manifest records the database hash and counts | dossiers=5 documents=15 blobs=15 auditChainValid=true
+PASS | backup verifies | errors=[]
+PASS | verification is idempotent (identical result twice)
+== restored into == /tmp/drill-restore-CyqxVR
+PASS | restore reports valid | errors=[]
+PASS | restored database hashes equal to the backup manifest's recorded hash | restored=98573092c84f9718… manifest=98573092c84f9718… liveSource=827c9e1ef9241e67…
+PASS | every restored blob re-hashes to its recorded SHA-256 | 15/15 blobs
+PASS | post-restore database is readable | dossiers=5 documents=15 auditEvents=96 firstEvent=DOSSIER_CREATED lastEvent=SYNTHETIC_DOCUMENT_INGESTED
+PASS | post-restore audit hash chain is unbroken | 95/95 links, genesis previous_hash=GENESIS-00000000
+PASS | flipping one byte in a backed-up blob is detected | errors=["Corrupted blob for document 'DOC-mvussof1-av59' at 'storage/blobs/a6a15de814e3df773ee65c0c3d09e7be7bf305e3adb002eb0c9fc5185bd897a2.bin': expected 'a6a15de814e3df773ee65c0c3d09e7be7bf305e3adb002eb0c9fc5185bd897a2', got 
+PASS | the already-restored copy is unaffected by backup tampering
+== summary == failures=0
+artifacts kept at /tmp/drill-backup-VFqqiV and /tmp/drill-restore-CyqxVR
+### EXIT=0
+  ran: backup-restore-drill.ts → exit 0
+PASS | backup / restore drill (exit 0 as expected)
+PASS | backup-restore drill reports 0 failures
+PASS | restored database hash equals the backup manifest hash
+PASS | every restored blob re-hashes to its recorded SHA-256
+PASS | flipping one byte in a stored blob is detected
+PASS | audit hash chain still verifies after the restore
+PASS | sealed dossier and manifest are readable after the restore
+  → STEP 9 result: PASS

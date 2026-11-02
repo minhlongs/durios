@@ -1,0 +1,159 @@
+# STEP 7 — provenance-adversarial-attacks
+# tree              : /tmp/arena-tree
+# tree fingerprint  : b997a68b492994da715d55d234feca161c8fb9e8f8b1f3dcdcfcdcbbbe5f730a
+# work dir          : /tmp/durios-acceptance-qTf0KM
+# started (UTC)     : 2026-10-30T09:56:53Z
+# EXPECTED RESULT   : gate-provenance-adversarial.ts exits 0: renamed IDs (A1), a mixed cohort (B1) and an erased ledger (C1) all keep evidenced=0 and never open a launch gate; a green operational fixture cohort (B0) is the only case that may.
+
+
+================ STEP 7 — provenance-adversarial-attacks ================
+expected: gate-provenance-adversarial.ts exits 0: renamed IDs (A1), a mixed cohort (B1) and an erased ledger (C1) all keep evidenced=0 and never open a launch gate; a green operational fixture cohort (B0) is the only case that may.
+
+### CMD: bash -c cd '/tmp/arena-tree' && bun '/tmp/arena-tree/docs/reports/arena-stage0-20261029/evidence/gate-provenance-adversarial.ts' '/tmp/durios-acceptance-qTf0KM/provenance'
+# gate provenance adversarial proof — 2026-10-30T09:56:53.255Z
+# root /tmp/durios-acceptance-qTf0KM/provenance — every database, document and evidence file below is a fixture
+# each case states an EXPECTED result; the script exits 1 if any expectation fails
+[DuriOS] pilot:seed-rehearsal enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+
+=== A0 baseline: rehearsal cohort as seeded, all machine checks green, 5 evidence files declared ===
+  containers=5 integrityGATE03=true
+  machineChecksPassedCount=5/5  operationalGatesEvidencedCount=0/5
+  evidenceProvenance=SYNTHETIC_REHEARSAL  ledgerIntegrityVerified=true  cohortSynthetic=true  goForLiveCustomerData=false
+  evidenceRecorded=5/5 (counted only when an existing file AND a named human are on record)
+  gate01Evidence status=RECORDED_BY_OPERATOR bytes=106 sha256=7f700231cce5d847… attestedBy=Người vận hành fixture (ký bởi script, không phải người thật)
+  provenanceSignals=["REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R01","REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R02","REHEARSAL_DOSSIER_CODE:DOS-CAILAY-R03"]
+  gateVerdicts=GATE-01:MACHINE_CHECK_ONLY GATE-02:MACHINE_CHECK_ONLY GATE-03:MACHINE_CHECK_ONLY GATE-04:MACHINE_CHECK_ONLY GATE-05:MACHINE_CHECK_ONLY
+  PASS | A0 baseline: rehearsal cohort as seeded, all machine checks green, 5 evidence files declared → totalContainers | actual=5 expected=5
+  PASS | A0 baseline: rehearsal cohort as seeded, all machine checks green, 5 evidence files declared → machineChecksPassedCount | actual=5 expected=5
+  PASS | A0 baseline: rehearsal cohort as seeded, all machine checks green, 5 evidence files declared → operationalGatesEvidencedCount | actual=0 expected=0
+  PASS | A0 baseline: rehearsal cohort as seeded, all machine checks green, 5 evidence files declared → evidenceProvenance | actual="SYNTHETIC_REHEARSAL" expected="SYNTHETIC_REHEARSAL"
+  PASS | A0 baseline: rehearsal cohort as seeded, all machine checks green, 5 evidence files declared → goForLiveCustomerData | actual=false expected=false
+  PASS | A0 baseline: rehearsal cohort as seeded, all machine checks green, 5 evidence files declared → ledgerIntegrityVerified | actual=true expected=true
+  PASS | A0 → every gate is MACHINE_CHECK_ONLY (evidence declared but cohort synthetic) | actual=true expected=true
+  PASS | A0 → all five declared files were recorded as artifacts | actual=5 expected=5
+  PASS | A0 → legacy dossier-code signal is present before the rename | actual=true expected=true
+
+ATTACK A1: UPDATE container_dossiers SET dossier_code = 'DOS-TG-CUSTOMER-…' (raw SQL, no application code)
+
+=== A1 after renaming every rehearsal dossier code to a customer-looking code ===
+  containers=5 integrityGATE03=true
+  machineChecksPassedCount=5/5  operationalGatesEvidencedCount=0/5
+  evidenceProvenance=SYNTHETIC_REHEARSAL  ledgerIntegrityVerified=true  cohortSynthetic=true  goForLiveCustomerData=false
+  evidenceRecorded=5/5 (counted only when an existing file AND a named human are on record)
+  gate01Evidence status=RECORDED_BY_OPERATOR bytes=106 sha256=7f700231cce5d847… attestedBy=Người vận hành fixture (ký bởi script, không phải người thật)
+  provenanceSignals=["REHEARSAL_DOSSIER_SEEDED:DOS-mvussn3c-xs36s","SYNTHETIC_DOCUMENT_INGESTED:DOS-mvussn3c-xs36s","REHEARSAL_DOSSIER_SEEDED:DOS-mvussn4h-5mam5"]
+  gateVerdicts=GATE-01:MACHINE_CHECK_ONLY GATE-02:MACHINE_CHECK_ONLY GATE-03:MACHINE_CHECK_ONLY GATE-04:MACHINE_CHECK_ONLY GATE-05:MACHINE_CHECK_ONLY
+  PASS | A1 after renaming every rehearsal dossier code to a customer-looking code → totalContainers | actual=5 expected=5
+  PASS | A1 after renaming every rehearsal dossier code to a customer-looking code → machineChecksPassedCount | actual=5 expected=5
+  PASS | A1 after renaming every rehearsal dossier code to a customer-looking code → operationalGatesEvidencedCount | actual=0 expected=0
+  PASS | A1 after renaming every rehearsal dossier code to a customer-looking code → evidenceProvenance | actual="SYNTHETIC_REHEARSAL" expected="SYNTHETIC_REHEARSAL"
+  PASS | A1 after renaming every rehearsal dossier code to a customer-looking code → goForLiveCustomerData | actual=false expected=false
+  PASS | A1 after renaming every rehearsal dossier code to a customer-looking code → ledgerIntegrityVerified | actual=true expected=true
+  PASS | A1 → the name-based signal is gone (proves the rename worked) | actual=true expected=true
+  PASS | A1 → the ledger signal still holds the gate (REHEARSAL_DOSSIER_SEEDED) | actual=true expected=true
+  PASS | A1 → the ledger signal still holds the gate (SYNTHETIC_DOCUMENT_INGESTED) | actual=true expected=true
+
+=== B0 baseline: operational cohort (nothing ingested in synthetic mode), 5 evidence files declared ===
+  containers=5 integrityGATE03=true
+  machineChecksPassedCount=5/5  operationalGatesEvidencedCount=5/5
+  evidenceProvenance=OPERATIONAL  ledgerIntegrityVerified=true  cohortSynthetic=false  goForLiveCustomerData=true
+  evidenceRecorded=5/5 (counted only when an existing file AND a named human are on record)
+  gate01Evidence status=RECORDED_BY_OPERATOR bytes=106 sha256=7f700231cce5d847… attestedBy=Người vận hành fixture (ký bởi script, không phải người thật)
+  provenanceSignals=[]
+  gateVerdicts=GATE-01:EVIDENCED_FOR_LAUNCH GATE-02:EVIDENCED_FOR_LAUNCH GATE-03:EVIDENCED_FOR_LAUNCH GATE-04:EVIDENCED_FOR_LAUNCH GATE-05:EVIDENCED_FOR_LAUNCH
+  PASS | B0 baseline: operational cohort (nothing ingested in synthetic mode), 5 evidence files declared → totalContainers | actual=5 expected=5
+  PASS | B0 baseline: operational cohort (nothing ingested in synthetic mode), 5 evidence files declared → machineChecksPassedCount | actual=5 expected=5
+  PASS | B0 baseline: operational cohort (nothing ingested in synthetic mode), 5 evidence files declared → operationalGatesEvidencedCount | actual=5 expected=5
+  PASS | B0 baseline: operational cohort (nothing ingested in synthetic mode), 5 evidence files declared → evidenceProvenance | actual="OPERATIONAL" expected="OPERATIONAL"
+  PASS | B0 baseline: operational cohort (nothing ingested in synthetic mode), 5 evidence files declared → goForLiveCustomerData | actual=true expected=true
+  PASS | B0 baseline: operational cohort (nothing ingested in synthetic mode), 5 evidence files declared → ledgerIntegrityVerified | actual=true expected=true
+  PASS | B0 → every gate is EVIDENCED_FOR_LAUNCH (fixture demo of the mechanism, not a launch decision) | actual=true expected=true
+
+ATTACK B1: one container created through the synthetic/fixture path, coded DOS-TG-CUSTOMER-77, mixed into the green cohort
+
+=== B1 after mixing one synthetic container into the operational cohort ===
+  containers=6 integrityGATE03=true
+  machineChecksPassedCount=5/5  operationalGatesEvidencedCount=0/5
+  evidenceProvenance=SYNTHETIC_REHEARSAL  ledgerIntegrityVerified=true  cohortSynthetic=true  goForLiveCustomerData=false
+  evidenceRecorded=5/5 (counted only when an existing file AND a named human are on record)
+  gate01Evidence status=RECORDED_BY_OPERATOR bytes=106 sha256=7f700231cce5d847… attestedBy=Người vận hành fixture (ký bởi script, không phải người thật)
+  provenanceSignals=["SYNTHETIC_DOCUMENT_INGESTED:DOS-mvussndg-82g76"]
+  gateVerdicts=GATE-01:MACHINE_CHECK_ONLY GATE-02:MACHINE_CHECK_ONLY GATE-03:MACHINE_CHECK_ONLY GATE-04:MACHINE_CHECK_ONLY GATE-05:MACHINE_CHECK_ONLY
+  PASS | B1 after mixing one synthetic container into the operational cohort → totalContainers | actual=6 expected=6
+  PASS | B1 after mixing one synthetic container into the operational cohort → machineChecksPassedCount | actual=5 expected=5
+  PASS | B1 after mixing one synthetic container into the operational cohort → operationalGatesEvidencedCount | actual=0 expected=0
+  PASS | B1 after mixing one synthetic container into the operational cohort → evidenceProvenance | actual="SYNTHETIC_REHEARSAL" expected="SYNTHETIC_REHEARSAL"
+  PASS | B1 after mixing one synthetic container into the operational cohort → goForLiveCustomerData | actual=false expected=false
+  PASS | B1 after mixing one synthetic container into the operational cohort → ledgerIntegrityVerified | actual=true expected=true
+  PASS | B1 → no gate stays open after one synthetic container joins the cohort | actual=true expected=true
+
+ATTACK C1: DELETE FROM audit_events WHERE event_type IN ('SYNTHETIC_DOCUMENT_INGESTED','REHEARSAL_DOSSIER_SEEDED')
+
+=== C1 after erasing the ledger rows that record synthetic origin ===
+  containers=5 integrityGATE03=false
+  machineChecksPassedCount=4/5  operationalGatesEvidencedCount=0/5
+  evidenceProvenance=UNPROVEN_LEDGER_INTEGRITY  ledgerIntegrityVerified=false  cohortSynthetic=false  goForLiveCustomerData=false
+  evidenceRecorded=5/5 (counted only when an existing file AND a named human are on record)
+  gate01Evidence status=RECORDED_BY_OPERATOR bytes=106 sha256=7f700231cce5d847… attestedBy=Người vận hành fixture (ký bởi script, không phải người thật)
+  provenanceSignals=[]
+  gateVerdicts=GATE-01:MACHINE_CHECK_ONLY GATE-02:MACHINE_CHECK_ONLY GATE-03:PENDING GATE-04:MACHINE_CHECK_ONLY GATE-05:MACHINE_CHECK_ONLY
+  PASS | C1 after erasing the ledger rows that record synthetic origin → totalContainers | actual=5 expected=5
+  PASS | C1 after erasing the ledger rows that record synthetic origin → machineChecksPassedCount | actual=4 expected=4
+  PASS | C1 after erasing the ledger rows that record synthetic origin → operationalGatesEvidencedCount | actual=0 expected=0
+  PASS | C1 after erasing the ledger rows that record synthetic origin → evidenceProvenance | actual="UNPROVEN_LEDGER_INTEGRITY" expected="UNPROVEN_LEDGER_INTEGRITY"
+  PASS | C1 after erasing the ledger rows that record synthetic origin → goForLiveCustomerData | actual=false expected=false
+  PASS | C1 after erasing the ledger rows that record synthetic origin → ledgerIntegrityVerified | actual=false expected=false
+  PASS | C1 → GATE-03 machine check fails because the hash chain is broken | actual=false expected=false
+  PASS | C1 → the sealed pack is HOLD_BLOCKERS_REMAIN | actual="HOLD_BLOCKERS_REMAIN" expected="HOLD_BLOCKERS_REMAIN"
+  PASS | C1 → the sealed pack carries UNPROVEN_LEDGER_INTEGRITY | actual="UNPROVEN_LEDGER_INTEGRITY" expected="UNPROVEN_LEDGER_INTEGRITY"
+  PASS | C1 → the sealed pack says goForLiveCustomerData=false | actual=false expected=false
+  PASS | C1 → the sealed pack carries the ledger-integrity disclaimer | actual=true expected=true
+  PASS | C1 → the sealed pack still verifies against its own SHA-256 | actual=true expected=true
+
+ATTACK D1: declare five 'evidence files' that are not files, on an otherwise green operational site
+
+=== D1 after declaring evidence paths that are not existing files ===
+  containers=5 integrityGATE03=true
+  machineChecksPassedCount=5/5  operationalGatesEvidencedCount=0/5
+  evidenceProvenance=OPERATIONAL  ledgerIntegrityVerified=true  cohortSynthetic=false  goForLiveCustomerData=false
+  evidenceRecorded=0/5 (counted only when an existing file AND a named human are on record)
+  gate01Evidence status=PENDING_OPERATOR_EVIDENCE bytes=0 sha256=… attestedBy=(không ai)
+  provenanceSignals=[]
+  gateVerdicts=GATE-01:MACHINE_CHECK_ONLY GATE-02:MACHINE_CHECK_ONLY GATE-03:MACHINE_CHECK_ONLY GATE-04:MACHINE_CHECK_ONLY GATE-05:MACHINE_CHECK_ONLY
+  PASS | D1 after declaring evidence paths that are not existing files → totalContainers | actual=5 expected=5
+  PASS | D1 after declaring evidence paths that are not existing files → machineChecksPassedCount | actual=5 expected=5
+  PASS | D1 after declaring evidence paths that are not existing files → operationalGatesEvidencedCount | actual=0 expected=0
+  PASS | D1 after declaring evidence paths that are not existing files → evidenceProvenance | actual="OPERATIONAL" expected="OPERATIONAL"
+  PASS | D1 after declaring evidence paths that are not existing files → goForLiveCustomerData | actual=false expected=false
+  PASS | D1 after declaring evidence paths that are not existing files → ledgerIntegrityVerified | actual=true expected=true
+  PASS | D1 → nothing was recorded as operator evidence | actual=0 expected=0
+  PASS | D1 → GATE-01 note says the declared path does not exist | actual=true expected=true
+  PASS | D1 → GATE-02 note says the declared path is not a file | actual=true expected=true
+  PASS | D1 → MISSING_FILE_EVIDENCE fixture is refused the same way | actual=0 expected=0
+
+== summary == checks=54 failures=0
+
+# RESIDUAL LIMITS (stated, not hidden)
+#  1. This mechanism detects data that came through the synthetic/fixture path or the rehearsal
+#     seeder, because that path writes to the append-only hash-chained audit ledger at ingest time.
+#  2. A dossier whose fields were typed in by hand from an invented document is NOT distinguishable
+#     from real keyed-in data by any machine check here. Only operator evidence review and Founder
+#     sign-off on the sealed pack can catch that.
+#  3. The declared evidence artifact is checked for existence, size and SHA-256, and attributed to
+#     a named human. Its CONTENT is never machine-verified: a blank page hashes as happily as a
+#     signed consent form. Reading it stays a human act.
+#  4. No HTTP endpoint accepts gate evidence. Only the environment of the on-premises server
+#     process - or whoever invokes the pilot:verify-gates / pilot:audit-pack CLI - can declare it.
+#  5. Scope boundary agreed for Stage 0: the machine administrator is trusted. Someone with shell
+#     access who deletes rows AND recomputes the whole hash chain is out of scope by decision; the
+#     checks above cover renaming, mixing and plain deletion, not a full chain re-forgery.
+### EXIT=0
+  ran: gate-provenance-adversarial.ts (A0/A1/B0/B1/C1/D1) → exit 0
+PASS | provenance adversarial proof (exit 0 as expected)
+PASS | 54 assertions, 0 failures
+PASS | A1: renaming every dossier code keeps evidenced at 0/5
+PASS | A1: the ledger signal, not the dossier name, holds the gate
+PASS | B1: one synthetic container in the cohort closes every gate again
+PASS | C1: erasing the ledger rows fails GATE-03 and reports UNPROVEN_LEDGER_INTEGRITY
+PASS | D1: declared evidence paths that are not files are refused
+  → STEP 7 result: PASS

@@ -1,0 +1,114 @@
+# http-walkthrough.sh against the REAL HTTP server bound to 127.0.0.1:3111 — captured 2026-10-30T09:51:13Z
+# repo /home/user/durios | branch arena/e0ece0a7-durios | HEAD 2f1538e80ac97dc1efb9d9b52b14782d9bfb2494 | bun 1.4.4
+# rehearsal DB: /tmp/durios-walk-X2t6EQ (seeded by pilot:seed-rehearsal — synthetic documents only, published rehearsal passwords)
+# server env: DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true DURIOS_PORT=3111 DURIOS_HOST=127.0.0.1
+
+### CMD: BASE_URL=http://127.0.0.1:3111 TMPD_FILE=/tmp/durios-walk-X2t6EQ/tmpd.txt bash /home/user/durios/docs/reports/arena-stage0-20261029/evidence/http-walkthrough.sh
+
+=== 1. health ===
+{"status":"healthy","service":"durios-core-api","timestamp":"2026-10-30T09:51:42.423Z"}
+
+=== 2. clerk login (POST /api/auth/login) ===
+{
+    "success": true,
+    "data": {
+        "sessionId": "SES-mvuslz84-vw51",
+        "authMethod": "PASSWORD_SESSION",
+        "expiresAt": "2026-10-30T21:51:42.484Z",
+        "actor": {
+            "id": "ACC-CAILAY-CLERK-01",
+            "name": "Nguy\u1ec5n Th\u1ecb Ch\u1ee9ng T\u1eeb (Clerk)",
+            "tenantId": "TENANT-CAILAY-PILOT-01",
+            "tenantType": "PACKHOUSE_EXPORTER",
+            "role": "CLERK",
+            "persona": "PACKHOUSE_CLERK"
+        }
+    }
+}
+
+=== 3. who am I — role decided by the server (GET /api/auth/me) ===
+{"id": "ACC-CAILAY-CLERK-01", "role": "CLERK", "tenantId": "TENANT-CAILAY-PILOT-01", "tenantType": "PACKHOUSE_EXPORTER", "persona": "PACKHOUSE_CLERK"}
+
+=== 4. spoofed x-actor-role header is ignored (still CLERK) ===
+role seen by server = CLERK
+
+=== 5. anonymous request has no identity (no self-elevation) ===
+status=401
+
+=== 6. create dossier (POST /api/dossiers) ===
+{"id": "DOS-mvuslza1-dav9x", "dossierCode": "DOS-HTTPWALK-095142", "lifecycleState": "DRAFT", "version": 1}
+
+=== 7. upload 3 synthetic documents with fixture fields ===
+PACKING_LIST -> DOC-mvuslzbz-5cxn sha256=10b2bbb97aadaa4e…
+LAB_TEST_REPORT -> DOC-mvuslzdg-hlf5 sha256=ac119127b557bcf4…
+PHYTOSANITARY_CERTIFICATE -> DOC-mvuslzex-v1cg sha256=356b82431f1ee5e0…
+
+=== 8. human verification of every extracted field (HITL is mandatory) ===
+  PACKING_LIST: 4 extracted fields -> container_number=CSQU3054383, seal_number=VN-SEAL-778811, box_count=950, net_weight_kg=19000
+  LAB_TEST_REPORT: 3 extracted fields -> cadmium_mg_kg=0.010, sample_code=EF-2026-VN-9082, sampling_date=2026-10-06
+  PHYTOSANITARY_CERTIFICATE: 3 extracted fields -> container_number=CSQU3054383, seal_number=VN-SEAL-778811, phyto_cert_number=KDTV-2026-VN-09929
+verified 10 extracted fields
+version after field verification: 14
+
+=== 9. run validation (POST /api/dossiers/:id/validate) ===
+{"status": "PASSED", "blockers": 0, "version": 15}
+
+=== 10. clerk cannot approve for export (insufficient permission) ===
+status=403
+{'success': False, 'error': 'Clerk role is unauthorized for manager export sign-off.', 'errorCode': 'INSUFFICIENT_ROLE'}
+
+=== 11. manager login, approve, export ===
+approve -> APPROVED_FOR_EXPORT version 16
+export  -> EXPORTED sealed: True
+
+=== 12. sealed dossier refuses further uploads ===
+status=409
+Cannot upload to sealed dossier: Dossier is sealed and immutable; mutations and re-evaluations are prohibited on immutable or closed dossiers.
+
+=== 13. fetch the export manifest and verify it with the standalone MIT verifier ===
+{
+  "dossierCode": "DOS-HTTPWALK-095142",
+  "lifecycleState": "EXPORTED",
+  "isImmutable": true,
+  "compositeManifestSha256": "f672dfed7a4d1a2a0889d484fa539166eeea01471fb6c4082fceb626f055beca",
+  "manifestIntegritySha256": "904b9766d542ed11ba80188fc564090a5c66440b7485b3aae9ea568cb48d17ff",
+  "criticalBlockers": null
+}
+{
+  "valid": true,
+  "recomputedSha256": "f672dfed7a4d1a2a0889d484fa539166eeea01471fb6c4082fceb626f055beca",
+  "expectedSha256": "f672dfed7a4d1a2a0889d484fa539166eeea01471fb6c4082fceb626f055beca",
+  "iso6346ContainerValid": true,
+  "allDocumentsHaveSha256": true,
+  "zeroCriticalBlockers": true,
+  "integrityCoverage": "FULL",
+  "verificationSealBadge": "DuriOS Local Manifest Hash Check Passed (MIT Verifier)",
+  "errors": []
+}
+verify:manifest EXIT=0
+
+=== 14. audit trail hash chain is readable ===
+audit events: 20 | first: DOSSIER_CREATED | last: DOSSIER_SEALED_EXPORTED
+
+=== 15. tenant-scoped KPI and gates for this rehearsal database ===
+{"totalContainers": 6, "meanDeltaSeconds": 0.08, "gate05Passed": true, "timingEvidenceSource": "SYSTEM_TIMESTAMPS", "valueMetricsProvenance": "UNVALIDATED_ASSUMPTION"}
+machine checks: 2 / 5 | launch gates evidenced: 0 / 5 | goForLiveCustomerData: False | provenance: SYNTHETIC_REHEARSAL
+per-gate: [('GATE-01', 'machine=False', 'PENDING_OPERATOR_EVIDENCE', 'PENDING'), ('GATE-02', 'machine=False', 'PENDING_OPERATOR_EVIDENCE', 'PENDING'), ('GATE-03', 'machine=True', 'PENDING_OPERATOR_EVIDENCE', 'MACHINE_CHECK_ONLY'), ('GATE-04', 'machine=False', 'PENDING_OPERATOR_EVIDENCE', 'PENDING'), ('GATE-05', 'machine=True', 'PENDING_OPERATOR_EVIDENCE', 'MACHINE_CHECK_ONLY')]
+
+=== 16. rehearsal bootstrap is refused by default (F-03) ===
+status=403
+{'success': False, 'error': 'Rehearsal bootstrap is disabled on this instance. It provisions pilot accounts with published credentials and returns a MANAGER token without authentication, so it is refused unless the operator starts the server with DURIOS_ALLOW_PILOT_REHEARSAL_BOOTSTRAP=true on a synthetic rehearsal database. For an operational pilot, provision accounts with src/auth/pilot-ops-cli.ts and log in.', 'errorCode': 'FEATURE_DISABLED'}
+
+=== 17. repository operational data untouched ===
+total 8
+drwxr-xr-x  3 user user 4096 Oct 30 09:51 .
+drwxr-xr-x 15 user user 4096 Oct 30 09:29 ..
+drwxr-xr-x  2 user user   60 Oct 30 09:25 uploads
+walkthrough database: /tmp/durios-walk-X2t6EQ
+
+### server stdout/stderr (/tmp/durios-walk-X2t6EQ/server.log)
+
+🚀 DuriOS Local Core Server running at: http://127.0.0.1:3111
+
+
+EXIT=0

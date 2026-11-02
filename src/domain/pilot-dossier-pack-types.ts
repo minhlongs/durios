@@ -1,5 +1,6 @@
-import type { GateCheckStatus } from "../auth/pilot-launch-gate-verifier.js";
+import type { GateCheckStatus, GateEvidenceProvenance } from "../auth/pilot-launch-gate-verifier.js";
 import type { Gate05KpiEvaluationReport } from "../auth/pilot-kpi-evaluator.js";
+import type { CohortProvenance } from "../auth/gate-cohort-provenance.js";
 
 export type FieldChecklistStatus = "VERIFIED_READY" | "ACTION_REQUIRED";
 
@@ -29,7 +30,11 @@ export interface GoLiveReadinessReport {
   readonly compiledByActorRole: string;
   readonly overallVerdict: "READY_FOR_PILOT_GO_LIVE" | "GO_FOR_LIVE_CUSTOMER_DATA" | "HOLD_BLOCKERS_REMAIN";
   readonly goForLiveCustomerData: boolean;
+  /** MACHINE-checkable criteria that passed. Not a count of launch gates cleared. */
   readonly passedGateCount: number;
+  readonly machineChecksPassedCount: number;
+  /** Launch gates holding a passed machine check AND evidence a human recorded. */
+  readonly operationalGatesEvidencedCount: number;
   readonly totalGateCount: 5;
   readonly gates: readonly [
     GateCheckStatus,
@@ -43,6 +48,15 @@ export interface GoLiveReadinessReport {
   readonly statutoryReferences: readonly string[];
   readonly mandatoryDisclaimers: readonly string[];
   readonly reportSha256: string;
+  /**
+   * Whether the evidence behind the gate results is operational or was fabricated by
+   * the synthetic rehearsal drill. A sealed pack compiled in rehearsal mode always
+   * carries `SYNTHETIC_REHEARSAL` and `goForLiveCustomerData: false`, so a rehearsal
+   * artifact can never be mistaken for — or reused as — a go-live authorisation.
+   */
+  readonly evidenceProvenance: GateEvidenceProvenance;
+  /** Audit-ledger signals showing whether the cohort holds synthetic containers. */
+  readonly cohortProvenance?: CohortProvenance | undefined;
 }
 
 export interface CompilePilotGoLivePackOptions {
@@ -55,4 +69,6 @@ export interface CompilePilotGoLivePackOptions {
   readonly env?: Record<string, string | undefined> | undefined;
   readonly forcedTimestamp?: string | undefined;
   readonly rehearsalMode?: boolean | undefined;
+  /** Operator-recorded evidence per gate (file + who recorded it). */
+  readonly gateEvidence?: Readonly<Record<string, import("../auth/pilot-gate-types.js").GateEvidenceOverride | undefined>> | undefined;
 }

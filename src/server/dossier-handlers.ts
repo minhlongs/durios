@@ -69,12 +69,3 @@ export async function handleExportDossier(workspace: ContainerDossierWorkspace, 
     return jsonResponse({ success: true, data: workspace.exportDossier(dossierId, actor, await readExpectedVersionFromRequest(req)) });
   } catch (err) { return mapDomainErrorToResponse(err, "Export compilation failed"); }
 }
-
-export function handleGetExportManifest(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor, dossierId: string): Response {
-  try {
-    assertValidActor(actor);
-    const manifest = workspace.getExportManifest(dossierId, actor);
-    if (!manifest) return errorResponse(`No sealed export manifest found for dossier '${dossierId}'`, 404);
-    return jsonResponse({ success: true, data: manifest });
-  } catch (err) { return mapDomainErrorToResponse(err, "Failed to retrieve export manifest"); }
-}

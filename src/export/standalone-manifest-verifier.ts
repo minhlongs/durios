@@ -1,11 +1,14 @@
 import { readFileSync } from "node:fs";
 import { calculateSha256 } from "../ingestion/document-hasher.js";
 import { validateIso6346Container } from "../domain/iso-6346.js";
+import { checkManifestIntegrity, type ManifestIntegrityCoverage } from "./manifest-integrity.js";
 
 export interface ManifestVerificationResult {
   readonly valid: boolean; readonly recomputedSha256: string; readonly expectedSha256: string;
   readonly iso6346ContainerValid: boolean; readonly allDocumentsHaveSha256: boolean;
   readonly zeroCriticalBlockers: boolean; readonly verificationSealBadge: string;
+  /** FULL = the whole-record integrity hash was present and checked. */
+  readonly integrityCoverage: ManifestIntegrityCoverage;
   readonly publicVerificationUrl?: string | undefined; readonly errors: readonly string[];
 }
 
@@ -59,10 +62,17 @@ export function verifyExportManifest(manifest: unknown, baseVerifyUrl?: string):
   const zeroCriticalBlockers = criticalBlockers === 0;
   if (!zeroCriticalBlockers) errors.push(`Manifest contains ${criticalBlockers < 0 ? "missing or invalid" : criticalBlockers} unresolved critical compliance blocker(s).`);
   if (rec.lifecycleState !== "EXPORTED" || rec.isImmutable !== true) errors.push("Manifest dossier is not in a sealed, immutable EXPORTED state.");
+  // The composite hash only covers identity, documents and the verified summary, so
+  // without this check complianceFindingsCount, regulatoryDisclaimers, exportedBy and
+  // exportedAt could all be rewritten and the manifest would still verify.
+  const integrity = checkManifestIntegrity(rec);
+  if (integrity.coverage === "FULL" && !integrity.matches) {
+    errors.push(`Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '${integrity.expected}', recomputed '${integrity.recomputed}').`);
+  }
   const valid = errors.length === 0;
   const trimmedBaseUrl = baseVerifyUrl?.trim();
   const publicVerificationUrl = trimmedBaseUrl ? `${trimmedBaseUrl.replace(/\/+$/, "")}/${dossierCode}?sha256=${expectedSha256}` : undefined;
-  return { valid, recomputedSha256, expectedSha256, iso6346ContainerValid, allDocumentsHaveSha256, zeroCriticalBlockers, verificationSealBadge: valid ? "DuriOS Local Manifest Hash Check Passed (MIT Verifier)" : "UNVERIFIED_OR_TAMPERED_MANIFEST", ...(publicVerificationUrl ? { publicVerificationUrl } : {}), errors };
+  return { valid, recomputedSha256, expectedSha256, iso6346ContainerValid, allDocumentsHaveSha256, zeroCriticalBlockers, integrityCoverage: integrity.coverage, verificationSealBadge: valid ? "DuriOS Local Manifest Hash Check Passed (MIT Verifier)" : "UNVERIFIED_OR_TAMPERED_MANIFEST", ...(publicVerificationUrl ? { publicVerificationUrl } : {}), errors };
 }
 
 if (import.meta.main) {
@@ -72,6 +82,9 @@ if (import.meta.main) {
     process.exit(1);
   }
   const result = verifyExportManifest(JSON.parse(readFileSync(filePath, "utf-8")));
+  if (result.integrityCoverage === "PARTIAL_LEGACY") {
+    process.stderr.write("WARNING: this manifest predates manifestIntegritySha256, so only the composite subset (identity, documents, verifiedDataSummary) is hash-covered. Compliance counts and disclaimers are NOT protected.\n");
+  }
   process.stdout.write(`${JSON.stringify(result, null, 2)}\n`);
   process.exit(result.valid ? 0 : 1);
 }

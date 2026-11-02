@@ -76,6 +76,9 @@ export function seedRehearsalDossiersForActor(
         sealNumber: s.seal, targetMarket: "CN", borderGate: "Hữu Nghị",
         targetTemperatureC: 14.0, declaredNetWeightKg: 18240, declaredBoxCount: 960,
       }, actor);
+      // Provenance is written where the data is born: a launch-gate run later trusts this
+      // append-only ledger entry, not the dossier code (src/auth/gate-cohort-provenance.ts).
+      workspace.auditLedger.recordEvent(actor, created.id, "REHEARSAL_DOSSIER_SEEDED", "CONTAINER_DOSSIER", created.id, null, { scenario: s.scenario, seededBy: "ecosystem-rehearsal-seeder" });
       uploadAndOptionallyVerifyTriad(workspace, created.id, actor, s.docSeal, s.verify);
       if (s.verify) workspace.runValidation(created.id, actor);
       target = workspace.getDossier(created.id, actor) ?? created;

@@ -1,4 +1,5 @@
 import type { ComplianceRule, ContainerDossier, ValidationFinding, ValidationRunResult } from "../domain/types.js";
+import { findHumanVerificationGateFinding, pushUnreadableDocumentFindings } from "./extraction-completeness.js";
 import { evaluateCadmiumThreshold, evaluateCadmiumWarningThreshold, evaluateColdChainTemperatureAttestation, evaluateCrossDocFieldDiscrepancy, evaluateIsoChecksum, minTemperatureC } from "./evaluator-helpers.js";
 
 
@@ -9,25 +10,15 @@ export class DeterministicRuleEngine {
     const findings: ValidationFinding[] = [];
     const activeDocs = dossier.documents.filter((d) => !d.isSuperseded);
 
-    for (const doc of activeDocs) {
-      for (const field of doc.extractedFields) {
-        if (field.verificationStatus !== "HUMAN_VERIFIED") {
-          return {
-            status: "HUMAN_VERIFICATION_REQUIRED",
-            criticalBlockers: 1, advisoryWarnings: 0, evaluatedRulesCount: 0,
-            findings: [{
-              ruleId: "RUL-GATE-UNVERIFIED", severity: "CRITICAL_BLOCKER",
-              ruleName: "Human Verification Gate", citation: "DuriOS Regulatory Safety Standard Art 3.1",
-              observedValue: `Field '${field.fieldKey}' is ${field.verificationStatus}`,
-              thresholdValue: "HUMAN_VERIFIED",
-              messageVi: `Trường '${field.label}' chưa được nhân viên kiểm chứng.`,
-              messageEn: `Field '${field.label}' has not been human verified.`,
-            }],
-            evaluatedAt: new Date().toISOString(),
-          };
-        }
-      }
+    const gateFinding = findHumanVerificationGateFinding(activeDocs);
+    if (gateFinding) {
+      return {
+        status: "HUMAN_VERIFICATION_REQUIRED",
+        criticalBlockers: 1, advisoryWarnings: 0, evaluatedRulesCount: 0,
+        findings: [gateFinding], evaluatedAt: new Date().toISOString(),
+      };
     }
+    pushUnreadableDocumentFindings(activeDocs, findings);
 
     let evaluatedCount = 0;
     for (const rule of this.rules) {

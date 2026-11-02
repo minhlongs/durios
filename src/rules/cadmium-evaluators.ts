@@ -22,8 +22,27 @@ export function evaluateCadmiumThreshold(
   docs: readonly IngestedDocument[],
   findings: ValidationFinding[]
 ): void {
+  const labDoc = docs.find((d) => d.documentType === "LAB_TEST_REPORT");
+  // No lab report at all is RUL-DOC-001's finding, not this rule's.
+  if (!labDoc) return;
   const val = readCadmium(docs);
-  if (val === null || val <= 0.050) return;
+  if (val === null) {
+    // A lab report that carries no readable cadmium result proves nothing. Returning
+    // silently let a dossier whose heaviest-metal evidence was blank validate as
+    // PASSED, which is the one outcome a food-safety control must never produce.
+    findings.push({
+      ruleId: rule.ruleId,
+      severity: "CRITICAL_BLOCKER",
+      ruleName: rule.name,
+      citation: rule.statutoryReference,
+      observedValue: "NOT_EXTRACTED",
+      thresholdValue: "0.050 mg/kg (internal control)",
+      messageVi: "KHÔNG ĐỌC ĐƯỢC KẾT QUẢ CADMI: phiếu kiểm nghiệm có trong hồ sơ nhưng trường 'cadmium_mg_kg' trống hoặc không phải số. Không thể kết luận an toàn thực phẩm — cần nạp lại phiếu kiểm nghiệm có kết quả rõ ràng, hoặc nhập giá trị đã kiểm chứng thủ công. Đây là kiểm soát nội bộ, không phải kết luận pháp lý.",
+      messageEn: "CADMIUM RESULT NOT READABLE: a lab test report is present but its 'cadmium_mg_kg' field is empty or not numeric. No food-safety conclusion can be drawn — re-upload a legible report or enter a human-verified value. This is an internal control, not a legal determination.",
+    });
+    return;
+  }
+  if (val <= 0.050) return;
   findings.push({
     ruleId: rule.ruleId,
     severity: "CRITICAL_BLOCKER",

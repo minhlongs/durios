@@ -1,0 +1,28 @@
+DuriOS Stage 0 acceptance harness — 20261030T095617Z
+tree             : /tmp/arena-tree
+tree fingerprint : b997a68b492994da715d55d234feca161c8fb9e8f8b1f3dcdcfcdcbbbe5f730a
+git HEAD         : (not a git checkout)
+archive verified : /home/user/durios/docs/reports/arena-stage0-20261029/delivery/durios-stage0-handover-20261030.tar.gz
+  sha256         : 50328934475da3201b8f7c236989340a7ada6969ea6ff0a99dce49af07ad800c
+  bytes          : 18777489
+log dir          : /tmp/arena-tree/docs/reports/arena-stage0-20261029/evidence/acceptance-20261030T095617Z
+work dir         : /tmp/durios-acceptance-qTf0KM (removed)
+
+step-01 verify-checksums-and-list-archive  PASS
+step-02 install-dependencies-per-lockfile  PASS
+step-03 typecheck-and-full-test-suite      PASS
+step-04 http-walkthrough-on-loopback-server PASS
+step-05 permissions-and-tenant-isolation   PASS
+step-06 synthetic-fixture-mode-is-explicit PASS
+step-07 provenance-adversarial-attacks     PASS
+step-08 gate-cli-matrix-expected-exit-codes PASS
+step-09 backup-verify-restore-recheck      PASS
+step-10 manifest-tampering-detection       PASS
+
+checks=89 failures=0 skippedSteps=0
+
+Interpretation: every number in this run comes from synthetic fixture data in throwaway
+directories. A green harness means the delivered tree reproduces the Stage 0 evidence;
+it is NOT a launch decision and it does not authorise a pilot with real customer data.
+Machine criteria never substitute for external evidence: GATE-01..GATE-05 stay PENDING
+until a human records real site artifacts, and only the Founder may act on them.

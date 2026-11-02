@@ -18,4 +18,15 @@ export interface DossierExportManifest {
   readonly verifiedDataSummary: Record<string, unknown>;
   readonly complianceFindingsCount: { readonly criticalBlockers: number; readonly advisoryWarnings: number };
   readonly regulatoryDisclaimers: readonly string[];
+  /**
+   * SHA-256 over the canonical serialization of every other field in this manifest.
+   *
+   * `compositeManifestSha256` covers only the identity, documents and verified-summary
+   * subset, which left `complianceFindingsCount`, `regulatoryDisclaimers`, `exportedBy`
+   * and `exportedAt` editable without any verifier noticing — a tampered manifest could
+   * still report zero critical blockers and claim to be a customs approval. Optional
+   * because manifests sealed before this field existed do not carry it; the standalone
+   * verifier reports those as PARTIAL_LEGACY instead of silently trusting them.
+   */
+  readonly manifestIntegritySha256?: string | undefined;
 }

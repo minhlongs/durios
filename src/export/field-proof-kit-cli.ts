@@ -57,7 +57,7 @@ function parseProofKitCliArgs(argv: readonly string[]): FieldProofKitCliOptions 
     siteCode: getArg("--site-code"),
     tenantId: getArg("--tenant-id"),
     planCode: getArg("--plan") as OpcCommercialPlanCode | undefined,
-    dbPath: getArg("--db-path"),
+    dbPath: getArg("--db-path") ?? getArg("--db"),
     dataDir: getArg("--data-dir"),
     backupDir: getArg("--backup-dir"),
     consentSignedFilePath: getArg("--consent-file"),

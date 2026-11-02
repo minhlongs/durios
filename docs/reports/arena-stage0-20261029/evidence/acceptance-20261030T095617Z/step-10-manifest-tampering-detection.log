@@ -1,0 +1,71 @@
+# STEP 10 — manifest-tampering-detection
+# tree              : /tmp/arena-tree
+# tree fingerprint  : b997a68b492994da715d55d234feca161c8fb9e8f8b1f3dcdcfcdcbbbe5f730a
+# work dir          : /tmp/durios-acceptance-qTf0KM
+# started (UTC)     : 2026-10-30T09:56:55Z
+# EXPECTED RESULT   : the standalone verifier accepts the untouched manifest (exit 0), rejects every tampered variant (exit 1), reports PARTIAL_LEGACY without the integrity field, and the drill's 7 tamper cases all pass.
+
+
+================ STEP 10 — manifest-tampering-detection ================
+expected: the standalone verifier accepts the untouched manifest (exit 0), rejects every tampered variant (exit 1), reports PARTIAL_LEGACY without the integrity field, and the drill's 7 tamper cases all pass.
+
+### CMD: bash -c cd '/tmp/arena-tree' && bun run src/export/standalone-manifest-verifier.ts '/tmp/durios-acceptance-qTf0KM/manifest-good.json'
+{
+  "valid": true,
+  "recomputedSha256": "2d87c0df3104c353235a4fc6c21e6b44b314e71c61237a6c31d3331d0c5bf2b6",
+  "expectedSha256": "2d87c0df3104c353235a4fc6c21e6b44b314e71c61237a6c31d3331d0c5bf2b6",
+  "iso6346ContainerValid": true,
+  "allDocumentsHaveSha256": true,
+  "zeroCriticalBlockers": true,
+  "integrityCoverage": "FULL",
+  "verificationSealBadge": "DuriOS Local Manifest Hash Check Passed (MIT Verifier)",
+  "errors": []
+}
+### EXIT=0
+  ran: verify:manifest on the untouched exported manifest → exit 0
+PASS | untouched manifest (exit 0 as expected)
+PASS | untouched manifest reports FULL integrity coverage
+
+### CMD: bash -c cd '/tmp/arena-tree' && bun run src/export/standalone-manifest-verifier.ts '/tmp/durios-acceptance-qTf0KM/manifest-tampered.json'
+{
+  "valid": false,
+  "recomputedSha256": "0a22e7f4ce3ddb07ca971498a4c59671c36860cf84b770eaa62ac667371b5766",
+  "expectedSha256": "2d87c0df3104c353235a4fc6c21e6b44b314e71c61237a6c31d3331d0c5bf2b6",
+  "iso6346ContainerValid": true,
+  "allDocumentsHaveSha256": true,
+  "zeroCriticalBlockers": true,
+  "integrityCoverage": "FULL",
+  "verificationSealBadge": "UNVERIFIED_OR_TAMPERED_MANIFEST",
+  "errors": [
+    "Composite SHA-256 mismatch: expected '2d87c0df3104c353235a4fc6c21e6b44b314e71c61237a6c31d3331d0c5bf2b6', recomputed '0a22e7f4ce3ddb07ca971498a4c59671c36860cf84b770eaa62ac667371b5766'.",
+    "Manifest integrity SHA-256 mismatch: a field outside the composite hash was altered (expected '42a1e93c6628967a5adc92639ef879444fd3ab224ee9d26ea99b5b39eb975d8c', recomputed '6e7738bc0ab954da526bb16c7706b41f807f001d168be098584716d5ebe2279d')."
+  ]
+}
+### EXIT=1
+  ran: verify:manifest after rewriting one verified cadmium value → exit 1
+PASS | tampered manifest (rewritten verified value) (exit 1 as expected)
+
+### CMD: bash -c cd '/tmp/arena-tree' && bun run src/export/standalone-manifest-verifier.ts '/tmp/durios-acceptance-qTf0KM/manifest-legacy.json'
+WARNING: this manifest predates manifestIntegritySha256, so only the composite subset (identity, documents, verifiedDataSummary) is hash-covered. Compliance counts and disclaimers are NOT protected.
+{
+  "valid": true,
+  "recomputedSha256": "2d87c0df3104c353235a4fc6c21e6b44b314e71c61237a6c31d3331d0c5bf2b6",
+  "expectedSha256": "2d87c0df3104c353235a4fc6c21e6b44b314e71c61237a6c31d3331d0c5bf2b6",
+  "iso6346ContainerValid": true,
+  "allDocumentsHaveSha256": true,
+  "zeroCriticalBlockers": true,
+  "integrityCoverage": "PARTIAL_LEGACY",
+  "verificationSealBadge": "DuriOS Local Manifest Hash Check Passed (MIT Verifier)",
+  "errors": []
+}
+### EXIT=0
+  ran: verify:manifest on a legacy manifest without manifestIntegritySha256 → exit 0
+PASS | legacy manifest (no integrity field) (exit 0 as expected)
+PASS | legacy manifest is reported as PARTIAL_LEGACY, never as FULL
+PASS | drill S4: all seven tamper cases were detected
+PASS | drill S4 detected 7/7 tamper cases
+PASS | drill S4: a legacy manifest without the integrity field still verifies as PARTIAL_LEGACY
+  → STEP 10 result: PASS
+
+================ SUMMARY ================
+RESULT: ALL 89 ASSERTIONS MATCHED — 10/10 steps ran

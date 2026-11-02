@@ -4,7 +4,7 @@ import type { SharePurpose, ShareScope } from "../domain/pilot-types.js";
 import type { RecordOrganicEvidenceInput } from "../organic/organic-evidence-manager.js";
 import { assertOwnerManagementRole, assertOwnerOperationalRole, assertValidActor } from "../auth/rbac-policy.js";
 import { assertCanRecordOrganicEvidence } from "../auth/rbac-persona-assertions.js";
-import { computeGate05KpiFromDossiers } from "../auth/pilot-kpi-evaluator.js";
+import { computeGate05KpiFromDossiers, selectOwnTenantDossiers } from "../auth/pilot-kpi-evaluator.js";
 import { evaluateWorkspaceLaunchGates } from "../auth/pilot-launch-gate-verifier.js";
 import { issueCrossBorderBuyerVerificationRoom } from "../saas/gacc-registry-watch-service.js";
 import { errorResponse, jsonResponse, mapDomainErrorToResponse } from "./server-types.js";
@@ -71,7 +71,7 @@ export function handleListOrganicEvidence(workspace: ContainerDossierWorkspace, 
 }
 
 export function handleGetPilotKpi(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor): Response {
-  try { assertValidActor(actor); return jsonResponse({ success: true, data: computeGate05KpiFromDossiers(workspace.listDossiers(actor)) }); } catch (err: unknown) { return mapDomainErrorToResponse(err, "Failed to evaluate pilot KPI"); }
+  try { assertValidActor(actor); return jsonResponse({ success: true, data: computeGate05KpiFromDossiers(selectOwnTenantDossiers(workspace.listDossiers(actor), actor.tenantId)) }); } catch (err: unknown) { return mapDomainErrorToResponse(err, "Failed to evaluate pilot KPI"); }
 }
 
 export function handleGetPilotGates(workspace: ContainerDossierWorkspace, actor: AuthenticatedActor): Response {

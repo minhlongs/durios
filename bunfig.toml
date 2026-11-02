@@ -1,0 +1,13 @@
+# The automated suite drives the product with synthetic documents only.
+#
+# Fixture extraction is an explicit mode, never a default
+# (src/extraction/synthetic-extraction-mode.ts): an ordinary instance reports
+# NOT_EXTRACTED for a document it cannot read instead of returning template values.
+# The suite therefore declares the mode here, in one visible place, rather than hiding
+# the switch inside individual tests. Tests that assert the ORDINARY flow unset the flag
+# themselves - see test/synthetic-extraction-mode.test.ts.
+[test]
+# Only test/ holds tests. Without this, bun test also discovers copies of test files that the
+# delivery package keeps under docs/reports/**/package/snapshot/ for offline comparison.
+root = "./test"
+preload = ["./test/preload-synthetic-extraction.ts"]

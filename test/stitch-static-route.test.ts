@@ -1,8 +1,13 @@
-import { describe, expect, test } from "bun:test";
+import { afterAll, beforeAll, describe, expect, test } from "bun:test";
 import { ContainerDossierWorkspace } from "../src/workspace/container-dossier-workspace.js";
 import { routeHttpRequest } from "../src/server/http-router.js";
 describe("Stitch Static Gallery HTTP Route (/stitch/*) & Live 25-Screen Suite", () => {
   const workspace = new ContainerDossierWorkspace();
+  // The rehearsal bootstrap mints pilot accounts and a MANAGER token without
+  // credentials, so it is refused unless the process declares itself a rehearsal
+  // sandbox. These route tests are exactly that sandbox.
+  beforeAll(() => { process.env.DURIOS_ALLOW_PILOT_REHEARSAL_BOOTSTRAP = "true"; });
+  afterAll(() => { delete process.env.DURIOS_ALLOW_PILOT_REHEARSAL_BOOTSTRAP; });
   const pages = [
 "gallery.html", "index.html", "dossiers.html", "auditor.html", "buyer.html", "cluster.html", "portability.html", "upgrade.html", "styleguide.html", "paper-canvas.html",
 "excel-grid.html", "zalo-bot.html", "mobile-weighbridge.html", "field-proven.html", "foundry.html", "corridors.html", "blueprint.html", "security-vault.html", "organic-escrow-guard.html", "webhook-sync-queue.html",

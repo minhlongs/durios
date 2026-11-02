@@ -1,5 +1,8 @@
 import { seedRehearsalDossiersForActor } from "../server/ecosystem-rehearsal-seeder.js";
 import { createWorkspaceApp } from "../server/server.js";
+import { assertTargetIsRehearsalData, resolveRehearsalSeedTarget } from "./rehearsal-seed-target-guard.js";
+import { enableSyntheticExtractionForRehearsal } from "../extraction/synthetic-extraction-mode.js";
+import { parsePilotCliDbOptions } from "./cli-db-args.js";
 
 export interface RehearsalSeedResult {
   readonly tenantId: string;
@@ -16,7 +19,12 @@ export interface RehearsalSeedResult {
 }
 
 export function seedGate05PilotRehearsal(options: { dbPath?: string; dataDir?: string } = {}): RehearsalSeedResult {
-  const app = createWorkspaceApp(options);
+  // Refuses an undeclared destination and any target holding data this seeder did not create.
+  const target = resolveRehearsalSeedTarget(options);
+  assertTargetIsRehearsalData(target.dbPath);
+  // The seeded documents are synthetic stubs: declaring the mode is what lets them carry fields.
+  enableSyntheticExtractionForRehearsal("pilot:seed-rehearsal");
+  const app = createWorkspaceApp(target);
   try {
     const tenantId = "TENANT-CAILAY-PILOT-01";
     const expiresAt = new Date(Date.now() + 14 * 86400000).toISOString();
@@ -50,5 +58,11 @@ export function seedGate05PilotRehearsal(options: { dbPath?: string; dataDir?: s
 }
 
 if (import.meta.main) {
-  process.stdout.write(`${JSON.stringify(seedGate05PilotRehearsal(), null, 2)}\n`);
+  process.stderr.write(
+    "[DuriOS] Rehearsal seed: the accounts below use passwords published in this repository " +
+      "(clerk.cailay / manager.cailay). They exist for a declared rehearsal database only and must " +
+      "never be provisioned where customer data lives.\n"
+  );
+  const cliOpts = parsePilotCliDbOptions(process.argv.slice(2));
+  process.stdout.write(`${JSON.stringify(seedGate05PilotRehearsal(cliOpts), null, 2)}\n`);
 }

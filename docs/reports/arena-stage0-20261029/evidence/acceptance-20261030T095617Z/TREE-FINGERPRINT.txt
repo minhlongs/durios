@@ -1,0 +1,9 @@
+# tree identity — every log in this directory belongs to exactly this tree
+tree            : /tmp/arena-tree
+tree fingerprint: b997a68b492994da715d55d234feca161c8fb9e8f8b1f3dcdcfcdcbbbe5f730a
+  (sha256 over the sorted "path: sha256" list of every file in the tree, excluding
+   .git/, node_modules/, data/, the package/ and delivery/ artifacts and these logs)
+files           : 600
+git HEAD        : (not a git checkout)
+git dirty lines : (not a git checkout)
+stamp (UTC)     : 20261030T095617Z

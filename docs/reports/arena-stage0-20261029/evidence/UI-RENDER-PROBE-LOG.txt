@@ -1,0 +1,17 @@
+# UI render probe (happy-dom, headless) — captured stdout
+# NOT a screenshot. No browser exists in this sandbox and the server binds 127.0.0.1 only.
+# Commands:
+#   mkdir -p /tmp/ui-probe && cd /tmp/ui-probe && npm init -y && npm i happy-dom@21.0.4
+#   cp <repo>/docs/reports/arena-stage0-20261029/evidence/ui-render-probe.mjs /tmp/ui-probe/
+#   DURIOS_UI_HTML=<repo>/src/server/public/index.html node ui-render-probe.mjs
+# Result: 6/6 PASS, no runtime error events, exit 0.
+
+PASS  A. empty state with no gate/KPI data reads PENDING instead of asserting results
+PASS  B. empty state after a synthetic rehearsal labels the evidence as rehearsal
+PASS  C. empty state with an operational 2/5 run says live data is not authorised
+PASS  D. KPI section states timing and value-metric provenance
+PASS  E. currentRole(): anonymous=MANAGER, CLERK session=CLERK (select synced to CLERK), AUDITOR session=AUDITOR (select kept CLERK)
+PASS  F. rehearsal toast is derived from the server response, not a fixed 5/5 claim
+no runtime error events
+
+UI RENDER PROBE: ALL PASS

@@ -1,0 +1,46 @@
+# extraction-mode-demo.ts — ordinary vs explicitly enabled synthetic flow — captured 2026-10-30T09:51:13Z
+# repo /home/user/durios | branch arena/e0ece0a7-durios | HEAD 2f1538e80ac97dc1efb9d9b52b14782d9bfb2494 | bun 1.4.4 | node v22.22.3
+
+### CMD: env -u DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION bun /home/user/durios/docs/reports/arena-stage0-20261029/evidence/extraction-mode-demo.ts
+# extraction mode demo — 2026-10-30T09:51:40.701Z
+# phase 1a: extractor registry, ORDINARY flow (DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION unset)
+  text/plain PACKING_LIST   -> 4 field(s) [["container_number","MSKU1234565"],["seal_number","SEAL-ORD-77"],["net_weight_kg","17500"],["box_count","880"]]
+PASS  text/plain yields only values literally present in the uploaded bytes — 4 field(s), every rawValue is a substring of the source text
+  text/plain LAB_TEST_REPORT-> 1 field(s) [["cadmium_mg_kg","0.062"]]
+PASS  the same bytes read as a lab report give the cadmium value that is really there — no template cadmium (0.028 mg/kg) is supplied, and container/weight keys are out of scope for this document type
+  application/pdf    packing.pdf    -> 0 field(s) []
+PASS  application/pdf carrying no document data produces ZERO extracted fields
+  application/json   blob.json      -> 0 field(s) []
+PASS  application/json carrying no document data produces ZERO extracted fields
+  image/png          scan.png       -> 0 field(s) []
+PASS  image/png carrying no document data produces ZERO extracted fields
+  image/jpeg         scan.jpg       -> 0 field(s) []
+PASS  image/jpeg carrying no document data produces ZERO extracted fields
+  image/tiff         scan.tiff      -> 0 field(s) []
+PASS  image/tiff carrying no document data produces ZERO extracted fields
+  application/json declared.json -> 1 field(s) [["container_number","MSKU1234565"]]
+PASS  application/json only ever returns values literally present in the payload — [["container_number","MSKU1234565"]]
+# phase 1b: workspace/API layer, ORDINARY flow
+  uploaded 1 image scan + 1 unreadable pdf stub -> documents=2, extracted fields=0
+PASS  an image scan and an unreadable PDF stub upload with ZERO extracted fields
+  validation -> status=BLOCKED, criticalBlockers=4, RUL-DOC-UNREADABLE=2
+PASS  the dossier is BLOCKED as unreadable instead of passing on invented values — 2 × RUL-DOC-UNREADABLE
+  upload of a .txt sheet -> File rejected: Rejected malformed or unsupported file type for 'packing-list.txt'. Supported formats: PDF, PNG, JPEG, TIFF.
+PASS  a plain-text file is refused at the door (only PDF/PNG/JPEG/TIFF are accepted)
+  upload WITH fixtureFields -> SyntheticExtractionDisabledError: Synthetic fixture extraction is disabled on this instance, so the requested fixtureFields overrides was refused. The
+  audit DOC_UPLOAD_REJECTED events=2 (SYNTHETIC_EXTRACTION_DISABLED=1); fields now on the dossier=0
+PASS  an ordinary instance refuses fixtureFields with SyntheticExtractionDisabledError
+  (all DOC_UPLOAD_REJECTED reasons on this dossier: ["Rejected malformed or unsupported file type for 'packing-list.txt'. Supported formats: PDF, PNG, JPEG, TIFF.","SYNTHETIC_EXTRACTION_DISABLED"])
+PASS  the refusal is recorded in the audit ledger with its reason
+PASS  the unsupported-.txt refusal is recorded in the audit ledger too
+PASS  the refused upload wrote no document fields
+PASS  no template canary value appeared anywhere in the ordinary flow — 8 canary values checked against every output above
+[DuriOS] evidence/extraction-mode-demo.ts enabled DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true for this process (synthetic rehearsal only).
+# phase 2: SYNTHETIC flow (DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true)
+  unreadable pdf stub -> 4 field(s) [["container_number","MSKU1234567"],["seal_number","SL-998822"],["box_count","960"],["net_weight_kg","18240.00"]] …
+PASS  the synthetic flow still fills a document this build cannot read
+  upload WITH fixtureFields -> 2 field(s) [["container_number","CSQU3054383","DRAFT"],["seal_number","VN-SEAL-DEMO","DRAFT"]]
+PASS  declared fixture fields are honoured once synthetic mode is enabled
+PASS  fixture fields still arrive unverified, so HITL confirmation is still required
+== summary == failures=0
+EXIT=0

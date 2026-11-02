@@ -5,7 +5,9 @@ export type AccessErrorCode =
   | "INSUFFICIENT_ROLE"
   | "CROSS_TENANT_FORBIDDEN"
   | "INVALID_TENANT_TYPE"
-  | "SHARE_PURPOSE_FORBIDDEN";
+  | "SHARE_PURPOSE_FORBIDDEN"
+  /** A route that exists but is switched off until the operator enables it. */
+  | "FEATURE_DISABLED";
 
 export class AccessControlError extends Error {
   public readonly status = 403 as const;

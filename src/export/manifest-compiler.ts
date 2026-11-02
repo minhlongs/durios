@@ -1,4 +1,5 @@
 import { calculateSha256 } from "../ingestion/document-hasher.js";
+import { computeManifestIntegritySha256 } from "./manifest-integrity.js";
 import type {
   AuthenticatedActor,
   ContainerDossier,
@@ -54,7 +55,7 @@ export function compileExportManifest(
   const criticalBlockers = dossier.latestValidationResult?.criticalBlockers ?? 0;
   const advisoryWarnings = dossier.latestValidationResult?.advisoryWarnings ?? 0;
 
-  return {
+  const manifest: DossierExportManifest = {
     manifestVersion: "1.0.0",
     dossierId: dossier.id,
     dossierCode: dossier.dossierCode,
@@ -78,4 +79,8 @@ export function compileExportManifest(
       "Clearance authority resides exclusively with the General Administration of Customs of the People's Republic of China (GACC).",
     ],
   };
+
+  // Seals the whole record, not just the composite subset, so the compliance counts and
+  // the disclaimers cannot be rewritten while the manifest still verifies.
+  return { ...manifest, manifestIntegritySha256: computeManifestIntegritySha256({ ...manifest }) };
 }

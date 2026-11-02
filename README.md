@@ -10,6 +10,7 @@
 - **Hiện trạng vận hành (Baseline):** Dự án hiện ở **STAGE ZERO** (Phần mềm B2B chuyên ngành, chạy tại chỗ trên máy chủ nội bộ, phục vụ đối soát hồ sơ container cho 01 vựa đóng gói tại Cai Lậy, Tiền Giang).
 - **Tài liệu chiến lược V2:** Đang ở trạng thái **`DRAFT_FOR_FOUNDER_REVIEW`** (`docs/product-direction/PRODUCT-VISION-V2.md`, `PRODUCT-PRD-V2.md`, `PRODUCT-ARCHITECTURE-AND-ROADMAP-V2.md`, `DURIOS-STRATEGY-V2.json`). Bản `V1` tiếp tục là baseline thực thi cho đến khi Founder phê duyệt chính thức.
 - **Ranh giới an toàn:** Tuyệt đối không mở sàn giao dịch công khai, không giữ tiền khách hàng (Zero-Custody), không nạp dữ liệu thật trước khi vượt qua đủ 5 cổng khai trương (`GATE-01..GATE-05`).
+- **Đọc trạng thái cổng cho đúng:** báo cáo cổng in **hai con số khác nhau** — `machineChecksPassedCount` (bao nhiêu tiêu chí hệ thống **máy chấm được**) và `operationalGatesEvidencedCount` (bao nhiêu **cổng khai trương** có cả máy chấm đạt **và** bằng chứng vận hành do con người ghi nhận). Chỉ con số thứ hai quyết định `goForLiveCustomerData`; hệ thống ghi nhận bằng chứ không tự xác minh chữ ký, không tự ký thay ai, và không bao giờ mở cổng dựa trên dữ liệu diễn tập. Chi tiết: `docs/pilot-readiness/01_SINGLE_SITE_READINESS_AND_LAUNCH_GATE.md` §3.1 và `docs/reports/arena-stage0-20261029/GATE-MATRIX.md` (mục 0.3: ai được ghi nhận bằng chứng, máy kiểm tra gì trên tệp khai báo, và dữ liệu tổng hợp bị chặn ra sao). Bộ artefact bàn giao để soát xét độc lập — báo cáo, log, patch, cây cơ sở tại `2f1538e`, cây đã bàn giao, archive tải được kèm SHA-256 — mô tả trong `docs/reports/arena-stage0-20261029/README-HANDOVER.md`.
 
 ---
 
@@ -45,12 +46,16 @@ bun run typecheck
 ```bash
 bun test
 ```
-*Tất cả 79 bài kiểm thử trải rộng trên 17 bộ test suite (`3,439` `expect()` assertions: Auth 5A-1, RBAC Tuples 5A-2, Share Grants 5A-3, Organic Evidence 5A-4, Redaction & Content-Addressed Blobs 5A-5, Staging Rehearsal 5A-6, Adversarial Verification, v.v.).*
+*Tại thời điểm bàn giao 2026-10-30 (đợt cuối, sau khi viết lại cơ chế nguồn gốc dữ liệu cổng khai trương): `286` bài kiểm thử trên `67` tệp (`4.484` `expect()` assertions: Auth 5A-1, RBAC Tuples 5A-2, Share Grants 5A-3, Organic Evidence 5A-4, Redaction & Content-Addressed Blobs 5A-5, Staging Rehearsal 5A-6, Adversarial Verification, v.v.). Số liệu này thay đổi theo mỗi lần bổ sung kiểm thử — hãy lấy kết quả `bun test` trên máy bạn làm chuẩn, không lấy con số trong tài liệu.*
 
 ### 3.4 Khởi tạo dữ liệu diễn tập GATE-05 (5 container + 2 lỗi gài mù) / Seed GATE-05 Pilot Rehearsal
 ```bash
-bun run pilot:seed-rehearsal
+# Khuyến nghị: trỏ vào một cơ sở dữ liệu diễn tập riêng, KHÔNG dùng dữ liệu vận hành
+DURIOS_DB_PATH=./data/rehearsal.db DURIOS_DATA_DIR=./data/rehearsal-uploads bun run pilot:seed-rehearsal
 ```
+- **Bắt buộc khai báo đích (từ 2026-10-30):** lệnh này **từ chối chạy** nếu không có `DURIOS_DB_PATH` (hoặc tham số `{dbPath, dataDir}`) — lỗi `REHEARSAL_SEED_TARGET_REFUSED`. Lý do: nó tạo tài khoản `clerk.cailay` / `manager.cailay` với **mật khẩu cố định công khai trong mã nguồn**, nên mặc định cũ `./data/durios.db` (cơ sở dữ liệu vận hành) là một đường đăng nhập công khai không ai yêu cầu.
+- **Từ chối ghi vào dữ liệu không phải dữ liệu diễn tập:** nếu đích là tệp SQLite không có schema DuriOS, hoặc đã chứa hồ sơ **không** bắt đầu bằng `DOS-CAILAY-R`, hoặc tài khoản ngoài hai tài khoản diễn tập trên → lệnh từ chối (`src/auth/rehearsal-seed-target-guard.ts`). Hãy seed vào một cơ sở dữ liệu mới, và khi pilot với dữ liệu thật thì cấp tài khoản bằng `src/auth/pilot-ops-cli.ts`, không dùng lại mật khẩu công khai.
+- **Hồ sơ diễn tập làm bẩn đánh giá cổng:** chừng nào cohort còn chứa hồ sơ đi qua đường tổng hợp/diễn tập, báo cáo cổng khai trương mang nhãn `SYNTHETIC_REHEARSAL` và `goForLiveCustomerData` luôn `false`, kể cả khi khai báo đủ bằng chứng. Nguồn gốc được xác định bằng **sổ kiểm toán** (`SYNTHETIC_DOCUMENT_INGESTED`, `REHEARSAL_DOSSIER_SEEDED` gắn theo `dossierId`), không bằng tên hồ sơ, nên đổi `dossier_code` bằng SQL thô không mở được cổng; nếu chuỗi băm kiểm toán không xác minh được thì nhãn là `UNPROVEN_LEDGER_INTEGRITY` và cũng không cổng nào mở (`src/auth/gate-cohort-provenance.ts`, bằng chứng đối kháng: `docs/reports/arena-stage0-20261029/evidence/rerun-20261030/GATE-PROVENANCE-ADVERSARIAL-LOG.txt`). Phải tách/dọn dữ liệu diễn tập trước khi đánh giá cổng trên cơ sở dữ liệu thật.
 - Tạo tài khoản `clerk.cailay` (`PACKHOUSE_CLERK`) và `manager.cailay` (`PACKHOUSE_MANAGER`) kèm Pilot Token thiết bị (`dpt_...`) và 5 container mẫu tại Cai Lậy (`DOS-CAILAY-R01`..`R05`), bao gồm 2 container gài lỗi mù (`BLIND_FAULT_SEAL_MISMATCH` và `BLIND_FAULT_UNVERIFIED_EVIDENCE`).
 
 ### 3.5 Khởi động máy chủ HTTP & Giao diện trình duyệt / Start Local Server & Web Workspace
@@ -60,7 +65,13 @@ bun run start:server
 - Máy chủ gắn kết cục bộ độc quyền tại: `http://127.0.0.1:3000` (hoặc cổng cấu hình qua `PORT`).
 - Giao diện người dùng Web tiếng Việt có sẵn trực tiếp tại: `http://127.0.0.1:3000/` (hỗ trợ đăng nhập phiên Pilot `durios_session` / `x-pilot-token`, đính kèm bằng chứng hữu cơ `5A-4` và cấp/thu hồi quyền chia sẻ `5A-3`).
 
-### 3.6 Chạy kịch bản dòng lệnh mô phỏng đầy đủ / Run CLI End-to-End Simulation
+### 3.6 Bootstrap diễn tập không cần đăng nhập (chỉ bật khi chấp nhận rủi ro)
+```bash
+DURIOS_ALLOW_PILOT_REHEARSAL_BOOTSTRAP=true bun run start:server
+```
+- Tuyến `POST /api/auth/pilot-rehearsal-bootstrap` cấp tài khoản diễn tập và trả về Pilot Token `MANAGER` **mà không cần thông tin đăng nhập**, nên mặc định bị từ chối (`403 FEATURE_DISABLED`). Chỉ bật cờ trên khi máy chủ chạy trên một cơ sở dữ liệu diễn tập tổng hợp. Gắn kết loopback `127.0.0.1` một mình không đủ chứa rủi ro: tiến trình khác trên cùng máy, một trang web gửi POST chéo nguồn, hoặc reverse proxy chuyển tiếp `Host: 127.0.0.1:3000` đều tới được tuyến này.
+
+### 3.7 Chạy kịch bản dòng lệnh mô phỏng đầy đủ / Run CLI End-to-End Simulation
 ```bash
 bun run start
 # hoặc: bun run src/cli.ts
@@ -106,8 +117,12 @@ bun run start
 2. **Quy chuẩn Cadmium (GB 2762-2022 vs. Ngưỡng nội bộ `RUL-INT-CD-WARN`)**:
    - **Giới hạn luật định (`CN`)**: Ngưỡng hàm lượng Cadmium theo quy chuẩn Trung Quốc GB 2762-2022 là **0.050 mg/kg**. Vượt quá ngưỡng này cấu thành vi phạm quy chuẩn nghiêm trọng (`CRITICAL_BLOCKER`).
    - **Ngưỡng cảnh báo hành động nội bộ (`RUL-INT-CD-WARN`)**: Ngưỡng **0.040 mg/kg** (`0.040 mg/kg` internal Cadmium action buffer) được hệ thống dán nhãn rõ ràng là **CẢNH BÁO NỘI BỘ (INTERNAL ADVISORY)** nhằm mục đích an toàn, không được phép coi là vi phạm pháp luật nếu hàm lượng $\le 0.050\text{ mg/kg}$.
-3. **Quy tắc trích xuất giả lập**:
+3. **Quy tắc trích xuất giả lập — và nguyên tắc thất bại an toàn (fail-closed)**:
    - Bộ giải mã hiện tại sử dụng fixture mẫu (`synthetic fixture extractor`) để phát triển cục bộ, không phải hệ thống thị giác máy tính OCR trực tiếp trên môi trường thực tế.
+   - **Đường fixture chỉ hoạt động khi chế độ tổng hợp được bật tường minh** bằng `DURIOS_ENABLE_SYNTHETIC_FIXTURE_EXTRACTION=true` (`src/extraction/synthetic-extraction-mode.ts`) — dành cho diễn tập và kiểm thử. Bộ test bật cờ này qua `bunfig.toml` → `test/preload-synthetic-extraction.ts`; `pilot:seed-rehearsal` tự bật cho tiến trình của nó.
+   - **Luồng thường (không bật cờ):** `text/plain` chỉ cho ra giá trị **suy từ byte thật của tệp** (regex theo đúng loại chứng từ, `src/extraction/local-text-extractor.ts`); `application/pdf` không đọc được, `application/json` và ảnh chụp/scan (`image/png`, `image/jpeg`, `image/tiff`) cho `0` trường trích xuất → hồ sơ bị chặn bởi `RUL-DOC-UNREADABLE` (`CRITICAL_BLOCKER`) cho đến khi nạp tệp đọc được hoặc nhập tay và kiểm chứng từng trường. Yêu cầu nạp `fixtureFields` qua API bị từ chối `400 SYNTHETIC_EXTRACTION_DISABLED` và được ghi vào sổ kiểm toán (`DOC_UPLOAD_REJECTED`).
+   - **Không có giá trị mẫu nào của template được trình bày như dữ liệu chứng từ** ở luồng thường (các giá trị canary nằm trong `src/extraction/fixture-template-fields.ts` và chỉ xuất hiện khi chế độ tổng hợp được bật).
+   - Phiếu kiểm nghiệm có trong hồ sơ nhưng **không đọc được hàm lượng Cadmi** (trường `cadmium_mg_kg` trống/không phải số) cũng bị chặn với `observedValue = NOT_EXTRACTED`. Thiếu dữ liệu không bao giờ trở thành `PASSED`.
 4. **Bắt buộc xác minh con người (HITL)**:
    - Mọi trường dữ liệu trích xuất tự động phải được chuyên viên xác nhận (`HUMAN_VERIFIED`) trước khi hệ thống cho phép hoàn thành thẩm định và phê duyệt xuất hồ sơ.
 
@@ -119,14 +134,16 @@ Gói xuất khẩu bao gồm:
 - Định danh và thông tin container (`dossierCode`, `containerNumber`, `sealNumber`).
 - Bảng kê các chứng từ kèm mã băm SHA-256 độc lập.
 - Tóm tắt dữ liệu đã được chuyên viên con người xác thực.
-- Mã băm tổng hợp liên kết (`compositeManifestSha256`).
+- Mã băm tổng hợp liên kết (`compositeManifestSha256`) — bao phủ định danh, bảng kê chứng từ và tóm tắt dữ liệu đã kiểm chứng.
+- Mã băm toàn bản ghi (`manifestIntegritySha256`) — bao phủ **mọi** trường còn lại (`complianceFindingsCount`, `regulatoryDisclaimers`, `exportedBy`, `exportedAt`, `lifecycleState`, `isImmutable`). Bộ kiểm chứng độc lập bắt buộc khớp mã băm này khi có; manifest cũ chưa có trường này vẫn kiểm chứng được nhưng bị gắn nhãn `integrityCoverage: "PARTIAL_LEGACY"`.
 - Lịch sử kiểm toán và khuyến cáo pháp lý bắt buộc.
+- Khi một đơn vị **không sở hữu** hồ sơ đọc manifest qua `/api/dossiers/:id/manifest`, nội dung trả về đã lọc theo chính sách 5A-5 (mục đích chia sẻ) và kèm khối `redaction` giải thích rằng hai mã băm vẫn trỏ tới bản ghi đầy đủ của đơn vị sở hữu — băm lại bản đã lọc sẽ không khớp và đó không phải dấu hiệu giả mạo. Manifest chỉ được cấp cho mục đích `BUYER_VERIFICATION`, `CUSTOMS_INSPECTION`, `AUDIT`.
 
 ---
 
 ## 8. Kiến trúc Open-Core & Phân tầng Dịch vụ SaaS / Open-Core & SaaS Editions
 
-- **Trạng thái chương trình / Program Status:** `IMPLEMENTATION_IN_PROGRESS_EXTERNAL_GATES_PENDING` (Xem kế hoạch chi tiết tại `/Users/macbook/durios/plans/261017-open-core-hardening/plan.md`).
+- **Trạng thái chương trình / Program Status:** `IMPLEMENTATION_IN_PROGRESS_EXTERNAL_GATES_PENDING` (Xem kế hoạch chi tiết tại `plans/261017-open-core-hardening/plan.md`).
 
 DuriOS được phát hành theo mô hình **Open-Core Dual-License** (`LICENSE`, `LICENSE-MIT`, `COMMERCIAL-LICENSE.md`, `TRADEMARK-POLICY.md`):
 - **MIT Specification & Verifier SDK** (`src/domain/iso-6346.ts`, `src/ingestion/document-hasher.ts`, `src/export/manifest-compiler.ts`, `src/export/standalone-manifest-verifier.ts`, cùng `src/domain/types.ts` khi dùng làm định nghĩa kiểu cho 4 module độc lập này).

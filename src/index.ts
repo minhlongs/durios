@@ -10,6 +10,8 @@ export * from "./ingestion/file-validator.js";
 export * from "./ingestion/document-hasher.js";
 export * from "./extraction/extractor-types.js";
 export * from "./extraction/fixture-extractor.js";
+export { TEMPLATE_CANARY_VALUES } from "./extraction/fixture-template-fields.js";
+export * from "./extraction/synthetic-extraction-mode.js";
 export * from "./extraction/local-text-extractor.js";
 export * from "./extraction/composite-extractor-registry.js";
 export * from "./verification/hitl-service.js";

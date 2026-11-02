@@ -1,0 +1,54 @@
+# pilot:evaluate-kpi / pilot:verify-gates / pilot:audit-pack / verify:manifest — captured stdout
+# Fresh sandbox (bun 1.4.4). Rehearsal DB: /tmp/durios-rehearsal-peYV (seeded by pilot:seed-rehearsal). Timestamps are UTC.
+# Note: 'bun run <npm-script>' prints a '$ bun run …' banner line on stdout; the commands below call 'bun run src/…' directly so the JSON stays parseable.
+
+### CMD: DURIOS_DB_PATH=/tmp/durios-rehearsal-peYV/durios.db DURIOS_DATA_DIR=/tmp/durios-rehearsal-peYV/uploads bun run src/auth/pilot-kpi-evaluator.ts
+{
+  "totalContainers": 6,
+  "reconciledCount": 6,
+  "meanDeltaSeconds": 0.09,
+  "underFiveMinuteGate": true,
+  "underThreeMinuteTarget": true,
+  "blindFaultCount": 2,
+  "blindFaultsCaught": 2,
+  "zeroMissGate": true,
+  "gate05Passed": true,
+  "timingEvidenceSource": "SYSTEM_TIMESTAMPS",
+  "valueMetricsProvenance": "UNVALIDATED_ASSUMPTION"
+}
+aggregateValueMetrics.assumptions:
+[
+  {
+    "key": "MANUAL_BASELINE_MINUTES",
+    "value": 35,
+    "unit": "minutes_per_container",
+    "status": "UNVALIDATED_ASSUMPTION",
+    "noteVi": "Giả định 35 phút đối soát thủ công mỗi container. CHƯA được đo tại vựa; cần bấm giờ quy trình giấy hiện tại trước khi dùng cho bất kỳ tuyên bố tiết kiệm thời gian nào."
+  },
+  {
+    "key": "PENALTY_AVOIDANCE_VND_PER_CRITICAL_EXCEPTION",
+    "value": 35000000,
+    "unit": "vnd_per_critical_exception",
+    "status": "UNVALIDATED_ASSUMPTION",
+    "noteVi": "Giả định 35.000.000 VND thiệt hại tránh được cho mỗi lỗi chặn nghiêm trọng. KHÔNG phải số liệu đã kiểm chứng; không được trình bày như doanh thu, ROI hay thiệt hại tránh được thực tế."
+  }
+]
+
+### CMD: DURIOS_DB_PATH=/tmp/durios-rehearsal-peYV/durios.db DURIOS_DATA_DIR=/tmp/durios-rehearsal-peYV/uploads bun run src/auth/pilot-launch-gate-verifier.ts
+EXIT=1 (1 = not go-for-live)
+{
+  "goForLiveCustomerData": false,
+  "passedCount": 2,
+  "totalGates": 5,
+  "evidenceProvenance": "OPERATIONAL"
+}
+GATE-01: passed=False label=PENDING_SITE_AND_CONSENT_SIGN_OFF
+GATE-02: passed=False label=PENDING_PROVIDER_CREDENTIALS
+GATE-03: passed=True label=PASS
+GATE-04: passed=False label=PENDING_VERIFIED_BACKUP
+GATE-05: passed=True label=PASS
+
+GATE-01 detail: Chưa có biên bản chấp thuận dữ liệu đã ký (DURIOS_GATE01_CONSENT_FILE). Nghiêm cấm nạp dữ liệu khách hàng thật.
+GATE-03 detail: Host '127.0.0.1' hợp lệ (loopback) && chuỗi băm kiểm toán toàn vẹn.
+GATE-04 detail: Chưa chỉ định thư mục sao lưu (DURIOS_BACKUP_DIR) để xác minh.
+GATE-05 detail: Containers=6/5, Mean=0.09s, BlindFaults=2/2. Nguồn thời gian=SYSTEM_TIMESTAMPS: khoảng thời gian lấy từ dấu thời gian hệ thống, KHÔNG thay thế biên bản bấm giờ của người vận hành theo GATE-05.

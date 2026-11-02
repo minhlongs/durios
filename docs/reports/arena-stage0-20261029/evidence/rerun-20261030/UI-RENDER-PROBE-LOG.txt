@@ -1,0 +1,16 @@
+# ui-render-probe.mjs (headless DOM probe — KHÔNG phải ảnh chụp màn hình) — captured 2026-10-30T09:51:13Z
+# repo /home/user/durios | branch arena/e0ece0a7-durios | HEAD 2f1538e80ac97dc1efb9d9b52b14782d9bfb2494 | bun 1.4.4 | node v22.22.3
+# happy-dom không phải dependency của dự án: npm install --prefix /home/user/tools happy-dom@15 rồi symlink vào node_modules/
+
+### CMD: node /home/user/durios/docs/reports/arena-stage0-20261029/evidence/ui-render-probe.mjs
+PASS  A. empty state with no gate/KPI data reads PENDING instead of asserting results
+PASS  B. empty state after a synthetic rehearsal labels the evidence as rehearsal
+PASS  C. empty state with an operational run whose 2 machine checks are not 2 cleared gates
+PASS  D. KPI badge shows both counts and the callout explains the difference
+PASS  E. currentRole(): anonymous=MANAGER, CLERK session=CLERK (select synced to CLERK), AUDITOR session=AUDITOR (select kept CLERK)
+PASS  F. rehearsal toast is derived from the server response, not a fixed 5/5 claim
+PASS  G. each gate row states machine check, operator evidence and verdict separately
+no runtime error events
+
+UI RENDER PROBE: ALL PASS
+EXIT=0

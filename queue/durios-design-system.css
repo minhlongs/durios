@@ -919,7 +919,31 @@ tr.durios-row-hidden,
   display: none !important;
 }
 
+@media (max-width: 1024px) {
+  .durios-nav-dropdowns,
+  .durios-breadcrumb-sep,
+  .durios-breadcrumb-active,
+  .durios-nav-badge {
+    display: none !important;
+  }
+}
+
 @media (max-width: 640px) {
+  #durios-unified-top-nav,
+  .durios-top-command-bar {
+    padding: 0 8px !important;
+  }
+  .durios-bar-right {
+    gap: 4px;
+    min-width: 0;
+  }
+  .durios-cmdk-trigger span,
+  .durios-cmdk-trigger kbd,
+  .durios-socratic-btn,
+  .durios-focus-btn,
+  .durios-theme-btn span:not(.theme-icon) {
+    display: none !important;
+  }
   .durios-socratic-turn-grid {
     grid-template-columns: 1fr;
   }
