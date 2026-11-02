@@ -53,13 +53,14 @@ export function resolveFounderPilotAuthorization(input: EvaluateFounderAuthInput
   if (record.siteCode !== input.expectedSiteCode || record.tenantId !== input.expectedTenantId) {
     return { status: "INVALID_SCOPE_OR_ARTIFACT", valid: false, reason: `Sai phạm vi ủy quyền: yêu cầu '${input.expectedSiteCode}'/'${input.expectedTenantId}', tệp ghi '${record.siteCode}'/'${record.tenantId}'.`, record, ...artProp };
   }
-  if (isNonEmptyString(record.gate05AEvidenceSha256) && record.gate05AEvidenceSha256 !== input.gate05AArtifactSha256) {
-    return { status: "INVALID_SCOPE_OR_ARTIFACT", valid: false, reason: "Mã băm SHA-256 của biên bản GATE-05A không khớp với tệp quyết định Founder.", record, ...artProp };
-  }
   const nowMs = Date.parse(input.nowIso ?? new Date().toISOString());
   const expMs = Date.parse(record.expiresAt);
   if (!Number.isFinite(expMs) || expMs <= nowMs) {
     return { status: "EXPIRED", valid: false, reason: `Quyết định Founder đã hết hạn tại '${record.expiresAt}'.`, record, ...artProp };
+  }
+  const expectedSha = record.gate05AEvidenceSha256?.trim() ?? "";
+  if (!/^[a-f0-9]{64}$/i.test(expectedSha) || !isNonEmptyString(input.gate05AArtifactSha256) || expectedSha.toLowerCase() !== input.gate05AArtifactSha256.toLowerCase()) {
+    return { status: "INVALID_SCOPE_OR_ARTIFACT", valid: false, reason: "Thiếu hoặc sai mã băm SHA-256 (64 hex) của biên bản GATE-05A trong quyết định Founder.", record, ...artProp };
   }
   return {
     status: "AUTHORIZED_FOR_LIMITED_PILOT", valid: true,

@@ -1,6 +1,8 @@
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { calculateSha256 } from "../../src/ingestion/document-hasher.js";
 import type { GateEvidenceOverride } from "../../src/auth/pilot-gate-types.js";
+import type { FounderPilotAuthorizationRecord } from "../../src/auth/pilot-lifecycle-types.js";
 
 /**
  * Operator-recorded evidence for the launch gates: a real file plus the human who recorded it.
@@ -46,3 +48,22 @@ export const OTP_CONFIGURED_ENV: Readonly<Record<string, string>> = {
 };
 
 export const GATE_EVIDENCE_PENDING_LABEL = "MACHINE_CHECK_ONLY_PENDING_OPERATOR_EVIDENCE";
+
+export function createValidFounderAuth(
+  gate05AFilePath: string,
+  overrides: Partial<FounderPilotAuthorizationRecord> = {}
+): FounderPilotAuthorizationRecord {
+  return {
+    authorizationVersion: "1.0.0",
+    authorizationId: "AUTH-CAILAY-TEST-01",
+    siteCode: "SITE-CAILAY-TIENGIANG-01",
+    tenantId: "TENANT-CAILAY-PILOT-01",
+    authorizedBy: "Founder Minh Long",
+    authorizedAt: "2026-10-01T00:00:00.000Z",
+    expiresAt: "2027-12-31T23:59:59.000Z",
+    maxContainers: 5,
+    gate05AEvidenceSha256: calculateSha256(readFileSync(gate05AFilePath)),
+    ...overrides,
+  };
+}
+

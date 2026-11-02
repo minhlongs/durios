@@ -6,7 +6,7 @@ import type { Gate05KpiEvaluationReport } from "./pilot-kpi-evaluator.js";
 import type {
   GateCheckStatus, GateEvidenceProvenance, MachineGateCheck, SingleSiteLaunchGateReport, VerifyLaunchGatesOptions,
 } from "./pilot-gate-types.js";
-import { GATE_MACHINE_CRITERIA, withGateEvidenceSplit } from "./pilot-gate-evidence.js";
+import { GATE_MACHINE_CRITERIA, resolveGateExternalEvidence, withGateEvidenceSplit } from "./pilot-gate-evidence.js";
 import { resolveCohortProvenance } from "./gate-cohort-provenance.js";
 import { evaluatePilotLifecyclePolicy } from "./pilot-lifecycle-policy.js";
 import type { AuditEvent } from "../domain/types.js";
@@ -52,26 +52,28 @@ export function buildGateReport(
     gate04Detail = verification.valid ? `Bản sao lưu tại '${backupDir}' hợp lệ (100% blob khớp SHA-256).` : `Bản sao lưu lỗi: ${verification.errors.join("; ")}`;
   }
   const gate04: MachineGateCheck = { machineCheck: { passed: gate04Passed, criteria: GATE_MACHINE_CRITERIA["GATE-04"] }, gateId: "GATE-04", title: "Chứng minh Sao lưu & Khôi phục (Backup/Restore Drill)", passed: gate04Passed, statusLabel: gate04Passed ? passLabel : "PENDING_VERIFIED_BACKUP", detail: `${gate04Detail}${rehearsalNote}` };
-  const gate05: MachineGateCheck = { machineCheck: { passed: kpiSummary.gate05Passed, criteria: GATE_MACHINE_CRITERIA["GATE-05"] }, gateId: "GATE-05", title: "Diễn tập 5 Container & Bắt 100% Lỗi Gài Mù (< 5 phút/container)", passed: kpiSummary.gate05Passed, statusLabel: kpiSummary.gate05Passed ? passLabel : "REHEARSAL_INCOMPLETE", detail: `Containers=${kpiSummary.totalContainers}/5, Mean=${kpiSummary.meanDeltaSeconds}s, BlindFaults=${kpiSummary.blindFaultsCaught}/${kpiSummary.blindFaultCount}. Nguồn thời gian=${kpiSummary.timingEvidenceSource}: khoảng thời gian lấy từ dấu thời gian hệ thống, KHÔNG thay thế biên bản bấm giờ của người vận hành theo GATE-05.${rehearsalNote}` };
-
-  const machineGates = [gate01, gate02, gate03, gate04, gate05];
-  const extras = kpiSummary.timingEvidenceSource === "HUMAN_STOPWATCH_ATTESTED"
-    ? { "GATE-05": ["timingEvidenceSource = HUMAN_STOPWATCH_ATTESTED (biên bản bấm giờ của người vận hành)"] }
-    : {};
   const mergedOverrides = {
     ...options.gateEvidence,
     ...(!options.gateEvidence?.["GATE-05"] && options.gateEvidence?.["GATE-05B"] ? { "GATE-05": options.gateEvidence["GATE-05B"] } : {}),
   };
+  const stopwatchAttested = !rehearsalMode && kpiSummary.gate05Passed && resolveGateExternalEvidence("GATE-05", env, mergedOverrides).status === "RECORDED_BY_OPERATOR";
+  const effectiveKpi: Gate05KpiEvaluationReport = stopwatchAttested ? { ...kpiSummary, timingEvidenceSource: "HUMAN_STOPWATCH_ATTESTED" } : kpiSummary;
+  const gate05: MachineGateCheck = { machineCheck: { passed: effectiveKpi.gate05Passed, criteria: GATE_MACHINE_CRITERIA["GATE-05"] }, gateId: "GATE-05", title: "Diễn tập 5 Container & Bắt 100% Lỗi Gài Mù (< 5 phút/container)", passed: effectiveKpi.gate05Passed, statusLabel: effectiveKpi.gate05Passed ? passLabel : "REHEARSAL_INCOMPLETE", detail: `Containers=${effectiveKpi.totalContainers}/5, Mean=${effectiveKpi.meanDeltaSeconds}s, BlindFaults=${effectiveKpi.blindFaultsCaught}/${effectiveKpi.blindFaultCount}. Nguồn thời gian=${effectiveKpi.timingEvidenceSource}: khoảng thời gian lấy từ dấu thời gian hệ thống, KHÔNG thay thế biên bản bấm giờ của người vận hành theo GATE-05.${rehearsalNote}` };
+
+  const machineGates = [gate01, gate02, gate03, gate04, gate05];
+  const extras = effectiveKpi.timingEvidenceSource === "HUMAN_STOPWATCH_ATTESTED"
+    ? { "GATE-05": ["timingEvidenceSource = HUMAN_STOPWATCH_ATTESTED (biên bản bấm giờ của người vận hành)"] }
+    : {};
   const gates = withGateEvidenceSplit(machineGates, env, mergedOverrides, extras, rehearsalMode) as readonly
     [GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus, GateCheckStatus];
   const machineChecksPassedCount = machineGates.filter((g) => g.machineCheck.passed).length;
   const operationalGatesEvidencedCount = gates.filter((g) => g.gateVerdict === "EVIDENCED_FOR_LAUNCH").length;
-  const lifecycle = evaluatePilotLifecyclePolicy(auditChainValid, syntheticCohort, gates, kpiSummary, options, auditEvents);
+  const lifecycle = evaluatePilotLifecyclePolicy(auditChainValid, syntheticCohort, gates, effectiveKpi, options, auditEvents);
   return {
     evaluatedAt: new Date().toISOString(),
     goForLiveCustomerData: lifecycle.pilotLifecycleState === "PILOT_COMPLETED" && operationalGatesEvidencedCount === 5 && !rehearsalMode,
     ...lifecycle,
     passedCount: machineChecksPassedCount, machineChecksPassedCount, operationalGatesEvidencedCount,
-    totalGates: 5, gates, kpiSummary, evidenceProvenance, cohortProvenance, ledgerIntegrityVerified: auditChainValid,
+    totalGates: 5, gates, kpiSummary: effectiveKpi, evidenceProvenance, cohortProvenance, ledgerIntegrityVerified: auditChainValid,
   };
 }

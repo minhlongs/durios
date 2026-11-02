@@ -8,7 +8,7 @@ import { seedGate05PilotRehearsal } from "../src/auth/pilot-rehearsal-seeder.js"
 import { createWorkspaceApp } from "../src/server/server.js";
 import { routeHttpRequest } from "../src/server/http-router.js";
 import { seedTestPilotActor } from "./helpers/auth-test-helper.js";
-import { createOperatorEvidence } from "./helpers/gate-operator-evidence.js";
+import { createOperatorEvidence, createValidFounderAuth } from "./helpers/gate-operator-evidence.js";
 import { seedOperationalGateSite } from "./helpers/operational-cohort-fixture.js";
 import type { AuthenticatedActor } from "../src/domain/types.js";
 const AUDITOR: AuthenticatedActor = {
@@ -39,6 +39,7 @@ describe("Direction 1: Single-Site Pilot Go-Live Dossier Pack & Field Auditor To
           DURIOS_OTP_API_KEY: "live-staging-key-001", DURIOS_HOST: "127.0.0.1",
         },
         gateEvidence: operatorEvidence,
+        founderAuthorization: createValidFounderAuth(operatorEvidence["GATE-05"]!.filePath!),
         forcedTimestamp: "2026-10-17T08:00:00.000Z",
       });
       expect(report.goForLiveCustomerData && report.overallVerdict === "GO_FOR_LIVE_CUSTOMER_DATA").toBe(true);

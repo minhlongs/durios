@@ -23,9 +23,9 @@ function buildSubGateEvidence(
   subGateId: "GATE-05A" | "GATE-05B", env: Readonly<Record<string, string | undefined>>,
   overrides?: Readonly<Record<string, GateEvidenceOverride | undefined>>
 ): GateExternalEvidence {
-  const override = overrides?.[subGateId] ?? (subGateId === "GATE-05B" ? overrides?.["GATE-05"] : undefined);
+  const override = overrides?.[subGateId] ?? overrides?.["GATE-05"];
   const envKey = subGateId === "GATE-05A" ? "DURIOS_GATE05A_EVIDENCE_FILE" : "DURIOS_GATE05B_EVIDENCE_FILE";
-  const declared = override?.filePath ?? env[envKey] ?? (subGateId === "GATE-05B" ? env.DURIOS_GATE05_EVIDENCE_FILE : "") ?? "";
+  const declared = override?.filePath ?? env[envKey] ?? env.DURIOS_GATE05_EVIDENCE_FILE ?? "";
   const attestedBy = override?.attestedBy ?? env.DURIOS_GATE_EVIDENCE_ATTESTED_BY ?? "";
   const artifact = declared.trim() === "" ? undefined : inspectEvidenceArtifact(declared);
   const recorded = [...(artifact ? [describeEvidenceArtifact(artifact)] : []), ...(attestedBy.trim() ? [`Người ghi nhận: ${attestedBy.trim()}`] : [])];
@@ -76,11 +76,9 @@ export function evaluatePilotLifecyclePolicy(
   if (founderAuth.status === "REVOKED_OR_HOLD" || founderAuth.status === "EXPIRED" || founderAuth.status === "INVALID_SCOPE_OR_ARTIFACT") holdReasons.push(founderAuth.reason);
   const hasOpCreated = auditEvents.some((e) => e.eventType === "DOSSIER_CREATED" && !String((e.payloadAfter as Record<string, unknown> | null)?.dossierCode ?? "").startsWith("DOS-CAILAY-R"));
   if (options.rehearsalMode !== true && syntheticCohort && (founderAuth.valid || hasOpCreated)) holdReasons.push("SYNTHETIC_CONTAMINATION: Phát hiện dữ liệu synthetic/rehearsal trộn trong DB vận hành.");
-  const hasExplicit05AOrFounder = Boolean(options.gateEvidence?.["GATE-05A"] || env.DURIOS_GATE05A_EVIDENCE_FILE || options.founderAuthorizationFilePath || env.DURIOS_FOUNDER_PILOT_AUTH_FILE || options.founderAuthorization);
-  const effectiveFounderValid = founderAuth.valid || (!hasExplicit05AOrFounder && legacyGate05Evidenced && gates01To04Evidenced);
   const state: PilotLifecycleState = holdReasons.length > 0 ? "PILOT_HOLD"
     : (!gates01To04Evidenced || gate05AVerdict !== "EVIDENCED_FOR_LAUNCH" || syntheticCohort) ? "BLOCKED"
-    : !effectiveFounderValid ? "READY_FOR_FOUNDER_REVIEW" : gate05BVerdict === "EVIDENCED_FOR_LAUNCH" ? "PILOT_COMPLETED" : "LIMITED_PILOT_AUTHORIZED";
+    : !founderAuth.valid ? "READY_FOR_FOUNDER_REVIEW" : gate05BVerdict === "EVIDENCED_FOR_LAUNCH" ? "PILOT_COMPLETED" : "LIMITED_PILOT_AUTHORIZED";
   const policyStatus: PilotPolicyStatus = state === "PILOT_HOLD" ? "HOLD_ACTIVE" : state === "PILOT_COMPLETED" ? "PILOT_GRADUATED"
     : state === "LIMITED_PILOT_AUTHORIZED" ? "LIMITED_PILOT_AUTHORIZED" : state === "READY_FOR_FOUNDER_REVIEW" ? "PENDING_FOUNDER_APPROVAL" : "PREREQUISITES_INCOMPLETE";
   return {

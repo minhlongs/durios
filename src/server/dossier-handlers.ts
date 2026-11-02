@@ -1,6 +1,8 @@
 import type { ContainerDossierWorkspace } from "../workspace/container-dossier-workspace.js";
 import type { AuthenticatedActor } from "../domain/types.js";
 import { assertCanCreateContainerDossier, assertValidActor } from "../auth/rbac-policy.js";
+import { evaluateWorkspaceLaunchGates } from "../auth/pilot-launch-gate-verifier.js";
+import { shouldEnforceDynamicPilotQuota } from "../workspace/pilot-quota-guard.js";
 import { redactDossierForActor, redactDossierListForActor } from "../sharing/dossier-redactor.js";
 import {
   errorResponse, jsonResponse, mapDomainErrorToResponse, type CreateDossierRequestBody,
@@ -22,15 +24,27 @@ export async function handleCreateDossier(workspace: ContainerDossierWorkspace, 
   let body: CreateDossierRequestBody;
   try { body = (await req.json()) as CreateDossierRequestBody; } catch { return errorResponse("Invalid JSON payload in request body", 400); }
   if (!body.dossierCode || !body.containerNumber || !body.sealNumber) return errorResponse("Missing required fields: dossierCode, containerNumber, sealNumber", 400);
+  const input = {
+    dossierCode: String(body.dossierCode).trim(), containerNumber: String(body.containerNumber).trim(), sealNumber: String(body.sealNumber).trim(),
+    targetMarket: String(body.targetMarket ?? "CN").trim(), borderGate: String(body.borderGate ?? "Huu Nghi").trim(),
+    targetTemperatureC: Number(body.targetTemperatureC ?? 14.5), declaredNetWeightKg: Number(body.declaredNetWeightKg ?? 18000),
+    declaredBoxCount: Number(body.declaredBoxCount ?? 900),
+  };
+  const dynamicQuota = !workspace.getPilotQuotaPolicy() && shouldEnforceDynamicPilotQuota();
+  if (dynamicQuota) {
+    const gates = evaluateWorkspaceLaunchGates(workspace, actor);
+    workspace.setPilotQuotaPolicy({
+      enabled: true, lifecycleState: gates.pilotLifecycleState,
+      maxContainers: gates.liveContainerQuota.maxContainers, allowedTenantId: gates.founderAuthorization.record?.tenantId,
+    });
+  }
   try {
-    const dossier = workspace.createDossier({
-      dossierCode: String(body.dossierCode).trim(), containerNumber: String(body.containerNumber).trim(), sealNumber: String(body.sealNumber).trim(),
-      targetMarket: String(body.targetMarket ?? "CN").trim(), borderGate: String(body.borderGate ?? "Huu Nghi").trim(),
-      targetTemperatureC: Number(body.targetTemperatureC ?? 14.5), declaredNetWeightKg: Number(body.declaredNetWeightKg ?? 18000),
-      declaredBoxCount: Number(body.declaredBoxCount ?? 900),
-    }, actor);
-    return jsonResponse({ success: true, data: dossier }, 201);
-  } catch (err) { return mapDomainErrorToResponse(err, "Failed to create dossier"); }
+    return jsonResponse({ success: true, data: workspace.createDossier(input, actor) }, 201);
+  } catch (err) {
+    return mapDomainErrorToResponse(err, "Failed to create dossier");
+  } finally {
+    if (dynamicQuota) workspace.setPilotQuotaPolicy(undefined);
+  }
 }
 
 export function handleGetDossier(
