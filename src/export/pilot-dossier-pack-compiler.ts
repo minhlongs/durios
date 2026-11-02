@@ -25,18 +25,11 @@ const MANDATORY_DISCLAIMERS: readonly string[] = [
 
 function toGateOpts(opts: CompilePilotGoLivePackOptions): VerifyLaunchGatesOptions {
   const res: Record<string, unknown> = {};
-  if (opts.dbPath !== undefined) res.dbPath = opts.dbPath;
-  if (opts.dataDir !== undefined) res.dataDir = opts.dataDir;
-  if (opts.backupDir !== undefined) res.backupDir = opts.backupDir;
-  if (opts.consentSignedFilePath !== undefined) res.consentSignedFilePath = opts.consentSignedFilePath;
-  if (opts.tenantId !== undefined) res.tenantId = opts.tenantId;
-  if (opts.env !== undefined) res.env = opts.env;
-  if (opts.rehearsalMode !== undefined) res.rehearsalMode = opts.rehearsalMode;
-  if (opts.gateEvidence !== undefined) res.gateEvidence = opts.gateEvidence;
+  for (const k of ["dbPath", "dataDir", "backupDir", "consentSignedFilePath", "tenantId", "siteCode", "env", "rehearsalMode", "gateEvidence", "founderAuthorizationFilePath", "founderAuthorization"] as const) {
+    if (opts[k] !== undefined) res[k] = opts[k];
+  }
   return res as VerifyLaunchGatesOptions;
 }
-
-
 
 function finalizeReport(
   gateReport: SingleSiteLaunchGateReport, actorId: string, actorRole: string,
@@ -44,26 +37,23 @@ function finalizeReport(
 ): GoLiveReadinessReport {
   const siteCode = options.siteCode ?? "SITE-CAILAY-TIENGIANG-01";
   const compiledAt = options.forcedTimestamp ?? gateReport.evaluatedAt;
-  // Anything that is not a proven operational run — a synthetic cohort or an unverifiable
-  // ledger — compiles as a report about the drill, never as a launch authorisation.
   const rehearsalMode = options.rehearsalMode === true || gateReport.evidenceProvenance !== "OPERATIONAL";
   const allMachineChecksPassed = gateReport.machineChecksPassedCount === gateReport.totalGates;
-  // A launch gate is cleared only when a human recorded the evidence the documented
-  // criterion asks for; passing every machine check on a staging box clears nothing.
   const allGatesEvidenced = gateReport.operationalGatesEvidencedCount === gateReport.totalGates;
+  const goForLive = !rehearsalMode && allMachineChecksPassed && allGatesEvidenced && gateReport.pilotLifecycleState === "PILOT_COMPLETED";
   const core: Omit<GoLiveReadinessReport, "reportSha256"> = {
     reportVersion: "1.0.0", reportId: `GOLIVE-${siteCode}-${compiledAt.slice(0, 10)}`,
     siteCode, compiledAt, compiledByActorId: actorId, compiledByActorRole: actorRole,
-    // Three different statements, kept apart:
-    //  - GO_FOR_LIVE_CUSTOMER_DATA: operational run, every machine check passed AND a human
-    //    recorded the evidence each documented criterion asks for.
-    //  - READY_FOR_PILOT_GO_LIVE: a declared rehearsal showed every machine check can pass.
-    //    It describes the drill, authorises nothing, and never sets goForLiveCustomerData.
-    //  - HOLD_BLOCKERS_REMAIN: anything else.
     overallVerdict: rehearsalMode
       ? (allMachineChecksPassed ? "READY_FOR_PILOT_GO_LIVE" : "HOLD_BLOCKERS_REMAIN")
-      : (allMachineChecksPassed && allGatesEvidenced ? "GO_FOR_LIVE_CUSTOMER_DATA" : "HOLD_BLOCKERS_REMAIN"),
-    goForLiveCustomerData: !rehearsalMode && allMachineChecksPassed && allGatesEvidenced,
+      : (goForLive ? "GO_FOR_LIVE_CUSTOMER_DATA" : "HOLD_BLOCKERS_REMAIN"),
+    goForLiveCustomerData: goForLive,
+    pilotLifecycleState: gateReport.pilotLifecycleState,
+    policyStatus: gateReport.policyStatus,
+    canStartLimitedFiveContainerPilot: gateReport.canStartLimitedFiveContainerPilot,
+    gate05Split: gateReport.gate05Split,
+    founderAuthorization: gateReport.founderAuthorization,
+    liveContainerQuota: gateReport.liveContainerQuota,
     passedGateCount: gateReport.machineChecksPassedCount, totalGateCount: gateReport.totalGates,
     machineChecksPassedCount: gateReport.machineChecksPassedCount,
     operationalGatesEvidencedCount: gateReport.operationalGatesEvidencedCount,

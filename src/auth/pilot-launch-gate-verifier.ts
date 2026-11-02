@@ -19,7 +19,7 @@ export function evaluateWorkspaceLaunchGates(
   const dossiers: readonly ContainerDossier[] = selectOwnTenantDossiers(workspace.listDossiers(actor), actor.tenantId);
   return buildGateReport(
     workspace.auditLedger.verifyIntegrity(), computeGate05KpiFromDossiers(dossiers),
-    options, workspace.auditLedger.getAllEvents()
+    { ...options, tenantId: options.tenantId ?? actor.tenantId }, workspace.auditLedger.getAllEvents()
   );
 }
 
