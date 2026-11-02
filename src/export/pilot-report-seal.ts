@@ -28,12 +28,14 @@ export function serializeReportCore(report: Omit<GoLiveReadinessReport, "reportS
     reportVersion: report.reportVersion, reportId: report.reportId, siteCode: report.siteCode,
     compiledAt: report.compiledAt, compiledByActorId: report.compiledByActorId,
     compiledByActorRole: report.compiledByActorRole, overallVerdict: report.overallVerdict,
-    goForLiveCustomerData: report.goForLiveCustomerData, passedGateCount: report.passedGateCount,
+    goForLiveCustomerData: report.goForLiveCustomerData,
+    pilotLifecycleState: report.pilotLifecycleState ?? "BLOCKED",
+    policyStatus: report.policyStatus ?? "PREREQUISITES_INCOMPLETE",
+    canStartLimitedFiveContainerPilot: report.canStartLimitedFiveContainerPilot ?? false,
+    passedGateCount: report.passedGateCount,
     totalGateCount: report.totalGateCount, gates: report.gates,
     fieldAuditorChecklist: report.fieldAuditorChecklist, kpiSnapshot: report.kpiSnapshot,
     statutoryReferences: report.statutoryReferences, mandatoryDisclaimers: report.mandatoryDisclaimers,
-    // Defaults to OPERATIONAL so a pack sealed before this field existed — every one of
-    // which was compiled outside rehearsal mode — still verifies unchanged.
     evidenceProvenance: report.evidenceProvenance ?? "OPERATIONAL",
   });
 }

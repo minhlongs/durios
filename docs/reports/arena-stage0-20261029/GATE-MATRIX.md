@@ -199,4 +199,15 @@ bun run pilot:verify-gates ; echo "EXIT=$? (0 = cả 5 cổng ĐỦ BẰNG CHỨ
 
 Lệnh in ra **hai** dòng số (bản tóm tắt tiếng Việt ở stderr, JSON đầy đủ ở stdout): `KIỂM TRA TỰ ĐỘNG (máy chấm được): x/5 tiêu chí đạt` và `LAUNCH GATE VẬN HÀNH (đủ bằng chứng hợp lệ): y/5 cổng được mở`, kèm từng cổng thiếu gì.
 
-Chỉ khi lệnh thoát `0` **và** `goForLiveCustomerData: true` **và** `operationalGatesEvidencedCount: 5` **và** `evidenceProvenance: "OPERATIONAL"` thì mới được nạp dữ liệu khách hàng thật — và khi đó vẫn cần Founder phê duyệt. Mọi chế độ diễn tập, cũng như mọi cơ sở dữ liệu còn chứa hồ sơ do `pilot:seed-rehearsal` tạo ra, đều cho `goForLiveCustomerData: false` (F-07 và F-14).
+Chỉ khi lệnh thoát `0` **và** `goForLiveCustomerData: true` **và** `operationalGatesEvidencedCount: 5` **và** `evidenceProvenance: "OPERATIONAL"` **và** `pilotLifecycleState: "PILOT_COMPLETED"` thì mới được nạp dữ liệu khách hàng thật đại trà — và khi đó vẫn cần Founder phê duyệt. Mọi chế độ diễn tập, cũng như mọi cơ sở dữ liệu còn chứa hồ sơ do `pilot:seed-rehearsal` tạo ra, đều cho `goForLiveCustomerData: false` (F-07 và F-14).
+
+### 0.4. Đồng bộ Runtime `GATE-05A` / `GATE-05B` & Máy Trạng Thái 5 Bước (Cập nhật 2026-11-02)
+
+Để hóa giải thế khóa vòng trên DB vận hành sạch (`0` container) mà không nới lỏng bất kỳ chốt chặn nào, runtime (`src/auth/pilot-lifecycle-policy.ts`, `src/auth/founder-pilot-authorization.ts`, `src/workspace/pilot-quota-guard.ts`) đã tách rõ `gate05Split.gate05A` (diễn tập trước cutover) và `gate05Split.gate05B` (nghiệm thu 5 container thật) cùng 5 trạng thái vòng đời (`PilotLifecycleState`):
+1. `BLOCKED` (`policyStatus: "PREREQUISITES_INCOMPLETE"`): Thiếu `GATE-01..04`, thiếu `GATE-05A`, hoặc đang chạy trên DB diễn tập (`SYNTHETIC_REHEARSAL`).
+2. `READY_FOR_FOUNDER_REVIEW` (`policyStatus: "PENDING_FOUNDER_APPROVAL"`): DB vận hành sạch (`0` container) + `GATE-01..04` đạt `EVIDENCED_FOR_LAUNCH` + có biên bản `DURIOS_GATE05A_EVIDENCE_FILE` hợp lệ, đang chờ quyết định của Founder (`canStartLimitedFiveContainerPilot: false`, `goForLiveCustomerData: false`).
+3. `LIMITED_PILOT_AUTHORIZED` (`policyStatus: "LIMITED_PILOT_AUTHORIZED"`): Đạt `READY_FOR_FOUNDER_REVIEW` + có tệp quyết định `DURIOS_FOUNDER_PILOT_AUTH_FILE` hợp lệ (`maxContainers: 5`, khớp `siteCode`/`tenantId`, chưa hết hạn, chưa thu hồi). Mở `canStartLimitedFiveContainerPilot: true` với trần cứng tối đa `5` container trong `ContainerDossierWorkspace.createDossier()`, trong khi `goForLiveCustomerData` vẫn giữ `false`.
+4. `PILOT_COMPLETED` (`policyStatus: "PILOT_GRADUATED"`): Đạt `LIMITED_PILOT_AUTHORIZED` + hoàn tất 5 container thật đạt KPI `GATE-05B` kèm biên bản bấm giờ `DURIOS_GATE05B_EVIDENCE_FILE`. Chỉ tại đây `goForLiveCustomerData` mới chuyển sang `true`.
+5. `PILOT_HOLD` (`policyStatus: "HOLD_ACTIVE"`): Phanh khẩn cấp khi đứt chuỗi băm kiểm toán (`UNPROVEN_LEDGER_INTEGRITY`), phát hiện trộn chứng từ synthetic vào DB vận hành, `DURIOS_PILOT_HOLD=true`, hoặc tệp ủy quyền Founder hết hạn/bị thu hồi/sai phạm vi.
+
+Chi tiết đề xuất chính sách trình Founder: `docs/pilot-readiness/08_FOUNDER_LAUNCH_POLICY_PROPOSAL_GATE05A_05B.md` (trạng thái: `PENDING_FOUNDER_APPROVAL`).

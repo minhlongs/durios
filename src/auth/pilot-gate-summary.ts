@@ -37,7 +37,14 @@ export function formatCohortProvenance(report: SingleSiteLaunchGateReport): stri
 }
 
 export function summarizeGateReport(report: SingleSiteLaunchGateReport): string {
-  const lines = [formatGateCounts(report.machineChecksPassedCount, report.operationalGatesEvidencedCount, report.totalGates), formatCohortProvenance(report)];
+  const lines = [
+    formatGateCounts(report.machineChecksPassedCount, report.operationalGatesEvidencedCount, report.totalGates),
+    formatCohortProvenance(report),
+    `VÒNG ĐỜI PILOT: ${report.pilotLifecycleState} (policyStatus=${report.policyStatus}, canStart5ContainerPilot=${report.canStartLimitedFiveContainerPilot}, quota=${report.liveContainerQuota.usedContainers}/${report.liveContainerQuota.maxContainers})`,
+    `  GATE-05A (Diễn tập trước cutover): ${VERDICT_LABEL[report.gate05Split.gate05A.gateVerdict] ?? report.gate05Split.gate05A.gateVerdict}`,
+    `  GATE-05B (Nghiệm thu 5 container thật): ${VERDICT_LABEL[report.gate05Split.gate05B.gateVerdict] ?? report.gate05Split.gate05B.gateVerdict}`,
+    `  Ủy quyền Founder: ${report.founderAuthorization.status} — ${report.founderAuthorization.reason}`,
+  ];
   for (const gate of report.gates) {
     const artifact = gate.externalEvidence.artifact;
     lines.push(
@@ -51,8 +58,8 @@ export function summarizeGateReport(report: SingleSiteLaunchGateReport): string 
   }
   lines.push(
     report.goForLiveCustomerData
-      ? "goForLiveCustomerData: true — cả 5 cổng có bằng chứng vận hành được ghi nhận."
-      : "goForLiveCustomerData: false — CHƯA được nạp dữ liệu khách hàng thật."
+      ? "goForLiveCustomerData: true — cả 5 cổng có bằng chứng vận hành được ghi nhận (PILOT_COMPLETED)."
+      : "goForLiveCustomerData: false — CHƯA được nạp dữ liệu khách hàng thật đại trà."
   );
   if (report.evidenceProvenance === "SYNTHETIC_REHEARSAL") {
     lines.push("evidenceProvenance: SYNTHETIC_REHEARSAL — bằng chứng do lệnh diễn tập tự tạo, không có giá trị phê duyệt.");
